@@ -1,0 +1,113 @@
+/* ============================================================
+   Loader.css  —  Beam 2.0 Dark Control-System Theme
+   ============================================================ */
+
+/* ── Wrapper ─────────────────────────────────────────────── */
+.beam-loader-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+/* Fullscreen overlay */
+.beam-loader-wrapper--fullscreen {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 11, 18, 0.88);   /* matches --bg-dark */
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 10000040;
+}
+
+/* ── Spinner container ───────────────────────────────────── */
+.beam-loader {
+  position: relative;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Sizes */
+.beam-loader--sm {
+  width: 36px;
+  height: 36px;
+}
+
+.beam-loader--md {
+  width: 56px;
+  height: 56px;
+}
+
+.beam-loader--lg {
+  width: 80px;
+  height: 80px;
+}
+
+/* ── Spinning ring ───────────────────────────────────────── */
+.beam-loader-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  animation: beamLoaderSpin 0.85s linear infinite;
+
+  /* sm default thickness — overridden per size below */
+  border-width: 3px;
+  border-style: solid;
+  border-color: transparent;
+
+  /* Beam 2.0 accent colours on each quadrant */
+  border-top-color:    #3B82F6;   /* blue   – accent primary  */
+  border-right-color:  #10B981;   /* green  – color-safe      */
+  border-bottom-color: #F59E0B;   /* amber  – color-caution   */
+  border-left-color:   #EF4444;   /* red    – color-risk      */
+}
+
+/* Thicker ring for larger sizes */
+.beam-loader--md .beam-loader-ring {
+  border-width: 4px;
+}
+
+.beam-loader--lg .beam-loader-ring {
+  border-width: 5px;
+}
+
+/* Inner glow dot at center */
+.beam-loader::after {
+  content: "";
+  position: absolute;
+  width: 30%;
+  height: 30%;
+  background: radial-gradient(circle, #3B82F6 0%, transparent 70%);
+  border-radius: 50%;
+  animation: beamLoaderPulse 1.7s ease-in-out infinite;
+}
+
+/* ── Animations ──────────────────────────────────────────── */
+@keyframes beamLoaderSpin {
+  from { transform: rotate(0deg);   }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes beamLoaderPulse {
+  0%, 100% { opacity: 0.25; transform: scale(0.8);  }
+  50%       { opacity: 0.8;  transform: scale(1.15); }
+}
+
+/* ── Label ───────────────────────────────────────────────── */
+.beam-loader-text {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #9CA3AF;           /* --text-muted */
+  letter-spacing: 0.3px;
+  animation: beamLoaderTextPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes beamLoaderTextPulse {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1;   }
+}

@@ -1,0 +1,533 @@
+/* =====================================================
+   OTP.CSS  —  M3 Group OTP Verification
+   3 themes: north | south | infra  (mirrors Login.css)
+   ===================================================== */
+
+/* ── Google Fonts (same as Login — add once to index.html) ──
+   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+   ──────────────────────────────────────────────────── */
+
+:root {
+  --font-main: 'DM Sans', sans-serif;
+  --font-hero: 'Syne', sans-serif;
+  --transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  --white: #ffffff;
+  --muted: rgba(255, 255, 255, 0.5);
+}
+
+/* ── NORTH  (deep navy + gold) ───────────────────── */
+.theme-north {
+  --bg-base:      #020b1e;
+  --bg-mid:       #04112e;
+  --accent-1:     #1e56d0;
+  --accent-2:     #3b7aff;
+  --gold:         #d4a843;
+  --gold-light:   #f0ca70;
+  --glow-1:       rgba(30, 86, 208, 0.4);
+  --glow-2:       rgba(212, 168, 67, 0.22);
+  --btn-from:     #1e56d0;
+  --btn-to:       #3b7aff;
+  --btn-shadow:   rgba(30, 86, 208, 0.5);
+  --btn-dis:      rgba(30, 86, 208, 0.3);
+  --field-focus:  rgba(30, 86, 208, 0.6);
+  --field-glow:   rgba(30, 86, 208, 0.15);
+  --field-fill:   rgba(30, 86, 208, 0.08);
+  --link-color:   #6da3ff;
+  --grid-color:   rgba(212, 168, 67, 0.04);
+  --badge-color:  #d4a843;
+  --badge-bg:     rgba(212, 168, 67, 0.1);
+  --badge-border: rgba(212, 168, 67, 0.25);
+  --shield-color: #6da3ff;
+  --shield-bg:    rgba(30, 86, 208, 0.12);
+  --shield-border:rgba(30, 86, 208, 0.25);
+  --progress-bg:  rgba(30, 86, 208, 0.15);
+  --topbar:       linear-gradient(90deg, #1e56d0, #6da3ff, #d4a843);
+}
+
+/* ── SOUTH  (deep teal + amber) ──────────────────── */
+.theme-south {
+  --bg-base:      #011a12;
+  --bg-mid:       #02221a;
+  --accent-1:     #0d9162;
+  --accent-2:     #12c885;
+  --gold:         #e8a020;
+  --gold-light:   #fcc24a;
+  --glow-1:       rgba(13, 145, 98, 0.4);
+  --glow-2:       rgba(232, 160, 32, 0.22);
+  --btn-from:     #0d9162;
+  --btn-to:       #12c885;
+  --btn-shadow:   rgba(13, 145, 98, 0.5);
+  --btn-dis:      rgba(13, 145, 98, 0.3);
+  --field-focus:  rgba(13, 145, 98, 0.6);
+  --field-glow:   rgba(13, 145, 98, 0.15);
+  --field-fill:   rgba(13, 145, 98, 0.08);
+  --link-color:   #55dba8;
+  --grid-color:   rgba(232, 160, 32, 0.04);
+  --badge-color:  #e8a020;
+  --badge-bg:     rgba(232, 160, 32, 0.1);
+  --badge-border: rgba(232, 160, 32, 0.25);
+  --shield-color: #55dba8;
+  --shield-bg:    rgba(13, 145, 98, 0.12);
+  --shield-border:rgba(13, 145, 98, 0.25);
+  --progress-bg:  rgba(13, 145, 98, 0.15);
+  --topbar:       linear-gradient(90deg, #0d9162, #55dba8, #e8a020);
+}
+
+/* ── INFRA  (charcoal + crimson/silver) ──────────── */
+.theme-infra {
+  --bg-base:      #0d0d0f;
+  --bg-mid:       #131318;
+  --accent-1:     #b02030;
+  --accent-2:     #e03348;
+  --gold:         #c0c8d8;
+  --gold-light:   #e0e8f4;
+  --glow-1:       rgba(176, 32, 48, 0.4);
+  --glow-2:       rgba(192, 200, 216, 0.15);
+  --btn-from:     #b02030;
+  --btn-to:       #e03348;
+  --btn-shadow:   rgba(176, 32, 48, 0.5);
+  --btn-dis:      rgba(176, 32, 48, 0.3);
+  --field-focus:  rgba(176, 32, 48, 0.6);
+  --field-glow:   rgba(176, 32, 48, 0.15);
+  --field-fill:   rgba(176, 32, 48, 0.08);
+  --link-color:   #a8b8d0;
+  --grid-color:   rgba(192, 200, 216, 0.04);
+  --badge-color:  #c0c8d8;
+  --badge-bg:     rgba(192, 200, 216, 0.08);
+  --badge-border: rgba(192, 200, 216, 0.2);
+  --shield-color: #a8b8d0;
+  --shield-bg:    rgba(192, 200, 216, 0.08);
+  --shield-border:rgba(192, 200, 216, 0.2);
+  --progress-bg:  rgba(176, 32, 48, 0.15);
+  --topbar:       linear-gradient(90deg, #b02030, #e03348, #c0c8d8);
+}
+
+/* ── Reset ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; }
+
+/* ── Root ────────────────────────────────────────── */
+.otp-root {
+  font-family: var(--font-main);
+  background: var(--bg-base);
+  color: var(--white);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* ── Background ──────────────────────────────────── */
+.bg-scene {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+background: radial-gradient(ellipse at 20% 50%, #061a4a 0%, #000E2E 60%, #000510 100%);
+  overflow: hidden;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+}
+
+.orb-1 {
+  width: 580px; height: 580px;
+  background: radial-gradient(circle, var(--glow-1) 0%, transparent 70%);
+  top: -200px; left: -160px;
+  animation: drift1 20s ease-in-out infinite alternate;
+}
+
+.orb-2 {
+  width: 480px; height: 480px;
+  background: radial-gradient(circle, var(--glow-2) 0%, transparent 70%);
+  bottom: -160px; right: -120px;
+  animation: drift2 26s ease-in-out infinite alternate;
+}
+
+.orb-3 {
+  width: 340px; height: 340px;
+  background: radial-gradient(circle, var(--glow-1) 0%, transparent 70%);
+  top: 40%; right: 15%;
+  opacity: 0.28;
+  animation: drift3 17s ease-in-out infinite alternate;
+}
+
+@keyframes drift1 {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(65px, 85px) scale(1.1); }
+}
+@keyframes drift2 {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(-75px, -65px) scale(1.15); }
+}
+@keyframes drift3 {
+  from { transform: translate(0, 0); }
+  to   { transform: translate(50px, -60px); }
+}
+
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* ── Main ────────────────────────────────────────── */
+main {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+}
+
+/* ── OTP Card ────────────────────────────────────── */
+.otp-card {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  padding: 52px 44px 44px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 48px 120px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  animation: slideUp 0.85s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+/* top colour bar */
+.otp-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 24px 24px 0 0;
+  background: var(--topbar);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Back button ─────────────────────────────────── */
+.back-btn {
+  position: absolute;
+  top: 20px;
+  left: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: color 0.25s;
+}
+.back-btn:hover { color: var(--gold); }
+.back-btn svg { width: 14px; height: 14px; }
+
+/* ── Shield icon ─────────────────────────────────── */
+.shield-wrap {
+  width: 64px; height: 64px;
+  border-radius: 18px;
+  background: var(--shield-bg);
+  border: 1px solid var(--shield-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+}
+
+.shield-wrap svg {
+  width: 30px; height: 30px;
+  color: var(--shield-color);
+}
+
+/* ── Badge ───────────────────────────────────────── */
+.brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--badge-color);
+  background: var(--badge-bg);
+  border: 1px solid var(--badge-border);
+  padding: 6px 14px;
+  border-radius: 100px;
+  margin-bottom: 20px;
+}
+
+.dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--badge-color);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,  100% { opacity: 1; transform: scale(1); }
+  50%        { opacity: 0.35; transform: scale(0.65); }
+}
+
+/* ── Heading ─────────────────────────────────────── */
+.otp-heading {
+  font-family: var(--font-hero);
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: var(--white);
+  line-height: 1.1;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+
+.otp-heading span {
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Instruction ─────────────────────────────────── */
+.otp-instruction {
+  font-size: 0.84rem;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+
+.otp-instruction strong {
+  color: rgba(255, 255, 255, 0.78);
+  font-weight: 600;
+}
+
+/* ── Progress bar ────────────────────────────────── */
+.progress-track {
+  height: 3px;
+  background: var(--progress-bg);
+  border-radius: 100px;
+  margin-bottom: 6px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--btn-from), var(--btn-to));
+  border-radius: 100px;
+  transition: width 0.3s ease;
+}
+
+.progress-label {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.3);
+  letter-spacing: 0.08em;
+  margin-bottom: 22px;
+  text-align: right;
+}
+
+/* ── OTP inputs ──────────────────────────────────── */
+.otp-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.otp-field {
+  width: 52px;
+  height: 62px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  font-family: var(--font-hero);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--white);
+  text-align: center;
+  outline: none;
+  transition: all 0.25s ease;
+  caret-color: var(--accent-2);
+}
+
+.otp-field.filled {
+  border-color: var(--field-focus);
+  background: var(--field-fill);
+}
+
+.otp-field:focus {
+  border-color: var(--field-focus);
+  background: var(--field-glow);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.04), 0 4px 20px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px);
+}
+
+/* ── Error / Success messages ────────────────────── */
+.otp-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #fca5a5;
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.28);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+}
+
+.otp-error svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+.otp-success {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #86efac;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+}
+
+.otp-success svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+/* ── Verify button ───────────────────────────────── */
+.verify-btn {
+  width: 100%;
+  padding: 15px 24px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--btn-from), var(--btn-to));
+  color: var(--white);
+  font-family: var(--font-main);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 8px 28px var(--btn-shadow);
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.verify-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.verify-btn:not(:disabled):hover::before { opacity: 1; }
+
+.verify-btn:not(:disabled):hover {
+  box-shadow: 0 14px 40px var(--btn-shadow);
+  transform: translateY(-2px);
+}
+
+.verify-btn:not(:disabled):active { transform: translateY(0); }
+
+.verify-btn:disabled {
+  background: linear-gradient(135deg, var(--btn-dis), var(--btn-dis));
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.verify-btn svg {
+  width: 17px; height: 17px;
+  transition: transform 0.3s;
+}
+
+.verify-btn:not(:disabled):hover svg { transform: translateX(4px); }
+
+/* ── Loader ──────────────────────────────────────── */
+.btn-loader {
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.28);
+  border-top-color: var(--white);
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Resend row ──────────────────────────────────── */
+.resend-row {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-bottom: 24px;
+}
+
+.resend-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--link-color);
+  font-family: var(--font-main);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.resend-btn:hover { color: var(--gold); }
+
+.resend-timer {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.8rem;
+}
+
+.resend-timer strong {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* ── Footer ──────────────────────────────────────── */
+/* .otp-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.18);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 20px;
+}
+
+.footer-dot { color: rgba(255, 255, 255, 0.12); } */
+
+/* ── Responsive ──────────────────────────────────── */
+@media (max-width: 520px) {
+  .otp-card { padding: 48px 24px 36px; }
+  .otp-field { width: 44px; height: 54px; font-size: 1.3rem; border-radius: 10px; }
+  .otp-wrapper { gap: 8px; }
+}
+
+@media (max-width: 380px) {
+  .otp-field { width: 38px; height: 48px; font-size: 1.15rem; }
+  .otp-wrapper { gap: 6px; }
+}

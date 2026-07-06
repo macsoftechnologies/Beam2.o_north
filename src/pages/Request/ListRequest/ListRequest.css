@@ -1,0 +1,416 @@
+/* ListRequest.css */
+
+.filters-card-wrapper {
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+/* HRA Icons styling */
+.hra-icons-group {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  align-items: center;
+  min-width: max-content;
+}
+
+/* Sticky right columns for ListRequest table */
+.sticky-col-status {
+  position: sticky !important;
+  right: 180px !important;
+  background-color: var(--bg-card, #111827) !important;
+  z-index: 10;
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: -4px 0 8px -4px rgba(0, 0, 0, 0.2);
+}
+
+.sticky-col-operations {
+  position: sticky !important;
+  right: 0 !important;
+  background-color: var(--bg-card, #111827) !important;
+  z-index: 10;
+}
+
+/* Ensure headers stay on top of body cells when scrolling vertically */
+th.sticky-col-status,
+th.sticky-col-operations {
+  background-color: var(--bg-dark, #0f172a) !important;
+  z-index: 20 !important; /* th needs higher z-index than td */
+}
+
+/* Handle row hover background sync */
+.beam-tr:hover .sticky-col-status,
+.beam-tr:hover .sticky-col-operations {
+  background-color: var(--bg-card-hover, #1f2937) !important;
+}
+
+.hra-icon-thumb {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 2px;
+  transition: transform 0.2s ease;
+}
+
+.hra-icon-thumb:hover {
+  transform: scale(1.15);
+}
+
+/* Status Chips Badges */
+.status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.status-badge:hover {
+  filter: brightness(1.15);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+/* Specific status colors using dark-themed HSL tokens */
+.status-badge--hold {
+  background: hsla(38, 92%, 50%, 0.15);
+  color: hsl(38, 92%, 50%);
+  border: 1px solid hsla(38, 92%, 50%, 0.3);
+}
+
+.status-badge--saved {
+  background: hsla(210, 100%, 50%, 0.15);
+  color: hsl(210, 100%, 50%);
+  border: 1px solid hsla(210, 100%, 50%, 0.3);
+}
+
+.status-badge--opened {
+  background: hsla(142, 70%, 45%, 0.15);
+  color: hsl(142, 70%, 45%);
+  border: 1px solid hsla(142, 70%, 45%, 0.3);
+}
+
+.status-badge--pre-approved {
+  background: hsla(271, 70%, 50%, 0.15);
+  color: hsl(271, 70%, 50%);
+  border: 1px solid hsla(271, 70%, 50%, 0.3);
+}
+
+.status-badge--approved {
+  background: hsla(160, 84%, 39%, 0.15);
+  color: hsl(160, 84%, 39%);
+  border: 1px solid hsla(160, 84%, 39%, 0.3);
+}
+
+.status-badge--closed {
+  background: hsla(0, 0%, 50%, 0.15);
+  color: hsl(0, 0%, 80%);
+  border: 1px solid hsla(0, 0%, 50%, 0.3);
+}
+
+.status-badge--rejected {
+  background: hsla(0, 84%, 60%, 0.15);
+  color: hsl(0, 84%, 60%);
+  border: 1px solid hsla(0, 84%, 60%, 0.3);
+}
+
+.status-badge--cancelled {
+  background: hsla(0, 0%, 30%, 0.15);
+  color: hsl(0, 0%, 60%);
+  border: 1px solid hsla(0, 0%, 30%, 0.3);
+}
+
+.status-badge--draft {
+  background: hsla(200, 30%, 50%, 0.15);
+  color: hsl(200, 30%, 65%);
+  border: 1px solid hsla(200, 30%, 50%, 0.3);
+}
+
+/* Operations actions list */
+.list-operations-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.op-action-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  font-size: 14px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.op-action-btn--edit {
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.op-action-btn--edit:hover {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.op-action-btn--view {
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.op-action-btn--view:hover {
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.op-action-btn--copy {
+  color: #a855f7;
+  border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+.op-action-btn--copy:hover {
+  background: rgba(168, 85, 247, 0.1);
+}
+
+.op-action-btn--delete {
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.op-action-btn--delete:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.op-action-btn--history {
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.op-action-btn--history:hover {
+  background: rgba(245, 158, 11, 0.1);
+}
+
+/* Bulk Toolbar floating block */
+.bulk-actions-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid #3b82f6;
+  backdrop-filter: blur(12px);
+  padding: 16px 24px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
+}
+
+.bat-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  font-size: 14px;
+}
+
+.bat-badge {
+  background: #3b82f6;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.bat-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bat-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.bat-btn--approve {
+  background: hsla(271, 70%, 50%, 0.2);
+  color: #a855f7;
+  border-color: hsla(271, 70%, 50%, 0.4);
+}
+
+.bat-btn--approve:hover {
+  background: hsla(271, 70%, 50%, 0.35);
+}
+
+.bat-btn--approve-final {
+  background: hsla(160, 84%, 39%, 0.2);
+  color: #10b981;
+  border-color: hsla(160, 84%, 39%, 0.4);
+}
+
+.bat-btn--approve-final:hover {
+  background: hsla(160, 84%, 39%, 0.35);
+}
+
+.bat-btn--reject {
+  background: hsla(0, 84%, 60%, 0.2);
+  color: #ef4444;
+  border-color: hsla(0, 84%, 60%, 0.4);
+}
+
+.bat-btn--reject:hover {
+  background: hsla(0, 84%, 60%, 0.35);
+}
+
+.bat-btn--edit {
+  background: hsla(210, 100%, 50%, 0.2);
+  color: #3b82f6;
+  border-color: hsla(210, 100%, 50%, 0.4);
+}
+
+.bat-btn--edit:hover {
+  background: hsla(210, 100%, 50%, 0.35);
+}
+
+.bat-btn--delete {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.bat-btn--delete:hover {
+  background: rgba(239, 68, 68, 0.35);
+}
+
+.bat-btn--cancel {
+  background: transparent;
+  color: #9ca3af;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.bat-btn--cancel:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+/* Bulk operations edit dropdown menu */
+.bulk-edit-dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.bulk-edit-dropdown-container:hover .bulk-edit-dropdown-menu {
+  display: block;
+}
+
+.bulk-edit-dropdown-menu {
+  display: none;
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 50;
+  min-width: 160px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.bulk-edit-dropdown-menu button {
+  background: transparent;
+  border: none;
+  color: #d1d5db;
+  padding: 10px 16px;
+  width: 100%;
+  text-align: left;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.bulk-edit-dropdown-menu button:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+/* Logs modal timeline */
+.logs-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  padding-left: 20px;
+}
+
+.logs-timeline::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.timeline-item {
+  position: relative;
+  display: flex;
+  gap: 12px;
+}
+
+.timeline-marker {
+  position: absolute;
+  left: -20px;
+  top: 5px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #3b82f6;
+  border: 3px solid #0f172a;
+  z-index: 2;
+}
+
+.timeline-content {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 12px;
+  border-radius: 6px;
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

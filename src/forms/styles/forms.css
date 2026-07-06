@@ -1,0 +1,363 @@
+
+/* ─────────────────────────────────────────────
+   1. HARD RESET
+───────────────────────────────────────────── */
+
+.df-form,
+.df-form *,
+.df-form *::before,
+.df-form *::after {
+  box-sizing: border-box !important;
+}
+
+.df-form input,
+.df-form textarea,
+.df-form select,
+.df-form button,
+.df-form label {
+  font: inherit !important;
+}
+
+/* ─────────────────────────────────────────────
+   2. FORM WRAPPER
+───────────────────────────────────────────── */
+
+.df-form {
+  all: unset;
+
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 22px !important;
+
+  width: 100% !important;
+  max-width: 100% !important;
+
+  font-family: var(
+    --font-body,
+    "Plus Jakarta Sans",
+    Inter,
+    sans-serif
+  ) !important;
+
+  color: var(--text-main, #f9fafb) !important;
+}
+
+/* ─────────────────────────────────────────────
+   3. GRID
+───────────────────────────────────────────── */
+
+.df-form .df-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+  width: 100% !important;
+}
+
+.df-form .df-field--full {
+  grid-column: 1 / -1 !important;
+}
+
+/* ─────────────────────────────────────────────
+   4. FIELD
+───────────────────────────────────────────── */
+
+.df-form .df-field {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+
+/* ─────────────────────────────────────────────
+   5. LABEL
+───────────────────────────────────────────── */
+
+.df-form .df-label {
+  display: flex !important;
+  align-items: center !important;
+
+  font-size: 11px !important;
+  font-weight: 700 !important;
+
+  text-transform: uppercase !important;
+  letter-spacing: 0.6px !important;
+
+  color: var(--text-muted, #9ca3af) !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  line-height: 1.4 !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+.df-form .df-required {
+  color: #ef4444 !important;
+  margin-left: 3px !important;
+}
+
+/* ─────────────────────────────────────────────
+   6. INPUT
+───────────────────────────────────────────── */
+
+.df-form .df-input {
+  all: unset;
+
+  display: flex !important;
+  align-items: center !important;
+
+  width: 100% !important;
+  height: 46px !important;
+
+  padding: 0 14px !important;
+
+  font-size: 14px !important;
+  font-weight: 500 !important;
+
+  color: var(--text-main, #f9fafb) !important;
+
+  background: var(--bg-card-hover, #1f2937) !important;
+
+  border: 1.5px solid var(--border-color, #374151) !important;
+  border-radius: 12px !important;
+
+  transition: all 0.2s ease !important;
+}
+
+.df-form .df-input::placeholder {
+  color: var(--text-muted, #9ca3af) !important;
+  opacity: 0.7 !important;
+}
+
+.df-form .df-input:hover {
+  border-color: #4b5563 !important;
+}
+
+.df-form .df-input:focus {
+  border-color: var(--accent, #00e5a0) !important;
+
+  background: var(--bg-card, #111827) !important;
+
+  box-shadow: 0 0 0 3px rgba(0, 229, 160, 0.15) !important;
+}
+
+/* ─────────────────────────────────────────────
+   7. SELECT
+───────────────────────────────────────────── */
+
+.df-form .df-select {
+  all: unset;
+
+  display: flex !important;
+  align-items: center !important;
+
+  width: 100% !important;
+  height: 46px !important;
+
+  padding: 0 42px 0 14px !important;
+
+  font-size: 14px !important;
+  font-weight: 500 !important;
+
+  color: var(--text-main, #f9fafb) !important;
+
+  background-color: var(--bg-card-hover, #1f2937) !important;
+
+  border: 1.5px solid var(--border-color, #374151) !important;
+  border-radius: 12px !important;
+
+  cursor: pointer !important;
+
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") !important;
+
+  background-repeat: no-repeat !important;
+  background-position: right 14px center !important;
+
+  transition: all 0.2s ease !important;
+}
+
+.df-form .df-select:hover {
+  border-color: #4b5563 !important;
+}
+
+.df-form .df-select:focus {
+  border-color: var(--accent, #00e5a0) !important;
+
+  background-color: var(--bg-card, #111827) !important;
+
+  box-shadow: 0 0 0 3px rgba(0, 229, 160, 0.15) !important;
+}
+
+.df-form .df-select option {
+  background: #111827 !important;
+  color: #f9fafb !important;
+}
+
+/* ─────────────────────────────────────────────
+   8. TEXTAREA
+───────────────────────────────────────────── */
+
+.df-form .df-textarea {
+  all: unset;
+
+  width: 100% !important;
+  min-height: 110px !important;
+
+  padding: 14px !important;
+
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  line-height: 1.6 !important;
+
+  color: var(--text-main, #f9fafb) !important;
+
+  background: var(--bg-card-hover, #1f2937) !important;
+
+  border: 1.5px solid var(--border-color, #374151) !important;
+  border-radius: 12px !important;
+
+  resize: vertical !important;
+
+  transition: all 0.2s ease !important;
+}
+
+.df-form .df-textarea::placeholder {
+  color: var(--text-muted, #9ca3af) !important;
+  opacity: 0.7 !important;
+}
+
+.df-form .df-textarea:hover {
+  border-color: #4b5563 !important;
+}
+
+.df-form .df-textarea:focus {
+  border-color: var(--accent, #00e5a0) !important;
+
+  background: var(--bg-card, #111827) !important;
+
+  box-shadow: 0 0 0 3px rgba(0, 229, 160, 0.15) !important;
+}
+
+/* ─────────────────────────────────────────────
+   9. FOOTER
+───────────────────────────────────────────── */
+
+.df-form .df-footer {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+
+  gap: 12px !important;
+
+  padding-top: 18px !important;
+
+  border-top: 1px solid var(--border-color, #1f2937) !important;
+}
+
+/* ─────────────────────────────────────────────
+   10. BUTTONS
+───────────────────────────────────────────── */
+
+.df-form .df-btn {
+  all: unset;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  height: 42px !important;
+  min-width: 130px !important;
+
+  padding: 0 20px !important;
+
+  border-radius: 10px !important;
+
+  font-size: 14px !important;
+  font-weight: 700 !important;
+
+  cursor: pointer !important;
+
+  transition: all 0.2s ease !important;
+}
+
+/* Cancel Button */
+
+.df-form .df-btn--cancel {
+  background: var(--bg-card-hover, #1f2937) !important;
+
+  color: var(--text-muted, #9ca3af) !important;
+
+  border: 1.5px solid var(--border-color, #374151) !important;
+}
+
+.df-form .df-btn--cancel:hover {
+  background: #374151 !important;
+  color: #f9fafb !important;
+}
+
+/* Submit Button */
+
+.df-form .df-btn--submit {
+  background: var(--accent, #00e5a0) !important;
+
+  color: #0d1117 !important;
+
+  border: 1.5px solid var(--accent, #00e5a0) !important;
+
+  box-shadow: 0 0 18px rgba(0, 229, 160, 0.2) !important;
+}
+
+.df-form .df-btn--submit:hover {
+  background: var(--accent-hover, #00c488) !important;
+
+  border-color: var(--accent-hover, #00c488) !important;
+
+  transform: translateY(-1px) !important;
+
+  box-shadow: 0 0 24px rgba(0, 229, 160, 0.35) !important;
+}
+
+.df-form .df-btn:active {
+  transform: scale(0.97) !important;
+}
+
+/* ─────────────────────────────────────────────
+   11. AUTOFILL FIX
+───────────────────────────────────────────── */
+
+.df-form .df-input:-webkit-autofill,
+.df-form .df-input:-webkit-autofill:hover,
+.df-form .df-input:-webkit-autofill:focus,
+.df-form .df-textarea:-webkit-autofill,
+.df-form .df-select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #111827 inset !important;
+  -webkit-text-fill-color: #f9fafb !important;
+}
+
+/* ─────────────────────────────────────────────
+   12. RESPONSIVE
+───────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .df-form .df-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .df-form .df-field--full {
+    grid-column: auto !important;
+  }
+
+  .df-form .df-footer {
+    flex-direction: column-reverse !important;
+    width: 100% !important;
+  }
+
+  .df-form .df-btn {
+    width: 100% !important;
+  }
+}

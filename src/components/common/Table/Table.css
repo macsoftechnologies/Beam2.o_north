@@ -1,0 +1,194 @@
+/* ============================================================
+   Table.css  —  100% CSS-variable driven. No hardcoded colors.
+   Tokens come from themes.css :root / html[data-theme="..."]
+   ============================================================ */
+
+/* ── Wrapper ─────────────────────────────────────────────── */
+.beam-table-wrapper {
+  width: 100%;
+}
+
+/* ── Scroll Container ────────────────────────────────────── */
+.beam-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: var(--shadow-soft);
+}
+
+/* Custom scrollbar */
+.beam-table-scroll::-webkit-scrollbar        { height: 6px; }
+.beam-table-scroll::-webkit-scrollbar-track  { background: transparent; }
+.beam-table-scroll::-webkit-scrollbar-thumb  {
+  background: var(--border-light);
+  border-radius: 10px;
+}
+.beam-table-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--text-dark);
+}
+
+/* ── Table Base ──────────────────────────────────────────── */
+.beam-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+.beam-th {
+  padding: 14px 18px;
+  text-align: left;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  border-bottom: 1px solid var(--border-light);
+  background-color: var(--bg-dark);
+  white-space: nowrap;
+}
+
+.beam-th:first-child { border-radius: 12px 0 0 0; }
+.beam-th:last-child  { border-radius: 0 12px 0 0; }
+
+/* ── Body Rows ───────────────────────────────────────────── */
+.beam-tr {
+  border-bottom: 1px solid var(--border-color);
+  transition: background 0.18s ease;
+  animation: beamRowIn 0.25s ease forwards;
+}
+
+.beam-tr:last-child  { border-bottom: none; }
+
+.beam-tr:hover       { background-color: var(--bg-card-hover); }
+
+.beam-tr--clickable  { cursor: pointer; }
+
+@keyframes beamRowIn {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0);    }
+}
+
+/* ── Table Cells ─────────────────────────────────────────── */
+.beam-td {
+  padding: 14px 18px;
+  font-size: 0.88rem;
+  color: var(--text-main);
+  font-weight: 500;
+  vertical-align: middle;
+}
+
+/* ── Loader Cell ─────────────────────────────────────────── */
+.beam-td-loader {
+  padding: 50px 0;
+  text-align: center;
+}
+
+/* ── Empty State ─────────────────────────────────────────── */
+.beam-td-empty {
+  padding: 60px 0;
+  text-align: center;
+}
+
+.beam-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.beam-empty-icon {
+  font-size: 2.4rem;
+  color: var(--border-light);
+  line-height: 1;
+}
+
+.beam-empty-text {
+  margin: 0;
+  color: var(--text-dark);
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+
+/* ── Pagination ──────────────────────────────────────────── */
+.beam-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+/* Prev / Next arrow buttons */
+.beam-page-btn {
+  min-width: 36px;
+  height: 36px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  color: var(--text-main);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.beam-page-btn:hover:not(:disabled) {
+  background-color: var(--bg-card-hover);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.beam-page-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Number buttons */
+.beam-page-number {
+  min-width: 36px;
+  height: 36px;
+  background-color: var(--bg-card-hover);
+  border: 1px solid var(--border-light);
+  color: var(--text-muted);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.beam-page-number:hover {
+  background-color: var(--bg-card-hover);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+.beam-page-number--active {
+  background-color: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: #ffffff;
+  box-shadow: var(--shadow-glow);
+}
+
+.beam-page-number--active:hover {
+  background-color: var(--accent-hover);
+}
+
+/* Dots */
+.beam-page-dots {
+  color: var(--text-dark);
+  font-weight: 700;
+  font-size: 14px;
+  padding: 0 4px;
+  user-select: none;
+}

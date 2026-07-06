@@ -1,0 +1,46 @@
+:root {
+
+  /* Brand Colors */
+  --primary-color: #001965;
+  --primary-hover: #0033a0;
+
+  /* Secondary */
+  --secondary-color: #edf1ff;
+  --secondary-hover: #dce4ff;
+
+  /* Success */
+  --success-color: #198754;
+  --success-hover: #157347;
+
+  /* Danger */
+  --danger-color: #dc3545;
+  --danger-hover: #bb2d3b;
+
+  /* Text */
+  --text-white: #ffffff;
+  --text-dark: #1a1a1a;
+
+  /* Border */
+  --border-color: #dcdcdc;
+
+  /* Background */
+  --bg-light: #f5f7fb;
+  --bg-white: #ffffff;
+
+  /* Shadow */
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 14px rgba(0,0,0,0.12);
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  /* Transition */
+  --transition: all 0.3s ease;
+}
+
+/* SweetAlert2 container override to display on top of navbar, sidebar, and modals */
+.swal2-container {
+  z-index: 10000030 !important;
+}

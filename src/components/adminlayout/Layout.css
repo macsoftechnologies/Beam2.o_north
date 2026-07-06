@@ -1,0 +1,140 @@
+/* ════════════════════════════════════════════════════════════
+   RESET
+════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* KEY FIX: html, body AND #root all use CSS vars so theme switching works */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-body);
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--main-bg);
+  color: var(--text-main);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+a      { text-decoration: none; color: inherit; }
+button { font-family: var(--font-body); cursor: pointer; }
+ul, ol { list-style: none; margin: 0; padding: 0; }
+
+
+/* ════════════════════════════════════════════════════════════
+   LAYOUT STRUCTURE
+════════════════════════════════════════════════════════════ */
+.layout-root {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--main-bg);          /* KEY FIX: no gap/bleed between sidebar and body */
+  transition: background 0.3s ease;
+}
+
+.main-content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-left: var(--sidebar-w);
+  transition: padding-left 0.3s ease, background 0.3s ease;
+  background: var(--main-bg);          /* uses theme token */
+}
+
+.main-content-area.sidebar-collapsed {
+  padding-left: 0;
+}
+
+.page-content {
+  padding: 24px 28px;
+  flex: 1;
+  background: var(--main-bg);          /* uses theme token */
+  color: var(--text-main);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 999;
+  backdrop-filter: blur(2px);
+}
+
+/* Only show backdrop on mobile screens */
+@media (max-width: 768px) {
+  .sidebar-backdrop.visible { display: block; }
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   ALL THEMES — force every layout surface to follow theme token
+   Covers: default-dark, light, midnight-blue, steel-gray
+════════════════════════════════════════════════════════════ */
+html[data-theme] body,
+html[data-theme] #root,
+html[data-theme] .layout-root,
+html[data-theme] .main-content-area,
+html[data-theme] .page-content {
+  background-color: var(--main-bg) !important;
+  color: var(--text-main) !important;
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   LIGHT THEME — extra overrides for cards, tables, page text
+════════════════════════════════════════════════════════════ */
+html[data-theme="light"] .dept-page,
+html[data-theme="light"] .dept-table-card,
+html[data-theme="light"] .stat-card-prime,
+html[data-theme="light"] .dark-card,
+html[data-theme="light"] .white-card,
+html[data-theme="light"] .clean-card {
+  background: var(--bg-card) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-main) !important;
+}
+
+html[data-theme="light"] .dept-page-title    { color: var(--text-main)  !important; }
+html[data-theme="light"] .dept-page-subtitle { color: var(--text-muted) !important; }
+
+html[data-theme="light"] .custom-table thead th {
+  background: var(--bg-card-hover) !important;
+  color: var(--text-muted) !important;
+  border-bottom-color: var(--border-color) !important;
+}
+html[data-theme="light"] .custom-table tbody td {
+  color: var(--text-main) !important;
+  border-bottom-color: var(--border-color) !important;
+}
+html[data-theme="light"] .custom-table tbody tr:hover {
+  background: var(--bg-card-hover) !important;
+}
+
+/* Light sidebar explicit overrides */
+html[data-theme="light"] .sidebar              { background: var(--sb-bg) !important; border-right-color: var(--sb-border) !important; }
+html[data-theme="light"] .sidebar-inner        { background: var(--sb-bg) !important; }
+html[data-theme="light"] .brand-name           { color: var(--sb-text-full) !important; }
+html[data-theme="light"] .brand-sub            { color: var(--sb-accent) !important; }
+html[data-theme="light"] .nav-section-label    { color: var(--sb-text-dim) !important; }
+html[data-theme="light"] .sidebar .nav-link    { color: var(--sb-text-mid) !important; }
+html[data-theme="light"] .sidebar .nav-link:hover         { background: var(--sb-hover-bg) !important; color: var(--sb-text-full) !important; }
+html[data-theme="light"] .sidebar .nav-link.active        { background: var(--sb-active-bg) !important; color: var(--sb-accent) !important; }
+html[data-theme="light"] .nav-icon-box                    { background: var(--sb-surface) !important; }
+html[data-theme="light"] .nav-icon-box .ti                { color: var(--sb-text-mid) !important; }
+html[data-theme="light"] .nav-sub-link                    { color: var(--sb-text-dim) !important; }
+html[data-theme="light"] .nav-sub-link:hover              { color: var(--sb-text-full) !important; background: var(--sb-hover-bg) !important; }
+html[data-theme="light"] .nav-sub-link.sub-active         { color: var(--sb-accent) !important; background: var(--sb-active-bg) !important; }
+
+
+/* ════════════════════════════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .main-content-area { padding-left: 0 !important; }
+  .page-content { padding: 16px; }
+}
