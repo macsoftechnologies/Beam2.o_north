@@ -1,11 +1,11 @@
 export const BUILDINGS = [
   {
     id: "13",
-    name: "External Areas",
+    name: "External",
   },
   {
     id: "14",
-    name: "MA",
+    name: "MA Purification",
   },
   {
     id: "15",
