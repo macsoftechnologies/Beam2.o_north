@@ -26,6 +26,17 @@ export const searchRequests = async (payload) => {
   return res.data;
 };
 
+export const planRequests = async (payload) => {
+  const res = await api.post("/requests/plans", payload);
+  return res.data;
+};
+
+// Get a single permit request by ID (for edit mode)
+export const getRequestById = async (id) => {
+  const res = await api.get(`/requests/${id}`);
+  return res.data;
+};
+
 // Delete a permit request (soft-delete)
 export const deleteRequest = async (id) => {
   const res = await api.delete(`/requests/${id}`);

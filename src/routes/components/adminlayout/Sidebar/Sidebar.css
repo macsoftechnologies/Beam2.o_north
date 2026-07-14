@@ -1,0 +1,361 @@
+/* ============================================================
+   Sidebar.css  —  100% CSS-variable driven. No hardcoded colors.
+   Tokens come from themes.css :root / html[data-theme="..."]
+   ============================================================ */
+
+/* ── Sidebar Shell ───────────────────────────────────────── */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-w);
+  height: 100vh;
+  background: var(--sb-bg);
+  border-right: 1px solid var(--sb-border);
+  z-index: 10000001;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(0);
+  transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+  overflow: hidden;
+}
+
+.sidebar.sidebar-closed {
+  transform: translateX(-100%);
+}
+
+/* ── Inner Scroll Area ───────────────────────────────────── */
+.sidebar-inner {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px 10px 24px;
+  background: var(--sb-bg);
+  transition: background 0.3s ease;
+  scrollbar-width: thin;
+  scrollbar-color: var(--sb-border) transparent;
+}
+
+.sidebar-inner::-webkit-scrollbar {
+  width: 3px;
+}
+
+.sidebar-inner::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-inner::-webkit-scrollbar-thumb {
+  background: var(--sb-active-bg);
+  border-radius: 4px;
+}
+
+.sidebar-inner::-webkit-scrollbar-thumb:hover {
+  background: var(--sb-accent);
+}
+
+/* ── Brand ───────────────────────────────────────────────── */
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 6px 8px 20px;
+  border-bottom: 1px solid var(--sb-border);
+  margin-bottom: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.brand-mark {
+  width: 38px;
+  height: 38px;
+  background: var(--sb-accent);
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--sb-bg);
+  transition: background 0.3s ease;
+}
+
+.brand-mark svg {
+  opacity: 0.9;
+  fill: var(--sb-bg);
+}
+
+.brand-text-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-name {
+  font-size: 14px;
+  letter-spacing: 1.8px;
+  color: var(--sb-text-full);
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+.brand-sub {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--sb-accent);
+  opacity: 0.85;
+  margin-top: 4px;
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+}
+
+/* ── Section Labels ──────────────────────────────────────── */
+.nav-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--sb-text-dim);
+  padding: 18px 10px 6px;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+/* ── Nav Links (top-level) ───────────────────────────────── */
+.sidebar .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  margin-bottom: 2px;
+  color: var(--sb-text-mid);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  transition: background 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+  position: relative;
+}
+
+.sidebar .nav-link:hover {
+  background: var(--sb-hover-bg);
+  color: var(--sb-text-full);
+}
+
+.sidebar .nav-link.active {
+  background: var(--sb-active-bg);
+  color: var(--sb-accent);
+}
+
+/* Left accent bar on active */
+.sidebar .nav-link.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 55%;
+  background: var(--sb-accent);
+  border-radius: 0 3px 3px 0;
+  transition: background 0.3s ease;
+}
+
+.sidebar .nav-link.nav-link-open {
+  color: var(--sb-text-full);
+  background: var(--sb-hover-bg);
+}
+
+/* ── Nav Icon Box ────────────────────────────────────────── */
+.nav-icon-box {
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  background: var(--sb-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+}
+
+.nav-icon-box .ti {
+  font-size: 15px;
+  color: var(--sb-text-mid);
+  transition: color 0.15s ease;
+  line-height: 1;
+}
+
+.sidebar .nav-link:hover .nav-icon-box {
+  background: var(--sb-hover-bg);
+}
+
+.sidebar .nav-link:hover .nav-icon-box .ti {
+  color: var(--sb-text-full);
+}
+
+.sidebar .nav-link.active .nav-icon-box {
+  background: var(--sb-active-bg);
+}
+
+.sidebar .nav-link.active .nav-icon-box .ti {
+  color: var(--sb-accent);
+}
+
+/* ── Nav Label & Badge ───────────────────────────────────── */
+.nav-label {
+  flex: 1;
+}
+
+.nav-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: var(--sb-accent);
+  color: var(--sb-bg);
+  line-height: 16px;
+  flex-shrink: 0;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.nav-badge.gold {
+  background: #f5c542;
+  color: #1a1200;
+}
+
+/* ── Nav Chevron ─────────────────────────────────────────── */
+.nav-chevron {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.35;
+  flex-shrink: 0;
+  color: var(--sb-text-full);
+  transition: transform 0.22s ease, opacity 0.15s ease;
+}
+
+.nav-chevron .ti {
+  font-size: 13px;
+  color: currentColor;
+}
+
+.nav-chevron.open {
+  transform: rotate(180deg);
+  opacity: 0.65;
+}
+
+.nav-chevron.small .ti {
+  font-size: 11px;
+}
+
+/* ── Submenus (1st level) ────────────────────────────────── */
+.submenu {
+  list-style: none;
+  padding: 2px 0 4px;
+  margin: 0;
+}
+
+.submenu li {
+  position: relative;
+}
+
+.submenu li::before {
+  content: '';
+  position: absolute;
+  left: 23px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--sb-border);
+  pointer-events: none;
+}
+
+.nav-sub-link {
+  display: flex;
+  align-items: center;
+  padding: 6.5px 10px 6.5px 50px;
+  border-radius: 6px;
+  margin-bottom: 1px;
+  color: var(--sb-text-dim);
+  text-decoration: none;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  transition: color 0.14s ease, background 0.14s ease;
+  white-space: nowrap;
+}
+
+.nav-sub-link:hover {
+  color: var(--sb-text-full);
+  background: var(--sb-hover-bg);
+}
+
+.nav-sub-link.sub-active {
+  color: var(--sb-accent);
+  background: var(--sb-active-bg);
+}
+
+.nav-sub-link.sub-active .sub-dot {
+  background: var(--sb-accent);
+  opacity: 1;
+}
+
+.nav-sub-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.sub-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+  opacity: 0.35;
+  margin-right: 9px;
+  margin-left: -14px;
+  transition: background 0.15s ease;
+}
+
+.sub-dot.small {
+  width: 4px;
+  height: 4px;
+}
+
+/* ── Sub-submenus (2nd level) ────────────────────────────── */
+.sub-submenu {
+  list-style: none;
+  padding: 2px 0;
+  margin: 0;
+}
+
+.sub-submenu .nav-sub-link,
+.nav-sub-link.nested {
+  padding-left: 64px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--sb-text-dim);
+}
+
+.sub-submenu .nav-sub-link:hover,
+.nav-sub-link.nested:hover {
+  color: var(--sb-text-full);
+  background: var(--sb-hover-bg);
+}
+
+.nav-sub-link.nested.sub-active {
+  color: var(--sb-accent);
+  background: var(--sb-active-bg);
+}

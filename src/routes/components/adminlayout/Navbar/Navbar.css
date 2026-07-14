@@ -1,0 +1,525 @@
+/* ═══════════════════════════════════════════════════════════════
+   Navbar.css  —  100% CSS-variable driven. No hardcoded colors.
+   Tokens come from Layout.css :root / html[data-theme="..."]
+═══════════════════════════════════════════════════════════════ */
+
+
+/* ─────────────────────────────────────────
+   § 1.  NAVBAR SHELL
+───────────────────────────────────────── */
+.top-navbar {
+  background: var(--navbar-bg);
+  border-bottom: 1px solid var(--navbar-border);
+  padding: 10px 20px;
+  min-height: var(--navbar-h, 60px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 10000000;
+  gap: 12px;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+
+/* ─────────────────────────────────────────
+   § 2.  LEFT & RIGHT GROUPS
+───────────────────────────────────────── */
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+
+/* ─────────────────────────────────────────
+   § 3.  CENTER — STATUS + CLOCK
+───────────────────────────────────────── */
+.navbar-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.navbar-status-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* "System Online" pill */
+.status-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-safe-bg);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-safe);
+  white-space: nowrap;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-safe);
+  animation: pulse-dot 2s ease-in-out infinite;
+  flex-shrink: 0;
+  transition: background 0.3s ease;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.75); }
+}
+
+/* "Sync: Just now" */
+.sync-label {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+/* Live clock */
+.navbar-clock {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: 1.5px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  font-family: var(--font-brand, 'Courier New', monospace);
+  transition: color 0.3s ease;
+}
+
+
+/* ─────────────────────────────────────────
+   § 4.  HAMBURGER BUTTON
+───────────────────────────────────────── */
+.sidebar-toggle-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 9px;
+  background: var(--bg-card-hover);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.sidebar-toggle-btn:hover {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: var(--sb-bg);
+}
+
+.sidebar-toggle-btn .ti {
+  font-size: 18px;
+}
+
+
+/* ─────────────────────────────────────────
+   § 5.  NAVBAR TITLE BLOCK
+───────────────────────────────────────── */
+.navbar-title {
+  min-width: 0;
+}
+
+.navbar-title h4 {
+  font-family: var(--font-brand);
+  font-size: 15px;
+  color: var(--text-main);
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: 0.3px;
+  transition: color 0.3s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.navbar-title p {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin: 0;
+  margin-top: 1px;
+  transition: color 0.3s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* ─────────────────────────────────────────
+   § 6.  THEME SWITCHER DROPDOWN
+───────────────────────────────────────── */
+.theme-switcher {
+  position: relative;
+}
+
+.theme-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-card-hover);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: var(--text-main);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  font-family: var(--font-body);
+}
+
+.theme-btn:hover {
+  background: var(--bg-card);
+  border-color: var(--accent-primary);
+}
+
+.theme-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  overflow: hidden;
+  min-width: 130px;
+  box-shadow: var(--shadow-lg);
+  z-index: 999;
+  padding: 4px;
+  transition: background 0.3s ease;
+}
+
+.theme-option {
+  display: block;
+  width: 100%;
+  padding: 9px 14px;
+  background: none;
+  border: none;
+  border-radius: 7px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.theme-option:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-main);
+}
+
+.theme-option.selected {
+  background: var(--sb-active-bg);
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+
+
+/* ─────────────────────────────────────────
+   § 7.  BELL BUTTON
+───────────────────────────────────────── */
+.navbar-bell {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card-hover);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  color: var(--text-muted);
+}
+
+.navbar-bell:hover {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: var(--sb-bg);
+}
+
+.navbar-bell .ti {
+  font-size: 17px;
+}
+
+.bell-badge {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 16px;
+  height: 16px;
+  background: var(--color-risk);
+  border-radius: 50%;
+  border: 2px solid var(--navbar-bg);
+  font-size: 9px;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+
+/* ─────────────────────────────────────────
+   § 8.  AVATAR + USER INFO
+───────────────────────────────────────── */
+.avatar-wrap {
+  position: relative;
+}
+
+.navbar-user-btn {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: var(--bg-card-hover);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 5px 10px 5px 5px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.navbar-user-btn:hover {
+  background: var(--bg-card);
+  border-color: var(--accent-primary);
+}
+
+.navbar-avatar-img {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: var(--accent-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-brand);
+  font-size: 12px;
+  color: var(--sb-bg);
+  flex-shrink: 0;
+  font-weight: 700;
+  transition: background 0.3s ease;
+}
+
+.navbar-user-info {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.navbar-user-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+  line-height: 1.2;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+.navbar-user-role {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+
+/* ─────────────────────────────────────────
+   § 9.  PROFILE DROPDOWN
+───────────────────────────────────────── */
+.profile-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 260px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  z-index: 999;
+  overflow: hidden;
+  transition: background 0.3s ease;
+  animation: dropIn 0.15s ease;
+}
+
+@keyframes dropIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.pd-head {
+  background: var(--bg-card-hover);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border-color);
+  transition: background 0.3s ease;
+}
+
+.pd-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--accent-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-brand);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--sb-bg);
+  flex-shrink: 0;
+  transition: background 0.3s ease;
+}
+
+.pd-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+  line-height: 1.3;
+  transition: color 0.3s ease;
+}
+
+.pd-role {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  transition: color 0.3s ease;
+}
+
+.pd-section {
+  padding: 5px 0;
+}
+
+.pd-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text-dark);
+  padding: 8px 14px 3px;
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+}
+
+.pd-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  cursor: pointer;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font-body);
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.pd-item:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-main);
+}
+
+.pd-item .ti {
+  font-size: 16px;
+  color: var(--text-dark);
+  width: 18px;
+  flex-shrink: 0;
+  transition: color 0.12s ease;
+}
+
+.pd-item:hover .ti {
+  color: var(--accent-primary);
+}
+
+.pd-divider {
+  height: 1px;
+  background: var(--border-color);
+  margin: 2px 0;
+  transition: background 0.3s ease;
+}
+
+/* Status badges */
+.pd-badge {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+
+.b-ok     { background: var(--color-safe-bg);    color: var(--color-safe);    }
+.b-warn   { background: var(--color-caution-bg); color: var(--color-caution); }
+.b-danger { background: var(--color-risk-bg);    color: var(--color-risk);    }
+
+/* Logout */
+.pd-logout {
+  color: var(--color-risk) !important;
+}
+.pd-logout .ti {
+  color: var(--color-risk) !important;
+}
+.pd-logout:hover {
+  background: var(--color-risk-bg) !important;
+}
+
+
+/* ─────────────────────────────────────────
+   § 10. RESPONSIVE
+───────────────────────────────────────── */
+@media (max-width: 900px) {
+  .navbar-center { display: none; }
+}
+
+@media (max-width: 768px) {
+  .top-navbar { padding: 0 12px; gap: 8px; }
+  .navbar-left { gap: 8px; }
+  .navbar-title h4 { font-size: 14px; }
+  .navbar-title p { display: none; }
+  .theme-switcher { display: none; }
+  .navbar-user-info { display: none; }
+  .navbar-user-btn {
+    padding: 4px;
+    background: transparent;
+    border-color: transparent;
+  }
+}

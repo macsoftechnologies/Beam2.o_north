@@ -1,0 +1,243 @@
+/* ============================================================
+   Departments.css  —  Beam 2.0 Dark Control-System Theme
+   ============================================================ */
+
+/* ── Page Wrapper ────────────────────────────────────────── */
+/* .dept-page {
+  padding: 32px;
+  background-color: #080B12;
+  min-height: 100%;
+} */
+
+/* ── Page Header ─────────────────────────────────────────── */
+.dept-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.dept-page-header__left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dept-page-title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #F9FAFB;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+.dept-page-subtitle {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #9CA3AF;
+}
+
+.dept-page-header__right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Total count pill */
+.dept-count-badge {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #3B82F6;
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* Add button */
+.dept-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #3B82F6;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.2px;
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.dept-add-btn:hover {
+  background-color: #2563EB;
+  box-shadow: 0 0 16px rgba(59, 130, 246, 0.35);
+  transform: translateY(-1px);
+}
+
+.dept-add-btn:active {
+  transform: translateY(0);
+}
+
+.dept-add-btn__icon {
+  font-size: 1rem;
+  line-height: 1;
+  font-weight: 700;
+}
+
+/* ── Table Card ──────────────────────────────────────────── */
+.dept-table-card {
+  background-color: #111827;
+  border: 1px solid #1F2937;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* ── Status Badges ───────────────────────────────────────── */
+.dept-status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.dept-status-badge--active {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10B981;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.dept-status-badge--inactive {
+  background-color: rgba(107, 114, 128, 0.12);
+  color: #6B7280;
+  border: 1px solid rgba(107, 114, 128, 0.2);
+}
+
+/* ── Action Buttons ──────────────────────────────────────── */
+.dept-action-btns {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dept-action-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+  flex-shrink: 0;
+}
+
+/* View — blue tint */
+.dept-action-btn--view {
+  background-color: rgba(59, 130, 246, 0.12);
+  color: #3B82F6;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+.dept-action-btn--view:hover {
+  background-color: #3B82F6;
+  color: #ffffff;
+  transform: scale(1.08);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+}
+
+/* Edit — amber tint */
+.dept-action-btn--edit {
+  background-color: rgba(245, 158, 11, 0.12);
+  color: #F59E0B;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+.dept-action-btn--edit:hover {
+  background-color: #F59E0B;
+  color: #000000;
+  transform: scale(1.08);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+}
+
+/* Delete — red tint */
+.dept-action-btn--delete {
+  background-color: rgba(239, 68, 68, 0.12);
+  color: #EF4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+.dept-action-btn--delete:hover {
+  background-color: #EF4444;
+  color: #ffffff;
+  transform: scale(1.08);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+}
+
+/* ── View Detail Grid ────────────────────────────────────── */
+.dept-view-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.dept-view-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid #1F2937;
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.dept-view-item--full {
+  grid-column: 1 / -1;
+}
+
+.dept-view-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #4B5563;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.dept-view-value {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #F9FAFB;
+  line-height: 1.5;
+}
+
+/* Monospace code badge */
+.dept-view-value--code {
+  font-family: 'Courier New', monospace;
+  color: #3B82F6;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 1px;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .dept-page {
+    padding: 16px;
+  }
+  .dept-view-grid {
+    grid-template-columns: 1fr;
+  }
+  .dept-view-item--full {
+    grid-column: 1;
+  }
+}
