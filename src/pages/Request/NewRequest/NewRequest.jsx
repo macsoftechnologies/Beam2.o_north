@@ -352,7 +352,7 @@ function NewRequest() {
 
   const [formData, setFormData] = useState({
     Request_Date: new Date().toLocaleDateString("en-GB"),
-    Company_Name: "M3 Infrastructure",
+    Company_Name: "M3 North",
     Sub_Contractor_Id: "",
     new_sub_contractor: "",
     Foreman: "",
@@ -689,7 +689,7 @@ function NewRequest() {
       // Bind all fields into formData
       setFormData({
         Request_Date: editRequest.Request_Date || new Date().toLocaleDateString("en-GB"),
-        Company_Name: editRequest.Company_Name || "M3 Infrastructure",
+        Company_Name: editRequest.Company_Name || "M3 North",
         Sub_Contractor_Id: editRequest.Sub_Contractor_Id || "",
         new_sub_contractor: editRequest.new_sub_contractor || "",
         Foreman: editRequest.Foreman || "",
@@ -1487,8 +1487,8 @@ function NewRequest() {
       Foreman_Phone_Number: formData.Foreman_Phone_Number || "",
       rams_number: formData.rams_number || "",
       description_of_activity: formData.description_of_activity || "",
-      Site_Id: 5, // M3 Infrastructure
-      Company_Name: formData.Company_Name || "M3 Infrastructure",
+      Site_Id: 5, // M3 North
+      Company_Name: formData.Company_Name || "M3 North",
       Hot_work: formData.Hot_work === "1" ? 1 : 0,
       working_on_electrical_system: formData.working_on_electrical_system === "1" ? 1 : 0,
       working_hazardious_substen: formData.working_hazardious_substen === "1" ? 1 : 0,
@@ -2056,7 +2056,7 @@ function NewRequest() {
                 <input
                   type="text"
                   className="df-input df-readonly"
-                  value="M3 Infrastructure"
+                  value="M3 North"
                   readOnly
                 />
               </div>

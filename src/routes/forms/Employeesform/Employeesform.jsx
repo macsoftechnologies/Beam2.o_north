@@ -107,7 +107,7 @@ function Employeesform({ onClose, initialData, isEdit, onSubmit }) {
       // Automatically set company name if "Department" is selected but no Subcontractor is selected
       if (next.includes("Department") || next.includes("Department1")) {
         if (!companyName) {
-          setCompanyName("M3 Infrastructure");
+          setCompanyName("M3 North");
         }
       }
 

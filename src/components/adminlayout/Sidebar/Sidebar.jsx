@@ -211,7 +211,7 @@ function Sidebar({ sidebarOpen }) {
             </svg>
           </div>
           <div className="brand-text-wrap">
-            <span className="brand-name">M3 INFRASTRUCTURE</span>
+            <span className="brand-name">M3 North</span>
             <span className="brand-sub">MANAGEMENT</span>
           </div>
         </div>

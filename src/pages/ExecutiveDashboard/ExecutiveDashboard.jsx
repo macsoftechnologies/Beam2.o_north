@@ -3,31 +3,9 @@ import { showSuccess } from "../../components/common/Toast/Toast";
 import "./ExecutiveDashboard.css";
 import groundFloorPlan from "../../assets/images/ground_floor_plan.png";
 
-// PDF Imports for Buildings
-import APMTerminalPdf from "../../assets/drawings/m3Infrastructure/plans/APM-Terminal/APM-Terminal.pdf";
-import BADDPdf from "../../assets/drawings/m3Infrastructure/plans/BA-DD/BA.pdf";
-import ECJCP1Pdf from "../../assets/drawings/m3Infrastructure/plans/EC/EC-JCP1.pdf";
-import EHLakeEastPdf from "../../assets/drawings/m3Infrastructure/plans/EHLakeEast/EHLakeEast.pdf";
-import EHLakeWestPdf from "../../assets/drawings/m3Infrastructure/plans/EHLakeWest/EHLakeWest.pdf";
-import HovvejEastPdf from "../../assets/drawings/m3Infrastructure/plans/HovvejEast/HovvejEast.pdf";
-import HovvejWestPdf from "../../assets/drawings/m3Infrastructure/plans/HovvejWest/HovvejWest.pdf";
-import NNEastPdf from "../../assets/drawings/m3Infrastructure/plans/NN-East/NN-East.pdf";
-import PHusPdf from "../../assets/drawings/m3Infrastructure/plans/P-hus/P-hus.pdf";
-import RendsborgParkPdf from "../../assets/drawings/m3Infrastructure/plans/RendsborgPark/RendsborgPark.pdf";
 import { renderPdf } from "../../utils/pdfRenderer";
-
-const BUILDING_PDFS = {
-  "APM Terminal": APMTerminalPdf,
-  "EH Lake West": EHLakeWestPdf,
-  "EH Lake East": EHLakeEastPdf,
-  "Rendsborg Park": RendsborgParkPdf,
-  "P-hus": PHusPdf,
-  "NN East": NNEastPdf,
-  "Hovvej West": HovvejWestPdf,
-  "Hovvej East": HovvejEastPdf,
-  "EC-JCP1": ECJCP1Pdf,
-  "BA-DD": BADDPdf,
-};
+import { BUILDINGS } from "../../data/buildings";
+import { FLOOR_PDFS } from "../../data/pdfMapping";
 
 // Mock Data for Overview
 const OVERVIEW_METRICS = [
@@ -142,13 +120,48 @@ function ExecutiveDashboard() {
   const [selectedRoomType, setSelectedRoomType] = useState("All room types");
   const [isLeftOpen, setIsLeftOpen] = useState(true);
   const [isRightOpen, setIsRightOpen] = useState(true);
-  const [selectedBuilding, setSelectedBuilding] = useState("APM Terminal");
+  const [selectedBuilding, setSelectedBuilding] = useState("MA Purification");
   const [floorPdfImg, setFloorPdfImg] = useState(null);
   const [loadingPdf, setLoadingPdf] = useState(false);
 
   useEffect(() => {
-    if (activeTab !== "Overview" && activeTab !== "Ground Floor") {
-      const pdfFile = BUILDING_PDFS[selectedBuilding];
+    if (activeTab !== "Overview") {
+      const bObj = BUILDINGS.find(
+        (b) => b.name.toLowerCase().trim() === selectedBuilding.toLowerCase().trim()
+      );
+      const bId = bObj ? bObj.id : "";
+      const pdfsForBuilding = FLOOR_PDFS[bId];
+      let pdfFile = null;
+
+      if (pdfsForBuilding) {
+        const tabLower = activeTab.toLowerCase().trim();
+        let targetKeys = [];
+        if (tabLower.includes("ground")) {
+          targetKeys = ["ground", "0", "basement"];
+        } else if (tabLower.includes("1st") || tabLower.includes("1")) {
+          targetKeys = ["first", "1", "1st"];
+        } else if (tabLower.includes("2nd") || tabLower.includes("2")) {
+          targetKeys = ["second", "2", "2nd"];
+        } else if (tabLower.includes("3rd") || tabLower.includes("3")) {
+          targetKeys = ["third", "3", "3rd"];
+        } else if (tabLower.includes("4th") || tabLower.includes("4")) {
+          targetKeys = ["fourth", "4", "4th"];
+        } else if (tabLower.includes("roof")) {
+          targetKeys = ["roof", "r"];
+        }
+
+        const foundKey = Object.keys(pdfsForBuilding).find((key) => {
+          const keyLower = key.toLowerCase().trim();
+          return targetKeys.some((tk) => keyLower.includes(tk));
+        });
+
+        if (foundKey) {
+          pdfFile = pdfsForBuilding[foundKey];
+        } else {
+          pdfFile = Object.values(pdfsForBuilding)[0];
+        }
+      }
+
       if (pdfFile) {
         setLoadingPdf(true);
         renderPdf(pdfFile, 1000).then((canvas) => {
@@ -158,6 +171,8 @@ function ExecutiveDashboard() {
           console.error("Error rendering PDF:", err);
           setLoadingPdf(false);
         });
+      } else {
+        setFloorPdfImg(null);
       }
     } else {
       setFloorPdfImg(null);
@@ -264,16 +279,11 @@ function ExecutiveDashboard() {
               value={selectedBuilding}
               onChange={(e) => setSelectedBuilding(e.target.value)}
             >
-              <option value="APM Terminal">APM Terminal</option>
-              <option value="EH Lake West">EH Lake West</option>
-              <option value="EH Lake East">EH Lake East</option>
-              <option value="Rendsborg Park">Rendsborg Park</option>
-              <option value="P-hus">P-hus</option>
-              <option value="NN East">NN East</option>
-              <option value="Hovvej West">Hovvej West</option>
-              <option value="Hovvej East">Hovvej East</option>
-              <option value="EC-JCP1">EC-JCP1</option>
-              <option value="BA-DD">BA-DD</option>
+              {BUILDINGS.map((b) => (
+                <option key={b.id} value={b.name}>
+                  {b.name}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -653,7 +663,7 @@ function ExecutiveDashboard() {
                   ) : (
                     <>
                       <img
-                        src={activeTab === "Ground Floor" ? groundFloorPlan : (floorPdfImg || groundFloorPlan)}
+                        src={floorPdfImg || groundFloorPlan}
                         alt={`${activeTab} CAD drawing`}
                         className="static-cad-image"
                       />

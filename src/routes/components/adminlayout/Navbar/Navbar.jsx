@@ -153,7 +153,7 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
           <i className="ti ti-menu-2" />
         </button>
         <div className="navbar-title">
-          <h4>M3 Infrastructure Dashboard</h4>
+          <h4>M3 North Dashboard</h4>
           <p>Operational Overview &amp; System Analytics</p>
         </div>
       </div>
@@ -205,7 +205,7 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
                 <div className="pd-avatar">{getInitials(currentUser.name)}</div>
                 <div>
                   <div className="pd-name">{currentUser.name}</div>
-                  <div className="pd-role">{currentUser.role} · M3 Infrastructure</div>
+                  <div className="pd-role">{currentUser.role} · M3 North</div>
                 </div>
               </div>
 

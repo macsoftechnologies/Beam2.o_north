@@ -23,7 +23,8 @@
     "react-router-dom": "^6.30.3",
     "react-use-measure": "^2.1.7",
     "sweetalert2": "^11.26.24",
-    "use-image": "^1.1.4"
+    "use-image": "^1.1.4",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",

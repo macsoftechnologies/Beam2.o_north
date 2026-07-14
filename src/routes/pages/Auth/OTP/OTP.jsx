@@ -8,17 +8,17 @@ import "./OTP.css";
 const DIVISIONS = {
   north: {
     label: "Division 01",
-    name:  "North",
+    name: "North",
     theme: "north",
   },
   south: {
     label: "Division 02",
-    name:  "South",
+    name: "South",
     theme: "south",
   },
-  infrastructure: {
+  North: {
     label: "Division 03",
-    name:  "Infrastructure",
+    name: "North",
     theme: "infra",
   },
 };
@@ -29,15 +29,15 @@ const ACTIVE_DIVISION = "north"; // ← change to match Login.jsx
 const OTP_LENGTH = 6;
 
 export default function OTP() {
-  const [digits,   setDigits]   = useState(Array(OTP_LENGTH).fill(""));
-  const [loading,  setLoading]  = useState(false);
-  const [error,    setError]    = useState("");
-  const [resent,   setResent]   = useState(false);
-  const [timer,    setTimer]    = useState(30);
+  const [digits, setDigits] = useState(Array(OTP_LENGTH).fill(""));
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [resent, setResent] = useState(false);
+  const [timer, setTimer] = useState(30);
   const [canResend, setCanResend] = useState(false);
 
   const inputRefs = useRef([]);
-  const division  = DIVISIONS[ACTIVE_DIVISION];
+  const division = DIVISIONS[ACTIVE_DIVISION];
 
   // Countdown timer
   useEffect(() => {
@@ -73,7 +73,7 @@ export default function OTP() {
         inputRefs.current[idx - 1]?.focus();
       }
     }
-    if (e.key === "ArrowLeft" && idx > 0)           inputRefs.current[idx - 1]?.focus();
+    if (e.key === "ArrowLeft" && idx > 0) inputRefs.current[idx - 1]?.focus();
     if (e.key === "ArrowRight" && idx < OTP_LENGTH - 1) inputRefs.current[idx + 1]?.focus();
   };
 
@@ -97,14 +97,14 @@ export default function OTP() {
       inputRefs.current[digits.findIndex(d => !d)]?.focus();
       return;
     }
-    
+
     setLoading(true);
     setError("");
 
     try {
       const tempUserStr = localStorage.getItem("tempUser");
       const tempUser = tempUserStr ? JSON.parse(tempUserStr) : null;
-      
+
       if (!tempUser || tempUser.user_id === undefined || tempUser.user_id === null) {
         setLoading(false);
         showError("Session expired. Please log in again.");
@@ -122,7 +122,7 @@ export default function OTP() {
       if (response && (response.statusCode === 200 || response.status === true)) {
         // Save token and user details to localStorage
         localStorage.setItem("token", response.access_token);
-        
+
         const activeUser = {
           id: response.id,
           username: response.username,
@@ -131,7 +131,7 @@ export default function OTP() {
         };
         localStorage.setItem("user", JSON.stringify(activeUser));
         localStorage.setItem("UserType", response.userType);
-        
+
         // Clean up tempUser
         localStorage.removeItem("tempUser");
 

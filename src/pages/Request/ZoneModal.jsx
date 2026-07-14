@@ -4,7 +4,7 @@ import { pdfjs } from "react-pdf";
 import PdfPolygonViewer from "../../components/PdfPolygonViewer";
 
 // Using a direct CDN URL avoids Nginx MIME-type issues with .mjs workers
-// when the app is deployed under a sub-path (e.g. /m3infrastructure_frontend/).
+// when the app is deployed under a sub-path (e.g. /m3north_frontend/).
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 function ZoneModal({

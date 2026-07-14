@@ -26,7 +26,7 @@ export default function Login() {
 
     try {
       const response = await login({ username, password });
-      
+
       if (response && (response.statusCode === 200 || response.status === true)) {
         // Save tempUser details in localStorage
         const tempUser = {
@@ -37,9 +37,9 @@ export default function Login() {
           auth_token: response.auth_token
         };
         localStorage.setItem("tempUser", JSON.stringify(tempUser));
-        
+
         showSuccess("Login successful. OTP sent.");
-        
+
         setTimeout(() => {
           setLoading(false);
           navigateTo("/otp");
@@ -95,11 +95,11 @@ export default function Login() {
                 <span className="dot"></span>Division 01
               </div>
               <h2 className="panel-title">
-                M3 <span>Infrastructure</span>
+                M3 <span>North</span>
                 <br />Operations
               </h2>
               <p className="panel-desc">
-                Your secure gateway to the Infrastructure regional operations platform —
+                Your secure gateway to the North regional operations platform —
                 project management, field coordination, and real-time reporting.
               </p>
             </div>
@@ -113,7 +113,7 @@ export default function Login() {
               <br />
               <span>Back</span>
             </h1>
-            <p className="form-subtext">Sign in to your M3 Infrastructure account to continue</p>
+            <p className="form-subtext">Sign in to your M3 North account to continue</p>
 
             {error && (
               <div className="error-box show">

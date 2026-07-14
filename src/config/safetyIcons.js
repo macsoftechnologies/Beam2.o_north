@@ -2,7 +2,7 @@
  * Centralised safety icon imports.
  * Vite processes these as module imports — it bundles, hashes, and correctly
  * resolves the URLs even when the app is served under a sub-path like
- * /m3infrastructure_frontend/.
+ * /m3north_frontend/.
  *
  * Use these named exports instead of hardcoded "/src/assets/..." strings.
  */

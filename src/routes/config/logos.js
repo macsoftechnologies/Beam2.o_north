@@ -2,7 +2,7 @@
  * Centralised logo imports.
  * Vite processes these as module imports — it will bundle, hash, and correctly
  * resolve the URLs even when the app is served under a sub-path like
- * /m3infrastructure_frontend/.
+ * /m3north_frontend/.
  *
  * Use these named exports wherever a logo image is needed, instead of
  * hardcoded "/src/assets/..." strings which break in production.

@@ -378,8 +378,68 @@ export const ZONE_MAPPING = {
       name: "MU90.0A",
       className: "MU90_0A",
       pdf: MU900APdf,
+      "pdfWidth": 1280,
+      "pdfHeight": 2124,
+      "points": [
+        {
+          "id": "0c167430-d9fd-459c-808f-166dbcc95b4d",
+          "x": 702,
+          "y": 1580
+        },
+        {
+          "id": "30bf3ce9-6671-474f-95cf-14c05453523e",
+          "x": 1014,
+          "y": 1583
+        },
+        {
+          "id": "391f9489-aa4a-437d-8ff2-8ea227c90ad5",
+          "x": 1012,
+          "y": 1939
+        },
+        {
+          "id": "f0ddff1f-fcc9-426a-8719-b1f5cb0ba19c",
+          "x": 704,
+          "y": 1938
+        },
+        {
+          "id": "55987727-4410-4d9d-bbd8-01e22be3843b",
+          "x": 702,
+          "y": 1578
+        }
+      ],
       rooms: [
-        { name: "S.903", className: "MU90_GF-ZoneMU90_0A-1" }
+        {
+          name: "S.903",
+          "pdfWidth": 1264,
+          "pdfHeight": 1455,
+          "points": [
+            {
+              "id": "ada13c46-fe2f-4e36-b3ed-f19d6986d4cb",
+              "x": 40,
+              "y": 35.666664123535156
+            },
+            {
+              "id": "452f15af-303b-4825-aa5a-c92259602ff6",
+              "x": 1198,
+              "y": 39.666664123535156
+            },
+            {
+              "id": "966ec925-9c84-4030-ba8f-fb040d91a380",
+              "x": 1197,
+              "y": 1389
+            },
+            {
+              "id": "9388e401-d848-4f66-b870-80e78a76b3b1",
+              "x": 38,
+              "y": 1386
+            },
+            {
+              "id": "00c395d1-174d-42e5-8774-5fc3b741b1b3",
+              "x": 38,
+              "y": 36.666664123535156
+            }
+          ]
+        }
       ]
     },
     {
@@ -387,6 +447,35 @@ export const ZONE_MAPPING = {
       name: "MU90.0B",
       className: "MU90_0B",
       pdf: MU900BPdf,
+      "pdfWidth": 1280,
+      "pdfHeight": 2124,
+      "points": [
+        {
+          "id": "6520a842-2dee-4bf9-8ec3-d5e357f781ed",
+          "x": 746,
+          "y": 1335
+        },
+        {
+          "id": "2d032720-caea-465a-9e5d-4a373e4076a3",
+          "x": 1013,
+          "y": 1331
+        },
+        {
+          "id": "ba0bca30-074c-4772-84c8-e312d25a575d",
+          "x": 1014,
+          "y": 1581
+        },
+        {
+          "id": "33656d7a-6f3a-4d96-9fcb-481e7d72d496",
+          "x": 748,
+          "y": 1579
+        },
+        {
+          "id": "1d8730de-b5b8-43e0-aaeb-180281972c0b",
+          "x": 746,
+          "y": 1337
+        }
+      ],
       rooms: [
         { name: "S.917", className: "MU90_GF-ZoneMU90_0B-1" },
         { name: "TR92", className: "MU90_GF-ZoneMU90_0B-2" },
@@ -398,6 +487,35 @@ export const ZONE_MAPPING = {
       name: "MU90.0C",
       className: "MU90_0C",
       pdf: MU900CPdf,
+      "pdfWidth": 1280,
+      "pdfHeight": 2124,
+      "points": [
+        {
+          "id": "6cd4c9c8-2b5d-4e13-828c-c970bb7ba528",
+          "x": 746,
+          "y": 649.6666870117188
+        },
+        {
+          "id": "d3e97fc3-694a-4a85-b0b6-7df451031513",
+          "x": 1010,
+          "y": 650.6666870117188
+        },
+        {
+          "id": "45de30b4-df9a-4e5a-b2fe-03f806a1d4b3",
+          "x": 1010,
+          "y": 1326.6666870117188
+        },
+        {
+          "id": "c2fa8e3c-a4e4-43f4-aa72-5cf3b1ff4398",
+          "x": 746,
+          "y": 1330.6666870117188
+        },
+        {
+          "id": "58ec4d2b-f6f5-4d43-b87f-6204bb262436",
+          "x": 748,
+          "y": 649.6666870117188
+        }
+      ],
       rooms: [
         { name: "S.937", className: "MU90_GF-ZoneMU90_0C-1" },
         { name: "S.929", className: "MU90_GF-ZoneMU90_0C-2" },
@@ -409,6 +527,45 @@ export const ZONE_MAPPING = {
       name: "MU90.0D",
       className: "MU90_0D",
       pdf: MU900DPdf,
+      "pdfWidth": 1280,
+      "pdfHeight": 2124,
+      "points": [
+        {
+          "id": "1052364a-870e-41cc-b9ce-d2ea74e5088d",
+          "x": 195,
+          "y": 187.6666717529297
+        },
+        {
+          "id": "ccea6565-ead7-4230-8f37-a1c0f29d1612",
+          "x": 1012,
+          "y": 188.6666717529297
+        },
+        {
+          "id": "81b3f2a0-a8eb-4a8c-acdb-e10c5141ff13",
+          "x": 1010,
+          "y": 648.6666870117188
+        },
+        {
+          "id": "e1d61849-ee9d-40b7-96b8-599a0200ee37",
+          "x": 746,
+          "y": 650.6666870117188
+        },
+        {
+          "id": "fff2bedf-cdb9-46f9-ab1b-5fa25ffa829a",
+          "x": 744,
+          "y": 738.6666870117188
+        },
+        {
+          "id": "6d6dbe7a-8a98-48e4-872b-f483e6b4cb4e",
+          "x": 196,
+          "y": 733.6666870117188
+        },
+        {
+          "id": "286fee79-2d6c-478d-96ef-1e8929b4f19c",
+          "x": 196,
+          "y": 186.66666412353516
+        }
+      ],
       rooms: [
         { name: "S.953", className: "MU90_GF-ZoneMU90_0D-1" },
         { name: "S.950", className: "MU90_GF-ZoneMU90_0D-2" },
@@ -422,6 +579,35 @@ export const ZONE_MAPPING = {
       name: "MU90.0E",
       className: "MU90_0E",
       pdf: MU900EPdf,
+      "pdfWidth": 1280,
+      "pdfHeight": 2124,
+      "points": [
+        {
+          "id": "7d5296f5-5cec-492e-94d8-bf94574fa786",
+          "x": 195,
+          "y": 854
+        },
+        {
+          "id": "66a278ce-f9f5-4675-bb50-0326086452f8",
+          "x": 319,
+          "y": 855
+        },
+        {
+          "id": "62552420-8b2b-47f4-9bd7-b408a7079bb3",
+          "x": 319,
+          "y": 1758
+        },
+        {
+          "id": "c64bc768-d115-443c-b328-f7d47350ea36",
+          "x": 196,
+          "y": 1758
+        },
+        {
+          "id": "687f67bd-d115-4bc9-aea5-b9e741760b22",
+          "x": 195,
+          "y": 853
+        }
+      ],
       rooms: [
         { name: "S.928", className: "MU90_GF-ZoneMU90_0E-1" },
         { name: "S.916", className: "MU90_GF-ZoneMU90_0E-2" },
@@ -433,6 +619,35 @@ export const ZONE_MAPPING = {
       name: "MU90.0F1",
       className: "MU90_0F1",
       pdf: MU900F1Pdf,
+      "pdfWidth": 1280,
+      "pdfHeight": 2124,
+      "points": [
+        {
+          "id": "084c5a3b-7ccd-4b83-ad25-1f3b6741fb79",
+          "x": 196,
+          "y": 1759
+        },
+        {
+          "id": "d311262b-5615-4e25-84d5-f2eef078be69",
+          "x": 318,
+          "y": 1759
+        },
+        {
+          "id": "4d65668a-9fce-4877-a243-e322569801bc",
+          "x": 318,
+          "y": 1944
+        },
+        {
+          "id": "1cd73aac-d140-4c69-946d-57fa84350566",
+          "x": 196,
+          "y": 1939
+        },
+        {
+          "id": "e83b7023-c0ae-4c36-b39a-c8a67a85b7f9",
+          "x": 195,
+          "y": 1761
+        }
+      ],
       rooms: [
         { name: "S.904.2", className: "MU90_GF-ZoneMU90_0F1-1" },
         { name: "S.906.1", className: "MU90_GF-ZoneMU90_0F1-2" },
@@ -445,6 +660,35 @@ export const ZONE_MAPPING = {
       name: "MU90.0F2",
       className: "MU90_0F2",
       pdf: MU900F2Pdf,
+      "pdfWidth": 1280,
+      "pdfHeight": 2124,
+      "points": [
+        {
+          "id": "a25de49f-02e3-47f6-ad49-e14c6dcb774e",
+          "x": 377,
+          "y": 1638.666748046875
+        },
+        {
+          "id": "81476c2a-d76e-4bd0-9953-82ccf20b007f",
+          "x": 618,
+          "y": 1636.666748046875
+        },
+        {
+          "id": "7092a0e1-cbb8-4504-ac6e-82ba0e3749c0",
+          "x": 618,
+          "y": 1939.666748046875
+        },
+        {
+          "id": "3f5bdb14-9353-4192-8c14-d76c9af998a6",
+          "x": 376,
+          "y": 1939.666748046875
+        },
+        {
+          "id": "1eb5d489-b821-468a-929e-663d921629a5",
+          "x": 376,
+          "y": 1640.666748046875
+        }
+      ],
       rooms: [
         { name: "S.910", className: "MU90_GF-ZoneMU90_0F2-1" },
         { name: "S.912", className: "MU90_GF-ZoneMU90_0F2-2" },
@@ -463,6 +707,35 @@ export const ZONE_MAPPING = {
       name: "MU90.0I",
       className: "MU90_0I",
       pdf: MU900IPdf,
+      "pdfWidth": 1280,
+      "pdfHeight": 2124,
+      "points": [
+        {
+          "id": "66c25efd-d035-4011-b114-a05ce32d8aac",
+          "x": 377,
+          "y": 797.6666870117188
+        },
+        {
+          "id": "3c195682-f360-46d6-a186-8d3850e2a86e",
+          "x": 618,
+          "y": 795.6666870117188
+        },
+        {
+          "id": "b428d555-3a98-4f1e-900c-d30eca027b65",
+          "x": 619,
+          "y": 1635.666748046875
+        },
+        {
+          "id": "134683ec-ce8f-41b3-81be-07c153d0b78c",
+          "x": 378,
+          "y": 1634.666748046875
+        },
+        {
+          "id": "d8c901ea-19e5-4658-8b00-46255692d937",
+          "x": 377,
+          "y": 795.6666870117188
+        }
+      ],
       rooms: [
         { name: "S.934", className: "MU90_GF-ZoneMU90_0I-1" },
         { name: "S.924", className: "MU90_GF-ZoneMU90_0I-2" },
@@ -475,6 +748,75 @@ export const ZONE_MAPPING = {
       name: "MU90.0K",
       className: "MU90_0K",
       pdf: MU900KPdf,
+      "pdfWidth": 1280,
+      "pdfHeight": 2124,
+      "points": [
+        {
+          "id": "45783d98-a07b-4ae8-9ffb-d2942da3b340",
+          "x": 375,
+          "y": 1938.666748046875
+        },
+        {
+          "id": "17a4ea43-ab46-4cc0-b943-4db94320e8eb",
+          "x": 319,
+          "y": 1939.666748046875
+        },
+        {
+          "id": "22f18957-22ed-4024-8f53-fb152eac22b5",
+          "x": 319,
+          "y": 855.6666870117188
+        },
+        {
+          "id": "7999efed-6056-43b4-9867-cf71459c1567",
+          "x": 196,
+          "y": 852.6666870117188
+        },
+        {
+          "id": "79178d5f-7228-43bf-986e-ee530f1198c5",
+          "x": 195,
+          "y": 737.6666870117188
+        },
+        {
+          "id": "8eb31e10-cd4a-48af-b84f-306965ef53e8",
+          "x": 744,
+          "y": 741.6666870117188
+        },
+        {
+          "id": "c99fcc11-a91d-4e0f-987d-d26c6139eb62",
+          "x": 745,
+          "y": 1580.666748046875
+        },
+        {
+          "id": "077bdbc3-a2a3-4f7c-8e4a-be9a2d6bb5e5",
+          "x": 702,
+          "y": 1578.666748046875
+        },
+        {
+          "id": "095f05de-cdac-44ea-9909-07855d92dc8d",
+          "x": 702,
+          "y": 1937
+        },
+        {
+          "id": "101649fc-105a-4ab0-906e-0f2edd4ad397",
+          "x": 620,
+          "y": 1939
+        },
+        {
+          "id": "17e77916-b239-4085-9cad-ab37a4d0536e",
+          "x": 620,
+          "y": 794
+        },
+        {
+          "id": "49ca6392-b52f-44a9-8f0d-2d2dff585dd6",
+          "x": 376,
+          "y": 797
+        },
+        {
+          "id": "52936b8f-238c-4424-ac72-1011e4830e12",
+          "x": 374,
+          "y": 1940.666748046875
+        }
+      ],
       rooms: [
         { name: "TR93", className: "MU90_GF-ZoneMU90_0K-1" },
         { name: "S.904", className: "MU90_GF-ZoneMU90_0K-2" },
