@@ -165,17 +165,39 @@ function ExecutiveDashboard() {
       if (pdfFile) {
         setLoadingPdf(true);
         renderPdf(pdfFile, 1000).then((canvas) => {
-          setFloorPdfImg(canvas.toDataURL());
-          setLoadingPdf(false);
+          canvas.toBlob((blob) => {
+            if (!blob) {
+              setLoadingPdf(false);
+              return;
+            }
+            const url = URL.createObjectURL(blob);
+            setFloorPdfImg((prev) => {
+              if (prev && prev.startsWith("blob:")) {
+                URL.revokeObjectURL(prev);
+              }
+              return url;
+            });
+            setLoadingPdf(false);
+          }, "image/png");
         }).catch((err) => {
           console.error("Error rendering PDF:", err);
           setLoadingPdf(false);
         });
       } else {
-        setFloorPdfImg(null);
+        setFloorPdfImg((prev) => {
+          if (prev && prev.startsWith("blob:")) {
+            URL.revokeObjectURL(prev);
+          }
+          return null;
+        });
       }
     } else {
-      setFloorPdfImg(null);
+      setFloorPdfImg((prev) => {
+        if (prev && prev.startsWith("blob:")) {
+          URL.revokeObjectURL(prev);
+        }
+        return null;
+      });
     }
   }, [selectedBuilding, activeTab]);
 
@@ -188,6 +210,15 @@ function ExecutiveDashboard() {
         toggleBtn.click();
       }
     }
+
+    return () => {
+      setFloorPdfImg((prev) => {
+        if (prev && prev.startsWith("blob:")) {
+          URL.revokeObjectURL(prev);
+        }
+        return null;
+      });
+    };
   }, []);
 
   // Checkbox Filter States

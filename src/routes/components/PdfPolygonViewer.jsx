@@ -5,7 +5,6 @@ import {
     Image as KonvaImage,
     Line,
 } from "react-konva";
-import useImage from "use-image";
 import { renderPdf } from "../utils/pdfRenderer";
 
 export default function PdfPolygonViewer({
@@ -16,7 +15,7 @@ export default function PdfPolygonViewer({
     toggleRoom,
 }) {
 
-    const [imageUrl, setImageUrl] = useState(null);
+    const [pdfCanvas, setPdfCanvas] = useState(null);
     const [hoveredRoom, setHoveredRoom] = useState(null);
 
     const [stageSize, setStageSize] = useState({
@@ -28,8 +27,6 @@ export default function PdfPolygonViewer({
         width: 0,
         height: 0,
     });
-
-    const [image] = useImage(imageUrl);
 
     useEffect(() => {
 
@@ -51,7 +48,7 @@ export default function PdfPolygonViewer({
                 height: canvas.height,
             });
 
-            setImageUrl(canvas.toDataURL());
+            setPdfCanvas(canvas);
 
         }
 
@@ -81,10 +78,10 @@ export default function PdfPolygonViewer({
 
                 <Layer listening={false}>
 
-                    {image && (
+                    {pdfCanvas && (
 
                         <KonvaImage
-                            image={image}
+                            image={pdfCanvas}
                             width={stageSize.width}
                             height={stageSize.height}
                         />

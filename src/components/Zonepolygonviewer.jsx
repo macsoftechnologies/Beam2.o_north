@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Stage, Layer, Image as KonvaImage, Line, Text } from "react-konva";
-import useImage from "use-image";
 import { renderPdf } from "../utils/pdfRenderer"; // same util you already use
 
 export default function ZonePolygonViewer({
@@ -10,14 +9,12 @@ export default function ZonePolygonViewer({
     selectedZoneId,
     onZoneClick,
 }) {
-    const [imageUrl, setImageUrl] = useState(null);
+    const [pdfCanvas, setPdfCanvas] = useState(null);
     const [hoveredZoneId, setHoveredZoneId] = useState(null);
     const [stageSize, setStageSize] = useState({ width, height: 600 });
     const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
 
-    const [image] = useImage(imageUrl);
-
-    // Render PDF page to an off-screen canvas → data URL (reuses your existing util)
+    // Render PDF page to an off-screen canvas (reuses your existing util)
     useEffect(() => {
         let mounted = true;
 
@@ -27,7 +24,7 @@ export default function ZonePolygonViewer({
 
             setStageSize({ width: canvas.width, height: canvas.height });
             setCanvasSize({ width: canvas.width, height: canvas.height });
-            setImageUrl(canvas.toDataURL());
+            setPdfCanvas(canvas);
         }
 
         load();
@@ -40,9 +37,9 @@ export default function ZonePolygonViewer({
 
                 {/* Layer 1 – PDF background image (non-interactive) */}
                 <Layer listening={false}>
-                    {image && (
+                    {pdfCanvas && (
                         <KonvaImage
-                            image={image}
+                            image={pdfCanvas}
                             width={stageSize.width}
                             height={stageSize.height}
                         />
