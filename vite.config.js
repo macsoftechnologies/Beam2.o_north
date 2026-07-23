@@ -7,6 +7,9 @@ export default defineConfig({
   base: '/m3north_frontend/',
   plugins: [
     react(),
-    babel({ presets: [reactCompilerPreset()] })
+    babel({
+      presets: [reactCompilerPreset()],
+      exclude: [/node_modules/, /src\/data\//]
+    })
   ],
 })
