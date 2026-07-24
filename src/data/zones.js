@@ -477,9 +477,105 @@ export const ZONE_MAPPING = {
         }
       ],
       rooms: [
-        { name: "S.917", className: "MU90_GF-ZoneMU90_0B-1" },
-        { name: "TR92", className: "MU90_GF-ZoneMU90_0B-2" },
-        { name: "S.915", className: "MU90_GF-ZoneMU90_0B-3" }
+        {
+          "id": "624b7416-06e9-4868-87d5-2b3ba937cfbd",
+          "name": "S.917",
+          "pdfWidth": 1351,
+          "pdfHeight": 1196,
+          "points": [
+            {
+              "id": "a8edb871-b9fc-47b0-8f44-cae2f2d977ae",
+              "x": 184,
+              "y": 62
+            },
+            {
+              "id": "a871ff58-91a6-46fd-b2cc-a75669b289f1",
+              "x": 706,
+              "y": 60
+            },
+            {
+              "id": "df13d187-cfeb-45fd-a440-652efa271fee",
+              "x": 707,
+              "y": 583
+            },
+            {
+              "id": "f6e19bf7-26de-4ce5-8dad-1266821763b7",
+              "x": 185,
+              "y": 584
+            },
+            {
+              "id": "c16500f3-2bae-4d02-8e47-8bbc5b7aa90a",
+              "x": 185,
+              "y": 62
+            }
+          ]
+        },
+        {
+          "id": "9aca7da6-b996-4a9d-836f-b801f82a08e9",
+          "name": "TR92",
+          "pdfWidth": 1351,
+          "pdfHeight": 1196,
+          "points": [
+            {
+              "id": "0f87d4b8-cb96-44e8-96cf-7de4b600b49a",
+              "x": 727,
+              "y": 339
+            },
+            {
+              "id": "6b3819e6-2e83-4808-bb3c-a7c0fee2298e",
+              "x": 1224,
+              "y": 339
+            },
+            {
+              "id": "028de8d2-7888-455e-b223-193cf82b8895",
+              "x": 1226,
+              "y": 580
+            },
+            {
+              "id": "4828f587-73f9-416c-9836-e12a6ab54aa5",
+              "x": 728,
+              "y": 580
+            },
+            {
+              "id": "2c97e3b8-947c-40fe-a4ec-64502ec6ed67",
+              "x": 725,
+              "y": 338
+            }
+          ]
+        },
+        {
+          "id": "7e9d3cbc-2a3c-4e1f-98e1-33a7b6d73418",
+          "name": "S.915",
+          "pdfWidth": 1351,
+          "pdfHeight": 1196,
+          "points": [
+            {
+              "id": "fa7c0c77-f33a-43c8-83b3-7195d0d7078e",
+              "x": 709,
+              "y": 584
+            },
+            {
+              "id": "b8011199-0d68-44c5-8d2a-3758f6c409c7",
+              "x": 1225,
+              "y": 586
+            },
+            {
+              "id": "77e13489-0c00-4454-9065-9733a7d3278c",
+              "x": 1229,
+              "y": 1102
+            },
+            {
+              "id": "8269ed09-7881-421c-8ea4-f62f22c4e126",
+              "x": 706,
+              "y": 1101
+            },
+            {
+              "id": "6e9457fe-a200-4da6-b280-e98d1aac5652",
+              "x": 709,
+              "y": 584
+            }
+          ]
+        }
       ]
     },
     {
@@ -517,9 +613,105 @@ export const ZONE_MAPPING = {
         }
       ],
       rooms: [
-        { name: "S.937", className: "MU90_GF-ZoneMU90_0C-1" },
-        { name: "S.929", className: "MU90_GF-ZoneMU90_0C-2" },
-        { name: "S.921", className: "MU90_GF-ZoneMU90_0C-3" }
+        {
+          "id": "ff6d04bb-2f7f-4945-a46d-82288ff1774c",
+          "name": "S.937",
+          "pdfWidth": 1351,
+          "pdfHeight": 2720,
+          "points": [
+            {
+              "id": "f3f5daf3-c07d-478f-afa1-e61403e5f27a",
+              "x": 477,
+              "y": 428
+            },
+            {
+              "id": "0089cd7a-1b68-4699-8f23-b3a7a8720b2c",
+              "x": 918,
+              "y": 430
+            },
+            {
+              "id": "02d6b92d-1d67-4601-a406-05ca22c5059f",
+              "x": 915,
+              "y": 869
+            },
+            {
+              "id": "ae497044-9512-470a-9aa7-0441bd30b0e4",
+              "x": 479,
+              "y": 869
+            },
+            {
+              "id": "3717caf2-26ca-4604-84be-2f59139da00c",
+              "x": 477,
+              "y": 428
+            }
+          ]
+        },
+        {
+          "id": "c1016529-e9cf-429a-a8b9-4588896f3121",
+          "name": "S.929",
+          "pdfWidth": 1351,
+          "pdfHeight": 2720,
+          "points": [
+            {
+              "id": "6133f062-ac9f-41f5-b658-0314b6898156",
+              "x": 477,
+              "y": 1306
+            },
+            {
+              "id": "4774477b-3a1c-4c10-a7e5-4ed371b67f69",
+              "x": 916,
+              "y": 1305
+            },
+            {
+              "id": "a15375ac-4bfd-4340-976a-b5794a36cabc",
+              "x": 918,
+              "y": 1745
+            },
+            {
+              "id": "5cd9ec95-714c-4d1a-9489-c789d89f05d4",
+              "x": 478,
+              "y": 1744
+            },
+            {
+              "id": "c640420a-e31d-4b02-a33f-3704c8956c0a",
+              "x": 477,
+              "y": 1306
+            }
+          ]
+        },
+        {
+          "id": "d71244c0-9686-4a8e-88d0-c4949c8e54a1",
+          "name": "S.921",
+          "pdfWidth": 1351,
+          "pdfHeight": 2720,
+          "points": [
+            {
+              "id": "27273ab2-cf49-414f-979b-772e09872739",
+              "x": 479,
+              "y": 2184
+            },
+            {
+              "id": "8480d731-5430-4571-a26c-223fd63f3826",
+              "x": 919,
+              "y": 2182
+            },
+            {
+              "id": "62ef341b-c3cb-427f-96e1-8a1808a01152",
+              "x": 916,
+              "y": 2599
+            },
+            {
+              "id": "8b64269c-1ae0-42d2-9e11-ff9a17c2e2ab",
+              "x": 477,
+              "y": 2598
+            },
+            {
+              "id": "f88b0d69-4127-4300-b40f-21488ff09c19",
+              "x": 478,
+              "y": 2185
+            }
+          ]
+        }
       ]
     },
     {
@@ -567,11 +759,171 @@ export const ZONE_MAPPING = {
         }
       ],
       rooms: [
-        { name: "S.953", className: "MU90_GF-ZoneMU90_0D-1" },
-        { name: "S.950", className: "MU90_GF-ZoneMU90_0D-2" },
-        { name: "S.941", className: "MU90_GF-ZoneMU90_0D-3" },
-        { name: "S.945", className: "MU90_GF-ZoneMU90_0D-4" },
-        { name: "S.942", className: "MU90_GF-ZoneMU90_0D-5" }
+        {
+          "id": "f49dc290-b62a-4d67-a5a2-43defb6bf554",
+          "name": "S.953",
+          "pdfWidth": 1351,
+          "pdfHeight": 923,
+          "points": [
+            {
+              "id": "2d139cb8-359a-4729-8673-81e22ca9e882",
+              "x": 890,
+              "y": 41
+            },
+            {
+              "id": "2d947207-b474-4a90-9149-3de34f922cf7",
+              "x": 1305,
+              "y": 42
+            },
+            {
+              "id": "ee0795ec-2138-4376-b851-09ac1f697c8d",
+              "x": 1304,
+              "y": 311
+            },
+            {
+              "id": "5c0f67fa-ae8f-4933-aa25-e3c00756c7ce",
+              "x": 892,
+              "y": 309
+            },
+            {
+              "id": "a59d25f9-1875-4347-9ccf-5557d9010c56",
+              "x": 890,
+              "y": 41
+            }
+          ]
+        },
+        {
+          "id": "d6a2322b-2d49-4afd-bd5e-6b63f2558b69",
+          "name": "S.950",
+          "pdfWidth": 1351,
+          "pdfHeight": 923,
+          "points": [
+            {
+              "id": "2b5fd5ed-2813-48a1-81cd-be00f4c0717c",
+              "x": 39,
+              "y": 321
+            },
+            {
+              "id": "9e03f06e-0ce3-4d3d-bde8-e36bbdd72348",
+              "x": 227,
+              "y": 324
+            },
+            {
+              "id": "c7169224-880d-4e65-8be2-5685fea06936",
+              "x": 227,
+              "y": 506
+            },
+            {
+              "id": "723fe040-e18c-4a68-b73b-ed41c86345e7",
+              "x": 40,
+              "y": 507
+            },
+            {
+              "id": "d6f669cf-77e1-487d-b99c-f5f04252f371",
+              "x": 40,
+              "y": 319
+            }
+          ]
+        },
+        {
+          "id": "b4a2910e-9060-4c78-a335-436dcf3a9282",
+          "name": "S.941",
+          "pdfWidth": 1351,
+          "pdfHeight": 923,
+          "points": [
+            {
+              "id": "e2fde219-38b7-4570-b239-310ff10385ed",
+              "x": 413,
+              "y": 323
+            },
+            {
+              "id": "d3427f31-64dc-455f-87e0-36b39d43e0de",
+              "x": 654,
+              "y": 324
+            },
+            {
+              "id": "52fca0a1-cbc3-4372-8b41-acd320f7c600",
+              "x": 653,
+              "y": 605
+            },
+            {
+              "id": "d0e09cf4-e6f8-4bb8-9780-f6e30bff00d1",
+              "x": 414,
+              "y": 604
+            },
+            {
+              "id": "0a0ed8f3-141c-4f2c-8d24-4d08aa04d084",
+              "x": 412,
+              "y": 321
+            }
+          ]
+        },
+        {
+          "id": "b46adb50-62eb-4641-8096-70f90ce405e8",
+          "name": "S.945",
+          "pdfWidth": 1351,
+          "pdfHeight": 923,
+          "points": [
+            {
+              "id": "771ef2dc-6010-4592-801f-998c7563c3ec",
+              "x": 930,
+              "y": 416
+            },
+            {
+              "id": "c00457c6-35c1-4b6d-92e2-cacea717c610",
+              "x": 1208,
+              "y": 415
+            },
+            {
+              "id": "a8bfb6e4-e0ba-468d-b1b4-6516a05f9dc3",
+              "x": 1209,
+              "y": 609
+            },
+            {
+              "id": "66ed2434-fc5b-4138-a02e-7e6b75c7ab4a",
+              "x": 927,
+              "y": 606
+            },
+            {
+              "id": "a2835f3b-1204-401d-ab47-a786424fea25",
+              "x": 929,
+              "y": 415
+            }
+          ]
+        },
+        {
+          "id": "33043bdd-0628-482c-89c9-dd8f77b6b808",
+          "name": "S.942",
+          "pdfWidth": 1351,
+          "pdfHeight": 923,
+          "points": [
+            {
+              "id": "1a9c589d-7bf3-4186-852b-c5c42b450fd3",
+              "x": 40,
+              "y": 607
+            },
+            {
+              "id": "200e4bfc-1cfe-4d22-8f61-a44485f64d6e",
+              "x": 230,
+              "y": 606
+            },
+            {
+              "id": "747b3d4a-1d1c-4eb9-9a47-1e8d835c4971",
+              "x": 229,
+              "y": 793
+            },
+            {
+              "id": "483618aa-f9b5-4dc2-b03d-1a65681c61ea",
+              "x": 38,
+              "y": 791
+            },
+            {
+              "id": "a2bc3c27-8f65-4738-8ac1-179adfa8b056",
+              "x": 40,
+              "y": 606
+            }
+          ]
+        }
       ]
     },
     {
@@ -609,9 +961,105 @@ export const ZONE_MAPPING = {
         }
       ],
       rooms: [
-        { name: "S.928", className: "MU90_GF-ZoneMU90_0E-1" },
-        { name: "S.916", className: "MU90_GF-ZoneMU90_0E-2" },
-        { name: "S.908", className: "MU90_GF-ZoneMU90_0E-3" }
+        {
+          "id": "6f8ce6ec-1fdf-441b-9210-0817dfb67a5b",
+          "name": "S.928",
+          "pdfWidth": 1366,
+          "pdfHeight": 6480,
+          "points": [
+            {
+              "id": "166662fa-88d8-4e5e-a7df-b51c0d0c0f29",
+              "x": 328,
+              "y": 944
+            },
+            {
+              "id": "c4f8b0fa-2f80-488b-9031-56bfd85f216d",
+              "x": 1138,
+              "y": 946
+            },
+            {
+              "id": "d98b2e45-182f-48d8-885e-bac9611e5296",
+              "x": 1138,
+              "y": 1361
+            },
+            {
+              "id": "e4a584fa-8f95-4eb6-8db4-e65443542d71",
+              "x": 328,
+              "y": 1361
+            },
+            {
+              "id": "295180d8-ed5e-4900-98be-5e9c5c0fe30c",
+              "x": 328,
+              "y": 942
+            }
+          ]
+        },
+        {
+          "id": "ddd2a6fc-b600-4e5d-8073-ec31b15cebfc",
+          "name": "S.916",
+          "pdfWidth": 1366,
+          "pdfHeight": 6480,
+          "points": [
+            {
+              "id": "9417b931-6b93-4c5d-b1ee-3ef809f18f9e",
+              "x": 328,
+              "y": 3437
+            },
+            {
+              "id": "b406ad46-338a-4d97-ab47-2db29382d55a",
+              "x": 1138,
+              "y": 3438
+            },
+            {
+              "id": "ad5c8a57-c3d9-41d6-a263-0ceb4a24797c",
+              "x": 1137,
+              "y": 3853
+            },
+            {
+              "id": "044c7443-eaa6-4bc5-8fb3-eb58dbcca4fa",
+              "x": 328,
+              "y": 3854
+            },
+            {
+              "id": "3e6c0198-72b4-4b03-9185-ee362a9fb9a3",
+              "x": 329,
+              "y": 3435
+            }
+          ]
+        },
+        {
+          "id": "e5dc23a1-dfb6-4342-aaee-a339526fc429",
+          "name": "S.908",
+          "pdfWidth": 1366,
+          "pdfHeight": 6480,
+          "points": [
+            {
+              "id": "3b4a7557-f4de-4a6c-9e83-080e90197c2c",
+              "x": 329,
+              "y": 5102
+            },
+            {
+              "id": "e1a30086-e3d3-4ee5-8f7a-00e05ef722f7",
+              "x": 1143,
+              "y": 5100
+            },
+            {
+              "id": "5a03f02b-a52e-45ef-b60a-24e234bf2eb9",
+              "x": 1143,
+              "y": 5515
+            },
+            {
+              "id": "4a1a6372-e0fe-4434-b4df-0ea048a29f69",
+              "x": 328,
+              "y": 5514
+            },
+            {
+              "id": "fed89363-ed12-4200-a45f-ae06c7567760",
+              "x": 328,
+              "y": 5102
+            }
+          ]
+        }
       ]
     },
     {
@@ -649,10 +1097,138 @@ export const ZONE_MAPPING = {
         }
       ],
       rooms: [
-        { name: "S.904.2", className: "MU90_GF-ZoneMU90_0F1-1" },
-        { name: "S.906.1", className: "MU90_GF-ZoneMU90_0F1-2" },
-        { name: "S.906", className: "MU90_GF-ZoneMU90_0F1-3" },
-        { name: "S.904.1", className: "MU90_GF-ZoneMU90_0F1-4" }
+        {
+          "id": "84234cbe-52bf-45ff-8ec1-4d065c1d9baa",
+          "name": "S.904.2",
+          "pdfWidth": 1366,
+          "pdfHeight": 1805,
+          "points": [
+            {
+              "id": "00fba6b4-9d85-41d1-adf7-f76d9d9db8aa",
+              "x": 176,
+              "y": 124
+            },
+            {
+              "id": "1127e006-14a6-4636-ae86-379bbe25f414",
+              "x": 1208,
+              "y": 124
+            },
+            {
+              "id": "5b23a88f-3072-42f6-8de8-9ae27487e618",
+              "x": 1205,
+              "y": 1106
+            },
+            {
+              "id": "302fc842-c94d-47bc-a834-0c969b564d17",
+              "x": 173,
+              "y": 1104
+            },
+            {
+              "id": "a7d729e7-12fc-422e-b18a-d219f913ada3",
+              "x": 174,
+              "y": 124
+            }
+          ]
+        },
+        {
+          "id": "a2381d83-5e50-4c22-a7f9-08d9abb4eeee",
+          "name": "S.906.1",
+          "pdfWidth": 1366,
+          "pdfHeight": 1805,
+          "points": [
+            {
+              "id": "ffb44bac-2b06-45ce-a9e3-9adc73df4727",
+              "x": 202,
+              "y": 1144
+            },
+            {
+              "id": "9dee1943-50bc-4ad2-a903-40a5b7e8839b",
+              "x": 529,
+              "y": 1143
+            },
+            {
+              "id": "9f6980aa-8f0b-475b-97fc-e6d561740611",
+              "x": 526,
+              "y": 1364
+            },
+            {
+              "id": "24345255-a772-412d-833c-5653bbd0b3df",
+              "x": 203,
+              "y": 1365
+            },
+            {
+              "id": "53e62760-fbf2-4bf2-bad7-729c3ff2f4a5",
+              "x": 202,
+              "y": 1143
+            }
+          ]
+        },
+        {
+          "id": "acedb357-bd3d-4d29-896f-22f1cff5ca16",
+          "name": "S.906",
+          "pdfWidth": 1366,
+          "pdfHeight": 1805,
+          "points": [
+            {
+              "id": "10be17f3-4200-4f85-9a4a-3daacd24e406",
+              "x": 204,
+              "y": 1378
+            },
+            {
+              "id": "524912c5-3e45-4094-8a77-5e0f21ad82ab",
+              "x": 524,
+              "y": 1377
+            },
+            {
+              "id": "dad5b935-c92d-453e-a135-1e7da05d879b",
+              "x": 525,
+              "y": 1669
+            },
+            {
+              "id": "329d921f-e59d-491a-92b6-3f16ace6b835",
+              "x": 203,
+              "y": 1665
+            },
+            {
+              "id": "41cb8dca-d8b9-4285-ba5e-2decb379af5f",
+              "x": 204,
+              "y": 1377
+            }
+          ]
+        },
+        {
+          "id": "1170a3e3-9f4d-4e46-a9cd-b657be91e31f",
+          "name": "S.904.1",
+          "pdfWidth": 1366,
+          "pdfHeight": 1805,
+          "points": [
+            {
+              "id": "50f2fda7-6e53-4f5a-a8ca-1360d5918d98",
+              "x": 563,
+              "y": 1140
+            },
+            {
+              "id": "23528abd-9e33-43d9-9317-4c75f7e12347",
+              "x": 1210,
+              "y": 1141
+            },
+            {
+              "id": "109cb955-40b5-4859-8ca2-a6602f39a40c",
+              "x": 1209,
+              "y": 1666
+            },
+            {
+              "id": "f78c0215-11b6-4551-9c57-062d2590baa4",
+              "x": 564,
+              "y": 1665
+            },
+            {
+              "id": "ef8d9bd2-c312-4b4f-8649-9a587138caad",
+              "x": 562,
+              "y": 1139
+            }
+          ]
+        }
       ]
     },
     {
@@ -690,16 +1266,336 @@ export const ZONE_MAPPING = {
         }
       ],
       rooms: [
-        { name: "S.910", className: "MU90_GF-ZoneMU90_0F2-1" },
-        { name: "S.912", className: "MU90_GF-ZoneMU90_0F2-2" },
-        { name: "S.902.3", className: "MU90_GF-ZoneMU90_0F2-3" },
-        { name: "S.902.2", className: "MU90_GF-ZoneMU90_0F2-4" },
-        { name: "S.902.4", className: "MU90_GF-ZoneMU90_0F2-5" },
-        { name: "LI91", className: "MU90_GF-ZoneMU90_0F2-6" },
-        { name: "S.902.1", className: "MU90_GF-ZoneMU90_0F2-7" },
-        { name: "TE91", className: "MU90_GF-ZoneMU90_0F2-8" },
-        { name: "S.902", className: "MU90_GF-ZoneMU90_0F2-9" },
-        { name: "S.900", className: "MU90_GF-ZoneMU90_0F2-10" }
+        {
+          "id": "5be38d14-b43a-485c-a131-00462f4120c0",
+          "name": "S.910",
+          "pdfWidth": 1351,
+          "pdfHeight": 1739,
+          "points": [
+            {
+              "id": "a959ef7b-e3ed-478b-84bd-6f8d6f270e20",
+              "x": 78,
+              "y": 88
+            },
+            {
+              "id": "5d27a85f-f063-42a8-a6cd-9a9c72e4d0e9",
+              "x": 377,
+              "y": 89
+            },
+            {
+              "id": "babe578e-6807-4825-8c52-2c5e630af66c",
+              "x": 377,
+              "y": 364
+            },
+            {
+              "id": "8d08aec8-7faf-4e66-9d54-d9d662508ca6",
+              "x": 79,
+              "y": 365
+            },
+            {
+              "id": "436a98af-1e5f-47c4-b0d1-49b98a3c9a4c",
+              "x": 78,
+              "y": 88
+            }
+          ]
+        },
+        {
+          "id": "872a748f-556d-4310-a782-2c10f62f351b",
+          "name": "S.912",
+          "pdfWidth": 1351,
+          "pdfHeight": 1739,
+          "points": [
+            {
+              "id": "b6ef143f-ee9a-4f88-a568-a090c1cd85b1",
+              "x": 403,
+              "y": 87
+            },
+            {
+              "id": "60f7f804-b4b4-46c2-ac56-d429683e0d4a",
+              "x": 674,
+              "y": 88
+            },
+            {
+              "id": "906ad62a-98ff-4b4a-bbac-9cb32b1629bc",
+              "x": 675,
+              "y": 380
+            },
+            {
+              "id": "baef9325-5338-477d-b8fa-bfeaea8da011",
+              "x": 402,
+              "y": 376
+            },
+            {
+              "id": "99a6e9af-09ca-4de8-a309-d96613ce129b",
+              "x": 402,
+              "y": 87
+            }
+          ]
+        },
+        {
+          "id": "dfe5ea7b-67e2-4cb1-8040-bf00ecfe3f5d",
+          "name": "S.902.3",
+          "pdfWidth": 1351,
+          "pdfHeight": 1739,
+          "points": [
+            {
+              "id": "246e329d-c753-45b5-8016-73ee8abc22fb",
+              "x": 698,
+              "y": 84
+            },
+            {
+              "id": "f5f3eb1f-b589-41f0-81d4-89bdd7fe5f8c",
+              "x": 827,
+              "y": 86
+            },
+            {
+              "id": "6e8e8bfb-e103-4f8a-8b7f-1617056ec9f6",
+              "x": 828,
+              "y": 382
+            },
+            {
+              "id": "83b294d6-76f4-4c44-870c-48d5cb309118",
+              "x": 699,
+              "y": 378
+            },
+            {
+              "id": "e1917fa4-2c7f-4b50-8bf5-0782fabc27cb",
+              "x": 698,
+              "y": 84
+            }
+          ]
+        },
+        {
+          "id": "f1857dbd-6e40-4618-bb92-cbede6e141ce",
+          "name": "S.902.2",
+          "pdfWidth": 1351,
+          "pdfHeight": 1739,
+          "points": [
+            {
+              "id": "d03456bf-a88f-4b4a-9282-a32c36ea727b",
+              "x": 831,
+              "y": 86
+            },
+            {
+              "id": "be1e5a94-e000-4bc3-b623-54f4459b42f3",
+              "x": 1042,
+              "y": 88
+            },
+            {
+              "id": "1ae42665-3687-4936-9fd0-478b00f207e7",
+              "x": 1038,
+              "y": 379
+            },
+            {
+              "id": "d9484c16-4086-4874-bfec-cd5c95ece980",
+              "x": 832,
+              "y": 381
+            },
+            {
+              "id": "d621d57f-84ef-4170-914b-2738c71bcb2c",
+              "x": 831,
+              "y": 86
+            }
+          ]
+        },
+        {
+          "id": "5d513725-800e-4ed2-a70a-cf455be6c37e",
+          "name": "S.902.4",
+          "pdfWidth": 1351,
+          "pdfHeight": 1739,
+          "points": [
+            {
+              "id": "ba5fa04f-2518-4710-b280-85de7aa3826d",
+              "x": 1044,
+              "y": 87
+            },
+            {
+              "id": "237cd0e8-88f3-4d22-83ea-2c21fec6bddb",
+              "x": 1254,
+              "y": 89
+            },
+            {
+              "id": "0db91759-0268-4b3b-8d4a-2ec298c6a89a",
+              "x": 1253,
+              "y": 379
+            },
+            {
+              "id": "d0bd9f00-786f-412c-8013-883b1930e8b6",
+              "x": 1044,
+              "y": 377
+            },
+            {
+              "id": "d1521e44-ac30-4df9-8443-a8bc70a960de",
+              "x": 1043,
+              "y": 87
+            }
+          ]
+        },
+        {
+          "id": "b0ec6935-21f0-4a1b-a852-a27bbad4f58c",
+          "name": "LI91",
+          "pdfWidth": 1351,
+          "pdfHeight": 1739,
+          "points": [
+            {
+              "id": "386ebe4a-576b-439c-ac75-73bc253df25a",
+              "x": 78,
+              "y": 383
+            },
+            {
+              "id": "fb126bc5-45b5-46ef-9e60-482669ed9527",
+              "x": 379,
+              "y": 386
+            },
+            {
+              "id": "4183061f-f835-4d57-9c36-f23b1c0a9562",
+              "x": 381,
+              "y": 680
+            },
+            {
+              "id": "06e61ada-3f63-4019-a516-7d25ec045304",
+              "x": 79,
+              "y": 679
+            },
+            {
+              "id": "41bb8e7d-fd8c-4395-a187-252435069e71",
+              "x": 78,
+              "y": 383
+            }
+          ]
+        },
+        {
+          "id": "d1b169d3-fc3a-4d71-8bc6-448c7fe64428",
+          "name": "S.902.1",
+          "pdfWidth": 1351,
+          "pdfHeight": 1739,
+          "points": [
+            {
+              "id": "d7ff5b63-11e1-4618-a994-88001814e75d",
+              "x": 972,
+              "y": 380
+            },
+            {
+              "id": "ef9aa3bf-da25-4db5-8090-c4edc8dd4c30",
+              "x": 1251,
+              "y": 381
+            },
+            {
+              "id": "192890da-c0a4-40f5-b7e3-3e7ec489f145",
+              "x": 1253,
+              "y": 680
+            },
+            {
+              "id": "ec25b3e5-d66f-447d-a1c6-f51fee945079",
+              "x": 974,
+              "y": 681
+            },
+            {
+              "id": "51f03589-50e4-44c3-86e7-686328116cef",
+              "x": 973,
+              "y": 380
+            }
+          ]
+        },
+        {
+          "id": "10a6e354-1faa-41f3-94ae-746f96a8305d",
+          "name": "TR91",
+          "pdfWidth": 1351,
+          "pdfHeight": 1739,
+          "points": [
+            {
+              "id": "f05ef310-2c12-40a3-b0d4-56b43ca67602",
+              "x": 79,
+              "y": 714
+            },
+            {
+              "id": "0b3e1101-f443-4bb9-8ad0-a2d2350591a4",
+              "x": 378,
+              "y": 715
+            },
+            {
+              "id": "c6e5effd-74ab-4da3-9471-54ad8cd630f6",
+              "x": 373,
+              "y": 1269
+            },
+            {
+              "id": "22a543df-d436-44b7-a28d-7b8f25ea64d8",
+              "x": 81,
+              "y": 1269
+            },
+            {
+              "id": "50864b73-1cae-4d7e-b648-c0415a5b3741",
+              "x": 78,
+              "y": 714
+            }
+          ]
+        },
+        {
+          "id": "272e8882-d3f7-4a10-9d27-7798282cc78e",
+          "name": "S.902",
+          "pdfWidth": 1351,
+          "pdfHeight": 1739,
+          "points": [
+            {
+              "id": "35f538fe-4ba3-4e1f-8743-ae230c78c39e",
+              "x": 400,
+              "y": 683
+            },
+            {
+              "id": "7de448db-4cb6-48a2-a698-789e42deb46e",
+              "x": 909,
+              "y": 681
+            },
+            {
+              "id": "69d14803-5084-4a3b-b42d-d7cbc21eb6fc",
+              "x": 907,
+              "y": 1277
+            },
+            {
+              "id": "2096c68d-1621-41f1-bdbd-d0f6d24fef70",
+              "x": 400,
+              "y": 1276
+            },
+            {
+              "id": "add06377-27a3-45d6-a40b-07fcdaf8798a",
+              "x": 401,
+              "y": 684
+            }
+          ]
+        },
+        {
+          "id": "0504709e-49ec-481a-99fc-990b062a8aa2",
+          "name": "S.900",
+          "pdfWidth": 1351,
+          "pdfHeight": 1739,
+          "points": [
+            {
+              "id": "a43ef133-2a30-46ee-93ed-9455a7ba9838",
+              "x": 79,
+              "y": 1281
+            },
+            {
+              "id": "d2858a06-256c-471a-a061-dddb423e6b0f",
+              "x": 376,
+              "y": 1280
+            },
+            {
+              "id": "dd385d0a-036d-4a47-97fb-77871fee4778",
+              "x": 376,
+              "y": 1571
+            },
+            {
+              "id": "f71cd954-7447-44e1-9f99-84dfcd02657b",
+              "x": 74,
+              "y": 1571
+            },
+            {
+              "id": "0ddaef70-07f4-4495-a6fe-4c32b1b811a4",
+              "x": 82,
+              "y": 1281
+            }
+          ]
+        }
       ]
     },
     {
@@ -737,10 +1633,138 @@ export const ZONE_MAPPING = {
         }
       ],
       rooms: [
-        { name: "S.934", className: "MU90_GF-ZoneMU90_0I-1" },
-        { name: "S.924", className: "MU90_GF-ZoneMU90_0I-2" },
-        { name: "S.918", className: "MU90_GF-ZoneMU90_0I-3" },
-        { name: "S.914", className: "MU90_GF-ZoneMU90_0I-4" }
+        {
+          "id": "20153537-6d44-4dbe-9802-d5d8f23ddb17",
+          "name": "S.934",
+          "pdfWidth": 1351,
+          "pdfHeight": 4350,
+          "points": [
+            {
+              "id": "f35770d3-b7eb-4ab4-825a-b5757e7b32ac",
+              "x": 170,
+              "y": 404
+            },
+            {
+              "id": "3daab708-59df-415a-b732-9a3b41c7d070",
+              "x": 685,
+              "y": 407
+            },
+            {
+              "id": "b0c03040-6ee2-4c38-ad9f-51df53787cb7",
+              "x": 687,
+              "y": 838
+            },
+            {
+              "id": "e4da52b4-7748-4c6a-8a90-febb66ccc2e0",
+              "x": 173,
+              "y": 834
+            },
+            {
+              "id": "594bf75c-67e4-4ba5-9b4e-8d7805a1bb21",
+              "x": 171,
+              "y": 407
+            }
+          ]
+        },
+        {
+          "id": "0a62ba83-8c4e-426c-b6aa-8d8c7cef34ba",
+          "name": "S.924",
+          "pdfWidth": 1351,
+          "pdfHeight": 4350,
+          "points": [
+            {
+              "id": "d6f48c7b-c669-4618-b1b5-bfc16c86d2bd",
+              "x": 385,
+              "y": 1881
+            },
+            {
+              "id": "683a776a-14c5-4614-9b87-06c258e321e1",
+              "x": 947,
+              "y": 1881
+            },
+            {
+              "id": "c45619ef-634e-4a05-90b4-e9ac6dbaa3e7",
+              "x": 947,
+              "y": 2180
+            },
+            {
+              "id": "02b00a82-9914-4f6f-a16c-effc64f796c5",
+              "x": 383,
+              "y": 2180
+            },
+            {
+              "id": "66208eac-4e8a-4381-be5e-872c84b57603",
+              "x": 382,
+              "y": 1882
+            }
+          ]
+        },
+        {
+          "id": "613859d0-d88a-46dc-9196-8f3256712803",
+          "name": "S.918",
+          "pdfWidth": 1351,
+          "pdfHeight": 4350,
+          "points": [
+            {
+              "id": "6c1d795f-0446-4cb0-ada1-d269b21a9a4e",
+              "x": 386,
+              "y": 2788
+            },
+            {
+              "id": "24844925-c684-4110-8507-555bb27b9c22",
+              "x": 989,
+              "y": 2789
+            },
+            {
+              "id": "d1845187-11b8-4b5c-9b82-69156548a869",
+              "x": 991,
+              "y": 3092
+            },
+            {
+              "id": "ac36d2e7-807f-4396-bed3-5e629fc5cf76",
+              "x": 385,
+              "y": 3095
+            },
+            {
+              "id": "3e9f7571-ef40-49a5-afbd-2ef23a4f6436",
+              "x": 385,
+              "y": 2791
+            }
+          ]
+        },
+        {
+          "id": "df62626c-f0e5-4bb0-992a-0ef69b59e0bd",
+          "name": "S.914",
+          "pdfWidth": 1351,
+          "pdfHeight": 4350,
+          "points": [
+            {
+              "id": "7e20ba4e-4bd2-4226-9a99-465952730e44",
+              "x": 383,
+              "y": 3699
+            },
+            {
+              "id": "b3901fc1-8e9a-4e8c-9092-b26f8c8bb193",
+              "x": 991,
+              "y": 3701
+            },
+            {
+              "id": "4db56925-1b52-4c68-b5ab-0c508dfaf351",
+              "x": 991,
+              "y": 4155
+            },
+            {
+              "id": "156cc2e3-1d46-4395-b285-6daf77ff7340",
+              "x": 384,
+              "y": 4155
+            },
+            {
+              "id": "50b387f8-9f28-4ba3-8692-4def9d57e323",
+              "x": 383,
+              "y": 3699
+            }
+          ]
+        }
       ]
     },
     {
@@ -818,9 +1842,105 @@ export const ZONE_MAPPING = {
         }
       ],
       rooms: [
-        { name: "TR93", className: "MU90_GF-ZoneMU90_0K-1" },
-        { name: "S.904", className: "MU90_GF-ZoneMU90_0K-2" },
-        { name: "S.901", className: "MU90_GF-ZoneMU90_0K-3" }
+        {
+          "id": "440d6d99-a910-4f8c-be9c-41e48f1d5405",
+          "name": "TR93",
+          "pdfWidth": 1366,
+          "pdfHeight": 2651,
+          "points": [
+            {
+              "id": "7d880260-9d20-4a13-8a2c-f29f17ddbac1",
+              "x": 139,
+              "y": 182
+            },
+            {
+              "id": "1915b800-63f3-4681-ba4e-db8a04ec27d4",
+              "x": 386,
+              "y": 183
+            },
+            {
+              "id": "82255784-e1ac-4ecb-be62-5048beff3731",
+              "x": 387,
+              "y": 298
+            },
+            {
+              "id": "79badc10-4c39-48a5-b463-e39928f5286d",
+              "x": 139,
+              "y": 296
+            },
+            {
+              "id": "0b8e130a-edc1-4319-81db-a8a8d5ebf008",
+              "x": 138,
+              "y": 181
+            }
+          ]
+        },
+        {
+          "id": "f83536be-9ae9-4a00-9f68-742c2c00091e",
+          "name": "S.904",
+          "pdfWidth": 1366,
+          "pdfHeight": 2651,
+          "points": [
+            {
+              "id": "397c2b67-6629-4616-b560-30e34b999b2e",
+              "x": 398,
+              "y": 1442
+            },
+            {
+              "id": "0f33acce-84f8-40dc-8078-2ba8c12a85fe",
+              "x": 506,
+              "y": 1441
+            },
+            {
+              "id": "17c5eaea-c5ab-408f-bcbe-2236d6d3a497",
+              "x": 504,
+              "y": 1568
+            },
+            {
+              "id": "d9b7bb0a-3791-4848-8dc4-093678135024",
+              "x": 400,
+              "y": 1569
+            },
+            {
+              "id": "edbb1341-d48c-4cb2-b5f3-43f36d899de9",
+              "x": 400,
+              "y": 1442
+            }
+          ]
+        },
+        {
+          "id": "492da129-fab5-4170-8d56-3803dbf5d38f",
+          "name": "S.901",
+          "pdfWidth": 1366,
+          "pdfHeight": 2651,
+          "points": [
+            {
+              "id": "2152d16d-a149-467a-8936-fe3f5d858e07",
+              "x": 1027,
+              "y": 2075
+            },
+            {
+              "id": "53783af2-6b26-4980-b72f-56225c995eb3",
+              "x": 1191,
+              "y": 2076
+            },
+            {
+              "id": "24462f79-04f7-4bdc-bf34-385dbd8094d9",
+              "x": 1191,
+              "y": 2202
+            },
+            {
+              "id": "c738eedd-8cfa-4cec-ba4c-8f3ead086f10",
+              "x": 1025,
+              "y": 2204
+            },
+            {
+              "id": "cbec33e4-0c1f-4e5a-8909-d966a86e1851",
+              "x": 1026,
+              "y": 2075
+            }
+          ]
+        }
       ]
     }
   ],
@@ -830,24 +1950,564 @@ export const ZONE_MAPPING = {
       name: "MU90.1BN",
       className: "MU90_1BN",
       pdf: MU901BNPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 2326,
+      "points": [
+        {
+          "id": "618dc51e-7b66-42c9-9856-a618ca25ec5a",
+          "x": 788,
+          "y": 1011
+        },
+        {
+          "id": "bba1d075-5b76-4d06-8430-c531c6efa589",
+          "x": 1120,
+          "y": 1013
+        },
+        {
+          "id": "781bf591-ee14-4d81-9b27-fc800bc83393",
+          "x": 1119,
+          "y": 1723
+        },
+        {
+          "id": "38c58274-36e9-45f9-8b58-23d5243f88ca",
+          "x": 789,
+          "y": 1722
+        },
+        {
+          "id": "268c7eca-c00d-4408-a343-421fba04dd3a",
+          "x": 788,
+          "y": 1011
+        }
+      ],
       rooms: [
-        { name: "1.935", className: "MU90_1_VB-ZoneMU90_1BN-1" },
-        { name: "1.931", className: "MU90_1_VB-ZoneMU90_1BN-2" },
-        { name: "1.933", className: "MU90_1_VB-ZoneMU90_1BN-3" },
-        { name: "1.923.1", className: "MU90_1_VB-ZoneMU90_1BN-4" },
-        { name: "1.927", className: "MU90_1_VB-ZoneMU90_1BN-5" },
-        { name: "1.929", className: "MU90_1_VB-ZoneMU90_1BN-6" },
-        { name: "1.925", className: "MU90_1_VB-ZoneMU90_1BN-7" },
-        { name: "1.919.5", className: "MU90_1_VB-ZoneMU90_1BN-8" },
-        { name: "1.923", className: "MU90_1_VB-ZoneMU90_1BN-9" },
-        { name: "1.921", className: "MU90_1_VB-ZoneMU90_1BN-10" },
-        { name: "TR92", className: "MU90_1_VB-ZoneMU90_1BN-11" },
-        { name: "1.915", className: "MU90_1_VB-ZoneMU90_1BN-12" },
-        { name: "1.919.2", className: "MU90_1_VB-ZoneMU90_1BN-13" },
-        { name: "1.919.1", className: "MU90_1_VB-ZoneMU90_1BN-14" },
-        { name: "1.919.3", className: "MU90_1_VB-ZoneMU90_1BN-15" },
-        { name: "S.903", className: "MU90_1_VB-ZoneMU90_1BN-16" },
-        { name: "1.919.4", className: "MU90_1_VB-ZoneMU90_1BN-17" }
+        {
+          "id": "5f827b2c-e656-4bd5-8ba5-045479a5daa8",
+          "name": "1.935",
+          "pdfWidth": 1366,
+          "pdfHeight": 2568,
+          "points": [
+            {
+              "id": "e2dcc896-72e7-4008-a0a8-d5d64f9dcd15",
+              "x": 298,
+              "y": 15
+            },
+            {
+              "id": "2c9233c1-1bcf-4d78-83d0-9cf2af64ab8c",
+              "x": 571,
+              "y": 15
+            },
+            {
+              "id": "948560d7-45be-4d2b-a2d0-37a1132d91ae",
+              "x": 572,
+              "y": 223
+            },
+            {
+              "id": "cf38ac1e-b6e0-46e3-955b-9ae12bd9aeaa",
+              "x": 298,
+              "y": 224
+            },
+            {
+              "id": "f35ca801-9053-4b87-985e-80902126ca4c",
+              "x": 298,
+              "y": 15
+            }
+          ]
+        },
+        {
+          "id": "9cd6996f-4bdb-41cf-8512-3198d8d67b38",
+          "name": "1.931",
+          "pdfWidth": 1366,
+          "pdfHeight": 2568,
+          "points": [
+            {
+              "id": "5d35ef51-f846-4bca-a6bc-bb207460d09f",
+              "x": 46,
+              "y": 227
+            },
+            {
+              "id": "8550551f-5a89-457e-872d-d9cd8d39c446",
+              "x": 279,
+              "y": 227
+            },
+            {
+              "id": "59d50ee0-64da-4ebb-917e-2c217d8faba6",
+              "x": 279,
+              "y": 455
+            },
+            {
+              "id": "8588631f-d3d3-4422-aeb4-cc9dfe17b9d9",
+              "x": 46,
+              "y": 454
+            },
+            {
+              "id": "5ab249f0-cf73-4043-bd32-956b7c72360c",
+              "x": 48,
+              "y": 227
+            }
+          ]
+        },
+        {
+          "id": "126a3896-6069-4b65-86bf-e11ad3160016",
+          "name": "1.933",
+          "pdfWidth": 1366,
+          "pdfHeight": 2568,
+          "points": [
+            {
+              "id": "e32b14e5-d20d-485e-b8da-847a01e051cf",
+              "x": 296,
+              "y": 456
+            },
+            {
+              "id": "9bbf33ca-e65e-419e-8ca3-d7dff72c2f81",
+              "x": 571,
+              "y": 458
+            },
+            {
+              "id": "5532aa6f-6f1c-40ed-a6d5-f6dc15a1f2e9",
+              "x": 572,
+              "y": 685
+            },
+            {
+              "id": "10016687-8743-4e2e-90a2-f8d1669e4065",
+              "x": 298,
+              "y": 684
+            },
+            {
+              "id": "cfb93b3f-84e0-444e-9275-7c90d9eccaed",
+              "x": 298,
+              "y": 455
+            }
+          ]
+        },
+        {
+          "id": "ec40ca41-7861-42b5-91a6-c45a1f224ce9",
+          "name": "1.923.1",
+          "pdfWidth": 1366,
+          "pdfHeight": 2568,
+          "points": [
+            {
+              "id": "fc5dee4e-9207-463a-8fc0-d8fc0b0293b6",
+              "x": 755,
+              "y": 686
+            },
+            {
+              "id": "47536781-3bb0-415d-abea-399469cf51fa",
+              "x": 988,
+              "y": 684
+            },
+            {
+              "id": "bcdf5143-1fed-456a-b149-189605fbaeba",
+              "x": 988,
+              "y": 916
+            },
+            {
+              "id": "8e0d5fe2-ea3b-4fff-adaf-f21a96081fce",
+              "x": 756,
+              "y": 915
+            },
+            {
+              "id": "a8c0d7ad-8f66-4893-b2c0-e82d3dca0bee",
+              "x": 756,
+              "y": 686
+            }
+          ]
+        },
+        {
+          "id": "0a8b1825-cc35-465c-9d8d-4d1a7122eda3",
+          "name": "1.927",
+          "pdfWidth": 1366,
+          "pdfHeight": 2568,
+          "points": [
+            {
+              "id": "79b0c5a7-5f3a-44e5-9f7a-23b2779ba936",
+              "x": 295,
+              "y": 914
+            },
+            {
+              "id": "3b327eda-0922-4ad3-86e7-d8a3f562e203",
+              "x": 527,
+              "y": 916
+            },
+            {
+              "id": "979ffc3e-e427-4951-9e2d-04da376cb9ee",
+              "x": 527,
+              "y": 1146
+            },
+            {
+              "id": "6e54803d-ee19-4592-b8b3-d83ac02e3de8",
+              "x": 295,
+              "y": 1145
+            },
+            {
+              "id": "bf91eb81-a6e5-43da-9e66-24316884d44c",
+              "x": 296,
+              "y": 914
+            }
+          ]
+        },
+        {
+          "id": "2cffd6e3-9003-4310-9610-6eeaaaf8387c",
+          "name": "1.929",
+          "pdfWidth": 1366,
+          "pdfHeight": 2568,
+          "points": [
+            {
+              "id": "21417478-088a-4420-9ac3-9f56e3b1fe8e",
+              "x": 45,
+              "y": 917
+            },
+            {
+              "id": "267a7d4c-8065-4923-bf11-febe5bcc3a63",
+              "x": 282,
+              "y": 915
+            },
+            {
+              "id": "8c6c6e9f-b3d9-4d73-a360-a40569c6b4f3",
+              "x": 281,
+              "y": 1290
+            },
+            {
+              "id": "6029c940-16de-4d41-8331-7be6df884685",
+              "x": 45,
+              "y": 1291
+            },
+            {
+              "id": "67ce61b5-0ef7-4f75-929d-542e55c1e673",
+              "x": 44,
+              "y": 920
+            }
+          ]
+        },
+        {
+          "id": "5aa621b4-0a2a-45ed-a6b4-a1a9780ee22d",
+          "name": "1.925",
+          "pdfWidth": 1366,
+          "pdfHeight": 2568,
+          "points": [
+            {
+              "id": "a92c21e8-c7e6-4904-b471-32872e11a33e",
+              "x": 294,
+              "y": 1302
+            },
+            {
+              "id": "292965df-d576-4048-aeba-82a0dca9458c",
+              "x": 574,
+              "y": 1306
+            },
+            {
+              "id": "eefb9465-77c3-4752-b831-0b01b9371d00",
+              "x": 573,
+              "y": 1604
+            },
+            {
+              "id": "48e6d6b8-c5df-493c-8cc7-0003d3581505",
+              "x": 293,
+              "y": 1606
+            },
+            {
+              "id": "62688959-c7ca-49d5-8dd6-7dc96b4a5d07",
+              "x": 295,
+              "y": 1306
+            }
+          ]
+        },
+        {
+          "id": "f9ca4b56-6949-4cdf-beb9-4953c4b2683d",
+          "name": "1.919.5",
+          "pdfWidth": 1366,
+          "pdfHeight": 2568,
+          "points": [
+            {
+              "id": "bf6784e0-43e5-49b4-ab20-81f784c87732",
+              "x": 48,
+              "y": 1374
+            },
+            {
+              "id": "3af1f452-1cad-497e-b825-7722111ac4db",
+              "x": 283,
+              "y": 1376
+            },
+            {
+              "id": "a5d00bcd-5457-44fd-9a23-17998781487d",
+              "x": 285,
+              "y": 1606
+            },
+            {
+              "id": "d73f5253-260b-4ade-a568-aab98f7ca6ef",
+              "x": 48,
+              "y": 1606
+            },
+            {
+              "id": "defc2f01-f9f3-4f27-8a89-fa38433c5956",
+              "x": 48,
+              "y": 1374
+            }
+          ]
+        },
+        {
+          "id": "d54d546d-a4cc-4aeb-acb5-11e67d5f7171",
+          "name": "1.923",
+          "pdfWidth": 1366,
+          "pdfHeight": 2568,
+          "points": [
+            {
+              "id": "1baecf93-4ef7-4925-a9ed-becbf6517f14",
+              "x": 757,
+              "y": 1374
+            },
+            {
+              "id": "1a96c755-5d15-4d8f-9265-d28a07e5d904",
+              "x": 987,
+              "y": 1374
+            },
+            {
+              "id": "33f221a0-8508-435a-9640-0581139e7a14",
+              "x": 989,
+              "y": 1605
+            },
+            {
+              "id": "c636cbc3-4e51-4d8c-a73d-bd1ce1229dc3",
+              "x": 757,
+              "y": 1605
+            },
+            {
+              "id": "55efd226-6569-4c42-986b-54370760ef0b",
+              "x": 757,
+              "y": 1372
+            }
+          ]
+        },
+        {
+          "id": "85bee479-c696-4cd7-8ebc-02398bfd66c7",
+          "name": "1.921",
+          "pdfWidth": 1366,
+          "pdfHeight": 2568,
+          "points": [
+            {
+              "id": "26e0b096-6744-48a4-9585-6c2a4e307371",
+              "x": 295,
+              "y": 1697
+            },
+            {
+              "id": "08ddc98c-9668-44fe-9f41-9d800fd89e5e",
+              "x": 570,
+              "y": 1698
+            },
+            {
+              "id": "c1257149-c17d-4fb5-9f49-c2f04a05dd00",
+              "x": 572,
+              "y": 1919
+            },
+            {
+              "id": "ec74f7c1-1c9f-44b6-8f82-1449559fa38a",
+              "x": 294,
+              "y": 1918
+            },
+            {
+              "id": "59f01970-caf9-470f-9867-66bf4ea24cfe",
+              "x": 295,
+              "y": 1696
+            }
+          ]
+        },
+        {
+          "id": "a9fc557e-f7c5-4822-a5ab-e2133b11ab6f",
+          "name": "TR92",
+          "pdfWidth": 1366,
+          "pdfHeight": 2568,
+          "points": [
+            {
+              "id": "1c3047ce-1cb0-476a-a1fa-84a0d84ab84e",
+              "x": 986,
+              "y": 1856
+            },
+            {
+              "id": "9c380540-8469-4b6d-9c26-5a850fddf8aa",
+              "x": 1214,
+              "y": 1857
+            },
+            {
+              "id": "58ed2dce-1b1d-4c20-b335-b4b792dece3b",
+              "x": 1214,
+              "y": 2060
+            },
+            {
+              "id": "293a3b48-f153-4722-a860-057f090be329",
+              "x": 986,
+              "y": 2061
+            },
+            {
+              "id": "711c7dff-8178-4402-b599-71e17cfb2c88",
+              "x": 988,
+              "y": 1857
+            }
+          ]
+        },
+        {
+          "id": "b54ed1eb-3b0f-442f-86a3-85c3b3f49128",
+          "name": "1.915",
+          "pdfWidth": 1366,
+          "pdfHeight": 2568,
+          "points": [
+            {
+              "id": "af5578b7-c39c-4cda-8d1f-85a6859d1144",
+              "x": 760,
+              "y": 2064
+            },
+            {
+              "id": "40b93d10-9aa9-4c70-91c4-2971b4710484",
+              "x": 985,
+              "y": 2064
+            },
+            {
+              "id": "a81a6f3f-4d51-4c77-b40f-082b6c892894",
+              "x": 987,
+              "y": 2294
+            },
+            {
+              "id": "be51df08-ab09-4823-955d-040618ed50c2",
+              "x": 755,
+              "y": 2296
+            },
+            {
+              "id": "d5a4b44b-b3f7-4c5e-bf2d-60dc11335d46",
+              "x": 759,
+              "y": 2065
+            }
+          ]
+        },
+        {
+          "id": "1ad446e1-8202-4d06-ab36-b84f8bf58db6",
+          "name": "1.919.1",
+          "pdfWidth": 1366,
+          "pdfHeight": 2568,
+          "points": [
+            {
+              "id": "36b8cb90-1ede-4d36-b069-f279d75cd9ed",
+              "x": 220,
+              "y": 2077
+            },
+            {
+              "id": "5811813a-8b2a-4c06-92bd-b0c178e64d31",
+              "x": 357,
+              "y": 2076
+            },
+            {
+              "id": "aa70d901-3b17-457f-9533-58862367b6b2",
+              "x": 357,
+              "y": 2296
+            },
+            {
+              "id": "2eb25229-78a1-451e-823d-64b220654ba6",
+              "x": 218,
+              "y": 2298
+            },
+            {
+              "id": "f655eff0-470f-426f-894e-c2848142be46",
+              "x": 220,
+              "y": 2075
+            }
+          ]
+        },
+        {
+          "id": "6c297882-a544-4ce4-8c97-731fbffbb6ed",
+          "name": "1.919.2",
+          "pdfWidth": 1366,
+          "pdfHeight": 2568,
+          "points": [
+            {
+              "id": "33f43eae-6393-4b24-9529-621e8ba4a1c6",
+              "x": 44,
+              "y": 2075
+            },
+            {
+              "id": "ea5cfe1a-7c22-4e20-be71-6174281cd6c1",
+              "x": 205,
+              "y": 2076
+            },
+            {
+              "id": "6b0f5260-24b4-4137-8c42-7ab0e1d235ce",
+              "x": 207,
+              "y": 2231
+            },
+            {
+              "id": "9ae5a2b3-c857-46be-915c-11fe762097c7",
+              "x": 47,
+              "y": 2234
+            },
+            {
+              "id": "ed075d8b-395b-4514-8ed6-f82f9a8df0c8",
+              "x": 43,
+              "y": 2078
+            }
+          ]
+        },
+        {
+          "id": "a9606101-cdf8-4349-9d17-b443071d52a4",
+          "name": "1.919.3",
+          "pdfWidth": 1366,
+          "pdfHeight": 2568,
+          "points": [
+            {
+              "id": "11e1cf10-1ef5-42f0-b5f4-dcc535b618ef",
+              "x": 48,
+              "y": 2238
+            },
+            {
+              "id": "ebcbcc3e-24f0-4c7e-af73-3ec688e8b53f",
+              "x": 208,
+              "y": 2240
+            },
+            {
+              "id": "0af3c61a-b918-4e1c-8698-00f85b203d0a",
+              "x": 210,
+              "y": 2333
+            },
+            {
+              "id": "e7f6c871-953c-452d-adf8-0ef3341a353c",
+              "x": 47,
+              "y": 2332
+            },
+            {
+              "id": "0505a93e-6e17-45ce-9bcf-8a48b1773ca4",
+              "x": 49,
+              "y": 2236
+            }
+          ]
+        },
+        {
+          "id": "1bc130e2-6b5b-414d-9e6f-bddbf4f6a003",
+          "name": "1.919.4",
+          "pdfWidth": 1366,
+          "pdfHeight": 2568,
+          "points": [
+            {
+              "id": "ba35cfcc-4b4c-4a9e-8994-caf5a7dd06aa",
+              "x": 46,
+              "y": 2346
+            },
+            {
+              "id": "8ed5e35c-7a37-439b-8d14-5c4726ebbc60",
+              "x": 210,
+              "y": 2343
+            },
+            {
+              "id": "16e48ab6-7a8f-4eb8-ac36-c2524f1f4f2f",
+              "x": 210,
+              "y": 2526
+            },
+            {
+              "id": "d917fc8b-ae3d-4677-b8d8-bbcefd4ab72c",
+              "x": 47,
+              "y": 2524
+            },
+            {
+              "id": "14bcb881-e732-4103-a63c-6ba013f85d1b",
+              "x": 44,
+              "y": 2346
+            }
+          ]
+        }
       ]
     },
     {
@@ -855,24 +2515,597 @@ export const ZONE_MAPPING = {
       name: "MU90.1BS",
       className: "MU90_1BS",
       pdf: MU901BSPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 2326,
+      "points": [
+        {
+          "id": "f83e2b73-3b7d-4c04-831a-1d2bf8490b75",
+          "x": 572,
+          "y": 1554
+        },
+        {
+          "id": "88f79c1b-57ae-4774-a407-00856a201c4b",
+          "x": 783,
+          "y": 1554
+        },
+        {
+          "id": "704a56c2-2c1e-4e02-b3ef-345318795b1e",
+          "x": 782,
+          "y": 2111
+        },
+        {
+          "id": "bef249f0-c3ba-4506-ae4d-0d302fccbcf6",
+          "x": 573,
+          "y": 2112
+        },
+        {
+          "id": "32038995-eea4-48b7-8ffb-1659c180b9fe",
+          "x": 571,
+          "y": 1552
+        }
+      ],
       rooms: [
-        { name: "1.917", className: "MU90_1_VB-ZoneMU90_1BS-1" },
-        { name: "1.913.5", className: "MU90_1_VB-ZoneMU90_1BS-2" },
-        { name: "1.913.6", className: "MU90_1_VB-ZoneMU90_1BS-3" },
-        { name: "1.913.3", className: "MU90_1_VB-ZoneMU90_1BS-4" },
-        { name: "1.913.4", className: "MU90_1_VB-ZoneMU90_1BS-5" },
-        { name: "1.913.2", className: "MU90_1_VB-ZoneMU90_1BS-6" },
-        { name: "1.913", className: "MU90_1_VB-ZoneMU90_1BS-7" },
-        { name: "1.911", className: "MU90_1_VB-ZoneMU90_1BS-8" },
-        { name: "1.909", className: "MU90_1_VB-ZoneMU90_1BS-9" },
-        { name: "1.913.1", className: "MU90_1_VB-ZoneMU90_1BS-10" },
-        { name: "1.906.1", className: "MU90_1_VB-ZoneMU90_1BS-11" },
-        { name: "1.906.2", className: "MU90_1_VB-ZoneMU90_1BS-12" },
-        { name: "1.901", className: "MU90_1_VB-ZoneMU90_1BS-13" },
-        { name: "1.906", className: "MU90_1_VB-ZoneMU90_1BS-14" },
-        { name: "1.906.3", className: "MU90_1_VB-ZoneMU90_1BS-15" },
-        { name: "1.906.4", className: "MU90_1_VB-ZoneMU90_1BS-16" },
-        { name: "1.906.5", className: "MU90_1_VB-ZoneMU90_1BS-17" }
+        {
+          "id": "5ab520b0-3106-4347-8a06-cb988dd20be3",
+          "name": "1.917",
+          "pdfWidth": 1351,
+          "pdfHeight": 3119,
+          "points": [
+            {
+              "id": "a0f84279-096b-40b9-9277-e12544efadef",
+              "x": 778,
+              "y": 109
+            },
+            {
+              "id": "b7160efa-689c-4188-a735-14ee837c7b90",
+              "x": 1223,
+              "y": 113
+            },
+            {
+              "id": "eb474f2c-4590-4062-9b8d-d752780ba524",
+              "x": 1224,
+              "y": 307
+            },
+            {
+              "id": "42e97f0a-6316-45c6-b95f-32050096883f",
+              "x": 777,
+              "y": 307
+            },
+            {
+              "id": "2b2e45e1-1220-4394-81ac-d9342db9e1fb",
+              "x": 778,
+              "y": 109
+            }
+          ]
+        },
+        {
+          "id": "f06f3adf-0457-44d7-9486-ce69da8f828a",
+          "name": "1.913.5",
+          "pdfWidth": 1351,
+          "pdfHeight": 3119,
+          "points": [
+            {
+              "id": "3caf47f5-7d9f-4d79-ba2a-da7d96346dc1",
+              "x": 132,
+              "y": 328
+            },
+            {
+              "id": "c08d3a8d-5884-4fb9-872a-d00fe6a8a617",
+              "x": 272,
+              "y": 330
+            },
+            {
+              "id": "a9b81470-a477-4e18-8baf-dbd968804856",
+              "x": 271,
+              "y": 592
+            },
+            {
+              "id": "883143cd-7f08-419d-bf4d-2f9ff40c13e8",
+              "x": 129,
+              "y": 590
+            },
+            {
+              "id": "ccf7d32c-a431-4cef-bcb3-cfa77cbc0d77",
+              "x": 132,
+              "y": 327
+            }
+          ]
+        },
+        {
+          "id": "3db712a8-f08d-4adf-89eb-48d247fe5566",
+          "name": "1.913.6",
+          "pdfWidth": 1351,
+          "pdfHeight": 3119,
+          "points": [
+            {
+              "id": "7d82e2b5-b0a7-431e-9592-b1fe573af635",
+              "x": 294,
+              "y": 333
+            },
+            {
+              "id": "a61a602f-3540-4e9d-aa8c-f9ed67493a25",
+              "x": 440,
+              "y": 332
+            },
+            {
+              "id": "797a1721-a0cc-4117-ac77-6f0fadc407e0",
+              "x": 440,
+              "y": 596
+            },
+            {
+              "id": "86c7a780-a74c-4679-9aa5-fd86b9eacf3d",
+              "x": 292,
+              "y": 594
+            },
+            {
+              "id": "a214a723-a2c5-4115-b5e6-18c6f65f9394",
+              "x": 291,
+              "y": 333
+            }
+          ]
+        },
+        {
+          "id": "f5557acc-a2c5-4335-9b6c-373f7505bcf5",
+          "name": "1.913.3",
+          "pdfWidth": 1351,
+          "pdfHeight": 3119,
+          "points": [
+            {
+              "id": "d85f0f9e-9717-4501-bfc1-9f7da678e016",
+              "x": 457,
+              "y": 332
+            },
+            {
+              "id": "8d43458d-a57c-4533-8bba-eb1502706afc",
+              "x": 593,
+              "y": 332
+            },
+            {
+              "id": "ef6f6d01-75fc-4270-a026-df3b8edfad2e",
+              "x": 594,
+              "y": 594
+            },
+            {
+              "id": "237c1997-2861-4bab-ae01-2300ea20bf59",
+              "x": 460,
+              "y": 594
+            },
+            {
+              "id": "fbbcb3f1-b613-447f-b311-6f92c4348323",
+              "x": 456,
+              "y": 332
+            }
+          ]
+        },
+        {
+          "id": "9e21bb9d-7fb5-4df2-bc55-98e61710fa2e",
+          "name": "1.913.4",
+          "pdfWidth": 1351,
+          "pdfHeight": 3119,
+          "points": [
+            {
+              "id": "fa84b863-2b1b-45c2-947c-8aa97bf94b92",
+              "x": 609,
+              "y": 330
+            },
+            {
+              "id": "b9057242-d47e-4b9a-ba80-68baaac710e9",
+              "x": 759,
+              "y": 330
+            },
+            {
+              "id": "e1f7fb5b-9393-4462-918a-c8e67d3693b5",
+              "x": 761,
+              "y": 596
+            },
+            {
+              "id": "949366a2-0c61-4cd4-a153-d8e2028b496e",
+              "x": 608,
+              "y": 594
+            },
+            {
+              "id": "6a2e33ad-0c81-4491-a567-fb037381ccee",
+              "x": 609,
+              "y": 330
+            }
+          ]
+        },
+        {
+          "id": "9d91e869-6e53-4ca9-a24e-d4f6fd6ab2b1",
+          "name": "1.913.2",
+          "pdfWidth": 1351,
+          "pdfHeight": 3119,
+          "points": [
+            {
+              "id": "0515df93-ba6a-4a7f-a75a-b3d0ea58750a",
+              "x": 781,
+              "y": 331
+            },
+            {
+              "id": "27ab6bbc-6643-4e56-a4df-c0dba144c2cc",
+              "x": 1223,
+              "y": 331
+            },
+            {
+              "id": "440d94c0-5c4c-4107-b8d7-c705674e9e0b",
+              "x": 1224,
+              "y": 595
+            },
+            {
+              "id": "e9942807-aa70-4cfe-bb47-052919d3fcdd",
+              "x": 778,
+              "y": 594
+            },
+            {
+              "id": "e54f6581-0871-4f1f-a2c8-c31edfbaaabc",
+              "x": 777,
+              "y": 327
+            }
+          ]
+        },
+        {
+          "id": "4b58bd9d-5201-4aa5-b67b-702a636528e6",
+          "name": "1.913",
+          "pdfWidth": 1351,
+          "pdfHeight": 3119,
+          "points": [
+            {
+              "id": "0f563c06-17b9-4e1f-8900-025e1ee5233b",
+              "x": 134,
+              "y": 980
+            },
+            {
+              "id": "ce4a0d11-e407-43ba-81f5-0d1238a4de42",
+              "x": 779,
+              "y": 983
+            },
+            {
+              "id": "647556d5-9cc5-49c0-baeb-7dba4a0ef9d6",
+              "x": 777,
+              "y": 1318
+            },
+            {
+              "id": "8db2e721-cef7-4bc0-bf20-0eef6bb35494",
+              "x": 131,
+              "y": 1313
+            },
+            {
+              "id": "097c33e2-8b6e-4bfd-b4ca-af935d41b611",
+              "x": 131,
+              "y": 978
+            }
+          ]
+        },
+        {
+          "id": "34a86b59-dc72-4e44-b5a2-01063c5a59b9",
+          "name": "1.911",
+          "pdfWidth": 1351,
+          "pdfHeight": 3119,
+          "points": [
+            {
+              "id": "9a064cea-eac1-4607-9797-11bde3bb9b5d",
+              "x": 134,
+              "y": 1314
+            },
+            {
+              "id": "b20987c6-0518-4e3f-9cbd-9aa55b86b4ea",
+              "x": 440,
+              "y": 1316
+            },
+            {
+              "id": "315964e3-5a63-4add-9ce7-65236397292b",
+              "x": 439,
+              "y": 1652
+            },
+            {
+              "id": "c76af2e1-9595-484c-a57e-4f2d470bccbf",
+              "x": 128,
+              "y": 1652
+            },
+            {
+              "id": "6a3359dd-9cf2-4b47-b16c-d2d1d3f21274",
+              "x": 129,
+              "y": 1312
+            }
+          ]
+        },
+        {
+          "id": "3893320d-2496-41fc-ab23-d8d5fdc25a7b",
+          "name": "1.909",
+          "pdfWidth": 1351,
+          "pdfHeight": 3119,
+          "points": [
+            {
+              "id": "da64115a-8135-4b74-80e1-5fb57df35957",
+              "x": 612,
+              "y": 1469
+            },
+            {
+              "id": "2a4380c9-52da-4b52-921e-17a18ba1ded1",
+              "x": 928,
+              "y": 1470
+            },
+            {
+              "id": "52c1e444-0c20-4bd6-b64e-cfb70caf5dad",
+              "x": 925,
+              "y": 1658
+            },
+            {
+              "id": "5ca144f5-2ca0-482a-8239-9350c14cdc21",
+              "x": 615,
+              "y": 1658
+            },
+            {
+              "id": "d7a748d9-f1af-45fa-bb4e-829df1b5d492",
+              "x": 613,
+              "y": 1468
+            }
+          ]
+        },
+        {
+          "id": "88a79f8e-eb57-4203-84ff-0184016505f0",
+          "name": "1.913.1",
+          "pdfWidth": 1351,
+          "pdfHeight": 3119,
+          "points": [
+            {
+              "id": "b85cf400-c6f5-4e69-b175-e7f723253f73",
+              "x": 946,
+              "y": 1468
+            },
+            {
+              "id": "bfcbcef2-44bc-42ea-9164-fe9b762f293b",
+              "x": 1222,
+              "y": 1468
+            },
+            {
+              "id": "7fae4cf8-687b-4c79-b1e0-86a76aa87d77",
+              "x": 1223,
+              "y": 1654
+            },
+            {
+              "id": "02dc5275-ca7b-4482-9456-55da56b9b0de",
+              "x": 945,
+              "y": 1659
+            },
+            {
+              "id": "b6384030-b4b1-4398-af77-829fa0709efc",
+              "x": 947,
+              "y": 1468
+            }
+          ]
+        },
+        {
+          "id": "b06de1d4-a4a5-4e17-8258-28af0fa86352",
+          "name": "1.906.1",
+          "pdfWidth": 1351,
+          "pdfHeight": 3119,
+          "points": [
+            {
+              "id": "fa03695d-34fc-4fc5-a044-ba4a06e72701",
+              "x": 131,
+              "y": 1984
+            },
+            {
+              "id": "04753529-da17-468b-a829-29e8f5dcd73d",
+              "x": 295,
+              "y": 1987
+            },
+            {
+              "id": "aee50bc6-aef1-480b-a3a3-302d321f864b",
+              "x": 294,
+              "y": 2356
+            },
+            {
+              "id": "02f3abb1-ddab-4d31-bbf0-14dfead376b1",
+              "x": 128,
+              "y": 2352
+            },
+            {
+              "id": "17573530-639b-4348-8170-2420cee0e77f",
+              "x": 129,
+              "y": 1983
+            }
+          ]
+        },
+        {
+          "id": "93bccb4a-36ac-4e49-811c-d178f7914ed3",
+          "name": "1.906.2",
+          "pdfWidth": 1351,
+          "pdfHeight": 3119,
+          "points": [
+            {
+              "id": "0711e9ee-49cf-4831-955f-bf19e8f53d7c",
+              "x": 579,
+              "y": 1984
+            },
+            {
+              "id": "06e6056e-f371-402a-8484-b54483ada306",
+              "x": 832,
+              "y": 1989
+            },
+            {
+              "id": "2a01fecb-d2ff-40de-97fd-c0972ccc2cce",
+              "x": 832,
+              "y": 2355
+            },
+            {
+              "id": "f11ae2a4-b889-42ab-b61b-fdde6f6fc265",
+              "x": 580,
+              "y": 2353
+            },
+            {
+              "id": "a6b15500-dd0b-4edd-a99f-b07b10f608cf",
+              "x": 578,
+              "y": 1983
+            }
+          ]
+        },
+        {
+          "id": "fbef87dc-7b71-4861-a3d7-a1d06b62ba73",
+          "name": "1.901",
+          "pdfWidth": 1351,
+          "pdfHeight": 3119,
+          "points": [
+            {
+              "id": "3f5d0d14-d6e6-402d-a98f-5849391579de",
+              "x": 837,
+              "y": 1989
+            },
+            {
+              "id": "03020605-a34f-4295-a7ff-526526fcbcac",
+              "x": 1111,
+              "y": 1989
+            },
+            {
+              "id": "808ecf63-8c5e-4ead-8ca2-63101e64a6b3",
+              "x": 1114,
+              "y": 2324
+            },
+            {
+              "id": "9eb990fb-9e70-41d1-8061-352f7ba9c561",
+              "x": 833,
+              "y": 2324
+            },
+            {
+              "id": "3fe51701-a757-4368-b034-97334c1f6f5f",
+              "x": 835,
+              "y": 1986
+            }
+          ]
+        },
+        {
+          "id": "087ad9d4-4515-42ee-9db9-8b545732a2c0",
+          "name": "1.906",
+          "pdfWidth": 1351,
+          "pdfHeight": 3119,
+          "points": [
+            {
+              "id": "8bc5857b-13c0-4109-976f-b56c08a0ad0a",
+              "x": 130,
+              "y": 2356
+            },
+            {
+              "id": "f87b8079-f3ef-46ce-b0d3-27684167352c",
+              "x": 441,
+              "y": 2356
+            },
+            {
+              "id": "c05b7590-41e9-4a27-8085-a8b229db9f6b",
+              "x": 440,
+              "y": 2660
+            },
+            {
+              "id": "0afe35b6-e095-4b89-88ce-2e3b1844474f",
+              "x": 127,
+              "y": 2656
+            },
+            {
+              "id": "25ac2a0b-0ffd-42f6-a9b0-107ef025dda4",
+              "x": 131,
+              "y": 2353
+            }
+          ]
+        },
+        {
+          "id": "3713a342-24b8-4ff7-8694-8f97d10a6941",
+          "name": "1.906.3",
+          "pdfWidth": 1351,
+          "pdfHeight": 3119,
+          "points": [
+            {
+              "id": "f8efe4c5-029e-4a02-8b2c-841d3ada349e",
+              "x": 579,
+              "y": 2506
+            },
+            {
+              "id": "97c67891-dfb2-4162-88b3-5d266a14e564",
+              "x": 808,
+              "y": 2507
+            },
+            {
+              "id": "4f7dc28d-2143-4c2a-b426-cca2a0b976f1",
+              "x": 808,
+              "y": 2657
+            },
+            {
+              "id": "aa00cfe8-c281-49cf-b375-35fd11bb4e17",
+              "x": 579,
+              "y": 2657
+            },
+            {
+              "id": "67f57ef4-39b3-494c-903d-21713abeb984",
+              "x": 579,
+              "y": 2507
+            }
+          ]
+        },
+        {
+          "id": "49469908-6e05-481a-8194-393a759052c1",
+          "name": "1.906.4",
+          "pdfWidth": 1351,
+          "pdfHeight": 3119,
+          "points": [
+            {
+              "id": "5e7e79ff-3762-42bb-a4ce-74673f0d102f",
+              "x": 580,
+              "y": 2666
+            },
+            {
+              "id": "c2205040-6d1d-47b2-92a3-412021aa10a7",
+              "x": 807,
+              "y": 2667
+            },
+            {
+              "id": "14a88a29-9967-430f-b37a-f7da21794891",
+              "x": 809,
+              "y": 2832
+            },
+            {
+              "id": "a12c451b-3110-4762-bb0e-169c579a4773",
+              "x": 579,
+              "y": 2832
+            },
+            {
+              "id": "a72a708d-376b-46b4-8927-9330fdf12c01",
+              "x": 580,
+              "y": 2665
+            }
+          ]
+        },
+        {
+          "id": "2075c236-2af6-4925-a197-77babaf2b41e",
+          "name": "1.906.5",
+          "pdfWidth": 1351,
+          "pdfHeight": 3119,
+          "points": [
+            {
+              "id": "36dd19ae-28be-4b79-a5bc-9ebc98244f66",
+              "x": 577,
+              "y": 2854
+            },
+            {
+              "id": "bc639870-6207-42ec-bbbc-4aebdf82f7a3",
+              "x": 807,
+              "y": 2855
+            },
+            {
+              "id": "16785dc4-fc07-4b81-ab7a-5075fc1feec7",
+              "x": 808,
+              "y": 2986
+            },
+            {
+              "id": "e0d46aa6-c682-4a7b-843d-fcf4b11a5880",
+              "x": 579,
+              "y": 2984
+            },
+            {
+              "id": "1482d3ba-2655-42c3-885b-060623ce4789",
+              "x": 577,
+              "y": 2853
+            }
+          ]
+        }
       ]
     },
     {
@@ -880,8 +3113,69 @@ export const ZONE_MAPPING = {
       name: "MU90.1C1",
       className: "MU90_1C",
       pdf: MU901CPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 2326,
+      "points": [
+        {
+          "id": "1d8e177f-ad51-44c3-b206-14af71c3be1b",
+          "x": 501,
+          "y": 1263
+        },
+        {
+          "id": "b9578093-a050-47d0-85e8-47c9785265c8",
+          "x": 781,
+          "y": 1263
+        },
+        {
+          "id": "4862a9a5-ada9-4f69-b15d-9b64f09b325f",
+          "x": 781,
+          "y": 1547
+        },
+        {
+          "id": "5b94b0cd-838c-4bf4-a77a-d5bb90e76791",
+          "x": 500,
+          "y": 1548
+        },
+        {
+          "id": "07061ff4-2dfc-4019-b333-d7735bbd54b3",
+          "x": 500,
+          "y": 1263
+        }
+      ],
       rooms: [
-        { name: "1.924", className: "MU90_1_VB-ZoneMU90_1C-1" }
+        {
+          "id": "3d13c394-260d-4657-ad6c-f39dfaaa1621",
+          "name": "1.937",
+          "pdfWidth": 1351,
+          "pdfHeight": 1525,
+          "points": [
+            {
+              "id": "53e32651-d4c8-464b-8b4a-20aedff31f26",
+              "x": 311,
+              "y": 570
+            },
+            {
+              "id": "8d7f47bb-af9a-4d37-adbc-94444c742c73",
+              "x": 771,
+              "y": 572
+            },
+            {
+              "id": "8976eb67-d5f9-4e08-855a-4b87f7502367",
+              "x": 768,
+              "y": 798
+            },
+            {
+              "id": "71ca1587-3f61-4273-ba1d-a7b0f3a7e86c",
+              "x": 312,
+              "y": 798
+            },
+            {
+              "id": "c5810e17-4008-4fd7-be58-efa758fc63a8",
+              "x": 310,
+              "y": 570
+            }
+          ]
+        }
       ]
     },
     {
@@ -889,17 +3183,140 @@ export const ZONE_MAPPING = {
       name: "MU90.1C2",
       className: "MU90_1C2",
       pdf: MU901C1Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 2326,
+      "points": [
+        {
+          "id": "83c6082c-7dc2-4b5a-ac72-d38c1713f8d7",
+          "x": 789,
+          "y": 616
+        },
+        {
+          "id": "d127e833-91a1-49ed-aa9c-7cc3bf3cedcf",
+          "x": 1121,
+          "y": 617
+        },
+        {
+          "id": "b0c8906f-3f51-4373-bacc-cf74f830086d",
+          "x": 1121,
+          "y": 1005
+        },
+        {
+          "id": "c9f56232-19a3-474c-8d83-171b0c6147da",
+          "x": 789,
+          "y": 1004
+        },
+        {
+          "id": "6cda6102-7e6b-414c-af51-e8094a690a0f",
+          "x": 789,
+          "y": 616
+        }
+      ],
       rooms: [
-        { name: "1.937", className: "MU90_1_VB-ZoneMU90_1C2-1" }
+        {
+          "id": "8dd7a813-b6e8-40ad-b19c-ee6a530a1f54",
+          "name": "1.924",
+          "pdfWidth": 1351,
+          "pdfHeight": 1334,
+          "points": [
+            {
+              "id": "145b28a3-827a-45e5-be14-0e574d38dcc0",
+              "x": 352,
+              "y": 338
+            },
+            {
+              "id": "0a9a9d41-695f-48fe-8d38-0cd3391b34dd",
+              "x": 928,
+              "y": 336
+            },
+            {
+              "id": "c65b7c10-8f3b-4fa6-a7b2-16f725fd14fa",
+              "x": 928,
+              "y": 626
+            },
+            {
+              "id": "6c18f812-374b-40f1-b17c-31e19d32a680",
+              "x": 351,
+              "y": 625
+            },
+            {
+              "id": "0709b37d-75df-4b0f-ab1b-3fafeaae8949",
+              "x": 350,
+              "y": 336
+            }
+          ]
+        }
       ]
+
     },
     {
       id: 5,
       name: "MU90.1D",
       className: "MU90_1D",
       pdf: MU901DPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 2326,
+      "points": [
+        {
+          "id": "c671f703-29c3-43ee-a809-222588934c2c",
+          "x": 864,
+          "y": 224
+        },
+        {
+          "id": "bb9e661b-200c-4a24-bdbe-f701746adc6a",
+          "x": 1122,
+          "y": 226
+        },
+        {
+          "id": "70bf8fd3-6a91-4de2-b01e-95057d8abb5e",
+          "x": 1124,
+          "y": 613
+        },
+        {
+          "id": "c7f43bbd-c47f-48c6-9a31-4cae5a829f5d",
+          "x": 864,
+          "y": 610
+        },
+        {
+          "id": "aefcfae9-b80b-4e6d-b513-6ce3f426731a",
+          "x": 863,
+          "y": 224
+        }
+      ],
       rooms: [
-        { name: "1.947", className: "MU90_1_VB-ZoneMU90_1D-1" }
+        {
+          "id": "a57f6009-51f5-481d-9872-bdd965c3a943",
+          "name": "1.947",
+          "pdfWidth": 1351,
+          "pdfHeight": 1896,
+          "points": [
+            {
+              "id": "eabc203c-d5f7-4561-ac09-ac924bb2e5b3",
+              "x": 643,
+              "y": 1259
+            },
+            {
+              "id": "b371d73c-32cc-4668-ac2e-0c59be619e65",
+              "x": 1228,
+              "y": 1262
+            },
+            {
+              "id": "a2640efb-f935-4b17-92b6-73ea16a0e00c",
+              "x": 1224,
+              "y": 1550
+            },
+            {
+              "id": "13afb87b-5efd-4599-8fc9-f928b2854810",
+              "x": 644,
+              "y": 1553
+            },
+            {
+              "id": "fb29d9c6-8dd1-42fb-a63a-f99c0ad399dc",
+              "x": 644,
+              "y": 1258
+            }
+          ]
+        }
       ]
     },
     {
@@ -907,8 +3324,69 @@ export const ZONE_MAPPING = {
       name: "MU90.1E",
       className: "MU90_1E",
       pdf: MU901EPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 2326,
+      "points": [
+        {
+          "id": "aecac761-2e74-4485-a716-cb57ff39fa2c",
+          "x": 502,
+          "y": 223
+        },
+        {
+          "id": "86811039-49d6-48b6-bbd2-9951a198a6c4",
+          "x": 858,
+          "y": 225
+        },
+        {
+          "id": "720f0f0a-7043-4811-a7ed-f4a8a426e54d",
+          "x": 857,
+          "y": 548
+        },
+        {
+          "id": "0ff46045-1b0f-4b3e-bff2-8add68353598",
+          "x": 502,
+          "y": 549
+        },
+        {
+          "id": "4332b6d2-89e7-4c5f-a13c-afd5a28840dd",
+          "x": 501,
+          "y": 223
+        }
+      ],
       rooms: [
-        { name: "1.951", className: "MU90_1_VB-ZoneMU90_1E-1" }
+        {
+          "id": "4faf78a1-50c3-4913-b79a-86800f5c85db",
+          "name": "1.951",
+          "pdfWidth": 1351,
+          "pdfHeight": 1309,
+          "points": [
+            {
+              "id": "7e35c7ed-33b1-4a34-bee2-392eb4bc5f50",
+              "x": 628,
+              "y": 109
+            },
+            {
+              "id": "791cc4d7-8463-431c-9f25-fdfa6f7a18ed",
+              "x": 953,
+              "y": 111
+            },
+            {
+              "id": "e99db01d-d00b-4777-b131-b40232f06b32",
+              "x": 952,
+              "y": 335
+            },
+            {
+              "id": "7dea875e-6722-4af8-844c-affc5b1d22e4",
+              "x": 630,
+              "y": 336
+            },
+            {
+              "id": "6fbf4019-3a5a-40bc-98b8-5d8e6ad3a38f",
+              "x": 627,
+              "y": 106
+            }
+          ]
+        }
       ]
     },
     {
@@ -916,8 +3394,69 @@ export const ZONE_MAPPING = {
       name: "MU90.1F",
       className: "MU90_1F",
       pdf: MU901FPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 2326,
+      "points": [
+        {
+          "id": "1ff7b6b8-004e-4e77-878e-00a3436e4337",
+          "x": 238,
+          "y": 224
+        },
+        {
+          "id": "53eeda8e-ea90-4694-908e-993892eb59a4",
+          "x": 496,
+          "y": 224
+        },
+        {
+          "id": "524d2992-97f9-465b-a23c-314525c045cc",
+          "x": 494,
+          "y": 552
+        },
+        {
+          "id": "b7a07860-dc99-4bc1-812b-2b24c27811d8",
+          "x": 238,
+          "y": 551
+        },
+        {
+          "id": "e18609c5-4ef7-48d1-8246-53b4cdf816ad",
+          "x": 240,
+          "y": 223
+        }
+      ],
       rooms: [
-        { name: "1.952", className: "MU90_1_VB-ZoneMU90_1F-1" }
+        {
+          "id": "99156ae7-d1a7-4b34-af20-b6686f0624c4",
+          "name": "1.952",
+          "pdfWidth": 1351,
+          "pdfHeight": 1659,
+          "points": [
+            {
+              "id": "7425e2e8-d121-4f1a-a781-dc66bfdd5eb4",
+              "x": 405,
+              "y": 995
+            },
+            {
+              "id": "a7141041-ef93-4520-b867-a08656a352cd",
+              "x": 992,
+              "y": 996
+            },
+            {
+              "id": "17343307-fe10-47b4-b647-d1f7793f3838",
+              "x": 991,
+              "y": 1288
+            },
+            {
+              "id": "f3ea9f8a-31e1-4071-8bcc-7cfe98412190",
+              "x": 403,
+              "y": 1288
+            },
+            {
+              "id": "9c9e1e0d-8b3f-4480-aec3-eda064bc0def",
+              "x": 405,
+              "y": 993
+            }
+          ]
+        }
       ]
     },
     {
@@ -925,10 +3464,135 @@ export const ZONE_MAPPING = {
       name: "MU90.1G",
       className: "MU90_1G",
       pdf: MU901GPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 2326,
+      "points": [
+        {
+          "id": "f6993f8c-f234-4125-9d74-be178226172f",
+          "x": 239,
+          "y": 556
+        },
+        {
+          "id": "916a6ba4-c153-413a-b534-7f54c101e4f9",
+          "x": 430,
+          "y": 557
+        },
+        {
+          "id": "c7e52239-4bce-48d5-8a32-05b8bbad45d9",
+          "x": 431,
+          "y": 875
+        },
+        {
+          "id": "f877fcd9-a0e2-475c-8e28-87456192a908",
+          "x": 244,
+          "y": 876
+        },
+        {
+          "id": "f850c408-f9f6-454c-88c2-4b3075559b58",
+          "x": 237,
+          "y": 556
+        }
+      ],
       rooms: [
-        { name: "1.950", className: "MU90_1_VB-ZoneMU90_1G-1" },
-        { name: "1.944", className: "MU90_1_VB-ZoneMU90_1G-2" },
-        { name: "1.940", className: "MU90_1_VB-ZoneMU90_1G-3" }
+        {
+          "id": "0a03616e-fae3-45ca-b59e-c721db52f4ef",
+          "name": "1.950",
+          "pdfWidth": 1366,
+          "pdfHeight": 2071,
+          "points": [
+            {
+              "id": "ba702469-c7fd-457a-8bf5-0d3975c461b2",
+              "x": 488,
+              "y": 72
+            },
+            {
+              "id": "f18ccc45-d931-4fa5-b152-fe35c103cf89",
+              "x": 879,
+              "y": 72
+            },
+            {
+              "id": "bb756d9b-2694-4ad5-87d7-7d3d8b589a52",
+              "x": 879,
+              "y": 614
+            },
+            {
+              "id": "bfff9328-4219-4981-899f-6aec8d788876",
+              "x": 486,
+              "y": 611
+            },
+            {
+              "id": "7c474479-178d-473c-ba88-47fa7d8eb61f",
+              "x": 487,
+              "y": 73
+            }
+          ]
+        },
+        {
+          "id": "9d34a35f-818a-4286-8323-3f5fbdc657ee",
+          "name": "1.944",
+          "pdfWidth": 1366,
+          "pdfHeight": 2071,
+          "points": [
+            {
+              "id": "ac6eb2fc-f730-4085-bb9e-17de9f648825",
+              "x": 486,
+              "y": 816
+            },
+            {
+              "id": "130e92e7-3e16-4e24-8e4d-6f14c6450b87",
+              "x": 882,
+              "y": 814
+            },
+            {
+              "id": "11c9f1a1-72ce-4b7a-b379-6cf127d64c31",
+              "x": 881,
+              "y": 1207
+            },
+            {
+              "id": "791e087f-5dc5-49f8-aa73-6d0e3b31f9bf",
+              "x": 488,
+              "y": 1204
+            },
+            {
+              "id": "c5e5e6e8-242c-4c29-9800-c727f280e653",
+              "x": 486,
+              "y": 817
+            }
+          ]
+        },
+        {
+          "id": "12fbe510-d695-4f9c-bb47-d732c4478542",
+          "name": "1.940",
+          "pdfWidth": 1366,
+          "pdfHeight": 2071,
+          "points": [
+            {
+              "id": "49afea33-7c4b-47b2-91e7-ba02008cec33",
+              "x": 485,
+              "y": 1236
+            },
+            {
+              "id": "2068ff0a-3c09-4887-b021-d62065d50fc8",
+              "x": 880,
+              "y": 1237
+            },
+            {
+              "id": "220efef7-bbb3-4c79-aa5f-df03b412812b",
+              "x": 883,
+              "y": 1606
+            },
+            {
+              "id": "598d650a-6cf9-4fe7-a68f-4137d3a3fd0c",
+              "x": 487,
+              "y": 1606
+            },
+            {
+              "id": "03c90fd5-8cd9-4678-8475-f05aabed52b3",
+              "x": 486,
+              "y": 1235
+            }
+          ]
+        }
       ]
     },
     {
@@ -936,9 +3600,102 @@ export const ZONE_MAPPING = {
       name: "MU90.1H",
       className: "MU90_1H",
       pdf: MU901HPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 2326,
+      "points": [
+        {
+          "id": "258e55f3-e198-44ac-ab45-f8d2765335bb",
+          "x": 244,
+          "y": 947
+        },
+        {
+          "id": "5c958e7d-46a3-4aba-852c-fab98405661e",
+          "x": 429,
+          "y": 949
+        },
+        {
+          "id": "fc6e7e68-c6b2-4e2a-91a8-bcb6b30ff00a",
+          "x": 431,
+          "y": 1659
+        },
+        {
+          "id": "d8bb411c-72a1-451f-a53c-2d960d03f42c",
+          "x": 243,
+          "y": 1656
+        },
+        {
+          "id": "4473afb6-559f-4f3f-a497-e423534bde89",
+          "x": 245,
+          "y": 947
+        }
+      ],
       rooms: [
-        { name: "1.928", className: "MU90_1_VB-ZoneMU90_1H-1" },
-        { name: "1.920", className: "MU90_1_VB-ZoneMU90_1H-2" }
+        {
+          "id": "862b4752-d992-4d22-bfe0-2b9bd545bc1f",
+          "name": "1.928",
+          "pdfWidth": 1351,
+          "pdfHeight": 4209,
+          "points": [
+            {
+              "id": "06e070b9-1155-4d7a-a81c-f4a9264f71c2",
+              "x": 520,
+              "y": 987
+            },
+            {
+              "id": "f96cbf0e-378a-43ee-8738-eb0db44750e3",
+              "x": 888,
+              "y": 990
+            },
+            {
+              "id": "a03ac01b-249a-4409-ba16-7e51c27cdf3e",
+              "x": 888,
+              "y": 1532
+            },
+            {
+              "id": "d68941bb-4a72-42a2-b13b-2ccd1750d788",
+              "x": 520,
+              "y": 1533
+            },
+            {
+              "id": "11076d94-e5b5-41d8-8624-b3980e952674",
+              "x": 521,
+              "y": 987
+            }
+          ]
+        },
+        {
+          "id": "85d9274c-56af-47c7-95c0-d58e0a56bdf8",
+          "name": "1.920",
+          "pdfWidth": 1351,
+          "pdfHeight": 4209,
+          "points": [
+            {
+              "id": "7065b673-557d-42a8-a2bf-594335e8c9be",
+              "x": 518,
+              "y": 2847
+            },
+            {
+              "id": "f75dec1b-7525-4e2a-95e6-c143827e41ef",
+              "x": 888,
+              "y": 2847
+            },
+            {
+              "id": "3cc0ff1f-a290-4e8b-b0ff-e728acce130a",
+              "x": 889,
+              "y": 3379
+            },
+            {
+              "id": "cb9b91cc-7951-4c23-a584-f12e19b33361",
+              "x": 519,
+              "y": 3378
+            },
+            {
+              "id": "e45619df-3de0-40d9-a74d-407513b43376",
+              "x": 519,
+              "y": 2848
+            }
+          ]
+        }
       ]
     },
     {
@@ -946,22 +3703,551 @@ export const ZONE_MAPPING = {
       name: "MU90.1I",
       className: "MU90_1I",
       pdf: MU901IPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 2326,
+      "points": [
+        {
+          "id": "07ad15d7-1320-438b-be55-cf22658561c2",
+          "x": 241,
+          "y": 1664
+        },
+        {
+          "id": "360dd6c4-4f93-4691-9ae3-b6a8f3b72b45",
+          "x": 504,
+          "y": 1664
+        },
+        {
+          "id": "1d4f6695-fce6-46a5-98a0-ec0e72880a6d",
+          "x": 505,
+          "y": 1852
+        },
+        {
+          "id": "fd15ecbe-166a-44e4-b0e1-6851312d0418",
+          "x": 432,
+          "y": 1852
+        },
+        {
+          "id": "2eddacf5-6b39-45ae-919c-39a10c5fc473",
+          "x": 434,
+          "y": 2050
+        },
+        {
+          "id": "3bffa42f-88ee-4e92-b730-708de3ea1f10",
+          "x": 503,
+          "y": 2052
+        },
+        {
+          "id": "6cf7eeb6-22f4-4a52-93f6-6c72c2b351a2",
+          "x": 506,
+          "y": 2113
+        },
+        {
+          "id": "dd03911a-d7fd-4b8b-9bf7-89aca23845e7",
+          "x": 242,
+          "y": 2112
+        },
+        {
+          "id": "5c6ad103-ab30-4ee2-bcf5-74a36a86dacd",
+          "x": 240,
+          "y": 1663
+        }
+      ],
       rooms: [
-        { name: "1.914.4", className: "MU90_1_VB-ZoneMU90_1I-1" },
-        { name: "1.914.3", className: "MU90_1_VB-ZoneMU90_1I-2" },
-        { name: "1.914.2", className: "MU90_1_VB-ZoneMU90_1I-3" },
-        { name: "1.914.1", className: "MU90_1_VB-ZoneMU90_1I-4" },
-        { name: "1.912", className: "MU90_1_VB-ZoneMU90_1I-5" },
-        { name: "1.914", className: "MU90_1_VB-ZoneMU90_1I-6" },
-        { name: "1.918", className: "MU90_1_VB-ZoneMU90_1I-7" },
-        { name: "1.916", className: "MU90_1_VB-ZoneMU90_1I-8" },
-        { name: "1.910", className: "MU90_1_VB-ZoneMU90_1I-9" },
-        { name: "1.908.1", className: "MU90_1_VB-ZoneMU90_1I-10" },
-        { name: "1.908.2", className: "MU90_1_VB-ZoneMU90_1I-11" },
-        { name: "1.908.3", className: "MU90_1_VB-ZoneMU90_1I-12" },
-        { name: "1.908", className: "MU90_1_VB-ZoneMU90_1I-13" },
-        { name: "1.904", className: "MU90_1_VB-ZoneMU90_1I-14" },
-        { name: "1.900.1", className: "MU90_1_VB-ZoneMU90_1I-15" }
+        {
+          "id": "0887b7fd-5f72-418f-8e56-d448beb9dee1",
+          "name": "1.914.4",
+          "pdfWidth": 1351,
+          "pdfHeight": 2089,
+          "points": [
+            {
+              "id": "e4858d28-c950-4f8b-9285-6be1490e4fee",
+              "x": 661,
+              "y": 45
+            },
+            {
+              "id": "a917201d-5eed-4a74-b419-7def421cba42",
+              "x": 920,
+              "y": 47
+            },
+            {
+              "id": "ea44dd97-2662-436e-8881-5955e9aafa6c",
+              "x": 920,
+              "y": 179
+            },
+            {
+              "id": "06ec3571-27a0-44d7-bf9e-ded687e6854c",
+              "x": 660,
+              "y": 182
+            },
+            {
+              "id": "83245ccf-e6dd-43e7-b3cd-a19588d36357",
+              "x": 662,
+              "y": 46
+            }
+          ]
+        },
+        {
+          "id": "50194d8a-8e41-4459-ae8f-40a63c1174ae",
+          "name": "1.914.3",
+          "pdfWidth": 1351,
+          "pdfHeight": 2089,
+          "points": [
+            {
+              "id": "2adf889b-ebaa-40a4-975f-c147139b7653",
+              "x": 663,
+              "y": 185
+            },
+            {
+              "id": "fe258de8-a78d-4c49-bceb-57d0f55ee1cd",
+              "x": 919,
+              "y": 186
+            },
+            {
+              "id": "61f2cd83-2486-45ef-947b-243669c8736f",
+              "x": 919,
+              "y": 292
+            },
+            {
+              "id": "0c318970-b618-40cb-9ca3-fabe1477875c",
+              "x": 660,
+              "y": 292
+            },
+            {
+              "id": "415645dc-0c55-4105-a3c3-d6975f70ef4a",
+              "x": 664,
+              "y": 184
+            }
+          ]
+        },
+        {
+          "id": "131c86da-277d-46fd-9159-dcc9c4582bc6",
+          "name": "1.914.2",
+          "pdfWidth": 1351,
+          "pdfHeight": 2089,
+          "points": [
+            {
+              "id": "782b7003-f5c1-4853-abbd-7ddac86018db",
+              "x": 662,
+              "y": 311
+            },
+            {
+              "id": "8bf6b722-3aac-496f-9760-3c180c96c295",
+              "x": 919,
+              "y": 309
+            },
+            {
+              "id": "09e91eb7-994f-4614-b4e2-3509c785c814",
+              "x": 920,
+              "y": 445
+            },
+            {
+              "id": "4db38756-1051-4c33-89f7-644ac8e43888",
+              "x": 662,
+              "y": 446
+            },
+            {
+              "id": "2b6b3f7a-13f5-4166-a902-d1392e0d2657",
+              "x": 664,
+              "y": 312
+            }
+          ]
+        },
+        {
+          "id": "e4ca7c9f-4339-4d96-a8eb-9da69c3f2111",
+          "name": "1.914.1",
+          "pdfWidth": 1351,
+          "pdfHeight": 2089,
+          "points": [
+            {
+              "id": "74be7226-2505-49be-9fa9-2c13d941ce54",
+              "x": 662,
+              "y": 450
+            },
+            {
+              "id": "72e6dc9d-2c56-4ec9-bbf9-fa96cae5b600",
+              "x": 919,
+              "y": 450
+            },
+            {
+              "id": "d3d13905-2d24-41f7-a993-d92edf5fe6fe",
+              "x": 919,
+              "y": 592
+            },
+            {
+              "id": "de19cde2-a90f-449d-b345-577bec68cbd1",
+              "x": 661,
+              "y": 591
+            },
+            {
+              "id": "a3adabba-e299-40fc-85c2-4ff1d80c92a7",
+              "x": 662,
+              "y": 449
+            }
+          ]
+        },
+        {
+          "id": "cf12e99b-c677-4e23-8cb5-30dff29268e3",
+          "name": "1.912",
+          "pdfWidth": 1351,
+          "pdfHeight": 2089,
+          "points": [
+            {
+              "id": "6ef05876-6353-4a95-b5d6-9b364976f8b4",
+              "x": 188,
+              "y": 50
+            },
+            {
+              "id": "dc62e4b8-3467-44ea-b09e-a507e6fea9fa",
+              "x": 489,
+              "y": 51
+            },
+            {
+              "id": "6738b416-cccb-4fe5-9cc4-32e36b911b25",
+              "x": 490,
+              "y": 451
+            },
+            {
+              "id": "70d1d0b7-2221-4257-b939-5324e84ccc80",
+              "x": 190,
+              "y": 444
+            },
+            {
+              "id": "2c12f1d3-a5d5-4f62-99ef-0b92e42c1416",
+              "x": 188,
+              "y": 51
+            }
+          ]
+        },
+        {
+          "id": "91849cbc-bc5f-40f6-ad88-e40ad74372df",
+          "name": "1.914",
+          "pdfWidth": 1351,
+          "pdfHeight": 2089,
+          "points": [
+            {
+              "id": "8a386e47-75ca-4d84-b05f-2c78e3828667",
+              "x": 512,
+              "y": 51
+            },
+            {
+              "id": "1be197b9-6f5b-47e2-ba6e-b2983d278b26",
+              "x": 661,
+              "y": 51
+            },
+            {
+              "id": "ee1c9d75-3965-41c2-aa11-6f3b54bc4c29",
+              "x": 662,
+              "y": 593
+            },
+            {
+              "id": "cd1ef860-e250-41ff-a63c-0fdc1b0e6a11",
+              "x": 511,
+              "y": 591
+            },
+            {
+              "id": "46b00743-2536-4acf-9aed-819cc0402166",
+              "x": 511,
+              "y": 51
+            }
+          ]
+        },
+        {
+          "id": "893f37e9-5c32-4a4e-88b4-11fc54a8525d",
+          "name": "1.918",
+          "pdfWidth": 1351,
+          "pdfHeight": 2089,
+          "points": [
+            {
+              "id": "bd752e68-f735-414e-858e-77fd8294ebee",
+              "x": 934,
+              "y": 46
+            },
+            {
+              "id": "23edd7ed-713b-4d0c-bbc2-4e62a3130570",
+              "x": 1228,
+              "y": 46
+            },
+            {
+              "id": "929f39c2-b870-448e-966e-6fa7f88e646c",
+              "x": 1229,
+              "y": 306
+            },
+            {
+              "id": "f85890b2-79a3-457f-ba38-92d0af04b9fa",
+              "x": 931,
+              "y": 309
+            },
+            {
+              "id": "83411062-a556-4e00-9ef9-6136e8c1ca2c",
+              "x": 933,
+              "y": 44
+            }
+          ]
+        },
+        {
+          "id": "9609c6a6-c592-4283-a2d4-d9b65d79b669",
+          "name": "1.916",
+          "pdfWidth": 1351,
+          "pdfHeight": 2089,
+          "points": [
+            {
+              "id": "3d71c368-bf65-4311-9cb7-a19e3493d339",
+              "x": 934,
+              "y": 312
+            },
+            {
+              "id": "07c9d224-f2d5-4d98-ac1e-610b4d9ff607",
+              "x": 1233,
+              "y": 311
+            },
+            {
+              "id": "dea031ec-8e16-4c1a-9627-7a607eb62be7",
+              "x": 1233,
+              "y": 649
+            },
+            {
+              "id": "165aca9c-d588-462a-8fb8-52c549beee20",
+              "x": 935,
+              "y": 650
+            },
+            {
+              "id": "5150e50e-edb0-43bb-acd4-a26c1729c010",
+              "x": 933,
+              "y": 312
+            }
+          ]
+        },
+        {
+          "id": "c7d0ea6d-2e1d-4a9c-89d4-13cb76419b14",
+          "name": "1.910",
+          "pdfWidth": 1351,
+          "pdfHeight": 2089,
+          "points": [
+            {
+              "id": "1a5f3bf8-67b4-4dac-9ec8-f24966c9185f",
+              "x": 96,
+              "y": 477
+            },
+            {
+              "id": "6fae0a24-c7b3-4ef3-b3f1-3f85c8821fad",
+              "x": 340,
+              "y": 481
+            },
+            {
+              "id": "fcec95ec-522a-408d-8a09-67d883b3dc74",
+              "x": 339,
+              "y": 860
+            },
+            {
+              "id": "98e7a9e2-41c5-4338-939c-0b010abb4fca",
+              "x": 94,
+              "y": 859
+            },
+            {
+              "id": "65918a03-afbb-4607-ad10-2984275fc495",
+              "x": 96,
+              "y": 475
+            }
+          ]
+        },
+        {
+          "id": "426d26e1-b3d1-40b3-a686-d908a509e55e",
+          "name": "1.908.1",
+          "pdfWidth": 1351,
+          "pdfHeight": 2089,
+          "points": [
+            {
+              "id": "3154ea32-1534-424f-bbf1-8d4d2c359c10",
+              "x": 747,
+              "y": 879
+            },
+            {
+              "id": "875e76fc-6fc5-4753-b327-d7249801f83e",
+              "x": 915,
+              "y": 879
+            },
+            {
+              "id": "57740084-f8a8-49aa-aca9-8a472ae081a5",
+              "x": 916,
+              "y": 1107
+            },
+            {
+              "id": "d71f26a6-13b7-4175-80ea-8f457f17b39b",
+              "x": 749,
+              "y": 1106
+            },
+            {
+              "id": "fadeb31e-abad-4a7b-8337-122149ea2f66",
+              "x": 747,
+              "y": 878
+            }
+          ]
+        },
+        {
+          "id": "2dd23929-e645-469c-adbd-7cd750f20fb5",
+          "name": "1.908.2",
+          "pdfWidth": 1351,
+          "pdfHeight": 2089,
+          "points": [
+            {
+              "id": "1bacadc5-a61f-491a-80d3-82d7a4f02015",
+              "x": 746,
+              "y": 1119
+            },
+            {
+              "id": "d1db7344-9b4c-4f9b-a42e-136b6f7a9a95",
+              "x": 914,
+              "y": 1121
+            },
+            {
+              "id": "0a2710a3-66ae-4478-a644-026c4da891b9",
+              "x": 914,
+              "y": 1237
+            },
+            {
+              "id": "44014862-7b4a-4586-8520-42030fe2bfbd",
+              "x": 748,
+              "y": 1237
+            },
+            {
+              "id": "3dad554b-afb7-4c8a-896d-ef0155d56957",
+              "x": 747,
+              "y": 1117
+            }
+          ]
+        },
+        {
+          "id": "33682ce5-808b-43f4-a203-cb12244c7543",
+          "name": "1.908.3",
+          "pdfWidth": 1351,
+          "pdfHeight": 2089,
+          "points": [
+            {
+              "id": "24c1b555-06ed-4b78-956d-d8f10b2cab2e",
+              "x": 748,
+              "y": 1251
+            },
+            {
+              "id": "d3f1c5ba-f0fe-4816-a231-bf75719133f8",
+              "x": 917,
+              "y": 1253
+            },
+            {
+              "id": "cebe1c50-d07b-4163-8fe0-a5d3e3183ab5",
+              "x": 912,
+              "y": 1371
+            },
+            {
+              "id": "aa2cb0a0-a3c1-45bb-8a08-395bcc65ea11",
+              "x": 746,
+              "y": 1370
+            },
+            {
+              "id": "99cd36a7-6b7f-486a-ad60-84816e0e670a",
+              "x": 747,
+              "y": 1251
+            }
+          ]
+        },
+        {
+          "id": "282a017b-5b13-4a0e-891d-1ad5abd5c3ec",
+          "name": "1.908",
+          "pdfWidth": 1351,
+          "pdfHeight": 2089,
+          "points": [
+            {
+              "id": "e4f019c7-a347-4ada-9c86-fe80000cefa7",
+              "x": 512,
+              "y": 882
+            },
+            {
+              "id": "da20b8eb-804f-4335-a696-b5ee7dd12740",
+              "x": 733,
+              "y": 880
+            },
+            {
+              "id": "992617d3-a57e-4beb-a34b-ce8d705fbb89",
+              "x": 732,
+              "y": 1369
+            },
+            {
+              "id": "c2324736-ddc7-4662-b61c-49a84a2559e4",
+              "x": 511,
+              "y": 1369
+            },
+            {
+              "id": "fef2e1a0-ad94-4034-9d60-cdbe4586d25c",
+              "x": 512,
+              "y": 883
+            }
+          ]
+        },
+        {
+          "id": "71d87006-e06a-4e8f-bfe1-61a5255e41c5",
+          "name": "1.904",
+          "pdfWidth": 1351,
+          "pdfHeight": 2089,
+          "points": [
+            {
+              "id": "88c5f406-6fd1-4d45-a64c-4c6ddf34770c",
+              "x": 97,
+              "y": 1441
+            },
+            {
+              "id": "556748c5-a8dd-47d7-ad5c-5b3687ef57fb",
+              "x": 376,
+              "y": 1441
+            },
+            {
+              "id": "4152e033-dcd6-49cd-aacb-110b726cfec8",
+              "x": 379,
+              "y": 1723
+            },
+            {
+              "id": "795bf702-81df-4b22-b1f9-fe6ca9ba4f66",
+              "x": 97,
+              "y": 1723
+            },
+            {
+              "id": "914f79bd-932e-41b5-9217-5cf05fd44bcf",
+              "x": 96,
+              "y": 1438
+            }
+          ]
+        },
+        {
+          "id": "c2e8d2be-f087-4cc1-ac57-c3f1af743ba9",
+          "name": "1.900.1",
+          "pdfWidth": 1351,
+          "pdfHeight": 2089,
+          "points": [
+            {
+              "id": "096cfea9-74ef-4b9d-b22f-f4aab9907fa9",
+              "x": 918,
+              "y": 1748
+            },
+            {
+              "id": "aa2d43d5-e0ac-4819-8fda-fc87aa46eb7f",
+              "x": 1230,
+              "y": 1747
+            },
+            {
+              "id": "a762d741-f2eb-47b6-b34e-d0c66d192be6",
+              "x": 1229,
+              "y": 2009
+            },
+            {
+              "id": "46d2c89c-c7f4-456d-8aab-0bfa76ddbeb4",
+              "x": 917,
+              "y": 2006
+            },
+            {
+              "id": "6a40643d-a569-4e8d-9a91-b3bb76c7a9ce",
+              "x": 919,
+              "y": 1747
+            }
+          ]
+        }
       ]
     },
     {
@@ -969,14 +4255,347 @@ export const ZONE_MAPPING = {
       name: "MU90.1K",
       className: "MU90_1K",
       pdf: MU901KPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 2326,
+      "points": [
+        {
+          "id": "89e24b34-fed3-4e05-9cb4-27eb5e216d31",
+          "x": 860,
+          "y": 553
+        },
+        {
+          "id": "49a2f59f-ab23-4117-b580-891e686e6eab",
+          "x": 434,
+          "y": 556
+        },
+        {
+          "id": "5553534c-e9ad-4420-a6ea-984b6db2f2e5",
+          "x": 434,
+          "y": 879
+        },
+        {
+          "id": "14f90036-215e-4180-83d0-b8bfebc4ed76",
+          "x": 242,
+          "y": 880
+        },
+        {
+          "id": "d3c46783-e8c3-4027-a96b-aea4a73ab831",
+          "x": 243,
+          "y": 939
+        },
+        {
+          "id": "d25d9954-41ff-47de-8d4c-62b686897d6d",
+          "x": 432,
+          "y": 943
+        },
+        {
+          "id": "5b5c78ba-0cd2-4302-8fe5-08cab3cea3a4",
+          "x": 436,
+          "y": 1657
+        },
+        {
+          "id": "d282c1c8-f1c5-4f06-a57e-66eff2662e6b",
+          "x": 507,
+          "y": 1658
+        },
+        {
+          "id": "20ea227d-caa2-48f4-8c72-67d0671497a2",
+          "x": 507,
+          "y": 1855
+        },
+        {
+          "id": "ac359f8a-66db-48ab-a00f-f080ae4e2d33",
+          "x": 434,
+          "y": 1854
+        },
+        {
+          "id": "fadb8147-e6d9-4aba-bac1-91c46c8da61b",
+          "x": 436,
+          "y": 2048
+        },
+        {
+          "id": "38d3de99-5647-4158-8065-41256654b05c",
+          "x": 503,
+          "y": 2047
+        },
+        {
+          "id": "12add4c7-724d-4634-a96b-03afa64b01aa",
+          "x": 505,
+          "y": 2112
+        },
+        {
+          "id": "b8451913-e6ee-4785-b5ce-47942228f181",
+          "x": 568,
+          "y": 2113
+        },
+        {
+          "id": "7751f67f-abfe-4c40-99de-bf3e4a926e15",
+          "x": 567,
+          "y": 1552
+        },
+        {
+          "id": "d21c1c4c-aab0-4bb3-ad28-ec322339d339",
+          "x": 500,
+          "y": 1554
+        },
+        {
+          "id": "0f42f151-8fb9-44cd-ad59-ecbc96a9fb73",
+          "x": 495,
+          "y": 1262
+        },
+        {
+          "id": "d3d6eb7b-92dd-4c9f-8a41-cb8074bb8900",
+          "x": 786,
+          "y": 1261
+        },
+        {
+          "id": "4e78c6df-b533-40b8-878d-8c19737c0874",
+          "x": 785,
+          "y": 613
+        },
+        {
+          "id": "2e8f7274-9191-4944-8ce5-f5a0f2e35a11",
+          "x": 860,
+          "y": 612
+        },
+        {
+          "id": "89d4d2d4-eb90-44be-a1d5-9bca8bfa11da",
+          "x": 860,
+          "y": 554
+        }
+      ],
       rooms: [
-        { name: "1.941", className: "MU90_1_VB-ZoneMU90_1K-1" },
-        { name: "TR93", className: "MU90_1_VB-ZoneMU90_1K-2" },
-        { name: "1.930", className: "MU90_1_VB-ZoneMU90_1K-3" },
-        { name: "1.922", className: "MU90_1_VB-ZoneMU90_1K-4" },
-        { name: "LI91", className: "MU90_1_VB-ZoneMU90_1K-5" },
-        { name: "TR91", className: "MU90_1_VB-ZoneMU90_1K-6" },
-        { name: "1.900", className: "MU90_1_VB-ZoneMU90_1K-7" }
+        {
+          "id": "70b39e31-83ae-4183-8d6a-dcfe2b5366a2",
+          "name": "1.941",
+          "pdfWidth": 1351,
+          "pdfHeight": 3166,
+          "points": [
+            {
+              "id": "6bf2483e-fab8-4344-b874-a6e79ede6c5a",
+              "x": 989,
+              "y": 33
+            },
+            {
+              "id": "2d9a3eb3-7a54-4c39-97f8-9b354147501c",
+              "x": 1310,
+              "y": 34
+            },
+            {
+              "id": "0b09d184-1b78-4e8c-9ebf-3db7176b8a88",
+              "x": 1307,
+              "y": 140
+            },
+            {
+              "id": "ff1715ae-aa20-4b34-8fa5-064f6174f994",
+              "x": 988,
+              "y": 138
+            },
+            {
+              "id": "1e4cc9f8-74c2-4f6f-9ecf-0c188efee8e3",
+              "x": 989,
+              "y": 32
+            }
+          ]
+        },
+        {
+          "id": "644c08f3-1bf5-4f9c-97e2-25a92db3faab",
+          "name": "TR93",
+          "pdfWidth": 1351,
+          "pdfHeight": 3166,
+          "points": [
+            {
+              "id": "01b00639-036e-4797-a9ed-debbe9ed2660",
+              "x": 90,
+              "y": 675
+            },
+            {
+              "id": "abc7efc1-669e-4908-ab8c-ce93d913d04b",
+              "x": 280,
+              "y": 677
+            },
+            {
+              "id": "bda17c23-3d36-4c1e-83d5-6b7a309b3b6a",
+              "x": 278,
+              "y": 790
+            },
+            {
+              "id": "7333ab7e-335c-4e3c-a03c-4999f6bee7e9",
+              "x": 90,
+              "y": 791
+            },
+            {
+              "id": "1445567f-5f44-4ac8-bfab-498ebd4600b5",
+              "x": 90,
+              "y": 676
+            }
+          ]
+        },
+        {
+          "id": "0b96bbf4-360c-4d34-a53a-d93a301ec23d",
+          "name": "1.930",
+          "pdfWidth": 1351,
+          "pdfHeight": 3166,
+          "points": [
+            {
+              "id": "b5fc6b69-4d90-4964-872c-f5ca9beceb51",
+              "x": 470,
+              "y": 794
+            },
+            {
+              "id": "549260ba-34d9-4adc-8cc6-ca7e3ea24c3e",
+              "x": 599,
+              "y": 792
+            },
+            {
+              "id": "ea93a601-cbcf-4d92-8895-6378413c8004",
+              "x": 599,
+              "y": 920
+            },
+            {
+              "id": "198dc433-13d0-4142-a4f1-374536824316",
+              "x": 471,
+              "y": 922
+            },
+            {
+              "id": "56b59115-d84b-4ec8-a36b-10e19edd52d4",
+              "x": 469,
+              "y": 793
+            }
+          ]
+        },
+        {
+          "id": "ea52f0e9-6f28-4b83-bff3-b5e017a1006e",
+          "name": "1.922",
+          "pdfWidth": 1351,
+          "pdfHeight": 3166,
+          "points": [
+            {
+              "id": "a3546b19-5bde-4e84-ae78-54a2e1787e54",
+              "x": 468,
+              "y": 1563
+            },
+            {
+              "id": "b2f1d4a7-956a-42ae-878e-393ebd31505c",
+              "x": 599,
+              "y": 1564
+            },
+            {
+              "id": "140cb698-a95e-4109-ab4a-15fe3ceca3e9",
+              "x": 599,
+              "y": 1693
+            },
+            {
+              "id": "758070b8-b26b-4484-8a53-6510b2dff4e4",
+              "x": 466,
+              "y": 1691
+            },
+            {
+              "id": "6be2e3c2-dc91-4c02-99c6-60d41f82eaa1",
+              "x": 468,
+              "y": 1560
+            }
+          ]
+        },
+        {
+          "id": "6b65cb5a-b3bb-4e2d-9696-e7c3459363a4",
+          "name": "LI91",
+          "pdfWidth": 1351,
+          "pdfHeight": 3166,
+          "points": [
+            {
+              "id": "a0c10a9f-4c41-4e1c-ace0-680ca69c102c",
+              "x": 471,
+              "y": 2597
+            },
+            {
+              "id": "3758eaa1-ae12-432c-a9e4-1e8d76d84325",
+              "x": 614,
+              "y": 2596
+            },
+            {
+              "id": "a38f3c57-5bdd-4e88-ad49-615514a01a55",
+              "x": 613,
+              "y": 2737
+            },
+            {
+              "id": "7b1a5813-db00-4041-af33-bab01be90834",
+              "x": 473,
+              "y": 2735
+            },
+            {
+              "id": "ea09c29b-f559-4326-8c97-9aee98f10a6f",
+              "x": 469,
+              "y": 2596
+            }
+          ]
+        },
+        {
+          "id": "cf5cfcf4-da87-4728-8cdc-7c5812f3757f",
+          "name": "TR91",
+          "pdfWidth": 1351,
+          "pdfHeight": 3166,
+          "points": [
+            {
+              "id": "0b8acb8c-1a25-40e5-8f2f-b67755333102",
+              "x": 473,
+              "y": 2737
+            },
+            {
+              "id": "2032da2b-3ee8-4117-a3a1-d780cca11b7d",
+              "x": 609,
+              "y": 2736
+            },
+            {
+              "id": "fb69b263-32b5-4d29-b7f0-531e48b3e2d1",
+              "x": 609,
+              "y": 2976
+            },
+            {
+              "id": "567c7213-a229-4c04-9103-cc6f2147d80d",
+              "x": 472,
+              "y": 2974
+            },
+            {
+              "id": "442bd27d-0ec0-4dfb-96d7-e07a49d80d51",
+              "x": 472,
+              "y": 2736
+            }
+          ]
+        },
+        {
+          "id": "119bc402-543f-42d4-a322-a77ca8fb0cea",
+          "name": "1.900",
+          "pdfWidth": 1351,
+          "pdfHeight": 3166,
+          "points": [
+            {
+              "id": "ad6a9b2c-4c5f-4184-90e0-0f58b2d2dcac",
+              "x": 609,
+              "y": 2720
+            },
+            {
+              "id": "c78b6a57-08b3-4748-be76-1fd4cd38be40",
+              "x": 734,
+              "y": 2720
+            },
+            {
+              "id": "65805ebd-8aa9-4779-9d81-553a711bdcb9",
+              "x": 734,
+              "y": 2976
+            },
+            {
+              "id": "00eaec02-a47d-47da-9bdd-20ac5e1c3c98",
+              "x": 611,
+              "y": 2977
+            },
+            {
+              "id": "5d1c67f4-0237-470f-962d-80496016e7d9",
+              "x": 608,
+              "y": 2722
+            }
+          ]
+        }
       ]
     },
     {
@@ -984,14 +4603,267 @@ export const ZONE_MAPPING = {
       name: "MU90.1L",
       className: "MU90_1L",
       pdf: MU901LPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 2326,
+      "points": [
+        {
+          "id": "a988e4e5-203b-435a-ab79-060f48a3d104",
+          "x": 500,
+          "y": 615
+        },
+        {
+          "id": "b3e57968-e689-432a-9c85-aeb8e758309a",
+          "x": 720,
+          "y": 612
+        },
+        {
+          "id": "7baf2869-a1af-4be6-9e92-e0fd00ea5510",
+          "x": 722,
+          "y": 1132
+        },
+        {
+          "id": "e7e359aa-523c-4fce-a476-9977bb788b89",
+          "x": 503,
+          "y": 1134
+        },
+        {
+          "id": "c55306d2-e349-47ca-a0ab-b543099f6e33",
+          "x": 502,
+          "y": 614
+        }
+      ],
       rooms: [
-        { name: "1.938", className: "MU90_1_VB-ZoneMU90_1L-1" },
-        { name: "1.939", className: "MU90_1_VB-ZoneMU90_1L-2" },
-        { name: "1.942", className: "MU90_1_VB-ZoneMU90_1L-3" },
-        { name: "1.936", className: "MU90_1_VB-ZoneMU90_1L-4" },
-        { name: "1.934", className: "MU90_1_VB-ZoneMU90_1L-5" },
-        { name: "1.932", className: "MU90_1_VB-ZoneMU90_1L-6" },
-        { name: "1.922.1", className: "MU90_1_VB-ZoneMU90_1L-7" }
+        {
+          "id": "5f6b8264-112a-4832-8fda-37da38bf15cb",
+          "name": "1.938",
+          "pdfWidth": 1351,
+          "pdfHeight": 2920,
+          "points": [
+            {
+              "id": "096ce555-3315-4edc-ae13-58e71a453696",
+              "x": 462,
+              "y": 394
+            },
+            {
+              "id": "f9794653-a181-4929-84b0-d90c530df89f",
+              "x": 940,
+              "y": 396
+            },
+            {
+              "id": "2cd96ffb-0231-4eb0-9ba2-db3462e024e4",
+              "x": 940,
+              "y": 703
+            },
+            {
+              "id": "ce6a66f5-7198-4c33-b242-fd015e0fa019",
+              "x": 461,
+              "y": 704
+            },
+            {
+              "id": "80cdcdad-3443-4c91-a132-a7d83232837b",
+              "x": 462,
+              "y": 395
+            }
+          ]
+        },
+        {
+          "id": "f8739b40-4a5f-4599-8e98-0b717d38d284",
+          "name": "1.939",
+          "pdfWidth": 1351,
+          "pdfHeight": 2920,
+          "points": [
+            {
+              "id": "5d182507-9209-4c94-93c9-80ec7021ff1e",
+              "x": 769,
+              "y": 1316
+            },
+            {
+              "id": "771448dd-93bd-4a52-8895-8b22d01b7dde",
+              "x": 1190,
+              "y": 1316
+            },
+            {
+              "id": "44e46ce1-6c14-41c4-9f6b-11c222d997a0",
+              "x": 1191,
+              "y": 1633
+            },
+            {
+              "id": "7398e79a-02e5-42bc-9add-3961e07d2bbc",
+              "x": 769,
+              "y": 1633
+            },
+            {
+              "id": "463a0920-5fe2-4050-b924-29500f3b3c46",
+              "x": 769,
+              "y": 1317
+            }
+          ]
+        },
+        {
+          "id": "b4af9339-c39f-4665-b8a3-fbf7e084c97f",
+          "name": "1.942",
+          "pdfWidth": 1351,
+          "pdfHeight": 2920,
+          "points": [
+            {
+              "id": "c28a358f-6055-442a-aa9f-b5912ae54f0b",
+              "x": 154,
+              "y": 1327
+            },
+            {
+              "id": "4ffe4f6a-cbf7-46c6-92ff-591db2a47d6e",
+              "x": 724,
+              "y": 1329
+            },
+            {
+              "id": "02fc9b88-03cd-45a0-b3cc-e28dd8f960b8",
+              "x": 723,
+              "y": 1632
+            },
+            {
+              "id": "2783633e-9fff-47e5-81e2-6b28c968bfd9",
+              "x": 156,
+              "y": 1631
+            },
+            {
+              "id": "92f0e5d6-52b8-479d-a0ae-ac6eeb67e220",
+              "x": 154,
+              "y": 1328
+            }
+          ]
+        },
+        {
+          "id": "06e8d851-e10a-4bb5-8074-d26dbb7228cb",
+          "name": "1.936",
+          "pdfWidth": 1351,
+          "pdfHeight": 2920,
+          "points": [
+            {
+              "id": "9809909f-20cd-4354-8e7a-36b6cb0adf75",
+              "x": 157,
+              "y": 1655
+            },
+            {
+              "id": "bfddd5b3-38e5-45f4-97e4-9ed43b031c4c",
+              "x": 723,
+              "y": 1656
+            },
+            {
+              "id": "b76fea84-8955-4afe-a56e-7850b34602f7",
+              "x": 722,
+              "y": 2062
+            },
+            {
+              "id": "7c80d7c2-8bc0-4045-9c3f-98b018380a47",
+              "x": 155,
+              "y": 2060
+            },
+            {
+              "id": "c31e6bda-7970-428f-a5be-d401faa57338",
+              "x": 156,
+              "y": 1655
+            }
+          ]
+        },
+        {
+          "id": "1862d3c1-c17c-4aac-9758-3e02da05166f",
+          "name": "1.934",
+          "pdfWidth": 1351,
+          "pdfHeight": 2920,
+          "points": [
+            {
+              "id": "264b25e9-7a4f-4d09-a965-fa73b19d3516",
+              "x": 745,
+              "y": 1934
+            },
+            {
+              "id": "90f0c8a5-b20a-49c1-995f-8c9011f347fb",
+              "x": 1193,
+              "y": 1934
+            },
+            {
+              "id": "d7e7d9c5-f847-4be1-9227-4cfcd0d6493b",
+              "x": 1194,
+              "y": 2239
+            },
+            {
+              "id": "f2229ce4-f877-4a62-be5d-db9bccaaf874",
+              "x": 746,
+              "y": 2242
+            },
+            {
+              "id": "cf7c9579-1101-4e43-8183-ecc0e487fff9",
+              "x": 746,
+              "y": 1934
+            }
+          ]
+        },
+        {
+          "id": "1d46370e-463a-48d9-a94f-3163a28150cc",
+          "name": "1.932",
+          "pdfWidth": 1351,
+          "pdfHeight": 2920,
+          "points": [
+            {
+              "id": "10c422ab-1ec4-461d-bdcd-e0540ebb7561",
+              "x": 154,
+              "y": 2085
+            },
+            {
+              "id": "7d0293e6-72dd-40b9-b3b8-8cf58f111b03",
+              "x": 726,
+              "y": 2086
+            },
+            {
+              "id": "c59db13c-07a1-467e-9075-39b6122a8f46",
+              "x": 724,
+              "y": 2522
+            },
+            {
+              "id": "61202605-af05-4d24-a33b-08de30b56f78",
+              "x": 153,
+              "y": 2522
+            },
+            {
+              "id": "6d1d8b87-16c8-4c6d-8ca1-397ea35f6ccd",
+              "x": 154,
+              "y": 2085
+            }
+          ]
+        },
+        {
+          "id": "ba983164-8067-4083-bc3e-87cd2d5ced72",
+          "name": "1.922.1",
+          "pdfWidth": 1351,
+          "pdfHeight": 2920,
+          "points": [
+            {
+              "id": "6d8fa5a8-684d-4aa6-95d1-5b5e731d9143",
+              "x": 155,
+              "y": 2555
+            },
+            {
+              "id": "9a44ae13-4daa-4533-8863-b1bad9988112",
+              "x": 1199,
+              "y": 2554
+            },
+            {
+              "id": "d9d6fbc6-5cba-4230-b543-9b196382f6a9",
+              "x": 1198,
+              "y": 2861
+            },
+            {
+              "id": "8daf4a19-920f-4944-bb4c-aa7467339a05",
+              "x": 156,
+              "y": 2865
+            },
+            {
+              "id": "cb3d9065-c6e8-4486-baa8-1aa769aaa7ff",
+              "x": 157,
+              "y": 2556
+            }
+          ]
+        }
       ]
     },
     {
@@ -999,8 +4871,69 @@ export const ZONE_MAPPING = {
       name: "MU90.1M",
       className: "MU90_1M",
       pdf: MU901MPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 2326,
+      "points": [
+        {
+          "id": "277cb1ef-cf55-4ceb-b2f1-c83f6ed4781f",
+          "x": 502,
+          "y": 1140
+        },
+        {
+          "id": "5bb6eaa5-eeb3-4762-939a-d414d7a84f1c",
+          "x": 726,
+          "y": 1139
+        },
+        {
+          "id": "9232bb94-5461-466b-b91c-98ed38f45f06",
+          "x": 726,
+          "y": 1200
+        },
+        {
+          "id": "f3d8f683-0964-481e-8800-b12173fe5eb3",
+          "x": 503,
+          "y": 1201
+        },
+        {
+          "id": "f3e72f0c-6280-45be-b3ca-ca6658334ce9",
+          "x": 501,
+          "y": 1138
+        }
+      ],
       rooms: [
-        { name: "1.922.1", className: "MU90_1_VB-ZoneMU90_1M-1" }
+        {
+          "id": "d0c28e1d-eb53-4c17-8a6d-6a2e63dc5656",
+          "name": "1.922.1",
+          "pdfWidth": 1351,
+          "pdfHeight": 637,
+          "points": [
+            {
+              "id": "e6e1ef0d-0d2b-446c-90b4-0a70810c1aff",
+              "x": 189,
+              "y": 157
+            },
+            {
+              "id": "4d969014-0639-428c-a3b8-e64a4b36ff94",
+              "x": 1202,
+              "y": 158
+            },
+            {
+              "id": "2e38b9a7-0ea0-4708-bd6e-d2d279bd9c22",
+              "x": 1200,
+              "y": 448
+            },
+            {
+              "id": "a6789521-861d-434b-9280-5e0852969954",
+              "x": 190,
+              "y": 447
+            },
+            {
+              "id": "d11ccc76-104c-4238-acd7-7dbc63d2f056",
+              "x": 189,
+              "y": 155
+            }
+          ]
+        }
       ]
     }
   ],
@@ -1010,12 +4943,201 @@ export const ZONE_MAPPING = {
       name: "MU90.2",
       className: "MU90_2",
       pdf: MU902Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 3020,
+      "points": [
+        {
+          "id": "67b46086-4915-4b17-a09c-11c888b19aa8",
+          "x": 73,
+          "y": 65
+        },
+        {
+          "id": "392ef580-943a-4ddc-946c-57ad18302c10",
+          "x": 1289,
+          "y": 65
+        },
+        {
+          "id": "374fb35d-13bb-4e2b-a40e-ce4692bb824d",
+          "x": 1289,
+          "y": 2956
+        },
+        {
+          "id": "8be59a46-458c-430f-8cc1-71b685fdab38",
+          "x": 74,
+          "y": 2956
+        },
+        {
+          "id": "8ec40253-79cd-452d-a09f-607a0e79f303",
+          "x": 73,
+          "y": 66
+        }
+      ],
       rooms: [
-        { name: "2.900.2", className: "MU90_1_VB-ZoneMU90_2A-1" },
-        { name: "2.900", className: "MU90_1_VB-ZoneMU90_2A-2" },
-        { name: "LI91", className: "MU90_1_VB-ZoneMU90_2A-3" },
-        { name: "TR91", className: "MU90_1_VB-ZoneMU90_2A-4" },
-        { name: "2.900.1", className: "MU90_1_VB-ZoneMU90_2A-5" }
+        {
+          "id": "766c0e85-2915-4593-b98b-d068ab4cc874",
+          "name": "2.900.2",
+          "pdfWidth": 1351,
+          "pdfHeight": 3020,
+          "points": [
+            {
+              "id": "c7821d73-5be4-48c4-b739-f4b637b6fdbe",
+              "x": 99,
+              "y": 90
+            },
+            {
+              "id": "6dc626e8-cff3-4694-9287-6f0cf4c3f5d1",
+              "x": 174,
+              "y": 91
+            },
+            {
+              "id": "454147ed-0496-497b-a5cd-f987f7dd6ac9",
+              "x": 172,
+              "y": 359
+            },
+            {
+              "id": "255facd2-d5a7-4738-97cc-507466a6e28d",
+              "x": 101,
+              "y": 359
+            },
+            {
+              "id": "b82085aa-0702-4245-9839-2a89d15c044b",
+              "x": 99,
+              "y": 88
+            }
+          ]
+        },
+        {
+          "id": "8bf63dea-b2b9-4ca0-b511-a97f2c6c2cfb",
+          "name": "2.900",
+          "pdfWidth": 1351,
+          "pdfHeight": 3020,
+          "points": [
+            {
+              "id": "8ed8d668-f817-49db-a6d7-d5de5bfb2a55",
+              "x": 516,
+              "y": 1711
+            },
+            {
+              "id": "29825985-9d9e-4dff-8831-ce6f38d258a2",
+              "x": 784,
+              "y": 1712
+            },
+            {
+              "id": "cd3217a0-4891-406f-a881-609a6e22dbac",
+              "x": 785,
+              "y": 1845
+            },
+            {
+              "id": "072b45ed-a067-4680-9d9f-546b6af1221f",
+              "x": 516,
+              "y": 1846
+            },
+            {
+              "id": "eae474fe-118a-4a44-a8b8-9bcb08205d7e",
+              "x": 515,
+              "y": 1710
+            }
+          ]
+        },
+        {
+          "id": "f278d0d1-d426-4ddc-993a-0922429fde45",
+          "name": "LI91",
+          "pdfWidth": 1351,
+          "pdfHeight": 3020,
+          "points": [
+            {
+              "id": "420230df-12fd-46ca-97ce-59609287c895",
+              "x": 99,
+              "y": 2513
+            },
+            {
+              "id": "7ce78de2-d5d1-4bef-a171-cd8f117b2316",
+              "x": 256,
+              "y": 2514
+            },
+            {
+              "id": "ef6c081c-64e3-44c7-be74-4009bb61bea9",
+              "x": 257,
+              "y": 2652
+            },
+            {
+              "id": "f4a3b241-9b2b-4dbb-98df-fa412c171098",
+              "x": 99,
+              "y": 2654
+            },
+            {
+              "id": "7985c9f7-9853-413e-86d0-574f5fbeb780",
+              "x": 100,
+              "y": 2511
+            }
+          ]
+        },
+        {
+          "id": "246ce743-8f02-48ef-9a71-55084e6d60f4",
+          "name": "TR91",
+          "pdfWidth": 1351,
+          "pdfHeight": 3020,
+          "points": [
+            {
+              "id": "3ab8366d-19a6-4287-8f61-ebd047d126b4",
+              "x": 97,
+              "y": 2668
+            },
+            {
+              "id": "cf0be676-2911-40c3-8222-5997f9b39f57",
+              "x": 256,
+              "y": 2666
+            },
+            {
+              "id": "21fdef94-99bb-4178-af08-6d1caa7905e3",
+              "x": 257,
+              "y": 2931
+            },
+            {
+              "id": "cbc9f506-eef6-4d72-aa53-8496330ff7a9",
+              "x": 95,
+              "y": 2932
+            },
+            {
+              "id": "d3bbc12f-09e5-4979-8956-e0764d3e7873",
+              "x": 96,
+              "y": 2669
+            }
+          ]
+        },
+        {
+          "id": "c01975fb-5ba8-4595-a225-38b2da932d10",
+          "name": "2.900.1",
+          "pdfWidth": 1351,
+          "pdfHeight": 3020,
+          "points": [
+            {
+              "id": "a86e4172-10c3-4c70-b3c9-1a6b744994af",
+              "x": 393,
+              "y": 2863
+            },
+            {
+              "id": "e348c8f1-867d-4b77-88d5-e4927b9dcd28",
+              "x": 973,
+              "y": 2863
+            },
+            {
+              "id": "985c0de1-ca0f-4cc9-a920-edaec04202ee",
+              "x": 974,
+              "y": 2930
+            },
+            {
+              "id": "1da54214-c6e5-4736-b3de-5e72cd28a9de",
+              "x": 393,
+              "y": 2931
+            },
+            {
+              "id": "8929b583-11ea-4d8e-a9ec-ba468ff86b0d",
+              "x": 395,
+              "y": 2863
+            }
+          ]
+        }
       ]
     }
   ],
@@ -1025,10 +5147,175 @@ export const ZONE_MAPPING = {
       name: "MU90.R",
       className: "MU90_R",
       pdf: MU90RPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "b0fe0af4-a848-4021-bdba-a4c19edbb4b1",
+          "x": 357,
+          "y": 260
+        },
+        {
+          "id": "c9c12d30-9023-40e1-8207-edead33fd388",
+          "x": 1012,
+          "y": 259
+        },
+        {
+          "id": "d660c0db-7b49-42ad-a373-e9b982882621",
+          "x": 1011,
+          "y": 1663
+        },
+        {
+          "id": "fb0f0108-b0a0-487b-9c3b-146344bb8096",
+          "x": 359,
+          "y": 1663
+        },
+        {
+          "id": "7ecc4f01-30a7-48a8-884e-c696f472f2af",
+          "x": 357,
+          "y": 261
+        }
+      ],
       rooms: [
-        { name: "90.RA", className: "MU90_1_VB-ZoneMU90_RA-1" },
-        { name: "90.R.BW", className: "MU90_1_VB-ZoneMU90_R_BW-1" },
-        { name: "90.R.BE", className: "MU90_1_VB-ZoneMU90_R_BE-1" }
+        {
+          "id": "c0868d5f-a9b8-44de-aca7-a0640fae3249",
+          "name": "90.RA",
+          "pdfWidth": 1351,
+          "pdfHeight": 1911,
+          "points": [
+            {
+              "id": "e7a17e6b-382f-4c8d-8202-d59f4b440714",
+              "x": 494,
+              "y": 592
+            },
+            {
+              "id": "28e57fb6-8755-4778-8567-8965b176367d",
+              "x": 918,
+              "y": 591
+            },
+            {
+              "id": "5d95f085-ac28-46ea-9da5-6460b665d03a",
+              "x": 920,
+              "y": 1618
+            },
+            {
+              "id": "488bb0bb-8502-460b-aa63-ba26f54ac68b",
+              "x": 495,
+              "y": 1620
+            },
+            {
+              "id": "8b5f4337-f89d-4fdc-93b2-ef97d26cf4fb",
+              "x": 494,
+              "y": 592
+            }
+          ]
+        },
+        {
+          "id": "d28ec01b-75c3-456d-b69d-f6f9733c7b9d",
+          "name": "90.R.BW",
+          "pdfWidth": 1351,
+          "pdfHeight": 1911,
+          "points": [
+            {
+              "id": "295c4f32-592d-412a-b17e-a57e8599c37b",
+              "x": 683,
+              "y": 585
+            },
+            {
+              "id": "c3601ae8-6477-4511-a41b-9366cb61385e",
+              "x": 685,
+              "y": 260
+            },
+            {
+              "id": "80cb8b05-b0e1-41e1-9b9e-b7d4f0cfcc99",
+              "x": 358,
+              "y": 260
+            },
+            {
+              "id": "f9b34a6c-ee7b-4104-bc24-41c59f1fb712",
+              "x": 358,
+              "y": 1661
+            },
+            {
+              "id": "621e5484-b3d3-4406-8a45-2b4befb69df1",
+              "x": 685,
+              "y": 1661
+            },
+            {
+              "id": "14953570-56af-4ac3-8ceb-2421a6737196",
+              "x": 685,
+              "y": 1622
+            },
+            {
+              "id": "00990b59-d1b1-42c1-918d-9ac1ebec3c5f",
+              "x": 494,
+              "y": 1618
+            },
+            {
+              "id": "3273eaa1-44d8-4636-916c-934c7e564dd6",
+              "x": 493,
+              "y": 588
+            },
+            {
+              "id": "4deb08b0-697a-4d9a-bbca-d3912dd7b3ce",
+              "x": 683,
+              "y": 587
+            }
+          ]
+        },
+        {
+          "id": "2024ba82-2577-4e69-9b44-1969ca7a3e49",
+          "name": "90.R.BE",
+          "pdfWidth": 1351,
+          "pdfHeight": 1911,
+          "points": [
+            {
+              "id": "e015f0b1-d71e-481c-ac35-5a2dd2ac1cd0",
+              "x": 688,
+              "y": 259
+            },
+            {
+              "id": "387ee687-7a85-4bcb-a8b0-e87bfed53cce",
+              "x": 1012,
+              "y": 260
+            },
+            {
+              "id": "24a1b597-30a3-40a1-8a19-2b635ffdc21e",
+              "x": 1010,
+              "y": 1659
+            },
+            {
+              "id": "ad693867-0552-4049-82b2-cefaf0d611a5",
+              "x": 685,
+              "y": 1657
+            },
+            {
+              "id": "42d5b6de-0e18-4d7e-b01b-b20db5c0b87c",
+              "x": 686,
+              "y": 1621
+            },
+            {
+              "id": "211bad23-1c28-4382-b191-914ca5d40104",
+              "x": 921,
+              "y": 1620
+            },
+            {
+              "id": "98e2429d-e31c-4399-82f2-820a1131d8df",
+              "x": 921,
+              "y": 591
+            },
+            {
+              "id": "dc2ff13d-b70d-4a65-8c33-f5d30f1d7910",
+              "x": 683,
+              "y": 590
+            },
+            {
+              "id": "a34a27b4-c9d8-44ac-b4fd-81a2133875eb",
+              "x": 687,
+              "y": 259
+            }
+          ]
+        }
       ]
     }
   ],
@@ -1040,8 +5327,69 @@ export const ZONE_MAPPING = {
       name: "MU91.0A",
       className: "MU91_0A",
       pdf: MU910APdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "80b08c24-6cd8-4090-a876-c10543d44769",
+          "x": 295,
+          "y": 448
+        },
+        {
+          "id": "4cdb64c5-404d-48f1-a9aa-fbb0b191c002",
+          "x": 781,
+          "y": 446
+        },
+        {
+          "id": "6f5dce1e-9b04-4ddf-aa43-9e5318d8e2dd",
+          "x": 784,
+          "y": 1673
+        },
+        {
+          "id": "3477739b-ee65-4ba8-9f37-5753bdbb2078",
+          "x": 294,
+          "y": 1674
+        },
+        {
+          "id": "62561da6-fd3b-42f8-8b9f-1c95822be90c",
+          "x": 294,
+          "y": 447
+        }
+      ],
       rooms: [
-        { name: "MU91.0A", className: "MU91-zoneMU91_0A-1" }
+        {
+          "id": "267a3430-ed41-4048-8f34-4f509f275a91",
+          "name": "MU91.0A",
+          "pdfWidth": 1351,
+          "pdfHeight": 3308,
+          "points": [
+            {
+              "id": "8dd9a9ca-c2ab-484c-9239-e9f180380bce",
+              "x": 22,
+              "y": 41
+            },
+            {
+              "id": "a14d309f-8d7a-4755-a807-851d058127df",
+              "x": 1323,
+              "y": 42
+            },
+            {
+              "id": "a45a979d-9acb-4080-8de3-c6b60ad997db",
+              "x": 1325,
+              "y": 3279
+            },
+            {
+              "id": "5ea01aa9-f5b1-47f1-856b-350d43c7e543",
+              "x": 19,
+              "y": 3278
+            },
+            {
+              "id": "d743d6b7-0c87-4827-a44e-d8d782255ba6",
+              "x": 21,
+              "y": 40
+            }
+          ]
+        }
       ]
     },
     {
@@ -1049,8 +5397,109 @@ export const ZONE_MAPPING = {
       name: "MU91.0B",
       className: "MU91_0B",
       pdf: MU910BPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "20d60bc4-a109-4bee-a9d7-6e2247fba36b",
+          "x": 230,
+          "y": 421
+        },
+        {
+          "id": "ca49d24a-2106-4739-9531-9b6d5cf4c283",
+          "x": 289,
+          "y": 422
+        },
+        {
+          "id": "d33ff605-b136-491a-a9f1-9901dabf3093",
+          "x": 291,
+          "y": 1680
+        },
+        {
+          "id": "69bb898d-aa9c-4c04-b937-89f2437529a5",
+          "x": 367,
+          "y": 1679
+        },
+        {
+          "id": "c6de4809-6aa9-4b11-a92c-c18d1014eb1e",
+          "x": 367,
+          "y": 1698
+        },
+        {
+          "id": "00805c8f-3d33-4454-91e1-bf3ec08958c2",
+          "x": 254,
+          "y": 1696
+        },
+        {
+          "id": "759287c3-d72b-4ee7-8cad-0df9fbd34367",
+          "x": 251,
+          "y": 507
+        },
+        {
+          "id": "d27bb45e-62e4-410c-9b75-c4bda9891f43",
+          "x": 228,
+          "y": 508
+        },
+        {
+          "id": "7a5b5375-3b01-4b3a-8201-05c47a77f80f",
+          "x": 230,
+          "y": 419
+        }
+      ],
       rooms: [
-        { name: "MU91.0B", className: "MU91-zoneMU91_0B-1" }
+        {
+          "id": "29ad821e-7faa-448a-b3ee-4d3747aea84a",
+          "name": "MU91.0B",
+          "pdfWidth": 1366,
+          "pdfHeight": 10459,
+          "points": [
+            {
+              "id": "a0182c78-ea25-4a4c-8605-2874c863a2fb",
+              "x": 1212,
+              "y": 9861
+            },
+            {
+              "id": "a3c35d33-74d7-4081-b076-fe336b98abb4",
+              "x": 1211,
+              "y": 9989
+            },
+            {
+              "id": "c813e3fa-63ee-40f0-a9e6-a2ef16d9a233",
+              "x": 339,
+              "y": 9987
+            },
+            {
+              "id": "a1f83ac8-a32b-49ad-9b5f-391436b3734a",
+              "x": 336,
+              "y": 875
+            },
+            {
+              "id": "9e122079-31cb-4ede-b888-c5c4cfc126ef",
+              "x": 171,
+              "y": 872
+            },
+            {
+              "id": "ee175c51-ad70-4297-a00c-13b0243e29ce",
+              "x": 176,
+              "y": 216
+            },
+            {
+              "id": "0cbcd417-98ac-4408-9dfc-055d80455721",
+              "x": 617,
+              "y": 223
+            },
+            {
+              "id": "23c7e90a-cabc-47bf-8103-1de156edf97d",
+              "x": 615,
+              "y": 9858
+            },
+            {
+              "id": "85619c95-5786-45a4-baad-f1738c235415",
+              "x": 1210,
+              "y": 9860
+            }
+          ]
+        }
       ]
     },
     {
@@ -1058,8 +5507,144 @@ export const ZONE_MAPPING = {
       name: "MU91.0C",
       className: "MU91_0C",
       pdf: MU910CPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "71b45b27-1c03-4cae-9dbe-22d4a8f6e09f",
+          "x": 783,
+          "y": 437
+        },
+        {
+          "id": "1f394e09-3748-4c01-b805-d4857e66fb9a",
+          "x": 782,
+          "y": 375
+        },
+        {
+          "id": "8fa2dced-8f1f-4e10-bd7e-2cfd09f23789",
+          "x": 807,
+          "y": 376
+        },
+        {
+          "id": "c92bc992-0938-43a8-9594-2ebd949e1376",
+          "x": 806,
+          "y": 438
+        },
+        {
+          "id": "f4af849d-c8b0-495a-9638-98e80265d167",
+          "x": 827,
+          "y": 439
+        },
+        {
+          "id": "37caee8b-4c24-484a-974e-c4d146f9247b",
+          "x": 828,
+          "y": 924
+        },
+        {
+          "id": "ad3ff0d5-fe1e-4c14-a740-30e482eac9f4",
+          "x": 918,
+          "y": 923
+        },
+        {
+          "id": "8283a135-52f8-405c-bdb1-529a8e1b005a",
+          "x": 919,
+          "y": 970
+        },
+        {
+          "id": "828a822b-eb80-4db1-92af-099bcf9a1921",
+          "x": 826,
+          "y": 970
+        },
+        {
+          "id": "2d447830-ceba-4997-8c2a-af313043c80a",
+          "x": 829,
+          "y": 1699
+        },
+        {
+          "id": "5f236365-679b-4754-a3d0-65ca59c73bf0",
+          "x": 709,
+          "y": 1698
+        },
+        {
+          "id": "8da090e5-3030-4bbc-8a7c-1027dd079871",
+          "x": 710,
+          "y": 1679
+        },
+        {
+          "id": "d63193a6-5ccc-497d-8538-e99329bbe4b7",
+          "x": 786,
+          "y": 1677
+        },
+        {
+          "id": "2e2831bb-bf63-4108-a598-052c5b5651f6",
+          "x": 785,
+          "y": 437
+        }
+      ],
       rooms: [
-        { name: "MU91.0C", className: "MU91-zoneMU91_0C-1" }
+        {
+          "id": "c6c58aa4-f908-4701-921b-6ecb7449c1ad",
+          "name": "MU91.0C",
+          "pdfWidth": 1351,
+          "pdfHeight": 10388,
+          "points": [
+            {
+              "id": "6bb98775-31b7-4bf2-ae88-e6cf4973f32c",
+              "x": 177,
+              "y": 9933
+            },
+            {
+              "id": "e5e0312f-6634-4a8f-85b7-b6e376441872",
+              "x": 1060,
+              "y": 9932
+            },
+            {
+              "id": "4a4d0c66-7dbd-4a23-9879-7c3da843d3bc",
+              "x": 1052,
+              "y": 576
+            },
+            {
+              "id": "3c1d0059-98c8-4c7f-9553-fafb50be6e81",
+              "x": 905,
+              "y": 574
+            },
+            {
+              "id": "e520c1e7-0b99-420f-9be1-56bc0e24a315",
+              "x": 904,
+              "y": 112
+            },
+            {
+              "id": "def8d640-a99d-4cd3-9c63-4851c8487e7b",
+              "x": 719,
+              "y": 111
+            },
+            {
+              "id": "a13600b1-b1db-441f-9f49-570c6c9334c4",
+              "x": 721,
+              "y": 607
+            },
+            {
+              "id": "4bf8fa75-98cf-442e-8079-1c3ef8e58187",
+              "x": 762,
+              "y": 608
+            },
+            {
+              "id": "4ac7b149-db59-490e-aa78-fdb715e2930a",
+              "x": 752,
+              "y": 9776
+            },
+            {
+              "id": "aea6180f-853a-458b-8833-52ba7a466c67",
+              "x": 175,
+              "y": 9777
+            },
+            {
+              "id": "79ad3849-ad76-433f-8f05-6a8725135669",
+              "x": 176,
+              "y": 9930
+            }
+          ]
+        }
       ]
     },
     {
@@ -1067,8 +5652,109 @@ export const ZONE_MAPPING = {
       name: "MU91.0D",
       className: "MU91_0D",
       pdf: MU910DPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "112b9a83-5d1e-4ab3-a988-ff940c79d1ee",
+          "x": 306,
+          "y": 186
+        },
+        {
+          "id": "ce212522-04e9-41e2-abf0-a81f4e919543",
+          "x": 700,
+          "y": 186
+        },
+        {
+          "id": "031f33b4-27e0-4aa4-9d75-02beec2891c3",
+          "x": 701,
+          "y": 258
+        },
+        {
+          "id": "0ab44ccf-83e6-4c1b-ab02-1ab12f432389",
+          "x": 563,
+          "y": 259
+        },
+        {
+          "id": "53e3d573-3d3d-4380-bac5-0361e8b66ed6",
+          "x": 562,
+          "y": 390
+        },
+        {
+          "id": "e6f6ad69-b5b5-4dcf-9727-8744fd2c855d",
+          "x": 345,
+          "y": 388
+        },
+        {
+          "id": "452f10a2-3f97-4fc0-b65d-0e2459644755",
+          "x": 343,
+          "y": 259
+        },
+        {
+          "id": "27bc49a4-bb56-487c-a804-475cc3bbddd8",
+          "x": 305,
+          "y": 260
+        },
+        {
+          "id": "add3c3dd-4270-4177-9730-045090566f76",
+          "x": 305,
+          "y": 185
+        }
+      ],
       rooms: [
-        { name: "MU91.0D", className: "MU91-zoneMU91_0D-1" }
+        {
+          "id": "81b3d3cf-fe6c-4f77-a4f3-f0115f83c9b4",
+          "name": "MU91.0D",
+          "pdfWidth": 1351,
+          "pdfHeight": 791,
+          "points": [
+            {
+              "id": "83181cac-c88e-4ceb-bdc1-706dbce21b9d",
+              "x": 78,
+              "y": 65
+            },
+            {
+              "id": "066df6d5-3003-4e98-9fac-70645983b249",
+              "x": 1270,
+              "y": 66
+            },
+            {
+              "id": "26c803c8-2b42-4a35-9e0d-e2cb62a423fe",
+              "x": 1273,
+              "y": 287
+            },
+            {
+              "id": "dc84e2c9-eccd-4a9a-bd4a-44568e01a9a3",
+              "x": 854,
+              "y": 292
+            },
+            {
+              "id": "63926cb2-b8d1-487b-bc09-02b6ff3160d1",
+              "x": 851,
+              "y": 673
+            },
+            {
+              "id": "946decb7-680e-4270-8728-4f7d7d1b0fed",
+              "x": 197,
+              "y": 678
+            },
+            {
+              "id": "45aab87e-a5a3-4b9a-b0fd-c554099c5b0c",
+              "x": 195,
+              "y": 290
+            },
+            {
+              "id": "3e4c8386-cc39-4889-bd58-e70395120463",
+              "x": 82,
+              "y": 290
+            },
+            {
+              "id": "75c980be-eedf-4d02-a5e1-4081ec5ffe27",
+              "x": 81,
+              "y": 67
+            }
+          ]
+        }
       ]
     },
     {
@@ -1076,8 +5762,69 @@ export const ZONE_MAPPING = {
       name: "MU91.0E",
       className: "MU91_0E",
       pdf: MU910EPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "a19ed837-94a4-4b0c-be60-663ee3387779",
+          "x": 625,
+          "y": 359
+        },
+        {
+          "id": "4426ac58-e7e8-4129-aaba-40ba2e7ea502",
+          "x": 704,
+          "y": 360
+        },
+        {
+          "id": "815825ca-4aea-4fa1-95df-5cee07a89e53",
+          "x": 704,
+          "y": 415
+        },
+        {
+          "id": "d082556f-3b6c-4767-a003-d92a6c9d3506",
+          "x": 627,
+          "y": 414
+        },
+        {
+          "id": "8839becb-f582-4ff0-83a2-f9eaefadb7f9",
+          "x": 624,
+          "y": 358
+        }
+      ],
       rooms: [
-        { name: "MU91.0E", className: "MU91-zoneMU91_0E-1" }
+        {
+          "id": "80e29863-a710-42e8-bbc1-9ea292250645",
+          "name": "MU91.0E",
+          "pdfWidth": 1351,
+          "pdfHeight": 1639,
+          "points": [
+            {
+              "id": "25402fc4-117a-4b04-919a-96b1e22337c3",
+              "x": 312,
+              "y": 573
+            },
+            {
+              "id": "b000095d-1f48-4871-8f9b-f6059019207a",
+              "x": 928,
+              "y": 569
+            },
+            {
+              "id": "fcab9ccb-01a7-4eac-a14e-d1a220cc35e2",
+              "x": 926,
+              "y": 991
+            },
+            {
+              "id": "bff1be74-ffff-45c2-bb6a-eb8a29f504c9",
+              "x": 308,
+              "y": 989
+            },
+            {
+              "id": "fdb60a68-b4a4-4f6e-95e8-cf5e527cf217",
+              "x": 310,
+              "y": 569
+            }
+          ]
+        }
       ]
     },
     {
@@ -1085,6 +5832,35 @@ export const ZONE_MAPPING = {
       name: "MU91.0F",
       className: "MU91_0F",
       pdf: MU910FPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "8d4a5dfd-803d-47ac-b1fb-2940c1707a14",
+          "x": 847,
+          "y": 251
+        },
+        {
+          "id": "07423402-3fad-4187-b205-e893e30f7b74",
+          "x": 1251,
+          "y": 252
+        },
+        {
+          "id": "5f3c622a-a957-417b-ab0b-d1f3c838be41",
+          "x": 1249,
+          "y": 472
+        },
+        {
+          "id": "07540c33-1534-4483-92d0-d7a699ba2413",
+          "x": 852,
+          "y": 469
+        },
+        {
+          "id": "d472c792-6b30-4611-be53-4317b205712b",
+          "x": 849,
+          "y": 250
+        }
+      ],
       rooms: [
         { name: "MU91.0F.A", className: "MU91-zoneMU91_0F-1" },
         { name: "MU91.0F.B", className: "MU91-zoneMU91_0F-2" }
@@ -1095,6 +5871,35 @@ export const ZONE_MAPPING = {
       name: "MU91.0G",
       className: "MU91_0G",
       pdf: MU910GPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "482a0847-d2d9-4be8-b92b-8afeffdd668c",
+          "x": 851,
+          "y": 475
+        },
+        {
+          "id": "9bae13ba-6050-41f9-b320-ce89094c5ebf",
+          "x": 965,
+          "y": 477
+        },
+        {
+          "id": "b8b36207-99d7-4f6d-a8be-34f4882bd791",
+          "x": 966,
+          "y": 646
+        },
+        {
+          "id": "85217da8-22dd-466f-8959-a5d75bb9f105",
+          "x": 850,
+          "y": 646
+        },
+        {
+          "id": "1253381b-7b12-4cc9-a8ed-3af5e706a236",
+          "x": 849,
+          "y": 473
+        }
+      ],
       rooms: [
         { name: "S.10", className: "MU91-zoneMU91_0G-1" }
       ]
@@ -1104,6 +5909,35 @@ export const ZONE_MAPPING = {
       name: "MU91.0H",
       className: "MU91_0H",
       pdf: MU910HPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "293d9fdd-0892-46db-a315-3010d0ec389d",
+          "x": 850,
+          "y": 653
+        },
+        {
+          "id": "8afcf2e7-f429-439f-8f64-d2eb54e19cee",
+          "x": 1251,
+          "y": 653
+        },
+        {
+          "id": "ff6bc245-8c73-446f-8efb-f9e5486baea1",
+          "x": 1251,
+          "y": 858
+        },
+        {
+          "id": "dfda5659-1fad-4486-8608-323554758ea8",
+          "x": 849,
+          "y": 856
+        },
+        {
+          "id": "93aceeba-75e1-4ee2-bfc2-cc920c0e4bd3",
+          "x": 850,
+          "y": 654
+        }
+      ],
       rooms: [
         { name: "S.11", className: "MU91-zoneMU91_0H-1" },
         { name: "S.08", className: "MU91-zoneMU91_0H-2" },
@@ -1120,6 +5954,35 @@ export const ZONE_MAPPING = {
       name: "MU91.0I",
       className: "MU91_0I",
       pdf: MU910IPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "b7e7beb2-115f-4e4f-b57f-e9677f15a2b5",
+          "x": 853,
+          "y": 1094
+        },
+        {
+          "id": "242b175d-e9d7-44f8-8749-71fc8b771ff0",
+          "x": 908,
+          "y": 1095
+        },
+        {
+          "id": "b02baf43-f0fb-4611-98d4-55035046e814",
+          "x": 911,
+          "y": 1174
+        },
+        {
+          "id": "c8419a56-5461-47fc-b2cc-98d5e5605411",
+          "x": 854,
+          "y": 1173
+        },
+        {
+          "id": "43ab1a88-3437-431a-9dcb-57c7028c06ad",
+          "x": 853,
+          "y": 1095
+        }
+      ],
       rooms: [
         { name: "MU91.0I", className: "MU91-zoneMU91_0I-1" }
       ]
@@ -1129,6 +5992,35 @@ export const ZONE_MAPPING = {
       name: "MU91.0J",
       className: "MU91_0J",
       pdf: MU910JPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "f858c49a-855f-41bb-a9fb-1bb4c029b527",
+          "x": 963,
+          "y": 1026
+        },
+        {
+          "id": "337fcc66-a271-406b-979b-f5888c54847c",
+          "x": 1130,
+          "y": 1026
+        },
+        {
+          "id": "021cc877-d716-4a72-8210-b6d959bae3d1",
+          "x": 1129,
+          "y": 1191
+        },
+        {
+          "id": "bf233fe3-7e37-4546-a9aa-aae9479583bd",
+          "x": 964,
+          "y": 1191
+        },
+        {
+          "id": "797768e1-b230-4692-93c7-d733ca7b39d4",
+          "x": 964,
+          "y": 1027
+        }
+      ],
       rooms: [
         { name: "MU91.0J", className: "MU91-zoneMU91_0J-1" }
       ]
@@ -1138,6 +6030,35 @@ export const ZONE_MAPPING = {
       name: "MU91.0K",
       className: "MU91_0K",
       pdf: MU910KPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "1ea5695d-bca9-4f90-9627-f2a9a34e07bc",
+          "x": 1132,
+          "y": 1027
+        },
+        {
+          "id": "553f7cce-8f24-486c-94df-7f6489bd2fdf",
+          "x": 1249,
+          "y": 1028
+        },
+        {
+          "id": "332d6698-c602-4b66-af84-f18502e76335",
+          "x": 1250,
+          "y": 1192
+        },
+        {
+          "id": "315b45bc-6605-4e43-a925-931d00277eae",
+          "x": 1136,
+          "y": 1192
+        },
+        {
+          "id": "257cab58-b23b-47e7-913b-df4971665d53",
+          "x": 1134,
+          "y": 1029
+        }
+      ],
       rooms: [
         { name: "S.13", className: "MU91-zoneMU91_0K-1" }
       ]
@@ -1147,6 +6068,35 @@ export const ZONE_MAPPING = {
       name: "MU91.0L",
       className: "MU91_0L",
       pdf: MU910LPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "a7da5df8-6d1c-4a23-9c3d-afd953146710",
+          "x": 844,
+          "y": 1203
+        },
+        {
+          "id": "5c19a19f-b843-4801-9952-34fa07737192",
+          "x": 986,
+          "y": 1201
+        },
+        {
+          "id": "9ab35086-73aa-4139-a270-5ed2133fc550",
+          "x": 985,
+          "y": 1275
+        },
+        {
+          "id": "94ac1979-a06f-405c-b280-c28add9c03f0",
+          "x": 846,
+          "y": 1274
+        },
+        {
+          "id": "c8dcdd96-29b3-47fd-a79a-509d30335b78",
+          "x": 843,
+          "y": 1202
+        }
+      ],
       rooms: [
         { name: "MU91.0L", className: "MU91-zoneMU91_0L-1" }
       ]
@@ -1156,6 +6106,45 @@ export const ZONE_MAPPING = {
       name: "MU91.0M",
       className: "MU91_0M",
       pdf: MU910MPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "0a1abe88-744c-4d7f-ad34-adb83bb174df",
+          "x": 886,
+          "y": 1299
+        },
+        {
+          "id": "e43d59ad-d910-43a9-b456-edafe8776c63",
+          "x": 1001,
+          "y": 1300
+        },
+        {
+          "id": "5edaf2e2-f9a9-4c13-a4ea-32b103f75ad2",
+          "x": 1003,
+          "y": 1260
+        },
+        {
+          "id": "6af8e193-7c42-4538-bed7-ef2e52d7f41b",
+          "x": 1026,
+          "y": 1260
+        },
+        {
+          "id": "9f153f49-8ba0-4bcb-a1e2-98da7cdd0e5b",
+          "x": 1028,
+          "y": 1679
+        },
+        {
+          "id": "e862b63b-9723-48b3-ab2c-23538743861d",
+          "x": 887,
+          "y": 1677
+        },
+        {
+          "id": "4aafd4fb-47a8-485a-bb6c-ecefc72affcf",
+          "x": 888,
+          "y": 1297
+        }
+      ],
       rooms: [
         { name: "MU91.0M", className: "MU91-zoneMU91_0M-1" }
       ]
@@ -1165,6 +6154,35 @@ export const ZONE_MAPPING = {
       name: "MU91.0N",
       className: "MU91_0N",
       pdf: MU910NPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "0b692b27-ff8a-45de-ab6d-bf582743e6e7",
+          "x": 1059,
+          "y": 1221
+        },
+        {
+          "id": "5427a24f-e687-4f01-aee6-721478935a4d",
+          "x": 1230,
+          "y": 1220
+        },
+        {
+          "id": "b85a6a6f-9ceb-4cac-907d-1064c575bbe7",
+          "x": 1232,
+          "y": 1683
+        },
+        {
+          "id": "e84cf19c-d5c2-439a-8747-450d57c17bc0",
+          "x": 1060,
+          "y": 1684
+        },
+        {
+          "id": "00c7969f-bce5-4a31-bcd2-d59d30532335",
+          "x": 1059,
+          "y": 1221
+        }
+      ],
       rooms: [
         { name: "S.10", className: "MU91-zoneMU91_0N-1" },
         { name: "S.11", className: "MU91-zoneMU91_0N-2" },
@@ -1182,6 +6200,35 @@ export const ZONE_MAPPING = {
       name: "MU91.0O",
       className: "MU91_0O",
       pdf: MU910OPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "69cf258a-ee21-4dcd-afe9-04db176a0580",
+          "x": 532,
+          "y": 1691
+        },
+        {
+          "id": "7c654ce5-9bb7-4b76-8233-9dfc24b29c02",
+          "x": 660,
+          "y": 1691
+        },
+        {
+          "id": "0e3943d0-5be1-495f-8fde-a073c5d7e7ca",
+          "x": 660,
+          "y": 1754
+        },
+        {
+          "id": "bc40c41c-7d21-40db-a372-1482e2c84bab",
+          "x": 534,
+          "y": 1755
+        },
+        {
+          "id": "4d54ec44-cf83-461d-b92e-8dc3e33be748",
+          "x": 534,
+          "y": 1692
+        }
+      ],
       rooms: [
         { name: "MU91.0O", className: "MU91-zoneMU91_0O-1" }
       ]
@@ -1191,6 +6238,35 @@ export const ZONE_MAPPING = {
       name: "MU91.0P",
       className: "MU91_0P",
       pdf: MU910PPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "e7023aec-08dd-4273-b522-c40b3f10378e",
+          "x": 846,
+          "y": 1713
+        },
+        {
+          "id": "b1332f3a-74bc-44c6-b0c3-55980a04e134",
+          "x": 940,
+          "y": 1712
+        },
+        {
+          "id": "89da719e-a66f-455a-a563-285b83cd7b83",
+          "x": 941,
+          "y": 1763
+        },
+        {
+          "id": "8ba676d9-6063-4b2b-bd92-0cdf783bf37c",
+          "x": 845,
+          "y": 1765
+        },
+        {
+          "id": "a6827a62-b5d9-4a4d-a83e-36ec6ce75b7b",
+          "x": 846,
+          "y": 1713
+        }
+      ],
       rooms: [
         { name: "MU91.0P", className: "MU91-zoneMU91_0P-1" }
       ]
@@ -1200,6 +6276,40 @@ export const ZONE_MAPPING = {
       name: "MU91.0Q",
       className: "MU91_0Q",
       pdf: MU910QPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "e57f7715-4c47-461a-842a-58c7fae884bd",
+          "x": 976,
+          "y": 1690
+        },
+        {
+          "id": "328dd449-8638-4816-836b-e71bcdc66614",
+          "x": 1255,
+          "y": 1690
+        },
+        {
+          "id": "2c7a5ff9-1b1c-4bb6-8598-41a7b9533104",
+          "x": 1258,
+          "y": 1776
+        },
+        {
+          "id": "020da66f-c3d3-4aba-a123-94d3fb51b48b",
+          "x": 1233,
+          "y": 1803
+        },
+        {
+          "id": "b8bd9542-842c-4ba6-8155-9ee8dd8c9560",
+          "x": 977,
+          "y": 1801
+        },
+        {
+          "id": "0db580b4-0d05-4578-9574-6a3301bfe05e",
+          "x": 975,
+          "y": 1690
+        }
+      ],
       rooms: [
         { name: "MU91.0Q", className: "MU91-zoneMU91_0Q-1" }
       ]
@@ -1209,6 +6319,35 @@ export const ZONE_MAPPING = {
       name: "MU91.0R",
       className: "MU91-zoneMU91_0R",
       pdf: MU910RPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "66f63742-c078-46b6-b44d-31c29d97c0b0",
+          "x": 195,
+          "y": 587
+        },
+        {
+          "id": "a35d02f0-baa8-4e3f-9fb8-b4b81313d1bb",
+          "x": 246,
+          "y": 590
+        },
+        {
+          "id": "29e5eef5-71a2-4368-8214-307638f50d2b",
+          "x": 247,
+          "y": 716
+        },
+        {
+          "id": "d81cf92b-ba3a-47b0-a846-930d1c31269c",
+          "x": 191,
+          "y": 714
+        },
+        {
+          "id": "dd66c17a-c281-4f94-9c0a-300b583d2fc9",
+          "x": 194,
+          "y": 586
+        }
+      ],
       rooms: [
         { name: "MU91.0R", className: "MU91-zoneMU91_0R-1" }
       ]
@@ -1218,6 +6357,35 @@ export const ZONE_MAPPING = {
       name: "MU91.0S",
       className: "MU91-zoneMU91_0S",
       pdf: MU910SPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "a9e129d5-7c02-4759-93f8-13e044c4d66a",
+          "x": 190,
+          "y": 1348
+        },
+        {
+          "id": "728b2aa3-ed6b-4229-bb3d-01ef8e4d208f",
+          "x": 244,
+          "y": 1349
+        },
+        {
+          "id": "1dfba023-3393-431c-9920-c0952cc69504",
+          "x": 244,
+          "y": 1429
+        },
+        {
+          "id": "b87a8e6c-dd44-49a0-bb3c-e49f9dc26f78",
+          "x": 190,
+          "y": 1430
+        },
+        {
+          "id": "1ef9f65b-e109-471e-97a0-d586f766d0f2",
+          "x": 190,
+          "y": 1346
+        }
+      ],
       rooms: [
         { name: "MU91.0S", className: "MU91-zoneMU91_0S-1" }
       ]
@@ -1230,8 +6398,69 @@ export const ZONE_MAPPING = {
       name: "MU91.1A",
       className: "MU91_1A",
       pdf: MU911APdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "b94ea98d-95d8-492b-8dc5-4c582c3982c7",
+          "x": 292,
+          "y": 443
+        },
+        {
+          "id": "8171bc5b-5f19-4b5d-a5c1-4dce5dff68be",
+          "x": 780,
+          "y": 443
+        },
+        {
+          "id": "1cd6d603-2666-447b-9f02-89f064ed8c3f",
+          "x": 778,
+          "y": 1683
+        },
+        {
+          "id": "0e0d0cac-85ce-4062-af69-4694c933263b",
+          "x": 292,
+          "y": 1687
+        },
+        {
+          "id": "60eb6784-b0d1-4ff8-90a6-5eb13c277d90",
+          "x": 291,
+          "y": 441
+        }
+      ],
       rooms: [
-        { name: "MU91.1A", className: "MU91-zoneMU91_1A-1" }
+        {
+          "id": "c8ab5d17-f686-4c57-9ec1-f952f62f193e",
+          "name": "MU91.1A",
+          "pdfWidth": 1351,
+          "pdfHeight": 2935,
+          "points": [
+            {
+              "id": "ead8fae7-ae97-4edd-8cc3-d354f94de2c4",
+              "x": 193,
+              "y": 125
+            },
+            {
+              "id": "d68a8ef7-d694-4d18-915d-d6ceae96da41",
+              "x": 1255,
+              "y": 126
+            },
+            {
+              "id": "577b5890-872d-43dd-912a-cea3230c2180",
+              "x": 1254,
+              "y": 2763
+            },
+            {
+              "id": "d857e5d0-e8c2-44c8-b16b-e3077143755d",
+              "x": 193,
+              "y": 2760
+            },
+            {
+              "id": "88c9e7ba-6d09-4f7f-874b-e756f996569f",
+              "x": 193,
+              "y": 125
+            }
+          ]
+        }
       ]
     },
     {
@@ -1239,9 +6468,102 @@ export const ZONE_MAPPING = {
       name: "MU91.1F",
       className: "MU91_1F",
       pdf: MU911FPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "8cf71287-fd17-4fb4-bed7-acd60403eb32",
+          "x": 850,
+          "y": 251
+        },
+        {
+          "id": "9098036f-b969-4d6e-85d5-e73c89745ea5",
+          "x": 1247,
+          "y": 251
+        },
+        {
+          "id": "24ea63e7-d448-41d0-b7b3-3714f0389f71",
+          "x": 1248,
+          "y": 467
+        },
+        {
+          "id": "9425d57b-0ed1-455a-af6d-b645862b2b6d",
+          "x": 853,
+          "y": 467
+        },
+        {
+          "id": "35e8b3f3-d221-4fb8-a948-64e292a389e5",
+          "x": 852,
+          "y": 252
+        }
+      ],
       rooms: [
-        { name: "MU91.1F.A", className: "MU91-zoneMU91_1F-1" },
-        { name: "MU91.1F.B", className: "MU91-zoneMU91_1F-2" }
+        {
+          "id": "24e87d07-9914-44ad-b63a-7f78bde3b027",
+          "name": "MU91.1F.A",
+          "pdfWidth": 1366,
+          "pdfHeight": 683,
+          "points": [
+            {
+              "id": "22a485c2-f575-4069-92d7-2f36ce85382b",
+              "x": 204,
+              "y": 73
+            },
+            {
+              "id": "e0531589-c28c-4d53-9c55-8e152e34468b",
+              "x": 699,
+              "y": 75
+            },
+            {
+              "id": "21f897a9-9491-46bd-a3cd-d44d57d9f0e5",
+              "x": 698,
+              "y": 619
+            },
+            {
+              "id": "33535420-555e-49f3-98d6-040a2eb0e125",
+              "x": 206,
+              "y": 616
+            },
+            {
+              "id": "5b0252e3-8eee-4983-9505-dfebe8c1b108",
+              "x": 206,
+              "y": 72
+            }
+          ]
+        },
+        {
+          "id": "93e45ca2-c309-47da-8192-56dd1b83d7de",
+          "name": "MU91.1F.B",
+          "pdfWidth": 1366,
+          "pdfHeight": 683,
+          "points": [
+            {
+              "id": "4f9ce217-a4d1-4585-8840-ff5c7b44bd94",
+              "x": 702,
+              "y": 76
+            },
+            {
+              "id": "85fc5e83-08e2-4453-8cf8-598c81ce7174",
+              "x": 1190,
+              "y": 78
+            },
+            {
+              "id": "3909c0d1-65ea-47b2-8f68-3ae2d42128c5",
+              "x": 1191,
+              "y": 616
+            },
+            {
+              "id": "0e15aaff-5a0f-4948-a646-644acdb65d9e",
+              "x": 701,
+              "y": 618
+            },
+            {
+              "id": "22b44270-f8d0-4ffa-b1d3-80deb877cc16",
+              "x": 703,
+              "y": 77
+            }
+          ]
+        }
       ]
     },
     {
@@ -1249,8 +6571,69 @@ export const ZONE_MAPPING = {
       name: "MU91.1G",
       className: "MU91_1G",
       pdf: MU911GPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "53dc265a-1933-4da8-b05f-96495b8192f6",
+          "x": 849,
+          "y": 477
+        },
+        {
+          "id": "dd358a2a-d8a4-4e16-a4bc-469ab6d18c98",
+          "x": 965,
+          "y": 480
+        },
+        {
+          "id": "62a08fce-1a9f-4de1-834e-db789f00cd78",
+          "x": 962,
+          "y": 643
+        },
+        {
+          "id": "eff7f810-be23-4dbf-a34a-019892e9f982",
+          "x": 849,
+          "y": 647
+        },
+        {
+          "id": "6f15bc92-7a5e-410e-ac44-51a56573042c",
+          "x": 850,
+          "y": 476
+        }
+      ],
       rooms: [
-        { name: "S.10", className: "MU91-zoneMU91_1G-1" }
+        {
+          "id": "7faf7080-3fa8-40fa-9d6d-d518ae203a2c",
+          "name": "S.10",
+          "pdfWidth": 1351,
+          "pdfHeight": 1755,
+          "points": [
+            {
+              "id": "e3949966-4407-4c55-9301-853a85ab8f2f",
+              "x": 156,
+              "y": 136
+            },
+            {
+              "id": "1e802793-7e77-48c4-a856-8e2e034c54bb",
+              "x": 1147,
+              "y": 141
+            },
+            {
+              "id": "2a88f39d-9ee8-4d4e-8ff9-b1255c2da20d",
+              "x": 1147,
+              "y": 1605
+            },
+            {
+              "id": "fea94598-d32f-4e4a-8066-ab1a2027c829",
+              "x": 152,
+              "y": 1598
+            },
+            {
+              "id": "2e86e56e-648f-45cd-868b-0fd1d0fcb80d",
+              "x": 155,
+              "y": 137
+            }
+          ]
+        }
       ]
     },
     {
@@ -1258,8 +6641,69 @@ export const ZONE_MAPPING = {
       name: "MU91.1H",
       className: "MU91_1H",
       pdf: MU911HPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "4c402f5b-588d-4b0d-9a75-732f8dbe8dc9",
+          "x": 851,
+          "y": 651
+        },
+        {
+          "id": "312e8dcc-c4e2-42de-8822-149eb465dce5",
+          "x": 1255,
+          "y": 651
+        },
+        {
+          "id": "2f5a9091-34e0-4ef4-b2b6-3a712c0814cc",
+          "x": 1253,
+          "y": 860
+        },
+        {
+          "id": "244e59ac-5147-4d39-a5fb-22337e30823b",
+          "x": 848,
+          "y": 858
+        },
+        {
+          "id": "5c1beb44-aa1e-4b38-b00b-30ad65c16801",
+          "x": 851,
+          "y": 650
+        }
+      ],
       rooms: [
-        { name: "1.01", className: "MU91-zoneMU91_1H-1" }
+        {
+          "id": "aa86b3af-deb0-4e1f-8422-2837dff654fa",
+          "name": "1.01",
+          "pdfWidth": 1351,
+          "pdfHeight": 731,
+          "points": [
+            {
+              "id": "82f09f06-d363-4a04-96ba-90daa463d044",
+              "x": 73,
+              "y": 36
+            },
+            {
+              "id": "59c6f69a-b056-49e8-840d-d004dd32d67c",
+              "x": 1246,
+              "y": 40
+            },
+            {
+              "id": "5732a505-ef7e-45e9-9a42-875360839739",
+              "x": 1250,
+              "y": 643
+            },
+            {
+              "id": "265722ef-4066-472c-8a0d-80988bff1367",
+              "x": 69,
+              "y": 640
+            },
+            {
+              "id": "133c42cf-2dee-4a75-ad8c-27976a066d57",
+              "x": 74,
+              "y": 39
+            }
+          ]
+        }
       ]
     },
     {
@@ -1267,8 +6711,89 @@ export const ZONE_MAPPING = {
       name: "MU91.1M",
       className: "MU91_1M",
       pdf: MU911MPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "99479011-b216-468e-bc07-8427b5423300",
+          "x": 890,
+          "y": 1310
+        },
+        {
+          "id": "ee1430d8-3760-49ab-a403-9c8e6ad8a112",
+          "x": 1003,
+          "y": 1307
+        },
+        {
+          "id": "68093277-3720-4f58-bc0d-d7216ffdf680",
+          "x": 1002,
+          "y": 1266
+        },
+        {
+          "id": "2f4f37e7-8c8c-48d7-aee1-04bbd6a07746",
+          "x": 1025,
+          "y": 1265
+        },
+        {
+          "id": "7874a31a-aaa5-42b0-88f3-f0ba69f8a735",
+          "x": 1028,
+          "y": 1685
+        },
+        {
+          "id": "f6b33bf7-410d-43b8-b2d5-9f6d9cb4611e",
+          "x": 889,
+          "y": 1684
+        },
+        {
+          "id": "18038f75-e8f4-45e4-9d25-31e89cde0cf7",
+          "x": 889,
+          "y": 1310
+        }
+      ],
       rooms: [
-        { name: "MU91.1M", className: "MU91-zoneMU91_1M-1" }
+        {
+          "id": "cba3b475-1ab0-4f4b-9182-aa5841c2308f",
+          "name": "MU91.1M",
+          "pdfWidth": 1351,
+          "pdfHeight": 3873,
+          "points": [
+            {
+              "id": "4b9e04ca-b612-4e08-9984-cd18b8d545be",
+              "x": 115,
+              "y": 482
+            },
+            {
+              "id": "3c095f20-6a4d-4279-8f6f-e7297d3b8138",
+              "x": 1049,
+              "y": 480
+            },
+            {
+              "id": "6958d774-c1c0-404a-829a-2df25995fadd",
+              "x": 1056,
+              "y": 109
+            },
+            {
+              "id": "26860495-052b-4597-ae26-021f10abf29c",
+              "x": 1225,
+              "y": 111
+            },
+            {
+              "id": "6973c6de-3e6a-45e0-8064-cf7f0cb184a9",
+              "x": 1231,
+              "y": 3577
+            },
+            {
+              "id": "593851ca-a460-41a5-90fa-9be262250b4a",
+              "x": 116,
+              "y": 3585
+            },
+            {
+              "id": "bced0e2e-a215-4274-aa4c-56d6a7cc2f7d",
+              "x": 114,
+              "y": 483
+            }
+          ]
+        }
       ]
     },
     {
@@ -1276,16 +6801,343 @@ export const ZONE_MAPPING = {
       name: "MU91.1N",
       className: "MU91_1N",
       pdf: MU911NPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "0d6ad0dd-413c-4c62-803e-3a4bc67e1671",
+          "x": 1056,
+          "y": 1220
+        },
+        {
+          "id": "04bb1c30-94e2-46f1-bf18-153dfbf5e95b",
+          "x": 1238,
+          "y": 1220
+        },
+        {
+          "id": "f618f22e-ea88-4547-85ef-834c801ad5e5",
+          "x": 1236,
+          "y": 1695
+        },
+        {
+          "id": "910aa947-abdf-43d3-b673-9225b8b2ee13",
+          "x": 1057,
+          "y": 1694
+        },
+        {
+          "id": "6a5cf59b-0d4f-4a74-8c98-0a31cff5225f",
+          "x": 1056,
+          "y": 1219
+        }
+      ],
       rooms: [
-        { name: "S.10", className: "MU91-zoneMU91_1N-1" },
-        { name: "1.11.1", className: "MU91-zoneMU91_1N-2" },
-        { name: "1.11", className: "MU91-zoneMU91_1N-3" },
-        { name: "TR1", className: "MU91-zoneMU91_1N-4" },
-        { name: "1.09", className: "MU91-zoneMU91_1N-5" },
-        { name: "1.09.1", className: "MU91-zoneMU91_1N-6" },
-        { name: "S.02", className: "MU91-zoneMU91_1N-7" },
-        { name: "1.03", className: "MU91-zoneMU91_1N-8" },
-        { name: "S.01", className: "MU91-zoneMU91_1N-9" }
+        {
+          "id": "4f716ff3-b655-48ea-95a3-f77f96bed463",
+          "name": "S.10",
+          "pdfWidth": 1366,
+          "pdfHeight": 3228,
+          "points": [
+            {
+              "id": "bf0b9510-898b-4b53-ab75-4ca3d776d34e",
+              "x": 153,
+              "y": 165
+            },
+            {
+              "id": "85402bd2-6fd6-429c-9ce2-da865c9a156c",
+              "x": 695,
+              "y": 162
+            },
+            {
+              "id": "f5c8aa91-5e8b-4769-a25d-3d95c192f0b6",
+              "x": 694,
+              "y": 629
+            },
+            {
+              "id": "db75bd4d-9dcd-4d22-837c-288b5dbe9728",
+              "x": 152,
+              "y": 626
+            },
+            {
+              "id": "f5d8ee0b-8f71-4053-b1ac-8f19bc120120",
+              "x": 155,
+              "y": 165
+            }
+          ]
+        },
+        {
+          "id": "be9cc5e3-c3d6-4b79-963f-a0fde8ecb052",
+          "name": "1.11.1",
+          "pdfWidth": 1366,
+          "pdfHeight": 3228,
+          "points": [
+            {
+              "id": "39dc3f68-1a1d-492d-848b-c615da96f3a3",
+              "x": 713,
+              "y": 163
+            },
+            {
+              "id": "1d9d55e3-5bbb-4f00-961d-14c621a3c853",
+              "x": 1186,
+              "y": 163
+            },
+            {
+              "id": "956bf502-8e6f-4565-be59-d0b1a3e50f98",
+              "x": 1186,
+              "y": 711
+            },
+            {
+              "id": "d8362dc9-b852-4cab-8cd3-eba6debff5ef",
+              "x": 853,
+              "y": 706
+            },
+            {
+              "id": "314af841-20fa-4021-82a4-115bdf993919",
+              "x": 853,
+              "y": 437
+            },
+            {
+              "id": "ae84a022-2423-4095-96c5-f9a4864c3642",
+              "x": 709,
+              "y": 436
+            },
+            {
+              "id": "62fbd56e-2577-46d9-b43a-0840f15905b3",
+              "x": 711,
+              "y": 162
+            }
+          ]
+        },
+        {
+          "id": "f416ad58-9967-42ff-8bc4-aa2b015446ad",
+          "name": "1.11",
+          "pdfWidth": 1366,
+          "pdfHeight": 3228,
+          "points": [
+            {
+              "id": "3d24d869-567d-4817-a515-aa7c94ab0b3b",
+              "x": 711,
+              "y": 455
+            },
+            {
+              "id": "55e47d84-4511-4694-92fa-13d14aa1f8d5",
+              "x": 839,
+              "y": 457
+            },
+            {
+              "id": "142555f4-d3ae-4870-bf7e-cc02b8849f26",
+              "x": 839,
+              "y": 701
+            },
+            {
+              "id": "6a145509-5076-43d5-97a3-5a63dc80e345",
+              "x": 710,
+              "y": 700
+            },
+            {
+              "id": "62b0fab3-0e22-4832-a2ec-2c47364b40fc",
+              "x": 710,
+              "y": 456
+            }
+          ]
+        },
+        {
+          "id": "b6edf3dd-dd6c-4480-bb1a-b1c9606722bd",
+          "name": "TR1",
+          "pdfWidth": 1366,
+          "pdfHeight": 3228,
+          "points": [
+            {
+              "id": "551d59dc-39c1-4c34-9b83-97e92d74b736",
+              "x": 712,
+              "y": 712
+            },
+            {
+              "id": "4803e7f1-b1a5-4e10-bdab-c93471b024ec",
+              "x": 1185,
+              "y": 713
+            },
+            {
+              "id": "edc00f6e-ad61-45ca-9436-a62baf3314eb",
+              "x": 1180,
+              "y": 951
+            },
+            {
+              "id": "a30763a6-d2a2-49d6-9f4d-d32152f0b893",
+              "x": 713,
+              "y": 954
+            },
+            {
+              "id": "1df6f8ed-c011-4708-b112-b3f601396893",
+              "x": 712,
+              "y": 711
+            }
+          ]
+        },
+        {
+          "id": "a5f0f3a9-4d37-4ff8-a265-6ff3e56d9e26",
+          "name": "1.09",
+          "pdfWidth": 1366,
+          "pdfHeight": 3228,
+          "points": [
+            {
+              "id": "14d0b148-1440-4836-9ff4-00e69fcd3df3",
+              "x": 712,
+              "y": 974
+            },
+            {
+              "id": "32342dc3-c22c-43d1-bd40-b3260765a48a",
+              "x": 840,
+              "y": 974
+            },
+            {
+              "id": "38d63dce-a589-4806-8c6a-794dcd4d6854",
+              "x": 836,
+              "y": 1244
+            },
+            {
+              "id": "dce51df4-61cd-4eb0-9013-4380c3f762c3",
+              "x": 714,
+              "y": 1244
+            },
+            {
+              "id": "7534e455-87b7-4646-977c-e0a6437f9e48",
+              "x": 712,
+              "y": 976
+            }
+          ]
+        },
+        {
+          "id": "138a7b7d-65ee-48a5-bfeb-da0e62b8e6e1",
+          "name": "1.09.1",
+          "pdfWidth": 1366,
+          "pdfHeight": 3228,
+          "points": [
+            {
+              "id": "a2a4b8ba-071b-4650-8552-c05ec45b8b77",
+              "x": 852,
+              "y": 974
+            },
+            {
+              "id": "a893062c-23c8-4a8b-9d9e-a1ab078095fb",
+              "x": 1182,
+              "y": 975
+            },
+            {
+              "id": "eec3a026-f8b4-4062-98d1-8d5aa20584b8",
+              "x": 1180,
+              "y": 1250
+            },
+            {
+              "id": "dfe54e23-0a14-44fa-b8a5-26ed279af999",
+              "x": 851,
+              "y": 1241
+            },
+            {
+              "id": "79f00e48-7ba8-4ccc-b40e-b7a16e00386b",
+              "x": 854,
+              "y": 973
+            }
+          ]
+        },
+        {
+          "id": "83e8cffc-004c-4274-8b9d-cf7bd9e79814",
+          "name": "S.02",
+          "pdfWidth": 1366,
+          "pdfHeight": 3228,
+          "points": [
+            {
+              "id": "31061910-f670-4619-800e-e2d9d511afc1",
+              "x": 147,
+              "y": 1686
+            },
+            {
+              "id": "00fb0606-fabd-4ff7-b6fb-c1b7236d3a00",
+              "x": 694,
+              "y": 1690
+            },
+            {
+              "id": "b7ab3c40-6ee6-4c9a-8637-8e88a899bd09",
+              "x": 696,
+              "y": 2188
+            },
+            {
+              "id": "77fd6fd7-ded3-4244-ab43-3ab119455f4e",
+              "x": 148,
+              "y": 2189
+            },
+            {
+              "id": "41a0bc4b-4eb7-423a-ad37-e643c44d0c8e",
+              "x": 147,
+              "y": 1685
+            }
+          ]
+        },
+        {
+          "id": "f83d2435-cea4-40fa-9413-228454d8c1a5",
+          "name": "1.03",
+          "pdfWidth": 1366,
+          "pdfHeight": 3228,
+          "points": [
+            {
+              "id": "ec7e6fc4-30d7-465e-bd70-5fab2f7c9efe",
+              "x": 715,
+              "y": 1687
+            },
+            {
+              "id": "48a18c42-f68d-4c37-b98b-de575787a8f4",
+              "x": 1178,
+              "y": 1689
+            },
+            {
+              "id": "bcb74c23-33bd-401a-aada-34b92c90df43",
+              "x": 1177,
+              "y": 2191
+            },
+            {
+              "id": "baff7c2f-f453-45e8-b12c-fece500248db",
+              "x": 715,
+              "y": 2189
+            },
+            {
+              "id": "97e4e673-95aa-4a4d-80cb-8440de8710fc",
+              "x": 714,
+              "y": 1687
+            }
+          ]
+        },
+        {
+          "id": "61040b79-3800-410e-ae72-4aaadd732287",
+          "name": "S.01",
+          "pdfWidth": 1366,
+          "pdfHeight": 3228,
+          "points": [
+            {
+              "id": "c1e64498-94cc-411b-ac6e-b445eab901ca",
+              "x": 162,
+              "y": 2571
+            },
+            {
+              "id": "89fb8c5e-91a2-4e29-a452-ca5350ee5124",
+              "x": 1187,
+              "y": 2566
+            },
+            {
+              "id": "bc7d926c-b40b-48cb-b2e5-e31009d248e9",
+              "x": 1186,
+              "y": 2941
+            },
+            {
+              "id": "aaec68a2-e55c-4f3c-ad9d-2f271d5cc711",
+              "x": 159,
+              "y": 2934
+            },
+            {
+              "id": "53ace3bd-5fc3-4444-b345-0576626c683e",
+              "x": 161,
+              "y": 2568
+            }
+          ]
+        }
       ]
     },
     {
@@ -1293,8 +7145,109 @@ export const ZONE_MAPPING = {
       name: "MU91.1P",
       className: "MU91_1P",
       pdf: MU911PPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "53214273-dc29-497a-988b-aa0d0555b5e9",
+          "x": 847,
+          "y": 1288
+        },
+        {
+          "id": "5bc67590-da66-4ba7-b451-6113dd9eb0b3",
+          "x": 965,
+          "y": 1285
+        },
+        {
+          "id": "c5a54241-15b3-40b3-8254-6417c740453e",
+          "x": 962,
+          "y": 1303
+        },
+        {
+          "id": "4ffcb10e-adeb-4b91-9370-8bcdf2404714",
+          "x": 886,
+          "y": 1304
+        },
+        {
+          "id": "69f15a36-7e7e-4ab7-87ff-6218cf88440a",
+          "x": 889,
+          "y": 1685
+        },
+        {
+          "id": "84977add-1ac4-4c2f-b5f4-160e2d0267e2",
+          "x": 963,
+          "y": 1688
+        },
+        {
+          "id": "c113b637-c20c-4cb0-9255-dc7708999058",
+          "x": 962,
+          "y": 1703
+        },
+        {
+          "id": "98bbc074-fe19-4846-bd11-7c5f27188df8",
+          "x": 849,
+          "y": 1702
+        },
+        {
+          "id": "8903a0f2-292d-49e8-ac13-b20e75634723",
+          "x": 847,
+          "y": 1288
+        }
+      ],
       rooms: [
-        { name: "MU91.1P", className: "MU91-zoneMU91_1P-1" }
+        {
+          "id": "99980116-7084-4e85-9d59-d5f0ffe04c01",
+          "name": "MU91.1P",
+          "pdfWidth": 1351,
+          "pdfHeight": 3708,
+          "points": [
+            {
+              "id": "1540b12b-62dc-42e8-b48c-22eb88017e4b",
+              "x": 297,
+              "y": 228
+            },
+            {
+              "id": "d4331591-a5ba-4f68-bd6f-522996f6384f",
+              "x": 1197,
+              "y": 225
+            },
+            {
+              "id": "425ce1eb-b29f-4f47-a3fc-cc24c66b7e87",
+              "x": 1193,
+              "y": 358
+            },
+            {
+              "id": "c4eab924-049b-4318-b2f4-09c94e025fa0",
+              "x": 569,
+              "y": 360
+            },
+            {
+              "id": "e7d03e17-4288-48b2-9da2-236d68c4e372",
+              "x": 569,
+              "y": 3408
+            },
+            {
+              "id": "f21fec13-5245-4699-97d7-0b11648c236e",
+              "x": 1191,
+              "y": 3408
+            },
+            {
+              "id": "085ce312-378d-4094-b40c-53ea05df1dc9",
+              "x": 1190,
+              "y": 3540
+            },
+            {
+              "id": "c40297bc-7488-4c7b-8f12-ac54d122d0ef",
+              "x": 275,
+              "y": 3542
+            },
+            {
+              "id": "b8198125-bc13-4fa3-adf4-a0843685ee26",
+              "x": 297,
+              "y": 228
+            }
+          ]
+        }
       ]
     }
   ],
@@ -1305,9 +7258,102 @@ export const ZONE_MAPPING = {
       name: "MU91.2",
       className: "MU91_2F",
       pdf: MU912FloorPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "77aff53a-3aa8-4d18-b9e4-dfd949dc3a82",
+          "x": 273,
+          "y": 151
+        },
+        {
+          "id": "ae2e41a1-36da-447f-af6f-9e4cd39e76ad",
+          "x": 1288,
+          "y": 146
+        },
+        {
+          "id": "79840917-8356-488f-b32f-eedf71b2bc39",
+          "x": 1279,
+          "y": 1672
+        },
+        {
+          "id": "b5c0267c-46b0-44a7-9a0f-9353f23f667a",
+          "x": 277,
+          "y": 1668
+        },
+        {
+          "id": "0b2e32ca-df8a-462e-b7d1-4ad5c56cfb57",
+          "x": 274,
+          "y": 153
+        }
+      ],
       rooms: [
-        { name: "MU91.2F.A", className: "MU91-zoneMU91_2F-1" },
-        { name: "MU91.2F.B", className: "MU91-zoneMU91_2F-2" }
+        {
+          "id": "a8eb2736-a374-4570-b2c8-160bca073438",
+          "name": "MU91.2F.A",
+          "pdfWidth": 1366,
+          "pdfHeight": 809,
+          "points": [
+            {
+              "id": "72404690-ee8d-415b-a9ec-e158030f3bf5",
+              "x": 161,
+              "y": 107
+            },
+            {
+              "id": "faec45db-4107-4574-8e36-ae51db92f714",
+              "x": 680,
+              "y": 106
+            },
+            {
+              "id": "fad2c161-3c5e-4d13-ac9b-ee5f662edc5e",
+              "x": 685,
+              "y": 692
+            },
+            {
+              "id": "9a0707c5-9600-4bca-a6ad-c9ac0efb0475",
+              "x": 160,
+              "y": 688
+            },
+            {
+              "id": "59a658b8-844e-455a-86df-5ea17b8a84fb",
+              "x": 162,
+              "y": 107
+            }
+          ]
+        },
+        {
+          "id": "9b7c043b-d1e6-4273-bb49-47ec3ef5b566",
+          "name": "MU91.2F.B",
+          "pdfWidth": 1366,
+          "pdfHeight": 809,
+          "points": [
+            {
+              "id": "2ed9d5a6-58c8-4eeb-9117-ed0ac2665e4d",
+              "x": 684,
+              "y": 108
+            },
+            {
+              "id": "aa22559f-b468-4792-9740-5b8611e329db",
+              "x": 1216,
+              "y": 107
+            },
+            {
+              "id": "b8e8244f-355e-4823-9658-826d3e348ab6",
+              "x": 1216,
+              "y": 694
+            },
+            {
+              "id": "a9ac3a6b-c4e8-41be-91b2-6b529e08f2d7",
+              "x": 687,
+              "y": 691
+            },
+            {
+              "id": "3a71085c-53c1-4934-ab22-bfdd20135b5d",
+              "x": 684,
+              "y": 107
+            }
+          ]
+        }
       ]
     }
   ],
@@ -1318,9 +7364,102 @@ export const ZONE_MAPPING = {
       name: "MU91.3",
       className: "MU91_3F",
       pdf: MU913FloorPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "1945ec06-17b9-432f-b5d2-add17725d9a3",
+          "x": 239,
+          "y": 113
+        },
+        {
+          "id": "bcc30b20-324d-4b76-8b6b-0546e45c8259",
+          "x": 1284,
+          "y": 112
+        },
+        {
+          "id": "6592525c-fdc2-4f5a-a3ab-3ca1d218cd40",
+          "x": 1282,
+          "y": 1788
+        },
+        {
+          "id": "60dca6a5-6979-44e5-8968-aa548ce12921",
+          "x": 240,
+          "y": 1787
+        },
+        {
+          "id": "484e23c7-7c33-416f-89bb-126062d85822",
+          "x": 240,
+          "y": 111
+        }
+      ],
       rooms: [
-        { name: "MU91.3F.A", className: "MU91-zoneMU91_3F-1" },
-        { name: "MU91.3F.B", className: "MU91-zoneMU91_3F-2" }
+        {
+          "id": "f8f8eb8f-d829-46f9-9379-ecabdc15a4d3",
+          "name": "MU91.3F.A",
+          "pdfWidth": 1351,
+          "pdfHeight": 722,
+          "points": [
+            {
+              "id": "8a50e662-fec7-496d-96ba-52819b3a3c2a",
+              "x": 202,
+              "y": 79
+            },
+            {
+              "id": "bc8114f6-04bf-42d3-8b9a-6ca7d61b9747",
+              "x": 672,
+              "y": 79
+            },
+            {
+              "id": "3bf3303c-c958-4875-8439-5dcb09468add",
+              "x": 674,
+              "y": 607
+            },
+            {
+              "id": "44ed8245-055c-48ff-8f42-74c44ea6fcd1",
+              "x": 203,
+              "y": 606
+            },
+            {
+              "id": "87c07b10-de94-4ceb-882d-57c8bb710062",
+              "x": 202,
+              "y": 77
+            }
+          ]
+        },
+        {
+          "id": "09ae5780-bbb3-4255-b68c-010b1de33ae0",
+          "name": "MU91.3F.B",
+          "pdfWidth": 1351,
+          "pdfHeight": 722,
+          "points": [
+            {
+              "id": "97f03edf-2d79-402b-8e29-3e39991a4299",
+              "x": 672,
+              "y": 80
+            },
+            {
+              "id": "5b7bcc50-4016-4a5e-9581-63dd435ce4c0",
+              "x": 1165,
+              "y": 81
+            },
+            {
+              "id": "d8773b18-d841-49f1-8c83-6e864b43141f",
+              "x": 1166,
+              "y": 609
+            },
+            {
+              "id": "a3c29a0a-8b45-4e6c-a652-9e96b7ba77cd",
+              "x": 677,
+              "y": 606
+            },
+            {
+              "id": "a3f799d5-2b74-4455-8ff8-8db3d9600073",
+              "x": 672,
+              "y": 80
+            }
+          ]
+        }
       ]
     }
   ],
@@ -1331,9 +7470,102 @@ export const ZONE_MAPPING = {
       name: "MU91.4",
       className: "MU91_4F",
       pdf: MU914FloorPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "053e5d17-66c8-4f7b-8ecd-110a6d16d731",
+          "x": 240,
+          "y": 115
+        },
+        {
+          "id": "4ba0352b-449a-4d9b-807d-a88da5684d5d",
+          "x": 1285,
+          "y": 117
+        },
+        {
+          "id": "c8f76573-0c89-477a-ae51-ade160c0b15a",
+          "x": 1279,
+          "y": 1788
+        },
+        {
+          "id": "9c78f1ea-0fe1-4c9b-90c8-26695ea407de",
+          "x": 239,
+          "y": 1784
+        },
+        {
+          "id": "4f4f397e-ef64-4562-ae9d-93fd5c3dad68",
+          "x": 240,
+          "y": 111
+        }
+      ],
       rooms: [
-        { name: "MU91.4F.A", className: "MU91-zoneMU91_4F-1" },
-        { name: "MU91.4F.B", className: "MU91-zoneMU91_4F-2" }
+        {
+          "id": "63050d0f-8054-4952-84dd-341f843149c3",
+          "name": "MU91.4F.A",
+          "pdfWidth": 1351,
+          "pdfHeight": 713,
+          "points": [
+            {
+              "id": "8a44d8d4-ddac-4ecb-b697-0eb13d124abc",
+              "x": 156,
+              "y": 88
+            },
+            {
+              "id": "ee7673d5-2f78-4f40-b484-9a3000d56ecc",
+              "x": 662,
+              "y": 92
+            },
+            {
+              "id": "06adf266-8ad2-47e7-b6a3-def6915bc734",
+              "x": 665,
+              "y": 654
+            },
+            {
+              "id": "fbbc413c-27a2-4ccd-aa41-c88e0a97cc68",
+              "x": 157,
+              "y": 652
+            },
+            {
+              "id": "c5a5fbe7-7118-4182-a9f5-54ef3873711f",
+              "x": 155,
+              "y": 89
+            }
+          ]
+        },
+        {
+          "id": "fdd83076-60ff-451b-8a9c-d824d2214156",
+          "name": "MU91.4F.A",
+          "pdfWidth": 1351,
+          "pdfHeight": 713,
+          "points": [
+            {
+              "id": "fc174e7e-e03a-406d-bdd5-e2c5a5a94af9",
+              "x": 662,
+              "y": 92
+            },
+            {
+              "id": "ce0c2c99-65da-41f8-b6df-aed022907f89",
+              "x": 1190,
+              "y": 89
+            },
+            {
+              "id": "174151a3-5b80-447f-8ccd-50d258ee86b0",
+              "x": 1191,
+              "y": 651
+            },
+            {
+              "id": "55ccda5a-9e6e-435a-88d5-d29b9131648e",
+              "x": 670,
+              "y": 651
+            },
+            {
+              "id": "ba3eca35-9199-4279-99e9-018d6c5c6623",
+              "x": 662,
+              "y": 91
+            }
+          ]
+        }
       ]
     }
   ],
@@ -1344,16 +7576,333 @@ export const ZONE_MAPPING = {
       name: "MU91.R",
       className: "MU91_R",
       pdf: MU91RoofPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1911,
+      "points": [
+        {
+          "id": "9221e216-8764-4d29-ac36-4f7645b78471",
+          "x": 145,
+          "y": 118
+        },
+        {
+          "id": "c99b5c8e-542f-4b3b-a7f5-80d57f42b014",
+          "x": 1282,
+          "y": 112
+        },
+        {
+          "id": "4f03d129-d68c-4d55-b9f0-b951a84b8653",
+          "x": 1279,
+          "y": 1790
+        },
+        {
+          "id": "c8bb4c10-9de8-45d7-b011-7d916af184b8",
+          "x": 149,
+          "y": 1801
+        },
+        {
+          "id": "77b27411-aba2-4295-8251-7eaa438a05fe",
+          "x": 145,
+          "y": 116
+        }
+      ],
       rooms: [
-        { name: "91.RE", className: "MU91_RE_1" },
-        { name: "91.RG", className: "MU91_RG_1" },
-        { name: "91.RR", className: "MU91_RR_1" },
-        { name: "91.RH", className: "MU91_RH_1" },
-        { name: "91.RL", className: "MU91_RL_1" },
-        { name: "91.RK", className: "MU91_RK_1" },
-        { name: "91.RS", className: "MU91_RS_1" },
-        { name: "91.RN", className: "MU91_RN_1" },
-        { name: "91.RO", className: "MU91_RO_1" }
+        {
+          "id": "7cd483ac-df3c-4e29-b0ca-9b8e70fceb52",
+          "name": "91.RE",
+          "pdfWidth": 1351,
+          "pdfHeight": 1911,
+          "points": [
+            {
+              "id": "f0329872-c51e-4ecc-b90e-1cb01fd3620a",
+              "x": 598,
+              "y": 366
+            },
+            {
+              "id": "7d4a8457-419f-4730-b948-fee13028e684",
+              "x": 675,
+              "y": 369
+            },
+            {
+              "id": "9675c756-6bcc-413e-b63c-7d51cc6ee1da",
+              "x": 678,
+              "y": 421
+            },
+            {
+              "id": "69c26cd5-2c52-4096-be25-187f1e3412b0",
+              "x": 599,
+              "y": 423
+            },
+            {
+              "id": "c38d633b-a91d-4938-9e2f-bad1c4a3f384",
+              "x": 598,
+              "y": 365
+            }
+          ]
+        },
+        {
+          "id": "d0b0837e-2f31-4d3d-8161-01d9b6e43f8d",
+          "name": "91.RG",
+          "pdfWidth": 1351,
+          "pdfHeight": 1911,
+          "points": [
+            {
+              "id": "f2a6ea81-ad8b-483c-b3f5-b0df5fd3eda3",
+              "x": 817,
+              "y": 480
+            },
+            {
+              "id": "3fd154c0-f852-4eb9-8923-1678497b8c55",
+              "x": 931,
+              "y": 481
+            },
+            {
+              "id": "f790def5-9abe-418d-83e6-840b74ab6c8a",
+              "x": 930,
+              "y": 644
+            },
+            {
+              "id": "8053a6f1-8757-427d-a62e-56708e2e4fdc",
+              "x": 814,
+              "y": 647
+            },
+            {
+              "id": "53356200-1db8-46c5-8e0e-c25e7c77676d",
+              "x": 814,
+              "y": 480
+            }
+          ]
+        },
+        {
+          "id": "f21f3f3f-d735-4a9e-84ac-6370d4ce9a43",
+          "name": "91.RR",
+          "pdfWidth": 1351,
+          "pdfHeight": 1911,
+          "points": [
+            {
+              "id": "2127d9bb-ce0d-4afe-ba30-e8901097c67a",
+              "x": 184,
+              "y": 585
+            },
+            {
+              "id": "3380fbb4-b913-42a5-afc5-ea10c0a77cb7",
+              "x": 243,
+              "y": 586
+            },
+            {
+              "id": "71663ee9-de34-4dd6-bee8-d59c596f93e1",
+              "x": 244,
+              "y": 707
+            },
+            {
+              "id": "ae3ac143-2d53-40aa-9305-a5f10574f566",
+              "x": 182,
+              "y": 706
+            },
+            {
+              "id": "5582abd0-be8a-442a-940d-7f3cebf9e1ae",
+              "x": 182,
+              "y": 585
+            }
+          ]
+        },
+        {
+          "id": "230df3a8-2374-4115-b0ca-870506465028",
+          "name": "91.RH",
+          "pdfWidth": 1351,
+          "pdfHeight": 1911,
+          "points": [
+            {
+              "id": "34a362bb-72e0-4b94-9722-c64e2a0fa31d",
+              "x": 817,
+              "y": 654
+            },
+            {
+              "id": "39d7648b-7110-478c-9d78-4d6e26234487",
+              "x": 1201,
+              "y": 651
+            },
+            {
+              "id": "88ed60ac-0676-4947-b72f-54052542f826",
+              "x": 1197,
+              "y": 844
+            },
+            {
+              "id": "f33b2f6a-6709-4f12-88cc-ac657923e5ed",
+              "x": 818,
+              "y": 843
+            },
+            {
+              "id": "6d599e46-f404-4d05-b717-490faed21214",
+              "x": 817,
+              "y": 655
+            }
+          ]
+        },
+        {
+          "id": "87b99ba2-a389-4ac8-bca5-b60164476fec",
+          "name": "91.RL",
+          "pdfWidth": 1351,
+          "pdfHeight": 1911,
+          "points": [
+            {
+              "id": "41a25aaa-77a1-405a-8a5d-44438df23954",
+              "x": 833,
+              "y": 1074
+            },
+            {
+              "id": "16941617-d136-4d81-8862-c1b0b7450582",
+              "x": 888,
+              "y": 1073
+            },
+            {
+              "id": "45e1d537-b5be-441d-993c-f495be7d3997",
+              "x": 889,
+              "y": 1154
+            },
+            {
+              "id": "32af9f9f-a590-4476-8e4d-0113f1ae6b46",
+              "x": 836,
+              "y": 1157
+            },
+            {
+              "id": "018b31ec-e5dc-4085-bafe-a4f5a9b02eca",
+              "x": 833,
+              "y": 1074
+            }
+          ]
+        },
+        {
+          "id": "80018aa4-c936-441f-b9ac-7cb50b448e7d",
+          "name": "91.RK",
+          "pdfWidth": 1351,
+          "pdfHeight": 1911,
+          "points": [
+            {
+              "id": "e404452d-2902-49d3-b6d9-73044610042b",
+              "x": 1101,
+              "y": 1031
+            },
+            {
+              "id": "66ffcf3d-5e36-4779-a7b5-719bfdb4e348",
+              "x": 1189,
+              "y": 1029
+            },
+            {
+              "id": "86b756c4-1c93-4edd-8bed-3384236f1c69",
+              "x": 1189,
+              "y": 1160
+            },
+            {
+              "id": "f2017b84-d14a-46a7-9aba-47c256cca947",
+              "x": 1102,
+              "y": 1162
+            },
+            {
+              "id": "70eea0c0-d3e7-4407-9bae-c283ed86489e",
+              "x": 1101,
+              "y": 1030
+            }
+          ]
+        },
+        {
+          "id": "3a7a21a1-10a2-4a2f-aa67-b1cb1c7de056",
+          "name": "91.RS",
+          "pdfWidth": 1351,
+          "pdfHeight": 1911,
+          "points": [
+            {
+              "id": "33a2b9e5-ac9b-4ebd-9134-5f443f153a22",
+              "x": 191,
+              "y": 1322
+            },
+            {
+              "id": "a1fe6273-daea-447f-a909-cc665211faf5",
+              "x": 240,
+              "y": 1319
+            },
+            {
+              "id": "0af0e036-b938-40bf-8853-02360d37a9b5",
+              "x": 241,
+              "y": 1398
+            },
+            {
+              "id": "8f025d00-bb62-407a-8866-0dcd669f7fa2",
+              "x": 189,
+              "y": 1399
+            },
+            {
+              "id": "3dfe4807-847a-4884-85ee-e67eb8f5c7ab",
+              "x": 189,
+              "y": 1324
+            }
+          ]
+        },
+        {
+          "id": "711fd077-2111-42b0-9c6b-46a9b5cceae1",
+          "name": "91.RN",
+          "pdfWidth": 1351,
+          "pdfHeight": 1911,
+          "points": [
+            {
+              "id": "03e72ad4-3944-4e95-9e6f-d3605ca3509e",
+              "x": 1017,
+              "y": 1193
+            },
+            {
+              "id": "a7c95f89-0737-48fc-826a-4cf468329e48",
+              "x": 1187,
+              "y": 1193
+            },
+            {
+              "id": "e34a01ac-19e2-4717-8dc6-09392f274bd5",
+              "x": 1184,
+              "y": 1644
+            },
+            {
+              "id": "5f56d257-07e2-46c0-843e-7ecc6f28c173",
+              "x": 1015,
+              "y": 1642
+            },
+            {
+              "id": "eed78890-f312-4d34-918a-777d95815784",
+              "x": 1017,
+              "y": 1190
+            }
+          ]
+        },
+        {
+          "id": "bf29805a-67eb-4f08-af39-24126e535641",
+          "name": "91.RO",
+          "pdfWidth": 1351,
+          "pdfHeight": 1911,
+          "points": [
+            {
+              "id": "1b9d2c63-c15f-428f-9480-f1dae3f34341",
+              "x": 512,
+              "y": 1648
+            },
+            {
+              "id": "b579a965-fcee-45a9-8b14-f13f1cd6fe3b",
+              "x": 634,
+              "y": 1649
+            },
+            {
+              "id": "0d0ce964-0da2-40f8-8749-f0abba718564",
+              "x": 634,
+              "y": 1703
+            },
+            {
+              "id": "276113de-db2b-4bab-9c08-edc1da408998",
+              "x": 515,
+              "y": 1704
+            },
+            {
+              "id": "dfaacc95-52b6-463e-833d-64f83ed3ce7f",
+              "x": 513,
+              "y": 1649
+            }
+          ]
+        }
       ]
     }
   ],
@@ -8004,6 +14553,35 @@ export const ZONE_MAPPING = {
       name: "10.GF.Backage",
       className: "GF_Backage",
       pdf: MA_GF_10_BackagePdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1761,
+      "points": [
+        {
+          "id": "6bce48c1-cc1b-46ba-ab99-1c3848304013",
+          "x": 453,
+          "y": 664
+        },
+        {
+          "id": "eed5ac53-47b2-4bbe-aab9-109845cde3c5",
+          "x": 633,
+          "y": 664
+        },
+        {
+          "id": "2932adff-8f4c-45b8-baca-92008c59a184",
+          "x": 634,
+          "y": 1594
+        },
+        {
+          "id": "8a457a8b-3c38-47d7-aa66-e0e953aa21f4",
+          "x": 451,
+          "y": 1594
+        },
+        {
+          "id": "f1f2cb2d-6ecb-467e-b72b-f778a7db34e9",
+          "x": 452,
+          "y": 664
+        }
+      ],
       rooms: [
         { name: "S.106", className: "MA-zone10_GF_Backage-1" }
       ]
@@ -8013,6 +14591,35 @@ export const ZONE_MAPPING = {
       name: "10.GF.Corridor.N",
       className: "GF_Corridor_N",
       pdf: MA_GF_10_CorridorNPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1761,
+      "points": [
+        {
+          "id": "161f133d-8c7a-4ea8-8df5-01914e259912",
+          "x": 456,
+          "y": 612
+        },
+        {
+          "id": "ee0dc3b5-fb70-468f-b5bf-4538c9d7628e",
+          "x": 540,
+          "y": 609
+        },
+        {
+          "id": "a76b7d40-9440-4631-b620-187f995a46d2",
+          "x": 540,
+          "y": 660
+        },
+        {
+          "id": "a411b7da-e97e-433f-bd43-9e8a7618e537",
+          "x": 454,
+          "y": 661
+        },
+        {
+          "id": "023b6fb7-3d0e-4f05-a416-8610449f763d",
+          "x": 454,
+          "y": 614
+        }
+      ],
       rooms: [
         { name: "S.100", className: "MA-zone10_GF_Corridor_N-1" }
       ]
@@ -8022,6 +14629,35 @@ export const ZONE_MAPPING = {
       name: "10.GF.Corridor.S",
       className: "GF_Corridor_S",
       pdf: MA_GF_10_CorridorSPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1761,
+      "points": [
+        {
+          "id": "1083e69d-bd0f-4142-b621-a4281b33ae52",
+          "x": 450,
+          "y": 1597
+        },
+        {
+          "id": "70fe6d40-691a-4f19-8d70-bcf04ba9c400",
+          "x": 636,
+          "y": 1594
+        },
+        {
+          "id": "1d4f1e84-7677-488b-ab48-b942b7f9badb",
+          "x": 634,
+          "y": 1628
+        },
+        {
+          "id": "1a878450-37c1-4b9b-8b6f-7c3aceb76dd0",
+          "x": 450,
+          "y": 1623
+        },
+        {
+          "id": "ee437e19-42b5-4739-91e6-b14773b80f7c",
+          "x": 451,
+          "y": 1598
+        }
+      ],
       rooms: [
         { name: "S.170", className: "MA-zone10_GF_Corridor_S-1" }
       ]
@@ -8031,6 +14667,45 @@ export const ZONE_MAPPING = {
       name: "10.GF.Frontstage.E",
       className: "GF_Frontstage_E",
       pdf: MA_GF_10_FrontstageEPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1761,
+      "points": [
+        {
+          "id": "26639bfa-c99d-4888-9033-8d9b06aed1d5",
+          "x": 631,
+          "y": 660
+        },
+        {
+          "id": "45439e92-cc6b-4b77-8be4-f43f1c9f9b21",
+          "x": 545,
+          "y": 661
+        },
+        {
+          "id": "7697b914-cbc4-47b5-85ec-92daab29ede3",
+          "x": 544,
+          "y": 608
+        },
+        {
+          "id": "56f2372f-c6a4-40d6-869e-3fa721196f73",
+          "x": 818,
+          "y": 610
+        },
+        {
+          "id": "8e46951a-a0b8-49e6-9bf1-86373ed4f239",
+          "x": 821,
+          "y": 1623
+        },
+        {
+          "id": "19d05198-34b1-4293-8138-d4a4f37d6c71",
+          "x": 638,
+          "y": 1622
+        },
+        {
+          "id": "631feec0-8314-44de-96cb-f1cf87fb6edc",
+          "x": 638,
+          "y": 659
+        }
+      ],
       rooms: [
         { name: "S.103", className: "MA-zone10_GF_Frontstage_E-1" },
         { name: "S.101", className: "MA-zone10_GF_Frontstage_E-2" }
@@ -8041,6 +14716,35 @@ export const ZONE_MAPPING = {
       name: "10.GF.Frontstage.W",
       className: "GF_Frontstage_W",
       pdf: MA_GF_10_FrontstageWPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1761,
+      "points": [
+        {
+          "id": "c2d4c960-9628-4b8a-8d51-eab08ded8d6a",
+          "x": 271,
+          "y": 611
+        },
+        {
+          "id": "bd9dfb9d-9e48-4b43-9743-68f2b185e524",
+          "x": 448,
+          "y": 613
+        },
+        {
+          "id": "21846056-e4cd-4fbb-bc3e-d3834568dd02",
+          "x": 445,
+          "y": 1622
+        },
+        {
+          "id": "12d24fba-e2f2-4c1d-bd65-67cca58a19a3",
+          "x": 271,
+          "y": 1624
+        },
+        {
+          "id": "b48f32e1-951d-4b5a-acc4-3788c1375bac",
+          "x": 270,
+          "y": 610
+        }
+      ],
       rooms: [
         { name: "S.102", className: "MA-zone10_GF_Frontstage_W-1" },
         { name: "S.104", className: "MA-zone10_GF_Frontstage_W-2" }
@@ -8051,6 +14755,35 @@ export const ZONE_MAPPING = {
       name: "11.0",
       className: "eleven_Zone",
       pdf: MA_GF_11_0Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1761,
+      "points": [
+        {
+          "id": "3135bf6f-a5e3-415c-b5ac-9b34684793c1",
+          "x": 142,
+          "y": 1038
+        },
+        {
+          "id": "f081a0a4-1a51-484b-a184-55b984f4e05b",
+          "x": 264,
+          "y": 1039
+        },
+        {
+          "id": "46fe1f90-18b6-4839-921a-6048648df807",
+          "x": 265,
+          "y": 1395
+        },
+        {
+          "id": "befa80f3-8343-4698-b387-897221385409",
+          "x": 143,
+          "y": 1394
+        },
+        {
+          "id": "dcae80e8-5bbb-43c7-95dc-a67f2e68efa8",
+          "x": 141,
+          "y": 1038
+        }
+      ],
       rooms: [
         { name: "S.132", className: "MA-zone11_0-1" },
         { name: "S.136", className: "MA-zone11_0-2" },
@@ -8073,6 +14806,35 @@ export const ZONE_MAPPING = {
       name: "70.0A",
       className: "seventyA_Zone",
       pdf: MA_GF_70_0APdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1761,
+      "points": [
+        {
+          "id": "ba546126-5d96-4850-a883-847dc1308ca8",
+          "x": 822,
+          "y": 863
+        },
+        {
+          "id": "ceba2160-bd62-4163-a764-5185f6b944dd",
+          "x": 964,
+          "y": 867
+        },
+        {
+          "id": "46ff8b90-d8e6-4d39-8d6f-c31e0203a137",
+          "x": 965,
+          "y": 1220
+        },
+        {
+          "id": "74a6f285-bb39-4a14-8445-c0e16b597926",
+          "x": 823,
+          "y": 1222
+        },
+        {
+          "id": "7375c19b-3c14-44f3-b48d-2f25ac7129c1",
+          "x": 823,
+          "y": 863
+        }
+      ],
       rooms: [
         { name: "TR73", className: "MA-zone70_0A-1" },
         { name: "LI73", className: "MA-zone70_0A-2" },
@@ -8098,6 +14860,35 @@ export const ZONE_MAPPING = {
       name: "70.0B",
       className: "seventyB_Zone",
       pdf: MA_GF_70_0BPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1761,
+      "points": [
+        {
+          "id": "37a6d3f5-2097-443c-9c25-87d79211dde2",
+          "x": 1031,
+          "y": 982
+        },
+        {
+          "id": "106346ed-5321-4e95-bb8e-7f3b5644616c",
+          "x": 1175,
+          "y": 979
+        },
+        {
+          "id": "203d37c8-fc85-480d-8ffd-92aaca400168",
+          "x": 1174,
+          "y": 1425
+        },
+        {
+          "id": "6c843016-6746-41c2-9138-480c7ff49222",
+          "x": 1031,
+          "y": 1422
+        },
+        {
+          "id": "d4ba8f58-eae8-4131-9526-4fb9743396bd",
+          "x": 1033,
+          "y": 978
+        }
+      ],
       rooms: [
         { name: "TR72", className: "MA-zone70_0B-1" },
         { name: "S.723", className: "MA-zone70_0B-2" },
@@ -8123,6 +14914,45 @@ export const ZONE_MAPPING = {
       name: "40.0A",
       className: "fortyA_Zone",
       pdf: MA_GF_40_0APdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1761,
+      "points": [
+        {
+          "id": "fd9159f5-d0ac-4a15-b1ca-769fbc09fd8e",
+          "x": 404,
+          "y": 362
+        },
+        {
+          "id": "771be34f-405e-42f4-8ab0-9e4140963f4f",
+          "x": 488,
+          "y": 361
+        },
+        {
+          "id": "792edf7f-09b0-41c7-8ad9-2d1cc8ef4e55",
+          "x": 488,
+          "y": 605
+        },
+        {
+          "id": "e426387b-b21c-455d-abcf-24a2ad084471",
+          "x": 326,
+          "y": 604
+        },
+        {
+          "id": "6b269edb-dd91-4f7a-b201-9e0af41f3981",
+          "x": 328,
+          "y": 463
+        },
+        {
+          "id": "7dcb80cc-9a3a-4650-93b8-0f433deb5708",
+          "x": 405,
+          "y": 461
+        },
+        {
+          "id": "ea161b28-96bf-487a-ab2b-f6a388214e48",
+          "x": 403,
+          "y": 363
+        }
+      ],
       rooms: [
         { name: "S.416", className: "MA-zone40_0A-1" },
         { name: "S.412.1", className: "MA-zone40_0A-2" },
@@ -8138,6 +14968,85 @@ export const ZONE_MAPPING = {
       name: "40.0C",
       className: "fortyC_Zone",
       pdf: MA_GF_40_0CPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1761,
+      "points": [
+        {
+          "id": "59591671-fa14-48a4-b10a-53c83c89eb46",
+          "x": 126,
+          "y": 315
+        },
+        {
+          "id": "b8984ecf-d874-446c-9ae0-d538379ebd21",
+          "x": 1232,
+          "y": 314
+        },
+        {
+          "id": "c479cf4d-7bbf-40b2-b1b9-fb112b089bbc",
+          "x": 1230,
+          "y": 349
+        },
+        {
+          "id": "e0bd75e5-6c13-4321-972d-72c0a50b09d2",
+          "x": 543,
+          "y": 351
+        },
+        {
+          "id": "88d7aaf0-8096-4a4d-b848-84f771db39bb",
+          "x": 540,
+          "y": 604
+        },
+        {
+          "id": "9394a46d-0e0f-4526-8ee9-1c58d20143f8",
+          "x": 490,
+          "y": 604
+        },
+        {
+          "id": "5c0b84c1-bdd0-48ba-9669-c2a82254b700",
+          "x": 489,
+          "y": 361
+        },
+        {
+          "id": "54b4c831-9f6c-4123-8a10-d8510338ecf1",
+          "x": 403,
+          "y": 362
+        },
+        {
+          "id": "8f0b1fc7-02df-4cdd-a538-20fa9ef9a8f0",
+          "x": 402,
+          "y": 457
+        },
+        {
+          "id": "799e1af6-f1a2-4fb6-9e8a-9ea14ca74c75",
+          "x": 328,
+          "y": 458
+        },
+        {
+          "id": "a5e30dbe-fd92-4c4f-9306-d5f4116260d8",
+          "x": 327,
+          "y": 437
+        },
+        {
+          "id": "f41630fe-2224-46a3-a8be-a2898bfbc622",
+          "x": 294,
+          "y": 435
+        },
+        {
+          "id": "13d48bfb-85ce-48f6-94ff-1624eb6a9002",
+          "x": 295,
+          "y": 350
+        },
+        {
+          "id": "becc0e95-efb4-4b1c-8eb7-53687942df82",
+          "x": 126,
+          "y": 351
+        },
+        {
+          "id": "f1ce29f0-f686-4ea7-9f04-369db466d074",
+          "x": 126,
+          "y": 317
+        }
+      ],
       rooms: [
         { name: "TR41", className: "MA-zone40_0C-1" },
         { name: "LI41", className: "MA-zone40_0C-2" },
@@ -8151,6 +15060,35 @@ export const ZONE_MAPPING = {
       name: "40.0D",
       className: "fortyD_Zone",
       pdf: MA_GF_40_0DPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1761,
+      "points": [
+        {
+          "id": "a7fac67f-ea38-4b8a-b363-5c3fde8ddd75",
+          "x": 545,
+          "y": 353
+        },
+        {
+          "id": "d052f73c-2c8a-43c5-a380-d9db6e224897",
+          "x": 651,
+          "y": 352
+        },
+        {
+          "id": "654a9957-3396-4191-b05b-b0b101308ee4",
+          "x": 650,
+          "y": 603
+        },
+        {
+          "id": "fd355a3c-4e39-4a1a-b9d6-b970d987fbfc",
+          "x": 545,
+          "y": 603
+        },
+        {
+          "id": "a20d6435-6c48-43ce-8ca7-f5f94f178326",
+          "x": 545,
+          "y": 354
+        }
+      ],
       rooms: [
         { name: "S.424", className: "MA-zone40_0D-1" },
         { name: "S.426", className: "MA-zone40_0D-2" },
@@ -8164,6 +15102,35 @@ export const ZONE_MAPPING = {
       name: "40.0E",
       className: "fortyE_Zone",
       pdf: MA_GF_40_0EPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1761,
+      "points": [
+        {
+          "id": "3fe34699-4ffe-4743-bf31-972ecb87a3b1",
+          "x": 654,
+          "y": 515
+        },
+        {
+          "id": "14260962-bef3-4b3d-a29e-3279b0b5ec52",
+          "x": 780,
+          "y": 515
+        },
+        {
+          "id": "f4c34356-9b5e-4f37-99ab-4e3551075bb8",
+          "x": 778,
+          "y": 605
+        },
+        {
+          "id": "ddbf915a-592e-4dfa-9c10-3df6e9539823",
+          "x": 650,
+          "y": 604
+        },
+        {
+          "id": "c7a2b5b7-02e6-4343-9c92-0de359a24ac8",
+          "x": 653,
+          "y": 516
+        }
+      ],
       rooms: [
         { name: "S.432", className: "MA-zone40_0E-1" },
         { name: "S.434", className: "MA-zone40_0E-2" }
@@ -8174,6 +15141,45 @@ export const ZONE_MAPPING = {
       name: "40.0F",
       className: "fortyF_Zone",
       pdf: MA_GF_40_0FPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1761,
+      "points": [
+        {
+          "id": "926347b0-7861-4eec-b782-624eab9be5c8",
+          "x": 656,
+          "y": 354
+        },
+        {
+          "id": "bbb08290-a479-4987-947a-ecb455d72255",
+          "x": 779,
+          "y": 354
+        },
+        {
+          "id": "ffc8c003-cc57-417e-b6bb-d0a47307cfc0",
+          "x": 779,
+          "y": 424
+        },
+        {
+          "id": "50977d3d-c71e-4e1c-ad3e-83f7d161e5eb",
+          "x": 738,
+          "y": 425
+        },
+        {
+          "id": "133fbe84-8da9-4833-9daf-8fb7d7fb8806",
+          "x": 736,
+          "y": 512
+        },
+        {
+          "id": "fbadba18-e210-48cd-b730-257df47f7c52",
+          "x": 654,
+          "y": 511
+        },
+        {
+          "id": "39da72b2-fb83-4f1d-8b62-73676ecbca37",
+          "x": 654,
+          "y": 357
+        }
+      ],
       rooms: [
         { name: "S.430.1", className: "MA-zone40_0F-1" },
         { name: "S.430.2", className: "MA-zone40_0F-2" },
@@ -8188,6 +15194,65 @@ export const ZONE_MAPPING = {
       name: "40.0G",
       className: "fortyG_Zone",
       pdf: MA_GF_40_0GPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1761,
+      "points": [
+        {
+          "id": "4378587c-f01d-4eaa-b46d-cf1975a9cee8",
+          "x": 929,
+          "y": 352
+        },
+        {
+          "id": "98c97a48-4570-44fc-8add-bf54089d6a87",
+          "x": 960,
+          "y": 351
+        },
+        {
+          "id": "a57f4dce-5982-43bb-aeca-e0c3743cf30a",
+          "x": 961,
+          "y": 482
+        },
+        {
+          "id": "2c91e382-e4a5-4b3a-8cb9-1e8876646b3a",
+          "x": 1015,
+          "y": 481
+        },
+        {
+          "id": "1fa90762-b4f5-4abf-b712-e34b7bfe0cf4",
+          "x": 1017,
+          "y": 552
+        },
+        {
+          "id": "3aff54d1-3cb4-4938-a630-4281ec22a8f6",
+          "x": 1232,
+          "y": 551
+        },
+        {
+          "id": "54db1750-92a1-4236-b988-96246afba197",
+          "x": 1232,
+          "y": 604
+        },
+        {
+          "id": "861cc5da-1521-4b01-856b-69fb8b95f8c4",
+          "x": 780,
+          "y": 604
+        },
+        {
+          "id": "c377e7e3-90f9-427a-b005-495003e9fee6",
+          "x": 781,
+          "y": 570
+        },
+        {
+          "id": "823ef8c1-342d-4260-8cbd-4685e0ea2fa1",
+          "x": 925,
+          "y": 569
+        },
+        {
+          "id": "4071b3e0-8df3-47b6-88fb-6fc0c61ea97a",
+          "x": 928,
+          "y": 353
+        }
+      ],
       rooms: [
         { name: "S.446", className: "MA-zone40_0G-1" },
         { name: "S.446", className: "MA-zone40_0G-2" },
@@ -8200,6 +15265,45 @@ export const ZONE_MAPPING = {
       name: "40.0J",
       className: "fortyJ_Zone",
       pdf: MA_GF_40_0JPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1761,
+      "points": [
+        {
+          "id": "f2d82436-0b6a-4b08-b602-2f407670e019",
+          "x": 962,
+          "y": 350
+        },
+        {
+          "id": "2b0f0989-fff0-444d-914d-48d35553d218",
+          "x": 1230,
+          "y": 352
+        },
+        {
+          "id": "133d3d9a-12a7-4454-9a9a-2025e001590c",
+          "x": 1231,
+          "y": 548
+        },
+        {
+          "id": "5ca8ca98-ccc7-42a9-808a-a29b1159da6c",
+          "x": 1020,
+          "y": 549
+        },
+        {
+          "id": "7b114a90-20ee-4684-b523-8cd16c19297d",
+          "x": 1015,
+          "y": 477
+        },
+        {
+          "id": "776701d4-6b80-475e-9672-579329f6b1fa",
+          "x": 963,
+          "y": 478
+        },
+        {
+          "id": "0a1ac7f8-6bf1-414c-ac04-ff0376fe25a0",
+          "x": 962,
+          "y": 351
+        }
+      ],
       rooms: [
         { name: "S.450", className: "MA-zone40_0J-1" },
         { name: "S.450.1", className: "MA-zone40_0J-2" },
@@ -8222,6 +15326,55 @@ export const ZONE_MAPPING = {
       name: "40.0K",
       className: "fortyK_Zone",
       pdf: MA_GF_40_0KPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1761,
+      "points": [
+        {
+          "id": "f29d106a-f440-4589-bb3a-de7423cc8f85",
+          "x": 781,
+          "y": 352
+        },
+        {
+          "id": "a3695c70-11f5-40b5-83b6-00b038e77ed9",
+          "x": 924,
+          "y": 352
+        },
+        {
+          "id": "1aa30397-29b8-4c9b-9244-b2d954ab4440",
+          "x": 925,
+          "y": 567
+        },
+        {
+          "id": "e22b0b36-61f3-4cab-bf17-06a8bbac448a",
+          "x": 782,
+          "y": 567
+        },
+        {
+          "id": "adfed5b8-f1f1-443a-8387-6f8b2cac0fb4",
+          "x": 781,
+          "y": 513
+        },
+        {
+          "id": "d21af92d-6a18-4096-9d3f-fbe62ceea23c",
+          "x": 738,
+          "y": 511
+        },
+        {
+          "id": "5e64b981-7848-4264-b554-6fdd7efaf92f",
+          "x": 740,
+          "y": 426
+        },
+        {
+          "id": "d8d62c7a-22b1-4f80-9db7-925d41eada2c",
+          "x": 780,
+          "y": 425
+        },
+        {
+          "id": "3a724697-495a-4236-80b7-f5eec450c614",
+          "x": 784,
+          "y": 354
+        }
+      ],
       rooms: [
         { name: "S.440", className: "MA-zone40_0K-1" },
         { name: "S.444", className: "MA-zone40_0K-2" },
@@ -8244,6 +15397,45 @@ export const ZONE_MAPPING = {
       name: "40.0L",
       className: "fortyL_Zone",
       pdf: MA_GF_40_0LPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1761,
+      "points": [
+        {
+          "id": "96e2d75a-eebb-4d28-9f71-a246cf425ada",
+          "x": 125,
+          "y": 353
+        },
+        {
+          "id": "a8e3edd6-fff4-44cd-a4c9-28050f88ad2d",
+          "x": 292,
+          "y": 352
+        },
+        {
+          "id": "f65907c9-3118-4bdc-8908-c24b7d556955",
+          "x": 290,
+          "y": 434
+        },
+        {
+          "id": "543da3f2-03ed-4b5f-a2ef-50a9408c33f3",
+          "x": 322,
+          "y": 437
+        },
+        {
+          "id": "3860ca08-02bd-497a-bfd8-d6b2b53e6763",
+          "x": 320,
+          "y": 603
+        },
+        {
+          "id": "0642e277-4e00-4eea-ab30-a55ffab28098",
+          "x": 124,
+          "y": 604
+        },
+        {
+          "id": "a7b1e9d9-4eeb-4a0b-8242-d50563069ad9",
+          "x": 123,
+          "y": 353
+        }
+      ],
       rooms: [
         { name: "S.402", className: "MA-zone40_0L-1" },
         { name: "S.402.1", className: "MA-zone40_0L-2" },
@@ -8260,6 +15452,35 @@ export const ZONE_MAPPING = {
       name: "40.0M",
       className: "fortyM_Zone",
       pdf: MA_GF_40_0MPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1761,
+      "points": [
+        {
+          "id": "823d7f2a-955d-4e13-bf6c-e70858c29948",
+          "x": 122,
+          "y": 108
+        },
+        {
+          "id": "bc5c75e1-bfc8-4014-a764-3a31180877be",
+          "x": 416,
+          "y": 113
+        },
+        {
+          "id": "ab736e58-2e05-4f51-afba-98ede6135845",
+          "x": 416,
+          "y": 311
+        },
+        {
+          "id": "2e366a70-f686-464d-b32f-b8eeeb111ed4",
+          "x": 124,
+          "y": 311
+        },
+        {
+          "id": "c4bcb325-68d7-4ca6-b700-3b55e8cc9922",
+          "x": 124,
+          "y": 108
+        }
+      ],
       rooms: [
         { name: "S.405", className: "MA-zone40_0M-1" },
         { name: "S.407", className: "MA-zone40_0M-2" },
@@ -8288,6 +15509,35 @@ export const ZONE_MAPPING = {
       name: "40.0Q",
       className: "fortyQ_Zone",
       pdf: MA_GF_40_0QPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1761,
+      "points": [
+        {
+          "id": "47075b4f-0909-47c9-85f5-17f653a89f45",
+          "x": 417,
+          "y": 115
+        },
+        {
+          "id": "c4139e3a-a8aa-4323-aacb-595c9697a8d3",
+          "x": 486,
+          "y": 114
+        },
+        {
+          "id": "ac2078d7-b7dc-4cdd-b1fc-a62364e522e9",
+          "x": 487,
+          "y": 310
+        },
+        {
+          "id": "8a37d6c3-433e-492b-8ea1-bf01042c24a4",
+          "x": 418,
+          "y": 311
+        },
+        {
+          "id": "9075bed2-e7fa-466c-9e6d-07297e1cec7d",
+          "x": 417,
+          "y": 118
+        }
+      ],
       rooms: [
         { name: "S.419", className: "MA-zone40_0Q-1" }
       ]
@@ -8297,6 +15547,35 @@ export const ZONE_MAPPING = {
       name: "40.0R",
       className: "fortyR_Zone",
       pdf: MA_GF_40_0RPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1761,
+      "points": [
+        {
+          "id": "4ded4fcd-bf0d-4ca7-8ee3-66c923bb3fd4",
+          "x": 489,
+          "y": 115
+        },
+        {
+          "id": "b7ffa183-77ff-46ba-af68-84a27d5c11a2",
+          "x": 633,
+          "y": 115
+        },
+        {
+          "id": "68b5fb0f-7e09-4284-b2a8-77dbe2d64d3b",
+          "x": 632,
+          "y": 309
+        },
+        {
+          "id": "c4588bf7-bb04-42bd-b3ac-aee1fd65fb3b",
+          "x": 490,
+          "y": 310
+        },
+        {
+          "id": "26a6b86b-ff9e-46c3-95a7-27cecdd73b7f",
+          "x": 487,
+          "y": 113
+        }
+      ],
       rooms: [
         { name: "S.425", className: "MA-zone40_0R-1" },
         { name: "S.429.1", className: "MA-zone40_0R-2" },
@@ -8315,6 +15594,35 @@ export const ZONE_MAPPING = {
       name: "40.0S",
       className: "fortyS_Zone",
       pdf: MA_GF_40_0SPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1761,
+      "points": [
+        {
+          "id": "177e4522-13f7-48b0-b57d-7fac1732f09f",
+          "x": 637,
+          "y": 116
+        },
+        {
+          "id": "c77bed84-fb99-4d06-bfc8-3a72b5f3856e",
+          "x": 852,
+          "y": 115
+        },
+        {
+          "id": "ef48debb-bd42-4871-b0e8-db2b4b9112b1",
+          "x": 851,
+          "y": 310
+        },
+        {
+          "id": "4318763f-0b84-49f3-aba8-9ee69e829b9c",
+          "x": 635,
+          "y": 311
+        },
+        {
+          "id": "8bce6050-9cf3-4c62-8365-f2fe260f4bb6",
+          "x": 637,
+          "y": 116
+        }
+      ],
       rooms: [
         { name: "S.429", className: "MA-zone40_0S-1" }
       ]
@@ -8324,6 +15632,35 @@ export const ZONE_MAPPING = {
       name: "40.0U",
       className: "fortyU_Zone",
       pdf: MA_GF_40_0UPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1761,
+      "points": [
+        {
+          "id": "55da2b89-e110-4592-b87d-97fa9df3dd26",
+          "x": 853,
+          "y": 115
+        },
+        {
+          "id": "b5688d8c-23c6-496e-b369-558d6bb395e8",
+          "x": 1232,
+          "y": 114
+        },
+        {
+          "id": "5ea8606d-507e-407e-aa71-c635224e77ee",
+          "x": 1229,
+          "y": 309
+        },
+        {
+          "id": "a9bab134-0278-4132-9ea9-4751854474cc",
+          "x": 853,
+          "y": 312
+        },
+        {
+          "id": "7e328727-c3ee-434a-90a3-483cb599ea87",
+          "x": 854,
+          "y": 112
+        }
+      ],
       rooms: [
         { name: "S.441", className: "MA-zone40_0U-1" }
       ]
@@ -8336,6 +15673,35 @@ export const ZONE_MAPPING = {
       name: "10.1F.Backstage",
       className: "FristBackstage",
       pdf: MA_1F_10_BackstagePdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1694,
+      "points": [
+        {
+          "id": "ddf27d3f-645b-4bb5-b0e1-83efb38e6f38",
+          "x": 469,
+          "y": 649
+        },
+        {
+          "id": "927aaf14-7755-4496-a5fd-1dcd6ada24a4",
+          "x": 636,
+          "y": 650
+        },
+        {
+          "id": "de30a1e7-fd0e-4513-96c2-9f26ad022d3e",
+          "x": 635,
+          "y": 1519
+        },
+        {
+          "id": "bff8b4f5-6f48-42e6-afbe-af7d520b6133",
+          "x": 470,
+          "y": 1519
+        },
+        {
+          "id": "94908876-2acd-4a66-ad51-fcb3ecc966d5",
+          "x": 469,
+          "y": 649
+        }
+      ],
       rooms: [
         { name: "10.1F.Backstage", className: "MA-zone10_1F_Backstage-1" }
       ]
@@ -8345,6 +15711,35 @@ export const ZONE_MAPPING = {
       name: "10.1F.CorridorN",
       className: "FristCorridorN",
       pdf: MA_1F_10_CorridorNPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1694,
+      "points": [
+        {
+          "id": "620ca3c2-c793-4731-a8c6-1f45d5e668b4",
+          "x": 466,
+          "y": 596
+        },
+        {
+          "id": "98cbeb0e-e323-41f3-858f-654b5f0628f2",
+          "x": 551,
+          "y": 596
+        },
+        {
+          "id": "5e484446-f173-454e-9978-e96323cf4b58",
+          "x": 552,
+          "y": 645
+        },
+        {
+          "id": "32822755-15af-4d97-896c-850fe3ad9841",
+          "x": 467,
+          "y": 645
+        },
+        {
+          "id": "d1b18d60-47cf-48ec-a114-70ca3a690b2d",
+          "x": 467,
+          "y": 594
+        }
+      ],
       rooms: [
         { name: "1.102", className: "MA-zone10_1F_Corridor-N-1" }
       ]
@@ -8354,6 +15749,45 @@ export const ZONE_MAPPING = {
       name: "10.1F.FrontstageE",
       className: "FristFrontstageE",
       pdf: MA_1F_10_FrontstageEPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1694,
+      "points": [
+        {
+          "id": "68e1a775-c110-4cb3-b4ff-b86ea67f0e30",
+          "x": 554,
+          "y": 592
+        },
+        {
+          "id": "fb299a96-610c-42e6-aefc-e83ead50ebf9",
+          "x": 810,
+          "y": 593
+        },
+        {
+          "id": "520d11ed-5d86-4628-a134-cb2c53f3f040",
+          "x": 811,
+          "y": 1549
+        },
+        {
+          "id": "b50c298f-c904-4898-9eae-009ffb8763d1",
+          "x": 641,
+          "y": 1549
+        },
+        {
+          "id": "6fb93b86-bd37-4c82-9441-2ad97163523e",
+          "x": 639,
+          "y": 646
+        },
+        {
+          "id": "b9173344-b4c8-4063-b7c6-1c5701fbf58a",
+          "x": 553,
+          "y": 644
+        },
+        {
+          "id": "8ba7a0d3-ef44-4ce9-9bf3-005ca33e1cc7",
+          "x": 554,
+          "y": 593
+        }
+      ],
       rooms: [
         { name: "1.101", className: "MA-zone10_1F_Frontstage-E-1" },
         { name: "1.107", className: "MA-zone10_1F_Frontstage-E-2" },
@@ -8365,6 +15799,35 @@ export const ZONE_MAPPING = {
       name: "10.1F.FrontstageW",
       className: "FristFrontstageW",
       pdf: MA_1F_10_FrontstageWPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1694,
+      "points": [
+        {
+          "id": "f0b0417a-07e5-44c9-b68a-bc95af92738e",
+          "x": 296,
+          "y": 598
+        },
+        {
+          "id": "88173176-4293-4a97-8bf3-69201a3c7754",
+          "x": 464,
+          "y": 598
+        },
+        {
+          "id": "04775bb0-0601-4e0f-8fb9-5e8f0c3c4873",
+          "x": 463,
+          "y": 1548
+        },
+        {
+          "id": "d6455da6-777c-4047-8206-44ae696fdc1d",
+          "x": 298,
+          "y": 1548
+        },
+        {
+          "id": "5efb6146-0563-455f-a056-2c32116340b3",
+          "x": 296,
+          "y": 597
+        }
+      ],
       rooms: [
         { name: "S.104", className: "MA-zone10_1F_Frontstage-W-1" }
       ]
@@ -8374,6 +15837,35 @@ export const ZONE_MAPPING = {
       name: "10.1F.IT",
       className: "FristIT",
       pdf: MA_1F_10_ITPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1694,
+      "points": [
+        {
+          "id": "9029cfd5-f16a-442d-afed-a25c329fb9b7",
+          "x": 469,
+          "y": 1524
+        },
+        {
+          "id": "7780dd81-7bdb-4135-b310-d1f48014bf67",
+          "x": 637,
+          "y": 1524
+        },
+        {
+          "id": "0bd0f421-523e-4d3d-93cc-1b0c0c547ac6",
+          "x": 636,
+          "y": 1548
+        },
+        {
+          "id": "c9b936f9-4d57-4bbc-ae29-de7eed0cd35c",
+          "x": 468,
+          "y": 1547
+        },
+        {
+          "id": "4ede41c8-2aa6-434d-9734-ea1deb5a3b8e",
+          "x": 469,
+          "y": 1525
+        }
+      ],
       rooms: [
         { name: "1.151", className: "MA-zone10_1F_IT-1" },
         { name: "1.153", className: "MA-zone10_1F_IT-2" }
@@ -8384,6 +15876,65 @@ export const ZONE_MAPPING = {
       name: "70.1A",
       className: "firstseventyA",
       pdf: MA_1F_70_1APdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1694,
+      "points": [
+        {
+          "id": "80a94374-926f-4ed2-9b18-a1a3bb57110d",
+          "x": 812,
+          "y": 837
+        },
+        {
+          "id": "5a0d9bc4-53e1-4d8a-a09d-460829d07c7e",
+          "x": 948,
+          "y": 836
+        },
+        {
+          "id": "10ca1369-5f66-480d-8846-156e96e9261f",
+          "x": 951,
+          "y": 942
+        },
+        {
+          "id": "7a063b27-db85-4afc-a532-118369903971",
+          "x": 1148,
+          "y": 946
+        },
+        {
+          "id": "09ad4533-5237-42c0-9360-e990157dff7b",
+          "x": 1145,
+          "y": 1012
+        },
+        {
+          "id": "1d46839b-9bd6-415b-8da7-293345be66f1",
+          "x": 978,
+          "y": 1013
+        },
+        {
+          "id": "71bc07b2-9662-43d5-bbff-3edd16d09826",
+          "x": 978,
+          "y": 1046
+        },
+        {
+          "id": "7199707d-bfb6-4d5c-9cbf-b8f3324ae80c",
+          "x": 972,
+          "y": 1050
+        },
+        {
+          "id": "842d5aed-bcf9-46de-a523-291053e8f830",
+          "x": 974,
+          "y": 1171
+        },
+        {
+          "id": "e8c56e83-d2ba-4030-a549-59dc22f2f069",
+          "x": 814,
+          "y": 1168
+        },
+        {
+          "id": "551d985a-fbeb-492b-849e-4c6624792f49",
+          "x": 812,
+          "y": 838
+        }
+      ],
       rooms: [
         { name: "TR73", className: "MA-zone70_1A-1" },
         { name: "LI73", className: "MA-zone70_1A-2" },
@@ -8403,6 +15954,85 @@ export const ZONE_MAPPING = {
       name: "70.1B",
       className: "firstseventyB",
       pdf: MA_1F_70_1BPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1694,
+      "points": [
+        {
+          "id": "d85ce646-01e6-4822-b9ec-48b27cd8ff27",
+          "x": 977,
+          "y": 1169
+        },
+        {
+          "id": "d7fdc97c-0a77-4030-b81d-02ec8b8504db",
+          "x": 1010,
+          "y": 1170
+        },
+        {
+          "id": "f186e5f7-7019-4504-9abc-6d36be14302f",
+          "x": 1010,
+          "y": 1331
+        },
+        {
+          "id": "dd1fdece-87af-4488-af11-7a1d5e87bbb9",
+          "x": 1031,
+          "y": 1330
+        },
+        {
+          "id": "95d203ee-6b2e-455b-b3f6-e258c0b58641",
+          "x": 1032,
+          "y": 1252
+        },
+        {
+          "id": "b6ec43ea-e99e-433a-8e6f-d97f7a374373",
+          "x": 1063,
+          "y": 1252
+        },
+        {
+          "id": "fec603f9-19ed-480d-8e3a-a911dc06d1d6",
+          "x": 1064,
+          "y": 1261
+        },
+        {
+          "id": "cade393f-39e2-4b3d-8ebe-29da9aaa335b",
+          "x": 1102,
+          "y": 1259
+        },
+        {
+          "id": "2681c97f-a8cc-4caa-9e93-363abe4cd116",
+          "x": 1101,
+          "y": 1253
+        },
+        {
+          "id": "cb71590c-2cc1-4e98-a48f-dd00ca7fd413",
+          "x": 1144,
+          "y": 1250
+        },
+        {
+          "id": "01d44bc1-78a1-4019-ab23-26acfc7c18eb",
+          "x": 1145,
+          "y": 1014
+        },
+        {
+          "id": "997eead3-4b8f-46e9-aef6-12ad8894fa9f",
+          "x": 977,
+          "y": 1014
+        },
+        {
+          "id": "c77ab245-9447-4475-8636-98a923afa803",
+          "x": 978,
+          "y": 1046
+        },
+        {
+          "id": "9981933c-fdc3-42b5-91e6-338ec2dc49b0",
+          "x": 969,
+          "y": 1047
+        },
+        {
+          "id": "590a2f40-d469-45e4-8077-ca7e655a23da",
+          "x": 974,
+          "y": 1170
+        }
+      ],
       rooms: [
         { name: "1.727", className: "MA-zone70_1B-1" },
         { name: "1.725", className: "MA-zone70_1B-2" },
@@ -8423,6 +16053,65 @@ export const ZONE_MAPPING = {
       name: "70.1C",
       className: "firstseventyC",
       pdf: MA_1F_70_1CPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1694,
+      "points": [
+        {
+          "id": "6f2affbf-9937-429f-bc05-f9ab0188a246",
+          "x": 1010,
+          "y": 1332
+        },
+        {
+          "id": "6ef68410-88c3-4391-9c94-20ece8b0faaf",
+          "x": 1031,
+          "y": 1333
+        },
+        {
+          "id": "190a6822-6d37-44ed-872f-4a79e806b765",
+          "x": 1034,
+          "y": 1252
+        },
+        {
+          "id": "72b57b53-b883-4c08-a866-bbb23f086666",
+          "x": 1063,
+          "y": 1252
+        },
+        {
+          "id": "cd4bd4d2-a245-423a-8cca-617aeffe2b81",
+          "x": 1064,
+          "y": 1261
+        },
+        {
+          "id": "c893abfa-df72-4bde-80df-6850ed4fea12",
+          "x": 1103,
+          "y": 1263
+        },
+        {
+          "id": "dd877682-1e08-4139-a7c5-3177525ea523",
+          "x": 1103,
+          "y": 1252
+        },
+        {
+          "id": "65386f3f-505e-475b-aeb1-9aba149450a5",
+          "x": 1146,
+          "y": 1252
+        },
+        {
+          "id": "17fdc2bf-b90f-4ddf-b29e-ceaa63f662d8",
+          "x": 1145,
+          "y": 1358
+        },
+        {
+          "id": "a7897cc9-005b-49cc-a0e1-64755f58d9a3",
+          "x": 1010,
+          "y": 1357
+        },
+        {
+          "id": "83c90d4e-ab47-4f03-99f1-9d574372a6b0",
+          "x": 1011,
+          "y": 1331
+        }
+      ],
       rooms: [
         { name: "1.711.1", className: "MA-zone70_1C-1" },
         { name: "1.705.2", className: "MA-zone70_1C-2" },
@@ -8443,6 +16132,55 @@ export const ZONE_MAPPING = {
       name: "40.1A",
       className: "FirstfoutyA",
       pdf: MA_1F_40_1APdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1694,
+      "points": [
+        {
+          "id": "4734f0f9-58d2-4c66-9da4-0fae9a851293",
+          "x": 421,
+          "y": 451
+        },
+        {
+          "id": "5ae57989-f1f2-488f-9bdf-6624fc9712a7",
+          "x": 421,
+          "y": 351
+        },
+        {
+          "id": "b41b51be-2b52-4672-8c67-b2e5127d1a6a",
+          "x": 507,
+          "y": 351
+        },
+        {
+          "id": "f95c86c5-17b1-4904-8aeb-d85f176e872e",
+          "x": 506,
+          "y": 474
+        },
+        {
+          "id": "9cbfee19-e18f-4e3d-9189-3028deac08f7",
+          "x": 524,
+          "y": 474
+        },
+        {
+          "id": "44e7b1f3-2c43-4ab0-a944-5fa49b9e4488",
+          "x": 523,
+          "y": 592
+        },
+        {
+          "id": "1a93bba6-e6c4-45e2-b1b3-68beed5055e8",
+          "x": 454,
+          "y": 591
+        },
+        {
+          "id": "e14b36d0-72f7-4e03-a797-83c5ee123cfa",
+          "x": 454,
+          "y": 455
+        },
+        {
+          "id": "f4c83734-e90e-45e0-b225-c71254da2092",
+          "x": 421,
+          "y": 454
+        }
+      ],
       rooms: [
         { name: "1.418", className: "MA-zone40_1A-1" },
         { name: "1.422.1", className: "MA-zone40_1A-2" },
@@ -8456,6 +16194,35 @@ export const ZONE_MAPPING = {
       name: "40.1B",
       className: "FirstfoutyB",
       pdf: MA_1F_40_1BPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1694,
+      "points": [
+        {
+          "id": "0fe1c600-fe14-4677-89f7-1e8c4712a986",
+          "x": 157,
+          "y": 472
+        },
+        {
+          "id": "69f82b9b-ace1-4de7-be0e-13731b6d7be3",
+          "x": 342,
+          "y": 473
+        },
+        {
+          "id": "b28dbd61-462e-4c49-8dda-4be8eef2062c",
+          "x": 343,
+          "y": 591
+        },
+        {
+          "id": "5bb3551b-eb02-4c8f-bfc9-991571ca7675",
+          "x": 158,
+          "y": 590
+        },
+        {
+          "id": "d03cabe2-4112-4728-8069-d22e16a0ef43",
+          "x": 156,
+          "y": 472
+        }
+      ],
       rooms: [
         { name: "1.404", className: "MA-zone40_1B-1" },
         { name: "1.404.1", className: "MA-zone40_1B-2" }
@@ -8466,6 +16233,115 @@ export const ZONE_MAPPING = {
       name: "40.1C",
       className: "FirstfoutyC",
       pdf: MA_1F_40_1CPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1694,
+      "points": [
+        {
+          "id": "a89048a4-6522-44a9-8c58-4c2aae144098",
+          "x": 158,
+          "y": 318
+        },
+        {
+          "id": "d188899e-7a0e-4049-8057-5f3a630421ea",
+          "x": 1199,
+          "y": 318
+        },
+        {
+          "id": "9323e7ec-83ee-4622-a936-ef00425a1185",
+          "x": 1199,
+          "y": 353
+        },
+        {
+          "id": "100ff745-5c1e-4775-958e-04681b761ab5",
+          "x": 773,
+          "y": 352
+        },
+        {
+          "id": "f65b7b19-50bd-4d3b-b8f3-b6225ef6f5fe",
+          "x": 773,
+          "y": 385
+        },
+        {
+          "id": "98bf98f9-4536-46b0-82fe-314c945d7e2c",
+          "x": 655,
+          "y": 385
+        },
+        {
+          "id": "cbbcd8d1-7324-4b02-89ba-f6458a37e5cf",
+          "x": 655,
+          "y": 352
+        },
+        {
+          "id": "b101ed02-fed7-4354-ab3b-7e3e20300209",
+          "x": 549,
+          "y": 353
+        },
+        {
+          "id": "183db6f2-7e65-4e35-8793-ea8d1194261c",
+          "x": 551,
+          "y": 591
+        },
+        {
+          "id": "37291795-4492-486e-8234-58620041457c",
+          "x": 526,
+          "y": 591
+        },
+        {
+          "id": "c71e1f3e-c903-455a-8f2d-b18c7ca602f7",
+          "x": 526,
+          "y": 471
+        },
+        {
+          "id": "48728fe6-427d-46fd-8fd2-1fad39ca930b",
+          "x": 508,
+          "y": 471
+        },
+        {
+          "id": "94d8942d-b404-419b-a9b8-d4b394bba621",
+          "x": 509,
+          "y": 351
+        },
+        {
+          "id": "45c23af1-33f0-4c17-a219-4101afbaa39d",
+          "x": 419,
+          "y": 350
+        },
+        {
+          "id": "bf9d27bb-9a64-4720-9b7a-3dfd0989fc23",
+          "x": 419,
+          "y": 452
+        },
+        {
+          "id": "e91c7215-ba90-4620-8767-8a29bc40c54d",
+          "x": 344,
+          "y": 454
+        },
+        {
+          "id": "b18d42a8-dde3-481e-a00c-dcece44f7a4c",
+          "x": 344,
+          "y": 469
+        },
+        {
+          "id": "3e342373-a987-415d-be40-5ee77406a069",
+          "x": 319,
+          "y": 469
+        },
+        {
+          "id": "3ad580ef-07a5-487d-974e-6da37ae94dd4",
+          "x": 318,
+          "y": 351
+        },
+        {
+          "id": "88887e4f-6e67-4b81-90c5-cd6d92ec2860",
+          "x": 159,
+          "y": 350
+        },
+        {
+          "id": "75ab4b05-fc54-41b6-9ac5-36c6562f7ac1",
+          "x": 158,
+          "y": 318
+        }
+      ],
       rooms: [
         { name: "1.400", className: "MA-zone40_1C-1" },
         { name: "TR41", className: "MA-zone40_1C-2" },
@@ -8483,6 +16359,35 @@ export const ZONE_MAPPING = {
       name: "40.1D",
       className: "FirstfoutyD",
       pdf: MA_1F_40_1DPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1694,
+      "points": [
+        {
+          "id": "da8c73d4-cbda-40bf-9a3e-4fcb5443f3b2",
+          "x": 502,
+          "y": 129
+        },
+        {
+          "id": "878bfec0-914a-4293-888c-2f56f20892c5",
+          "x": 636,
+          "y": 130
+        },
+        {
+          "id": "81e0e27c-50e0-498c-abdb-20bf9df28d9e",
+          "x": 637,
+          "y": 314
+        },
+        {
+          "id": "7265ca7a-f189-43f9-8d1a-6bbd22115587",
+          "x": 500,
+          "y": 314
+        },
+        {
+          "id": "ad74d85e-1b47-40be-8c0d-b08214c2db97",
+          "x": 503,
+          "y": 128
+        }
+      ],
       rooms: [
         { name: "1.427", className: "MA-zone40_1D-1" },
         { name: "1.425", className: "MA-zone40_1D-2" },
@@ -8494,6 +16399,35 @@ export const ZONE_MAPPING = {
       name: "40.1E",
       className: "FirstfoutyE",
       pdf: MA_1F_40_1EPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1694,
+      "points": [
+        {
+          "id": "fd6d62a3-8609-45ff-8046-ddc8722db2cf",
+          "x": 657,
+          "y": 506
+        },
+        {
+          "id": "8b0b63b7-2f66-4949-a2b3-74f52e774472",
+          "x": 772,
+          "y": 507
+        },
+        {
+          "id": "806bc401-281b-40ad-8b03-9764c9a7aaed",
+          "x": 772,
+          "y": 590
+        },
+        {
+          "id": "3ad7c2d8-0ef1-43fd-bc51-2088858dcc8d",
+          "x": 655,
+          "y": 589
+        },
+        {
+          "id": "24f4925d-1b1e-4fa2-94cb-9a13dbc13f76",
+          "x": 657,
+          "y": 508
+        }
+      ],
       rooms: [
         { name: "1.434", className: "MA-zone40_1E-1" }
       ]
@@ -8503,6 +16437,35 @@ export const ZONE_MAPPING = {
       name: "40.1F",
       className: "FirstfoutyF",
       pdf: MA_1F_40_1FPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1694,
+      "points": [
+        {
+          "id": "e048880e-3632-43de-a1c0-33fd6f8a7ee2",
+          "x": 656,
+          "y": 388
+        },
+        {
+          "id": "e659e3b7-d18c-4dd1-a7d0-84c15dab3dd7",
+          "x": 773,
+          "y": 388
+        },
+        {
+          "id": "6318012f-290d-4c07-9587-fa2d0621c48c",
+          "x": 773,
+          "y": 505
+        },
+        {
+          "id": "72785b65-304b-4518-a8b8-93b2f4bcfd4c",
+          "x": 656,
+          "y": 502
+        },
+        {
+          "id": "d7590ee4-a89e-491a-b3ff-c8ba0c5b06db",
+          "x": 656,
+          "y": 390
+        }
+      ],
       rooms: [
         { name: "1.430", className: "MA-zone40_1F-1" },
         { name: "1.430.1", className: "MA-zone40_1F-2" }
@@ -8513,6 +16476,65 @@ export const ZONE_MAPPING = {
       name: "40.1G",
       className: "FirstfoutyG",
       pdf: MA_1F_40_1GPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1694,
+      "points": [
+        {
+          "id": "667353e5-b66e-4fa7-a4c0-24e5ca16986e",
+          "x": 778,
+          "y": 558
+        },
+        {
+          "id": "31677c13-84bf-4c42-a8e4-8a8237a323b4",
+          "x": 913,
+          "y": 557
+        },
+        {
+          "id": "a782a1f3-c075-44ed-9f7d-7d8a62c7a1a4",
+          "x": 911,
+          "y": 353
+        },
+        {
+          "id": "3e7c8619-b10c-42c5-8754-ff2f46089d4d",
+          "x": 947,
+          "y": 354
+        },
+        {
+          "id": "93bf8bf1-a32c-4c5c-924c-e2d54541736f",
+          "x": 946,
+          "y": 472
+        },
+        {
+          "id": "2f57bfd1-577c-4aa8-8f0f-298ca75bad3b",
+          "x": 997,
+          "y": 475
+        },
+        {
+          "id": "3b410f3b-ef16-43b2-b5f2-526669c3885e",
+          "x": 997,
+          "y": 540
+        },
+        {
+          "id": "e9368542-17eb-49d7-a8e7-d1d451f04e75",
+          "x": 1197,
+          "y": 540
+        },
+        {
+          "id": "5b841b8b-ebbf-4cea-bc1c-670a5b0a86e6",
+          "x": 1198,
+          "y": 589
+        },
+        {
+          "id": "9491e568-d830-4c02-a9a8-6f008f167fb7",
+          "x": 776,
+          "y": 591
+        },
+        {
+          "id": "7d27dca2-21df-4c35-a62f-8e0b1ead3f8d",
+          "x": 777,
+          "y": 560
+        }
+      ],
       rooms: [
         { name: "1.446", className: "MA-zone40_1G-1" },
         { name: "TR43", className: "MA-zone40_1G-2" },
@@ -8524,6 +16546,50 @@ export const ZONE_MAPPING = {
       name: "40.1I",
       className: "FirstfoutyI",
       pdf: MA_1F_40_1IPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1694,
+      "points": [
+        {
+          "id": "47c75fc1-f9fe-4a0a-8fec-f02e900a1a0e",
+          "x": 998,
+          "y": 471
+        },
+        {
+          "id": "ca64668e-37e5-4110-a312-9719f947bbba",
+          "x": 999,
+          "y": 454
+        },
+        {
+          "id": "7786aeee-8895-441e-a799-0b7564956c54",
+          "x": 1049,
+          "y": 455
+        },
+        {
+          "id": "323c0050-0ad4-434d-8836-cd2f9722a924",
+          "x": 1049,
+          "y": 354
+        },
+        {
+          "id": "06ee2296-325e-495f-8513-2463936c589e",
+          "x": 1197,
+          "y": 351
+        },
+        {
+          "id": "a201dda9-2e05-46ee-817d-b55c65cac84e",
+          "x": 1198,
+          "y": 537
+        },
+        {
+          "id": "f1836205-e9aa-41ed-b81f-330411711a3b",
+          "x": 995,
+          "y": 536
+        },
+        {
+          "id": "9309eefc-870c-4f4f-a590-5e5345ec5009",
+          "x": 999,
+          "y": 470
+        }
+      ],
       rooms: [
         { name: "1.506", className: "MA-zone40_1I-1" },
         { name: "1.504.2", className: "MA-zone40_1I-2" },
@@ -8538,6 +16604,45 @@ export const ZONE_MAPPING = {
       name: "40.1J",
       className: "FirstfoutyJ",
       pdf: MA_1F_40_1JPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1694,
+      "points": [
+        {
+          "id": "87682e5b-b228-4748-b871-8663e0340d15",
+          "x": 947,
+          "y": 351
+        },
+        {
+          "id": "78299055-4855-4c82-9d12-ed89b6aebd97",
+          "x": 1047,
+          "y": 352
+        },
+        {
+          "id": "3d75e41f-b778-4cc7-a9c8-7ebb52c10fdb",
+          "x": 1047,
+          "y": 454
+        },
+        {
+          "id": "f1b34a76-2a53-40dd-8fb2-dfa361e32cc4",
+          "x": 998,
+          "y": 454
+        },
+        {
+          "id": "da67143b-f07a-48c4-93cc-da8f55fd5d5e",
+          "x": 997,
+          "y": 472
+        },
+        {
+          "id": "1623144f-ab39-483e-8971-9dac94e29760",
+          "x": 947,
+          "y": 473
+        },
+        {
+          "id": "a436e1b5-1aa7-40d9-b4ac-6af09fd11578",
+          "x": 947,
+          "y": 350
+        }
+      ],
       rooms: [
         { name: "SK43", className: "MA-zone40_1J-1" },
         { name: "1.502", className: "MA-zone40_1J-2" }
@@ -8548,6 +16653,35 @@ export const ZONE_MAPPING = {
       name: "40.1K",
       className: "FirstfoutyK",
       pdf: MA_1F_40_1KPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1694,
+      "points": [
+        {
+          "id": "40b807ff-8871-44db-8dd8-32c030ca75f4",
+          "x": 776,
+          "y": 353
+        },
+        {
+          "id": "bca06d12-95a4-467c-bf16-758514308936",
+          "x": 911,
+          "y": 353
+        },
+        {
+          "id": "12f8cf9f-8a51-4ac5-8a84-2230a1f0cdf8",
+          "x": 911,
+          "y": 554
+        },
+        {
+          "id": "701ce9f3-3fd4-4316-9da0-b7fde9738922",
+          "x": 777,
+          "y": 556
+        },
+        {
+          "id": "3dad3f52-45e7-4c35-abf5-6b0c77ba1679",
+          "x": 777,
+          "y": 352
+        }
+      ],
       rooms: [
         { name: "1.440", className: "MA-zone40_1K-1" },
         { name: "1.444", className: "MA-zone40_1K-2" },
@@ -8570,6 +16704,35 @@ export const ZONE_MAPPING = {
       name: "40.1L",
       className: "FirstfoutyL",
       pdf: MA_1F_40_1LPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1694,
+      "points": [
+        {
+          "id": "10b1fda1-c28f-4875-b1f0-9216d9630994",
+          "x": 160,
+          "y": 354
+        },
+        {
+          "id": "492e03f7-180b-4842-a241-b33eae131391",
+          "x": 314,
+          "y": 355
+        },
+        {
+          "id": "a59210b4-ea2f-47dd-ac0f-a3c2bd0aa0e3",
+          "x": 315,
+          "y": 468
+        },
+        {
+          "id": "c2c600fc-5a03-4ce0-aef5-d4ead4bbf40c",
+          "x": 157,
+          "y": 468
+        },
+        {
+          "id": "dcac22ef-3d06-4c93-9117-b039d48f66ec",
+          "x": 158,
+          "y": 352
+        }
+      ],
       rooms: [
         { name: "1.408", className: "MA-zone40_1L-1" },
         { name: "1.402", className: "MA-zone40_1L-2" }
@@ -8580,6 +16743,35 @@ export const ZONE_MAPPING = {
       name: "40.1M",
       className: "FirstfoutyM",
       pdf: MA_1F_40_1MPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1694,
+      "points": [
+        {
+          "id": "425d2329-46ce-4259-b880-6ef4ffcc2268",
+          "x": 158,
+          "y": 127
+        },
+        {
+          "id": "d8c79b55-a119-46ae-9675-f575a7c4fc91",
+          "x": 432,
+          "y": 128
+        },
+        {
+          "id": "bd73bc79-7e3e-4770-aee1-ad4019bf5791",
+          "x": 430,
+          "y": 316
+        },
+        {
+          "id": "51a45ea9-be91-4df3-bef2-92675b3853a6",
+          "x": 158,
+          "y": 315
+        },
+        {
+          "id": "16deac6e-1b47-4a83-becf-6b5dc2560ca3",
+          "x": 159,
+          "y": 128
+        }
+      ],
       rooms: [
         { name: "SK44", className: "MA-zone40_1M-1" },
         { name: "SK44.1", className: "MA-zone40_1M-2" },
@@ -8608,6 +16800,35 @@ export const ZONE_MAPPING = {
       name: "10.2F.Backstage",
       className: "second_Backstage",
       pdf: MA_2F_10_BackstagePdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1725,
+      "points": [
+        {
+          "id": "5cc3574f-8829-406f-b641-140faf837035",
+          "x": 458,
+          "y": 663
+        },
+        {
+          "id": "3eb735aa-ac1a-45b9-93f9-3ac3cc116a4c",
+          "x": 623,
+          "y": 663
+        },
+        {
+          "id": "38ae6d63-c445-4611-b269-132266ac0bec",
+          "x": 625,
+          "y": 1546
+        },
+        {
+          "id": "6bf77c70-6180-4c62-ba1e-9978ed237988",
+          "x": 457,
+          "y": 1545
+        },
+        {
+          "id": "9837eb2b-95ce-4c0f-a0fc-ad4e8b28c7ca",
+          "x": 458,
+          "y": 661
+        }
+      ],
       rooms: [
         { name: "S.106", className: "MA-zone10_2F_Backstage-1" },
         { name: "2.156", className: "MA-zone10_2F_Backstage-2" }
@@ -8618,6 +16839,35 @@ export const ZONE_MAPPING = {
       name: "10.2F.CorridorS",
       className: "second_CorridorS",
       pdf: MA_2F_10_CorridorSPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1725,
+      "points": [
+        {
+          "id": "cd553ff8-ce2d-4477-9dfd-cf0c11ab42a9",
+          "x": 456,
+          "y": 1551
+        },
+        {
+          "id": "ad5d461c-6643-4a52-8e3d-525a4ad93dbe",
+          "x": 628,
+          "y": 1549
+        },
+        {
+          "id": "2c83d24d-228f-4037-9b46-e2d7455eee62",
+          "x": 628,
+          "y": 1580
+        },
+        {
+          "id": "e83cb3bb-10c5-4964-8218-924c9a398e37",
+          "x": 453,
+          "y": 1579
+        },
+        {
+          "id": "83c2cebd-a874-47ac-b755-5854f0f041c1",
+          "x": 454,
+          "y": 1549
+        }
+      ],
       rooms: [
         { name: "2.170", className: "MA-zone10_2F_Corridor-S-1" }
       ]
@@ -8627,6 +16877,35 @@ export const ZONE_MAPPING = {
       name: "10.2F.Distribution",
       className: "second_Distribution",
       pdf: MA_2F_10_DistributionPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1725,
+      "points": [
+        {
+          "id": "de84408f-88e6-4aa2-a0db-ebe011eacff1",
+          "x": 457,
+          "y": 606
+        },
+        {
+          "id": "a41a7106-0c77-4e49-a588-01b36fd2be0f",
+          "x": 627,
+          "y": 605
+        },
+        {
+          "id": "f360c40f-afe6-4b10-9710-aec1916aded9",
+          "x": 627,
+          "y": 655
+        },
+        {
+          "id": "96336cf7-c2c2-48a0-9f52-4d20a55c624a",
+          "x": 455,
+          "y": 656
+        },
+        {
+          "id": "4ad0df13-7c42-419b-8688-a842237f789b",
+          "x": 456,
+          "y": 607
+        }
+      ],
       rooms: [
         { name: "2.100", className: "MA-zone10_2F_Distribution-1" }
       ]
@@ -8636,6 +16915,35 @@ export const ZONE_MAPPING = {
       name: "10.2F.FrontstageE",
       className: "second_Frontstage_E",
       pdf: MA_2F_10_FrontstageEPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1725,
+      "points": [
+        {
+          "id": "8c791c11-dfe2-4fc4-925a-3521cff7bdf3",
+          "x": 631,
+          "y": 606
+        },
+        {
+          "id": "a59b6a8b-0ffe-4422-9c63-a8f28ebdd458",
+          "x": 806,
+          "y": 606
+        },
+        {
+          "id": "ca4c95d7-19c6-4c7c-bb97-d316615c2133",
+          "x": 806,
+          "y": 1577
+        },
+        {
+          "id": "0ee25d88-8276-482b-9cb6-3d9c6912d861",
+          "x": 630,
+          "y": 1577
+        },
+        {
+          "id": "9554c9ca-1be3-4cd9-9a89-e045a25c7170",
+          "x": 635,
+          "y": 606
+        }
+      ],
       rooms: [
         { name: "2.105", className: "MA-zone10_2F_Frontstage-E-1" },
         { name: "2.101", className: "MA-zone10_2F_Frontstage-E-2" },
@@ -8647,6 +16955,35 @@ export const ZONE_MAPPING = {
       name: "10.2F.FrontstageW",
       className: "second_Frontstage_W",
       pdf: MA_2F_10_FrontstageWPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1725,
+      "points": [
+        {
+          "id": "0727ba48-d95b-4172-a67d-acb831788bc8",
+          "x": 278,
+          "y": 606
+        },
+        {
+          "id": "296f9537-6824-4702-a277-6ba12d8a1820",
+          "x": 452,
+          "y": 608
+        },
+        {
+          "id": "82f2fb6c-d5d0-4ac1-96db-bfd738f3a0ea",
+          "x": 449,
+          "y": 1579
+        },
+        {
+          "id": "bb2b8977-097e-4af5-8089-c8f1f6c577ea",
+          "x": 278,
+          "y": 1577
+        },
+        {
+          "id": "bcd5b3d2-2e77-4356-bcd4-d02a07e085a7",
+          "x": 278,
+          "y": 606
+        }
+      ],
       rooms: [
         { name: "2.108", className: "MA-zone10_2F_Frontstage-W-1" },
         { name: "2.102", className: "MA-zone10_2F_Frontstage-W-2" },
@@ -8658,6 +16995,55 @@ export const ZONE_MAPPING = {
       name: "70.2A",
       className: "second_Seventy_A",
       pdf: MA_2F_70_2APdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1725,
+      "points": [
+        {
+          "id": "701e18a9-ef43-4b8b-94ea-26b3533b35fa",
+          "x": 811,
+          "y": 851
+        },
+        {
+          "id": "04f8feb8-9984-483f-aac3-9be52222fa6e",
+          "x": 945,
+          "y": 851
+        },
+        {
+          "id": "8056bffa-8014-4cd9-9bbb-b7991285b6d3",
+          "x": 947,
+          "y": 962
+        },
+        {
+          "id": "f358deba-4a7a-4e36-b70f-84cc89a2924d",
+          "x": 1145,
+          "y": 961
+        },
+        {
+          "id": "1b5658f6-3cfc-42ac-bd55-4697337eb4c7",
+          "x": 1145,
+          "y": 1066
+        },
+        {
+          "id": "3fe27ef4-c0d8-4af2-af57-4a4754213578",
+          "x": 1010,
+          "y": 1068
+        },
+        {
+          "id": "16c7035f-2113-4c0c-bb5c-7e7e40341bab",
+          "x": 1012,
+          "y": 1189
+        },
+        {
+          "id": "da7b389f-8cb1-457a-87bc-89bdaf145b10",
+          "x": 808,
+          "y": 1188
+        },
+        {
+          "id": "9839b823-537a-4ab7-90a4-829789f41708",
+          "x": 811,
+          "y": 850
+        }
+      ],
       rooms: [
         { name: "TR73", className: "MA-zone70_2A-1" },
         { name: "LI73", className: "MA-zone70_2A-2" },
@@ -8690,6 +17076,35 @@ export const ZONE_MAPPING = {
       name: "70.2B",
       className: "second_Seventy_B",
       pdf: MA_2F_70_2BPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1725,
+      "points": [
+        {
+          "id": "99070097-1776-43d7-9206-97994609ed4f",
+          "x": 1012,
+          "y": 1070
+        },
+        {
+          "id": "b3fdcdf8-3a9f-423d-a766-41eb50190aa2",
+          "x": 1144,
+          "y": 1068
+        },
+        {
+          "id": "6bbce0d5-9df8-4595-99d3-4f1d4541d7cd",
+          "x": 1145,
+          "y": 1386
+        },
+        {
+          "id": "fa401cd5-677e-45ac-9140-6c190ab173c4",
+          "x": 1011,
+          "y": 1385
+        },
+        {
+          "id": "e6e8f669-b0ec-4cd6-ae83-d7ca5cc7e479",
+          "x": 1012,
+          "y": 1072
+        }
+      ],
       rooms: [
         { name: "2.711", className: "MA-zone70_2B-1" },
         { name: "2.705", className: "MA-zone70_2B-2" },
@@ -8703,6 +17118,75 @@ export const ZONE_MAPPING = {
       name: "40.2A.1",
       className: "second_forty_2A_1",
       pdf: MA_2F_40_2A1Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1725,
+      "points": [
+        {
+          "id": "34e4492f-80c6-4796-90de-eb66527dce3c",
+          "x": 139,
+          "y": 130
+        },
+        {
+          "id": "4c6f482a-a185-4517-80f6-48d170277556",
+          "x": 1008,
+          "y": 132
+        },
+        {
+          "id": "8760873a-b0db-41aa-9111-0d89c9de185e",
+          "x": 1009,
+          "y": 357
+        },
+        {
+          "id": "f180639a-7ac8-4a98-9f57-ef57b5139de3",
+          "x": 643,
+          "y": 358
+        },
+        {
+          "id": "e093d25e-f65a-4ae3-8550-7b7c924f629e",
+          "x": 643,
+          "y": 369
+        },
+        {
+          "id": "40b2437a-4ce9-4420-91a7-a5b702ff12dd",
+          "x": 371,
+          "y": 367
+        },
+        {
+          "id": "dc060ddf-607c-4f91-8c44-d7f9d56a47f6",
+          "x": 370,
+          "y": 356
+        },
+        {
+          "id": "cc71b241-8ca4-482a-bf2c-294753a1741b",
+          "x": 278,
+          "y": 354
+        },
+        {
+          "id": "cfbe53ee-9da5-4ac1-8ed0-662cb2b63886",
+          "x": 280,
+          "y": 323
+        },
+        {
+          "id": "81f0e97e-c4f7-4534-8d34-68910af59929",
+          "x": 239,
+          "y": 323
+        },
+        {
+          "id": "99be5993-2b8b-420e-98c5-1c29e34b9037",
+          "x": 237,
+          "y": 290
+        },
+        {
+          "id": "4de3774b-31fc-4046-b885-eed39a048d46",
+          "x": 139,
+          "y": 289
+        },
+        {
+          "id": "b324ba2a-4e57-4b73-9faa-77e73f460ff1",
+          "x": 138,
+          "y": 132
+        }
+      ],
       rooms: [
         { name: "2.413", className: "MA-zone40_2A_1-1" },
         { name: "2.437", className: "MA-zone40_2A_1-2" },
@@ -8715,6 +17199,65 @@ export const ZONE_MAPPING = {
       name: "40.2A.2",
       className: "second_forty_2A_2",
       pdf: MA_2F_40_2A2Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1725,
+      "points": [
+        {
+          "id": "c366ef8f-5239-4107-9ffd-502a464ae160",
+          "x": 139,
+          "y": 323
+        },
+        {
+          "id": "e3ece95d-238d-44ea-b270-7d633f33da29",
+          "x": 277,
+          "y": 325
+        },
+        {
+          "id": "7315940c-f591-43c5-858d-01d2eac4b026",
+          "x": 278,
+          "y": 357
+        },
+        {
+          "id": "fa78dd51-8e53-483a-8216-bc5460834287",
+          "x": 328,
+          "y": 359
+        },
+        {
+          "id": "8d8e0c3a-22ba-4885-9116-8c04176fd18d",
+          "x": 329,
+          "y": 464
+        },
+        {
+          "id": "318b57b5-8e2d-407f-9d48-d4b9a881ec5f",
+          "x": 409,
+          "y": 464
+        },
+        {
+          "id": "4e6f18f4-1392-4f78-b716-0d9c50644902",
+          "x": 410,
+          "y": 369
+        },
+        {
+          "id": "a92615c0-468e-4fa3-9e56-24c133c50f89",
+          "x": 643,
+          "y": 371
+        },
+        {
+          "id": "a28d1a70-11a6-41dd-bce4-86316b116290",
+          "x": 641,
+          "y": 602
+        },
+        {
+          "id": "1fcd9de9-2d35-4bb7-8af1-bb2e49a8a35f",
+          "x": 141,
+          "y": 599
+        },
+        {
+          "id": "9e6e65a7-9b19-4844-959e-fa2c2f2bc2e9",
+          "x": 140,
+          "y": 323
+        }
+      ],
       rooms: [
         { name: "2.404", className: "MA-zone40_2A_2-1" }
       ]
@@ -8724,6 +17267,45 @@ export const ZONE_MAPPING = {
       name: "40.2A.3",
       className: "second_forty_2A_3",
       pdf: MA_2F_40_2A3Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1725,
+      "points": [
+        {
+          "id": "003985ef-a869-41a7-9bf4-4384d6e5d8cb",
+          "x": 767,
+          "y": 568
+        },
+        {
+          "id": "a2e4ca4f-2fa9-4217-86c4-298d6714c7e8",
+          "x": 906,
+          "y": 568
+        },
+        {
+          "id": "0eb3664a-a9e1-449c-b36e-b99f77bdc5fa",
+          "x": 909,
+          "y": 359
+        },
+        {
+          "id": "cc076430-d43b-4176-abac-c908ee163206",
+          "x": 1009,
+          "y": 358
+        },
+        {
+          "id": "3d281f72-6011-4106-b0a2-8fb517a9b3ca",
+          "x": 1012,
+          "y": 602
+        },
+        {
+          "id": "b031a3b9-3583-4b7a-81ac-c51159b2e3c7",
+          "x": 769,
+          "y": 600
+        },
+        {
+          "id": "d84b47fe-dc25-4a1a-b42f-a411d74cc134",
+          "x": 765,
+          "y": 567
+        }
+      ],
       rooms: [
         { name: "2.400", className: "MA-zone40_2A_3-1" },
         { name: "2.450", className: "MA-zone40_2A_3-2" }
@@ -8734,6 +17316,45 @@ export const ZONE_MAPPING = {
       name: "40.2B",
       className: "second_forty_2b",
       pdf: MA_2F_40_2BPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1725,
+      "points": [
+        {
+          "id": "5649cb35-85f6-4a39-807d-485c241d0ec3",
+          "x": 331,
+          "y": 357
+        },
+        {
+          "id": "c69b25a7-768a-465b-b0e1-a679e4824945",
+          "x": 369,
+          "y": 358
+        },
+        {
+          "id": "8f0e72b3-beaf-4abd-a5d7-c94479671c84",
+          "x": 369,
+          "y": 368
+        },
+        {
+          "id": "71f45503-7414-4d85-8e42-2a537c62bf52",
+          "x": 406,
+          "y": 370
+        },
+        {
+          "id": "66ee91ca-25c8-459c-b2f4-240a903070a6",
+          "x": 408,
+          "y": 460
+        },
+        {
+          "id": "d28d488c-994f-498b-b32c-b2ae259ffb3a",
+          "x": 331,
+          "y": 461
+        },
+        {
+          "id": "7c0703d6-5b83-4668-b962-1f59a2749448",
+          "x": 330,
+          "y": 356
+        }
+      ],
       rooms: [
         { name: "TR41", className: "MA-zone40_2B-1" },
         { name: "2.416", className: "MA-zone40_2B-2" },
@@ -8745,6 +17366,35 @@ export const ZONE_MAPPING = {
       name: "40.2C",
       className: "second_forty_2c",
       pdf: MA_2F_40_2CPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1725,
+      "points": [
+        {
+          "id": "5cc7cd6d-c29d-4155-a79b-f1ea8b79fa66",
+          "x": 646,
+          "y": 498
+        },
+        {
+          "id": "847c3085-a5f4-429b-a62e-bd8c97a92ca4",
+          "x": 766,
+          "y": 498
+        },
+        {
+          "id": "73b6537f-6747-4bf6-8995-680233eaf6ae",
+          "x": 765,
+          "y": 603
+        },
+        {
+          "id": "af40f31e-321a-40e1-8b7b-685eae6a90a2",
+          "x": 646,
+          "y": 601
+        },
+        {
+          "id": "035a3801-312f-43b3-9caf-752173313815",
+          "x": 645,
+          "y": 499
+        }
+      ],
       rooms: [
         { name: "2.434.1", className: "MA-zone40_2C-1" },
         { name: "2.434.2", className: "MA-zone40_2C-2" },
@@ -8756,6 +17406,35 @@ export const ZONE_MAPPING = {
       name: "40.2D",
       className: "second_forty_2d",
       pdf: MA_2F_40_2DPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1725,
+      "points": [
+        {
+          "id": "0bdbe1a6-f94d-4d73-a05a-07c1e6297415",
+          "x": 645,
+          "y": 360
+        },
+        {
+          "id": "30ff0273-0600-4f43-9321-a93ccb1c3414",
+          "x": 767,
+          "y": 359
+        },
+        {
+          "id": "67e2d96d-b4a8-4673-a76f-2b882c042475",
+          "x": 766,
+          "y": 494
+        },
+        {
+          "id": "779c6fca-3c76-4162-9c62-e732f529c5b5",
+          "x": 644,
+          "y": 495
+        },
+        {
+          "id": "7c6cde72-249b-47c6-b4d9-2b5e7dfe8d5b",
+          "x": 644,
+          "y": 359
+        }
+      ],
       rooms: [
         { name: "2.430.1", className: "MA-zone40_2D-1" },
         { name: "SK42.1", className: "MA-zone40_2D-2" },
@@ -8768,6 +17447,35 @@ export const ZONE_MAPPING = {
       name: "40.2E",
       className: "second_forty_2e",
       pdf: MA_2F_40_2EPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1725,
+      "points": [
+        {
+          "id": "7017b71d-775a-4bb1-83f6-c6aadf434361",
+          "x": 769,
+          "y": 359
+        },
+        {
+          "id": "18f88b57-5cb3-4e51-bb95-fca2c9d0c383",
+          "x": 906,
+          "y": 360
+        },
+        {
+          "id": "cd44294f-142b-4c01-b6d7-7f6c60ac9aed",
+          "x": 906,
+          "y": 569
+        },
+        {
+          "id": "a78071d7-2f56-4435-a560-6b174b85a8df",
+          "x": 771,
+          "y": 566
+        },
+        {
+          "id": "bd843131-2304-47eb-a914-f31f939d551b",
+          "x": 769,
+          "y": 360
+        }
+      ],
       rooms: [
         { name: "2.438.3", className: "MA-zone40_2E-1" },
         { name: "2.440", className: "MA-zone40_2E-2" },
@@ -8791,6 +17499,35 @@ export const ZONE_MAPPING = {
       name: "40.2F",
       className: "second_forty_2f",
       pdf: MA_2F_40_2FPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1725,
+      "points": [
+        {
+          "id": "75fbe3ca-b456-4095-a0ab-069af7ed8073",
+          "x": 137,
+          "y": 293
+        },
+        {
+          "id": "5594ce70-679d-4e26-a053-82c1351039fb",
+          "x": 235,
+          "y": 294
+        },
+        {
+          "id": "27eed26a-d899-480e-9ec7-ea0bb7e78406",
+          "x": 236,
+          "y": 322
+        },
+        {
+          "id": "7ba20647-ef80-4344-89eb-73ead4cfe2d8",
+          "x": 138,
+          "y": 320
+        },
+        {
+          "id": "41ffa46c-e8f5-4966-9106-b316729c0e20",
+          "x": 138,
+          "y": 293
+        }
+      ],
       rooms: [
         { name: "2.403", className: "MA-zone40_2F-1" },
         { name: "2.402", className: "MA-zone40_2F-2" },
@@ -8806,12 +17543,201 @@ export const ZONE_MAPPING = {
       name: "Third Floor",
       className: "Ma_Third_Floor",
       pdf: MA_3F_RoofPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 901,
+      "points": [
+        {
+          "id": "6b4359ae-cab2-4cdc-849f-07bb56026d97",
+          "x": 304,
+          "y": 439
+        },
+        {
+          "id": "eaec3b9c-45fb-40ea-8fac-4e60dd283470",
+          "x": 1273,
+          "y": 441
+        },
+        {
+          "id": "c9f28009-31b1-4b93-ad3f-4017d7ae3a4b",
+          "x": 1271,
+          "y": 699
+        },
+        {
+          "id": "2677bc18-810c-401e-a042-f5c4c25fcad6",
+          "x": 304,
+          "y": 697
+        },
+        {
+          "id": "ba280dbd-0cf5-4095-9263-fa1c01acc6c7",
+          "x": 303,
+          "y": 439
+        }
+      ],
       rooms: [
-        { name: "3.418", className: "MA-zone40_3B-1" },
-        { name: "3.400", className: "MA-zone40_3B-2" },
-        { name: "TR41", className: "MA-zone40_MA40_3A-1" },
-        { name: "3.416", className: "MA-zone40_MA40_3A-2" },
-        { name: "3.414", className: "MA-zone40_MA40_3A-3" }
+        {
+          "id": "bf7033a7-0b02-4efb-81fa-07b928e0fec6",
+          "name": "3.418",
+          "pdfWidth": 1351,
+          "pdfHeight": 901,
+          "points": [
+            {
+              "id": "a411faf0-6092-4a5f-9297-cd159f64e05b",
+              "x": 469,
+              "y": 452
+            },
+            {
+              "id": "94042be7-45bc-4f96-8e11-d45e46967c93",
+              "x": 514,
+              "y": 451
+            },
+            {
+              "id": "171b7436-96c2-4af2-b12b-16daf5e0a7e3",
+              "x": 514,
+              "y": 530
+            },
+            {
+              "id": "9e546e5c-2bc7-4868-a3af-0284156c1ff7",
+              "x": 468,
+              "y": 530
+            },
+            {
+              "id": "23efc207-e648-4476-8bf9-40dc79e20d9d",
+              "x": 468,
+              "y": 454
+            }
+          ]
+        },
+        {
+          "id": "82de8b6c-9508-4e56-a36a-619d8e8ffe90",
+          "name": "3.400",
+          "pdfWidth": 1351,
+          "pdfHeight": 901,
+          "points": [
+            {
+              "id": "f37325fa-ad72-437b-8a2f-17482d3f2307",
+              "x": 693,
+              "y": 527
+            },
+            {
+              "id": "f3aef3a6-91fd-41c8-8199-b16f7f1d5484",
+              "x": 748,
+              "y": 526
+            },
+            {
+              "id": "6e7f5a14-08c8-4d8a-acb6-25a1e12515ca",
+              "x": 748,
+              "y": 613
+            },
+            {
+              "id": "aeb1d1db-70b2-4818-84f9-d01e911402fb",
+              "x": 691,
+              "y": 611
+            },
+            {
+              "id": "7ecde001-441a-48a9-bef1-9e1a7caf0a42",
+              "x": 691,
+              "y": 525
+            }
+          ]
+        },
+        {
+          "id": "3b285f09-6d51-411a-b968-e5d565f46cab",
+          "name": "TR41",
+          "pdfWidth": 1351,
+          "pdfHeight": 901,
+          "points": [
+            {
+              "id": "0d74c786-cc90-45d2-9f3e-8b9a102eb08c",
+              "x": 313,
+              "y": 508
+            },
+            {
+              "id": "074e487c-010d-495e-a729-82a7aee198be",
+              "x": 349,
+              "y": 509
+            },
+            {
+              "id": "5c9d4677-595a-405a-a6dd-8f8f0c6c8d06",
+              "x": 350,
+              "y": 611
+            },
+            {
+              "id": "691fd4e6-f7ce-40eb-baf8-ddef3955aee3",
+              "x": 309,
+              "y": 612
+            },
+            {
+              "id": "f561f20a-e49b-4e98-a209-857d7403890d",
+              "x": 310,
+              "y": 507
+            }
+          ]
+        },
+        {
+          "id": "5d9019a6-c9b3-4cb4-8487-1364dad951d4",
+          "name": "3.416",
+          "pdfWidth": 1351,
+          "pdfHeight": 901,
+          "points": [
+            {
+              "id": "dd04f7b9-d914-4752-8dba-099aa621ddfe",
+              "x": 351,
+              "y": 508
+            },
+            {
+              "id": "a0b7e2b6-091e-4276-8f99-01440941b356",
+              "x": 393,
+              "y": 508
+            },
+            {
+              "id": "c6b897c5-bd79-4598-9f3d-0cc83931a532",
+              "x": 392,
+              "y": 610
+            },
+            {
+              "id": "f2b5d265-be20-48aa-ae53-83519f7f7b82",
+              "x": 349,
+              "y": 609
+            },
+            {
+              "id": "56149bc8-e3d7-49df-ab82-1593247a5e80",
+              "x": 350,
+              "y": 508
+            }
+          ]
+        },
+        {
+          "id": "25f54d0a-1b6d-4bf8-a256-3d1b9cc5a361",
+          "name": "3.414",
+          "pdfWidth": 1351,
+          "pdfHeight": 901,
+          "points": [
+            {
+              "id": "4e80030d-5008-4fc1-a360-908e2f3c0819",
+              "x": 312,
+              "y": 615
+            },
+            {
+              "id": "c2052c2a-f6f1-43d0-aa35-10774a4dec1a",
+              "x": 393,
+              "y": 614
+            },
+            {
+              "id": "e6163beb-02bf-466f-87bb-9fa4a75259c0",
+              "x": 392,
+              "y": 687
+            },
+            {
+              "id": "9c6fd6b4-cf44-47c7-b587-1effaf70ef90",
+              "x": 310,
+              "y": 691
+            },
+            {
+              "id": "d20e90ea-b627-42da-b554-0c97a1b60c99",
+              "x": 309,
+              "y": 612
+            }
+          ]
+        }
       ]
     }
   ],
@@ -8822,12 +17748,241 @@ export const ZONE_MAPPING = {
       name: "Roof Plan",
       className: "Ma_Roof_Plan",
       pdf: MA_RoofPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 2025,
+      "points": [
+        {
+          "id": "20f2149e-12a1-4d0f-8ec5-06ffb472aa81",
+          "x": 200,
+          "y": 80
+        },
+        {
+          "id": "c05187fc-a16a-410c-9bc1-5dbd2f938289",
+          "x": 1239,
+          "y": 79
+        },
+        {
+          "id": "865c1546-2f69-45f4-acb1-f38ee23b863b",
+          "x": 1235,
+          "y": 1922
+        },
+        {
+          "id": "e673fb4f-b7c3-4fa3-afa9-c6713fbdc769",
+          "x": 196,
+          "y": 1924
+        },
+        {
+          "id": "5cdcd816-6968-40df-a296-b70c466db8e5",
+          "x": 199,
+          "y": 83
+        }
+      ],
       rooms: [
-        { name: "40.RA", className: "MA-zone40_RA_1" },
-        { name: "40.RB", className: "MA-zone40_RB_1" },
-        { name: "11.R", className: "MA-zone40_11R_1" },
-        { name: "10.R", className: "MA-zone40_10R_1" },
-        { name: "70.R", className: "MA-zone40_70R_1" }
+        {
+          "id": "4f660b4b-3732-4d11-bae9-20879925539c",
+          "name": "40.RA",
+          "pdfWidth": 1351,
+          "pdfHeight": 2025,
+          "points": [
+            {
+              "id": "e12cb1f8-2213-47e9-9003-2b9d99d36f13",
+              "x": 390,
+              "y": 353
+            },
+            {
+              "id": "5ce251bc-a3b0-4e65-a348-6dd1303cba63",
+              "x": 1219,
+              "y": 354
+            },
+            {
+              "id": "bb62eeec-4686-4993-8e1f-b6317f30197b",
+              "x": 1219,
+              "y": 544
+            },
+            {
+              "id": "bde2fc39-5687-49b4-a052-db00762978e6",
+              "x": 387,
+              "y": 541
+            },
+            {
+              "id": "79ad0a17-4dc2-4f6e-9957-3b6490c5e046",
+              "x": 390,
+              "y": 353
+            }
+          ]
+        },
+        {
+          "id": "94247f54-cebb-4f30-8c06-b75b4a7b79ae",
+          "name": "40.RB",
+          "pdfWidth": 1351,
+          "pdfHeight": 2025,
+          "points": [
+            {
+              "id": "266f3ee9-e27b-4a96-b8b6-164245dcb633",
+              "x": 1216,
+              "y": 344
+            },
+            {
+              "id": "975e6a0c-0f30-47a6-916e-8111b5ba5145",
+              "x": 1214,
+              "y": 134
+            },
+            {
+              "id": "2ee2d822-f8ad-41f5-ada1-7317d9ebceda",
+              "x": 208,
+              "y": 132
+            },
+            {
+              "id": "427efc5d-c342-45c1-a30d-61f7d1f2d8a0",
+              "x": 209,
+              "y": 682
+            },
+            {
+              "id": "0513296b-92a2-4c74-b7a8-a02e7523e773",
+              "x": 1216,
+              "y": 682
+            },
+            {
+              "id": "9f97eb4e-268c-4fae-bc25-a7a0fe09095a",
+              "x": 1216,
+              "y": 552
+            },
+            {
+              "id": "e91fef93-a019-4259-b8c9-7913839ca9a2",
+              "x": 381,
+              "y": 549
+            },
+            {
+              "id": "3196752b-8942-47a0-a44f-6534f52607cd",
+              "x": 383,
+              "y": 344
+            },
+            {
+              "id": "bd0d1a09-87b7-4bf8-b1b2-74136dfed182",
+              "x": 1214,
+              "y": 345
+            }
+          ]
+        },
+        {
+          "id": "aa674003-4085-4b6d-a2e3-df7a26c17dde",
+          "name": "11.R",
+          "pdfWidth": 1351,
+          "pdfHeight": 2025,
+          "points": [
+            {
+              "id": "aea89100-7668-40b3-afe0-62b9a0d44264",
+              "x": 229,
+              "y": 1177
+            },
+            {
+              "id": "52339cd7-7738-4b2a-b850-77fe01d2882c",
+              "x": 325,
+              "y": 1176
+            },
+            {
+              "id": "368323e1-9817-4c78-80fb-f6e71568894a",
+              "x": 328,
+              "y": 1567
+            },
+            {
+              "id": "b7b763b2-72d5-4773-957a-8e1d87304785",
+              "x": 233,
+              "y": 1566
+            },
+            {
+              "id": "4100b29a-2409-4df1-81b6-d79d6b96374a",
+              "x": 230,
+              "y": 1175
+            }
+          ]
+        },
+        {
+          "id": "b18bef61-81e7-43cc-9bb5-76868cc4fe8d",
+          "name": "10.R",
+          "pdfWidth": 1351,
+          "pdfHeight": 2025,
+          "points": [
+            {
+              "id": "c17cc4ac-4179-41b1-80bd-e6ab95106d58",
+              "x": 341,
+              "y": 693
+            },
+            {
+              "id": "9a84606e-bc87-4e62-b1e1-c9ef426ca74a",
+              "x": 839,
+              "y": 693
+            },
+            {
+              "id": "cb725842-88a4-4533-9714-460dcff6c958",
+              "x": 839,
+              "y": 1830
+            },
+            {
+              "id": "38784784-a54b-4ed4-aed6-cbcad359261a",
+              "x": 341,
+              "y": 1829
+            },
+            {
+              "id": "5be872eb-fd39-49cc-841e-bdb35b2d402e",
+              "x": 341,
+              "y": 693
+            }
+          ]
+        },
+        {
+          "id": "4d43ce15-1af9-481b-8bee-b0e77d4346ff",
+          "name": "70.R",
+          "pdfWidth": 1351,
+          "pdfHeight": 2025,
+          "points": [
+            {
+              "id": "0b0a03b8-1ac6-4349-b8b8-3f4256b2f141",
+              "x": 851,
+              "y": 979
+            },
+            {
+              "id": "582f0536-778b-4212-bca7-3ce3d8b076c9",
+              "x": 970,
+              "y": 982
+            },
+            {
+              "id": "91432d4d-fa18-49fa-bb25-9b73f570f80f",
+              "x": 970,
+              "y": 1113
+            },
+            {
+              "id": "eb19e3ef-51b1-4ba1-8cd1-7976345cd1fe",
+              "x": 1159,
+              "y": 1115
+            },
+            {
+              "id": "80632db2-b533-4b81-941a-c60b55c3d9e1",
+              "x": 1156,
+              "y": 1600
+            },
+            {
+              "id": "bc1894e4-c12a-4aa8-897c-d9f8f1ca28da",
+              "x": 1038,
+              "y": 1599
+            },
+            {
+              "id": "5e8f526d-42ae-41f3-af0b-3ded6bb8ed42",
+              "x": 1040,
+              "y": 1370
+            },
+            {
+              "id": "ccb51060-9281-4db5-a441-0667b5ecb75c",
+              "x": 853,
+              "y": 1370
+            },
+            {
+              "id": "3478b5d6-a6cb-4430-94fe-34192118ad98",
+              "x": 853,
+              "y": 978
+            }
+          ]
+        }
       ]
     }
   ],
@@ -8838,6 +17993,35 @@ export const ZONE_MAPPING = {
       name: "MB020.A",
       className: "MB020_A",
       pdf: MB020APdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "33a3b2d9-294a-46ed-bd46-8ac48188aeb9",
+          "x": 249,
+          "y": 101
+        },
+        {
+          "id": "44ec3a38-3a91-4c21-9785-4c592694760e",
+          "x": 487,
+          "y": 104
+        },
+        {
+          "id": "cd3245b0-8f6c-4d50-aa71-ea8826b8ac5b",
+          "x": 485,
+          "y": 297
+        },
+        {
+          "id": "54e2ca63-af20-4f7a-96e2-464e7f1797aa",
+          "x": 248,
+          "y": 297
+        },
+        {
+          "id": "66c326a0-8617-41de-91f4-40a7e8951bd5",
+          "x": 248,
+          "y": 101
+        }
+      ],
       rooms: [
         { name: "20.A-S.003.3", className: "MB-20_A-1" },
         { name: "20.A-S.003.2", className: "MB-20_A-2" },
@@ -8860,6 +18044,35 @@ export const ZONE_MAPPING = {
       name: "MB020.B",
       className: "MB020_B",
       pdf: MB020BPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "4a205845-09ab-40e2-832e-8df324de3d42",
+          "x": 491,
+          "y": 104
+        },
+        {
+          "id": "bd44bcfd-44bf-4392-b7d5-83afce469d36",
+          "x": 637,
+          "y": 103
+        },
+        {
+          "id": "a20b0913-4db1-4618-8c48-beebcfc9bcc2",
+          "x": 636,
+          "y": 299
+        },
+        {
+          "id": "545f2d5f-7570-4eda-8d19-36f6e6c9d70f",
+          "x": 490,
+          "y": 297
+        },
+        {
+          "id": "ca0c3b36-9f64-44d8-865c-59a7fe9d2b2b",
+          "x": 491,
+          "y": 105
+        }
+      ],
       rooms: [
         { name: "20.B-S.009", className: "MB-20_B-1" }
       ]
@@ -8869,6 +18082,35 @@ export const ZONE_MAPPING = {
       name: "MB020.C",
       className: "MB020_C",
       pdf: MB020CPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "e1914c51-cf28-4407-8453-a4012bff9271",
+          "x": 642,
+          "y": 103
+        },
+        {
+          "id": "cb07a4cd-d8bd-4dfe-9dfb-6027feca7721",
+          "x": 1003,
+          "y": 104
+        },
+        {
+          "id": "3796a412-a82b-4590-91cb-0e61d2928157",
+          "x": 1003,
+          "y": 299
+        },
+        {
+          "id": "a56ab4f2-671a-4952-b295-869e76f1e010",
+          "x": 643,
+          "y": 298
+        },
+        {
+          "id": "07097c1b-b430-480d-9f4b-1afbca452164",
+          "x": 642,
+          "y": 102
+        }
+      ],
       rooms: [
         { name: "20.C-S.002", className: "MB-20_C-1" },
         { name: "20.C-S.004", className: "MB-20_C-2" },
@@ -8880,6 +18122,45 @@ export const ZONE_MAPPING = {
       name: "MB020.D",
       className: "MB020_D",
       pdf: MB020DPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "f145abe3-83b0-4f10-8c98-4782581c9d5d",
+          "x": 1006,
+          "y": 105
+        },
+        {
+          "id": "241b3f5b-501f-4ef0-a273-2ee995ee3555",
+          "x": 1228,
+          "y": 102
+        },
+        {
+          "id": "33e78c5c-903e-4ed4-8926-7fb0aef4021c",
+          "x": 1226,
+          "y": 231
+        },
+        {
+          "id": "2ba00e3d-4b2c-425f-8912-6796923eae27",
+          "x": 1090,
+          "y": 233
+        },
+        {
+          "id": "a2f97ab3-449b-4c62-86b9-2b6d305915de",
+          "x": 1090,
+          "y": 299
+        },
+        {
+          "id": "02c47d14-2977-446a-826c-1d092518af20",
+          "x": 1004,
+          "y": 298
+        },
+        {
+          "id": "544f4fd5-6e73-40c1-8350-fa7de06d5e22",
+          "x": 1005,
+          "y": 106
+        }
+      ],
       rooms: [
         { name: "20.D-S.092", className: "MB-20_D-1" },
         { name: "20.D-S.094", className: "MB-20_D-2" },
@@ -8891,6 +18172,45 @@ export const ZONE_MAPPING = {
       name: "MB020.E",
       className: "MB020_E",
       pdf: MB020EPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "5df3b8c8-bb94-417f-8a92-62c7ad3508c2",
+          "x": 112,
+          "y": 711
+        },
+        {
+          "id": "c273efd1-3a90-46b0-bfaf-47bb8b9b811c",
+          "x": 531,
+          "y": 711
+        },
+        {
+          "id": "c9de27d7-c32c-45fd-8c02-76a16235a7df",
+          "x": 531,
+          "y": 847
+        },
+        {
+          "id": "860ccd83-5083-4825-8c4f-242af7d7f02b",
+          "x": 450,
+          "y": 850
+        },
+        {
+          "id": "afd5924d-50ce-4b7e-a8f8-5ce7209b639c",
+          "x": 450,
+          "y": 919
+        },
+        {
+          "id": "5f5d67e1-75a5-4790-b990-95566b7000cd",
+          "x": 116,
+          "y": 917
+        },
+        {
+          "id": "165ce9a6-1980-4708-b339-37c162d87d0b",
+          "x": 113,
+          "y": 710
+        }
+      ],
       rooms: [
         { name: "20.E-S.031.2", className: "MB-20_E-1" },
         { name: "20.E-S.031.1", className: "MB-20_E-2" },
@@ -8902,6 +18222,35 @@ export const ZONE_MAPPING = {
       name: "MB020.F",
       className: "MB020_F",
       pdf: MB020FPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "569d430c-88e6-4863-a3b2-fc6b456bb094",
+          "x": 247,
+          "y": 922
+        },
+        {
+          "id": "1a4afda2-f826-49b3-a832-50b11972c66b",
+          "x": 533,
+          "y": 925
+        },
+        {
+          "id": "8386b35f-5ce3-4837-aeab-5d3f44059f82",
+          "x": 532,
+          "y": 1067
+        },
+        {
+          "id": "3805d8fa-f377-4aa4-a13b-9e60240072e3",
+          "x": 248,
+          "y": 1066
+        },
+        {
+          "id": "cead0212-b687-495d-81ad-3f9e11e2e186",
+          "x": 247,
+          "y": 922
+        }
+      ],
       rooms: [
         { name: "20.F-S.033", className: "MB-20_F-1" }
       ]
@@ -8911,6 +18260,55 @@ export const ZONE_MAPPING = {
       name: "MB020.G",
       className: "MB020_G",
       pdf: MB020GPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "e32decda-90a9-4cbf-ad6b-c97a4d898686",
+          "x": 113,
+          "y": 925
+        },
+        {
+          "id": "fb069603-75d0-4112-bdfb-5d61da3a29fc",
+          "x": 245,
+          "y": 925
+        },
+        {
+          "id": "502bf4ae-1e21-4996-9489-df7b53268dad",
+          "x": 245,
+          "y": 1068
+        },
+        {
+          "id": "8da2c76b-7a53-4f82-b392-def911dec8db",
+          "x": 535,
+          "y": 1070
+        },
+        {
+          "id": "4a07e8bc-8bc5-4c57-9e3a-379eece8c447",
+          "x": 535,
+          "y": 1115
+        },
+        {
+          "id": "5ff8e639-554e-401f-aa3a-9c5e17abd544",
+          "x": 461,
+          "y": 1113
+        },
+        {
+          "id": "dff895ed-dd46-4a38-97cc-dffde5fd0f6d",
+          "x": 461,
+          "y": 1246
+        },
+        {
+          "id": "b63c7dd9-9284-4ff1-bd83-96443fb9fb9a",
+          "x": 115,
+          "y": 1247
+        },
+        {
+          "id": "fe69cb16-ae4c-4657-b0f8-fc89a1428beb",
+          "x": 112,
+          "y": 924
+        }
+      ],
       rooms: [
         { name: "20.G-S.037", className: "MB-20_G-1" },
         { name: "20.G-S.041", className: "MB-20_G-2" },
@@ -8927,6 +18325,35 @@ export const ZONE_MAPPING = {
       name: "MB020.H",
       className: "MB020_H",
       pdf: MB020HPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "467a825e-6472-48d4-b960-7ed314b1ff3b",
+          "x": 906,
+          "y": 364
+        },
+        {
+          "id": "260dedad-0464-4557-b6b6-1ddad791f0d5",
+          "x": 1112,
+          "y": 364
+        },
+        {
+          "id": "7e336b78-2392-40db-b101-576129343df8",
+          "x": 1110,
+          "y": 531
+        },
+        {
+          "id": "8c97fe2b-5bf4-4a9b-b36e-b6da722b064f",
+          "x": 902,
+          "y": 530
+        },
+        {
+          "id": "a091683c-1511-4b6f-a368-0cb25f89d5f0",
+          "x": 905,
+          "y": 366
+        }
+      ],
       rooms: [
         { name: "20.H-S.072", className: "MB-20_H-1" }
       ]
@@ -8936,6 +18363,45 @@ export const ZONE_MAPPING = {
       name: "MB020.I",
       className: "MB020_I",
       pdf: MB020IPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "3191dbf7-a7ad-4814-801c-ad9fc09125fd",
+          "x": 766,
+          "y": 533
+        },
+        {
+          "id": "176ce95c-66ad-4afc-9a11-19034f45cb37",
+          "x": 1111,
+          "y": 530
+        },
+        {
+          "id": "2c285f3a-9bdf-49d6-9015-2676a14c2aba",
+          "x": 1111,
+          "y": 655
+        },
+        {
+          "id": "38e2a608-ba37-4afd-9582-fa97b307a952",
+          "x": 843,
+          "y": 656
+        },
+        {
+          "id": "842bddcb-18f3-46fe-ab69-4647d4276c02",
+          "x": 842,
+          "y": 613
+        },
+        {
+          "id": "c7e0411f-5aba-46dc-8170-5904a9226e46",
+          "x": 765,
+          "y": 610
+        },
+        {
+          "id": "7f9767fb-736f-4687-b307-5f0e4f0cb7bd",
+          "x": 767,
+          "y": 533
+        }
+      ],
       rooms: [
         { name: "20.I-S.070.1", className: "MB-20_I-1" },
         { name: "20.I-Passbox", className: "MB-20_I-2" },
@@ -8947,6 +18413,35 @@ export const ZONE_MAPPING = {
       name: "MB020.J",
       className: "MB020_J",
       pdf: MB020JPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "392be67a-9ff2-4a62-8473-931082c6beb8",
+          "x": 903,
+          "y": 657
+        },
+        {
+          "id": "9da779ab-5894-4c8b-a61f-6a0005f6747e",
+          "x": 1112,
+          "y": 655
+        },
+        {
+          "id": "06953ec7-f557-4c33-96f5-25de785f2e1c",
+          "x": 1111,
+          "y": 812
+        },
+        {
+          "id": "2aed980a-9fb2-41df-90a7-96a3e2512ec5",
+          "x": 902,
+          "y": 811
+        },
+        {
+          "id": "b9bd961d-f31f-49c6-8a06-e223fd17cfc8",
+          "x": 903,
+          "y": 658
+        }
+      ],
       rooms: [
         { name: "20.J-S.068 ", className: "MB-20_J-1" }
       ]
@@ -8956,6 +18451,35 @@ export const ZONE_MAPPING = {
       name: "MB020.K",
       className: "MB020_K",
       pdf: MB020KPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "663ea6d7-6e37-487b-8ae5-a5019e7ffc68",
+          "x": 903,
+          "y": 826
+        },
+        {
+          "id": "93c19893-5c81-4283-9562-27200d228c56",
+          "x": 1109,
+          "y": 824
+        },
+        {
+          "id": "ee854bbc-4287-4c2d-bcd5-8f05ee7fc0e8",
+          "x": 1112,
+          "y": 975
+        },
+        {
+          "id": "9f0321b4-6721-4aab-a14d-d5d0b106945e",
+          "x": 903,
+          "y": 974
+        },
+        {
+          "id": "423b08c7-b9b9-4469-98a0-06953f647acc",
+          "x": 905,
+          "y": 828
+        }
+      ],
       rooms: [
         { name: "20.K-S.066", className: "MB-20_K-1" }
       ]
@@ -8965,6 +18489,35 @@ export const ZONE_MAPPING = {
       name: "MB020.L",
       className: "MB020_L",
       pdf: MB020LPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "1fa54866-6402-418e-ab93-ba016460d98c",
+          "x": 799,
+          "y": 892
+        },
+        {
+          "id": "21a0a735-d498-449f-aa1e-dd73cc5ff516",
+          "x": 900,
+          "y": 893
+        },
+        {
+          "id": "4cb480a3-cf07-41d1-b5d8-34fd0ee707c4",
+          "x": 900,
+          "y": 1034
+        },
+        {
+          "id": "b3930244-8f87-4bd3-bfcb-3332cd6be422",
+          "x": 801,
+          "y": 1034
+        },
+        {
+          "id": "79c75dcd-fa65-4f7c-b656-faa25a89ca65",
+          "x": 800,
+          "y": 891
+        }
+      ],
       rooms: [
         { name: "20.L-S.062", className: "MB-20_L-1" }
       ]
@@ -8974,6 +18527,55 @@ export const ZONE_MAPPING = {
       name: "MB020.M",
       className: "MB020_M",
       pdf: MB020MPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "da3f9c03-0427-46f9-8a68-17d9a1389b0a",
+          "x": 640,
+          "y": 696
+        },
+        {
+          "id": "53d1537a-eead-4d58-9458-cd76a6efe849",
+          "x": 771,
+          "y": 693
+        },
+        {
+          "id": "21cc3ac7-ced6-4dc7-a8d4-bf9feb42f11c",
+          "x": 771,
+          "y": 617
+        },
+        {
+          "id": "01b01dec-66f3-4226-913a-9c3c65ccc603",
+          "x": 839,
+          "y": 615
+        },
+        {
+          "id": "87f71897-25d9-4249-92aa-75d831e3afcb",
+          "x": 841,
+          "y": 656
+        },
+        {
+          "id": "a0f0b85d-f04b-4e27-9dc6-fd28973183ca",
+          "x": 899,
+          "y": 659
+        },
+        {
+          "id": "fdd78f4c-3291-4e58-93a7-2de28aa3ace3",
+          "x": 900,
+          "y": 885
+        },
+        {
+          "id": "a65934b4-03ab-4640-b3bb-133e24459c70",
+          "x": 641,
+          "y": 886
+        },
+        {
+          "id": "2f56298a-6f69-484d-bbbe-9fd761b2952e",
+          "x": 639,
+          "y": 695
+        }
+      ],
       rooms: [
         { name: "20.M-S.022", className: "MB-20_M-1" }
       ]
@@ -8983,6 +18585,45 @@ export const ZONE_MAPPING = {
       name: "MB020.N",
       className: "MB020_N",
       pdf: MB020NPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "be523e37-805f-4375-a14a-5fae6feef78f",
+          "x": 638,
+          "y": 365
+        },
+        {
+          "id": "00688d61-1602-41cb-96b9-3658e49f16b4",
+          "x": 901,
+          "y": 363
+        },
+        {
+          "id": "4b845fff-3d7e-4dd8-8267-0a80d4f10341",
+          "x": 900,
+          "y": 528
+        },
+        {
+          "id": "97a79336-1a28-4e43-a894-d9e3b58674f7",
+          "x": 729,
+          "y": 525
+        },
+        {
+          "id": "52590c89-2e86-4aab-984a-c5611e6e1b98",
+          "x": 730,
+          "y": 414
+        },
+        {
+          "id": "99052e89-7089-4e3b-9bd4-6c6e0675990e",
+          "x": 637,
+          "y": 413
+        },
+        {
+          "id": "e8f97c18-05c1-4291-aaf0-0ad645688779",
+          "x": 639,
+          "y": 364
+        }
+      ],
       rooms: [
         { name: "20.N-S.012", className: "MB-20_N-1" }
       ]
@@ -8992,6 +18633,35 @@ export const ZONE_MAPPING = {
       name: "MB020.P",
       className: "MB020_P",
       pdf: MB020PPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "59ab8dd2-21a0-4f15-bbf6-eb37a1bea123",
+          "x": 640,
+          "y": 615
+        },
+        {
+          "id": "131570ba-c729-472b-b4da-e1afe6a5cde2",
+          "x": 768,
+          "y": 616
+        },
+        {
+          "id": "a9873a99-23f0-4348-bdfa-0b84428fc9cb",
+          "x": 768,
+          "y": 691
+        },
+        {
+          "id": "4a2338cb-281d-4a62-96c9-261ca6454794",
+          "x": 637,
+          "y": 694
+        },
+        {
+          "id": "9153f7cd-064e-4778-adb5-27565cd1f075",
+          "x": 639,
+          "y": 614
+        }
+      ],
       rooms: [
         { name: "20.P-S.020", className: "MB-20_P-1" }
       ]
@@ -9001,6 +18671,35 @@ export const ZONE_MAPPING = {
       name: "MB020.Q1",
       className: "MB020_Q_1",
       pdf: MB020Q1Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "47ff2a93-7882-4e47-a966-e3d562e1a04f",
+          "x": 265,
+          "y": 366
+        },
+        {
+          "id": "37a92e27-6501-4bd5-8fa2-0e5fcc6f060d",
+          "x": 533,
+          "y": 364
+        },
+        {
+          "id": "b9429dbf-74d3-4f6f-8d31-2af4e1d3a016",
+          "x": 531,
+          "y": 708
+        },
+        {
+          "id": "4517c324-f00f-4178-9696-3fe294baca40",
+          "x": 262,
+          "y": 705
+        },
+        {
+          "id": "7f21dc9a-1b2b-4624-9ebf-66540d597528",
+          "x": 265,
+          "y": 368
+        }
+      ],
       rooms: [
         { name: "20.Q.1-S.013", className: "MB-20_Q_1-1" },
         { name: "20.Q.1-S.027", className: "MB-20_Q_1-2" },
@@ -9020,6 +18719,45 @@ export const ZONE_MAPPING = {
       name: "MB020.Q2",
       className: "MB020_Q_2",
       pdf: MB020Q2Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "27a88e97-91e2-4068-af5e-af41d442abe3",
+          "x": 641,
+          "y": 893
+        },
+        {
+          "id": "52ea5d9d-ade5-4e82-887e-6402f4e62c0f",
+          "x": 796,
+          "y": 891
+        },
+        {
+          "id": "8069db98-68f1-48db-a983-7a9ec8ca5b98",
+          "x": 802,
+          "y": 1183
+        },
+        {
+          "id": "a3eeae30-9adb-4496-aa79-3a139d67877c",
+          "x": 746,
+          "y": 1183
+        },
+        {
+          "id": "9b859f37-1180-45a5-b428-f556d899a103",
+          "x": 745,
+          "y": 1111
+        },
+        {
+          "id": "b5c89264-8622-40c3-a832-e0218b6cace1",
+          "x": 640,
+          "y": 1110
+        },
+        {
+          "id": "6aee3f09-096e-49a6-a050-300941d0a7b7",
+          "x": 639,
+          "y": 892
+        }
+      ],
       rooms: [
         { name: "20.Q.2-S.024.1", className: "MB-20_Q_2-1" },
         { name: "20.Q.2-S.024", className: "MB-20_Q_2-2" },
@@ -9032,6 +18770,35 @@ export const ZONE_MAPPING = {
       name: "MB020.Q3",
       className: "MB020_Q_3",
       pdf: MB020Q3Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "8e6a176c-cc0d-4e30-a836-a730932eae25",
+          "x": 799,
+          "y": 1041
+        },
+        {
+          "id": "449d6405-56e3-4d88-bdfb-eacbd90a14ab",
+          "x": 897,
+          "y": 1040
+        },
+        {
+          "id": "9cc2fe23-d34b-42ca-a8bc-10f16be89b3a",
+          "x": 898,
+          "y": 1122
+        },
+        {
+          "id": "09f3530b-8394-4b47-94f4-ce86953d0fb2",
+          "x": 800,
+          "y": 1122
+        },
+        {
+          "id": "c86ed9d8-0800-4c6d-b9f8-273769d5e7dc",
+          "x": 800,
+          "y": 1042
+        }
+      ],
       rooms: [
         { name: "20.Q.3-S.052", className: "MB-20_Q_3-1" }
       ]
@@ -9041,6 +18808,35 @@ export const ZONE_MAPPING = {
       name: "MB020.Q4",
       className: "MB020_Q_4",
       pdf: MB020Q4Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "cbda257f-0761-4cb3-ae96-b5fc0645e798",
+          "x": 114,
+          "y": 364
+        },
+        {
+          "id": "39a5957f-62d6-4aca-bf79-5b1ab9cd5bba",
+          "x": 263,
+          "y": 366
+        },
+        {
+          "id": "2b3f6170-034e-4e54-99fd-ccc40f4825cc",
+          "x": 260,
+          "y": 704
+        },
+        {
+          "id": "12eea8cb-1614-44d1-8182-34cf324d289c",
+          "x": 113,
+          "y": 705
+        },
+        {
+          "id": "897b71d1-d2e9-45d5-a0ac-4d0dff0ca314",
+          "x": 112,
+          "y": 364
+        }
+      ],
       rooms: [
         { name: "20.Q.4-S.011.1", className: "MB-20_Q_4-1" },
         { name: "20.Q.4-S.011", className: "MB-20_Q_4-2" },
@@ -9058,6 +18854,65 @@ export const ZONE_MAPPING = {
       name: "MB020.R1",
       className: "MB020_R_1",
       pdf: MB020R1Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "54483074-40c4-49a5-9d49-1b7b78e8d03f",
+          "x": 108,
+          "y": 235
+        },
+        {
+          "id": "ff6c844c-8df0-4e40-bfb7-e7b810e7b0c5",
+          "x": 189,
+          "y": 236
+        },
+        {
+          "id": "cfc6f378-7d8c-4e87-bfe2-45f150ea538b",
+          "x": 191,
+          "y": 174
+        },
+        {
+          "id": "203ab523-2498-4849-ab88-c1eda5088e95",
+          "x": 244,
+          "y": 172
+        },
+        {
+          "id": "b48b65e6-88f8-4163-b60b-14acce618eac",
+          "x": 246,
+          "y": 301
+        },
+        {
+          "id": "2d0931dd-5afe-4a89-bde5-61b5ba6697a5",
+          "x": 1228,
+          "y": 306
+        },
+        {
+          "id": "c960660a-576d-4fe7-80b2-ed50740ac6c0",
+          "x": 1228,
+          "y": 360
+        },
+        {
+          "id": "075dddb9-915d-4903-a30b-2d12fa891c15",
+          "x": 192,
+          "y": 359
+        },
+        {
+          "id": "9ba482cd-f3ec-4c05-9e1f-ad1e26a1e429",
+          "x": 192,
+          "y": 291
+        },
+        {
+          "id": "43dc6906-706a-423e-9995-8ae59db2e786",
+          "x": 110,
+          "y": 290
+        },
+        {
+          "id": "c004f113-0a74-4152-80e1-149ac2b0672a",
+          "x": 109,
+          "y": 235
+        }
+      ],
       rooms: [
         { name: "20.R.1-S.001.1", className: "MB-20_R_1-1" },
         { name: "20.R.1-S.001", className: "MB-20_R_1-2" }
@@ -9068,6 +18923,55 @@ export const ZONE_MAPPING = {
       name: "MB020.R2",
       className: "MB020_R_2",
       pdf: MB020R2Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "630fb230-4f98-42b8-86ad-3e22393179e3",
+          "x": 768,
+          "y": 1229
+        },
+        {
+          "id": "cab2d387-ebc5-4f9c-a5e1-098832becb64",
+          "x": 1016,
+          "y": 1233
+        },
+        {
+          "id": "75d8fb8c-3557-46ec-bfb3-3640bef40fbd",
+          "x": 1016,
+          "y": 1211
+        },
+        {
+          "id": "d092ac77-ab83-4a53-936d-e6166aef6bd1",
+          "x": 1190,
+          "y": 1212
+        },
+        {
+          "id": "6d2eb883-5743-41cb-ad94-5b40d2c81c9a",
+          "x": 1177,
+          "y": 363
+        },
+        {
+          "id": "ac53eabb-82f8-4964-94c9-2fa642ef4f4d",
+          "x": 1230,
+          "y": 361
+        },
+        {
+          "id": "13e57fbf-2754-4109-b4ee-82c981cad203",
+          "x": 1227,
+          "y": 1251
+        },
+        {
+          "id": "9030496b-0cc7-44a6-b08c-27c2d9886865",
+          "x": 769,
+          "y": 1246
+        },
+        {
+          "id": "8edbe88d-8f1c-476d-b103-7159fd370b50",
+          "x": 768,
+          "y": 1229
+        }
+      ],
       rooms: [
         { name: "S.20.R.2-S.010", className: "MB-20_R_2-1" }
       ]
@@ -9077,6 +18981,35 @@ export const ZONE_MAPPING = {
       name: "MB020.R3",
       className: "MB020_R_3",
       pdf: MB020R3Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "74a36c21-a652-4456-bccc-b9e8533d16de",
+          "x": 108,
+          "y": 172
+        },
+        {
+          "id": "d6ec5eb3-6c68-4262-88db-28e54e41df47",
+          "x": 189,
+          "y": 172
+        },
+        {
+          "id": "f8e94433-8d46-482a-adef-611db0bb4489",
+          "x": 188,
+          "y": 234
+        },
+        {
+          "id": "2a796be5-0464-4b9c-956c-aa609686ecac",
+          "x": 109,
+          "y": 232
+        },
+        {
+          "id": "6557b8d7-5399-405e-8c83-0b6d852da087",
+          "x": 108,
+          "y": 173
+        }
+      ],
       rooms: [
         { name: "20.R.3-S.091", className: "MB-20_R_3-1" }
       ]
@@ -9086,6 +19019,35 @@ export const ZONE_MAPPING = {
       name: "MB020.S1",
       className: "MB020_S_1",
       pdf: MB020S1Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "0e591451-dca1-4f68-855e-b44625d7463b",
+          "x": 109,
+          "y": 101
+        },
+        {
+          "id": "a8ae8e2c-39b9-4dd1-a3bd-c22b9bb5ad81",
+          "x": 245,
+          "y": 100
+        },
+        {
+          "id": "e1e60cef-b23c-40d7-9539-c686a6cdcf7b",
+          "x": 243,
+          "y": 167
+        },
+        {
+          "id": "66cb2dcd-8a5d-46f0-83be-8045370f3543",
+          "x": 108,
+          "y": 167
+        },
+        {
+          "id": "dc06d90a-5296-4285-990a-6f733e6da118",
+          "x": 109,
+          "y": 98
+        }
+      ],
       rooms: [
         { name: "20.S.1-TR01", className: "MB-20_S_1-1" },
         { name: "20.S.1-UP", className: "MB-20_S_1-2" }
@@ -9096,6 +19058,35 @@ export const ZONE_MAPPING = {
       name: "MB020.S2",
       className: "MB020_S_2",
       pdf: MB020S2Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "59097105-a773-4fb7-82d2-71ce8d22ae0f",
+          "x": 1093,
+          "y": 234
+        },
+        {
+          "id": "2d491082-66a9-4bb0-80b8-aa9b3285a615",
+          "x": 1223,
+          "y": 236
+        },
+        {
+          "id": "1bdf3768-dbbd-4b8b-a5ea-5106d30c1297",
+          "x": 1224,
+          "y": 302
+        },
+        {
+          "id": "979b7d0c-db40-4387-8550-35fc7196dd3d",
+          "x": 1092,
+          "y": 300
+        },
+        {
+          "id": "3f5f2cbe-c3f5-40a9-ad5e-761438dfce3b",
+          "x": 1093,
+          "y": 233
+        }
+      ],
       rooms: [
         { name: "20.S.2-TR02", className: "MB-20_S_2-1" },
         { name: "20.S.2-UP", className: "MB-20_S_2-2" }
@@ -9106,6 +19097,35 @@ export const ZONE_MAPPING = {
       name: "MB020.S3",
       className: "MB020_S_3",
       pdf: MB020S3Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "9852412d-ae7c-4208-b83e-ccb5826d48b4",
+          "x": 464,
+          "y": 1118
+        },
+        {
+          "id": "19bb9014-702d-4b83-afc4-5da65f4baaeb",
+          "x": 534,
+          "y": 1119
+        },
+        {
+          "id": "2e9c5e15-5ffc-4eb1-8c9d-a291dedefa15",
+          "x": 533,
+          "y": 1244
+        },
+        {
+          "id": "b66ae264-c618-4a27-9094-cdd2e3514787",
+          "x": 463,
+          "y": 1245
+        },
+        {
+          "id": "d8c26b0b-8eaa-42ce-96d2-d1798d540db1",
+          "x": 463,
+          "y": 1120
+        }
+      ],
       rooms: [
         { name: "20.S.3-TR03", className: "MB-20_S_3-1" },
         { name: "20.S.3-UP", className: "MB-20_S_3-2" }
@@ -9116,6 +19136,35 @@ export const ZONE_MAPPING = {
       name: "MB020.T",
       className: "MB020_T",
       pdf: MB020TPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "d1a8d7e7-c2fe-4291-acce-5bcb62301f19",
+          "x": 535,
+          "y": 374
+        },
+        {
+          "id": "acdf63fb-b9b7-42ee-88c8-205dab30a9ba",
+          "x": 638,
+          "y": 373
+        },
+        {
+          "id": "4b3fb9a1-a4d9-49be-85ef-6021f008672c",
+          "x": 634,
+          "y": 1246
+        },
+        {
+          "id": "def3ec19-922d-42ae-9afc-cf88d9c707b4",
+          "x": 538,
+          "y": 1245
+        },
+        {
+          "id": "4f785874-1a6e-4daf-ba92-362e4970d865",
+          "x": 537,
+          "y": 375
+        }
+      ],
       rooms: [
         { name: "20.T-S.025", className: "MB020_T-1" }
       ]
@@ -9125,6 +19174,75 @@ export const ZONE_MAPPING = {
       name: "MB020.U",
       className: "MB020_U",
       pdf: MB020UPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "8c15fdf4-7541-43f5-baa5-522a93a8b918",
+          "x": 771,
+          "y": 1187
+        },
+        {
+          "id": "60234d0e-da59-4dc3-b482-ff3fd6421096",
+          "x": 802,
+          "y": 1184
+        },
+        {
+          "id": "594b7548-5688-4d8f-9061-3f23bfa9bbc4",
+          "x": 800,
+          "y": 1121
+        },
+        {
+          "id": "19ed0ef9-f49e-46ed-a1bc-a74a9b760781",
+          "x": 906,
+          "y": 1122
+        },
+        {
+          "id": "e78222d7-51fe-4880-9fd0-36b8e090b9a0",
+          "x": 901,
+          "y": 978
+        },
+        {
+          "id": "3822c323-e863-468b-8af7-ca7c6baf5672",
+          "x": 1115,
+          "y": 977
+        },
+        {
+          "id": "9c6ba1a4-4d63-4f14-b42d-0a2958e43e97",
+          "x": 1113,
+          "y": 363
+        },
+        {
+          "id": "e249ba96-9e1c-4d92-97b1-788eb97b01d1",
+          "x": 1173,
+          "y": 363
+        },
+        {
+          "id": "c1f225d2-4cd9-4776-a3e0-2a7eaf467ae0",
+          "x": 1185,
+          "y": 1209
+        },
+        {
+          "id": "d1d63ae9-0d4d-41d3-a13b-f0002901a815",
+          "x": 1013,
+          "y": 1212
+        },
+        {
+          "id": "75695cd7-f118-40f8-92a2-34b780a85da1",
+          "x": 1012,
+          "y": 1230
+        },
+        {
+          "id": "9ff19e99-cf40-4d01-8627-a05fe8e6d415",
+          "x": 768,
+          "y": 1227
+        },
+        {
+          "id": "4c7e2602-8eb8-47a8-b386-a376bf8a3065",
+          "x": 767,
+          "y": 1186
+        }
+      ],
       rooms: [
         { name: "20.U-AMR Charging", className: "MB-20_U-1" },
         { name: "20.U-Emergency breakable glass", className: "MB-20_U-2" },
@@ -9141,6 +19259,35 @@ export const ZONE_MAPPING = {
       name: "MB020.V1",
       className: "MB020_V_1",
       pdf: MB020V1Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "e40e9c29-da1d-4ba0-87f0-30eb8b831dd3",
+          "x": 110,
+          "y": 296
+        },
+        {
+          "id": "94662b67-be4c-4aae-9f12-fac1580460bb",
+          "x": 190,
+          "y": 294
+        },
+        {
+          "id": "6ff99001-96f9-4707-8701-37f8b6453ed8",
+          "x": 190,
+          "y": 361
+        },
+        {
+          "id": "4ad1e897-9be6-464d-8434-ccff52472f58",
+          "x": 109,
+          "y": 360
+        },
+        {
+          "id": "3e7256f1-f642-434e-8184-e994dce67c3c",
+          "x": 110,
+          "y": 297
+        }
+      ],
       rooms: [
         { name: "20.V.1-LI01", className: "MB020_V_1-1" }
       ]
@@ -9150,6 +19297,35 @@ export const ZONE_MAPPING = {
       name: "MB020.V2",
       className: "MB020_V_2",
       pdf: MB020V2Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "5e726db9-cabf-400f-8c84-21b907beabc6",
+          "x": 453,
+          "y": 857
+        },
+        {
+          "id": "fff5aba1-08e1-4a71-9d45-032d4458137d",
+          "x": 532,
+          "y": 856
+        },
+        {
+          "id": "c3eb58b4-cc5e-4510-becd-09c74bdca2e3",
+          "x": 532,
+          "y": 920
+        },
+        {
+          "id": "c3fa86dc-609e-4c6a-bc4b-7131dbce7390",
+          "x": 455,
+          "y": 921
+        },
+        {
+          "id": "b505603e-bee6-4711-8cf9-98ac46ea082a",
+          "x": 451,
+          "y": 857
+        }
+      ],
       rooms: [
         { name: "20.V.1-LI02", className: "MB020_V_2-1" }
       ]
@@ -9159,6 +19335,45 @@ export const ZONE_MAPPING = {
       name: "MB020.X1",
       className: "MB020_X_1",
       pdf: MB020X1Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "df786c5d-60ce-4ce5-80e3-49d13c9706f5",
+          "x": 639,
+          "y": 417
+        },
+        {
+          "id": "e08612f7-e8d1-41d2-9621-9940607841cc",
+          "x": 725,
+          "y": 417
+        },
+        {
+          "id": "694a1dc2-ecde-425b-99ad-af74d8d7d5b7",
+          "x": 724,
+          "y": 528
+        },
+        {
+          "id": "c3c19ad4-08ae-42a0-9c1e-e3afcdd7b53b",
+          "x": 763,
+          "y": 529
+        },
+        {
+          "id": "6b8d1ba6-98f8-453e-a776-78bcca753c7c",
+          "x": 762,
+          "y": 610
+        },
+        {
+          "id": "02173950-ee89-4974-ae59-d9b9364f443e",
+          "x": 640,
+          "y": 610
+        },
+        {
+          "id": "9883c531-abb7-4081-9c47-09b15590b35c",
+          "x": 639,
+          "y": 416
+        }
+      ],
       rooms: [
         { name: "20.X.1-KAEDEX", className: "MB-20_X_1-1" },
         { name: "20.X.1-KAEDEX", className: "MB-20_X_1-2" },
@@ -9172,6 +19387,45 @@ export const ZONE_MAPPING = {
       name: "MB020.X2",
       className: "MB-20_X_2",
       pdf: MB020X2Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1347,
+      "points": [
+        {
+          "id": "e5404030-ba29-4de1-9a43-91fdcfc8844d",
+          "x": 641,
+          "y": 1116
+        },
+        {
+          "id": "000b3ffc-533c-4f7d-a9d6-38c7ba70a994",
+          "x": 744,
+          "y": 1117
+        },
+        {
+          "id": "1e6ece42-a915-4dd2-99ae-4d9cf2959990",
+          "x": 742,
+          "y": 1190
+        },
+        {
+          "id": "a95ff6dc-8f52-485c-904a-04c9280212d4",
+          "x": 763,
+          "y": 1190
+        },
+        {
+          "id": "9ba67592-7705-4295-bd9d-def039330d2a",
+          "x": 763,
+          "y": 1245
+        },
+        {
+          "id": "17fdb984-1f63-4da1-b981-27947b323c78",
+          "x": 639,
+          "y": 1244
+        },
+        {
+          "id": "a3b3da4b-2c93-4716-aab0-bcc39b39403d",
+          "x": 640,
+          "y": 1117
+        }
+      ],
       rooms: [
         { name: "20.X.2-S.028", className: "MB-20_X_2-1" }
       ]
@@ -9184,6 +19438,35 @@ export const ZONE_MAPPING = {
       name: "MB130.A",
       className: "MB130_A",
       pdf: MB130APdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "9a0e3b81-3e2d-49ef-835b-be5434a00f2d",
+          "x": 322,
+          "y": 105
+        },
+        {
+          "id": "84704433-acc7-49b6-99cf-0cb2067aab2f",
+          "x": 484,
+          "y": 104
+        },
+        {
+          "id": "8215f985-e35d-4cc3-b721-5f9de96ca3f6",
+          "x": 484,
+          "y": 304
+        },
+        {
+          "id": "fde4c6e1-a421-4439-b7d9-021edda82bc5",
+          "x": 322,
+          "y": 303
+        },
+        {
+          "id": "5fc86eff-c0b3-47c0-8472-93b83c5a4ec8",
+          "x": 322,
+          "y": 106
+        }
+      ],
       rooms: [
         { name: "30.A-1.007", className: "MB-30_A-1" }
       ]
@@ -9193,6 +19476,65 @@ export const ZONE_MAPPING = {
       name: "MB130.B",
       className: "MB130_B",
       pdf: MB130BPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "4a564ee6-d356-4ab0-b398-4ab0fffd46cd",
+          "x": 489,
+          "y": 105
+        },
+        {
+          "id": "86589d05-653b-4994-b455-eaed208f529e",
+          "x": 532,
+          "y": 106
+        },
+        {
+          "id": "e1b1148e-17fb-462f-8cfc-686df64d03b8",
+          "x": 533,
+          "y": 153
+        },
+        {
+          "id": "108e5158-8125-4eba-b51e-16d5dd077912",
+          "x": 643,
+          "y": 155
+        },
+        {
+          "id": "94be0498-97a0-4b8b-ba49-ef59b6737cfb",
+          "x": 643,
+          "y": 107
+        },
+        {
+          "id": "9ff93103-6d37-47eb-9321-3e3abd3a4ac4",
+          "x": 768,
+          "y": 108
+        },
+        {
+          "id": "df6371a7-ee00-43e7-ba07-e0459c240b94",
+          "x": 768,
+          "y": 152
+        },
+        {
+          "id": "d6906b23-fc65-4f64-936c-60bc3d5c9826",
+          "x": 841,
+          "y": 154
+        },
+        {
+          "id": "678e5923-4293-4e31-8402-771fc12ea13d",
+          "x": 841,
+          "y": 303
+        },
+        {
+          "id": "ff8763d8-1a98-46ea-9179-df848b307736",
+          "x": 489,
+          "y": 303
+        },
+        {
+          "id": "ad6916f7-8c29-442d-8855-066964b677ff",
+          "x": 489,
+          "y": 104
+        }
+      ],
       rooms: [
         { name: "30.B-1.002", className: "MB-30_B-1" }
       ]
@@ -9202,6 +19544,45 @@ export const ZONE_MAPPING = {
       name: "MB130.C",
       className: "MB130_C",
       pdf: MB130CPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "d9270d65-cbb4-482a-9c22-4d899a676f01",
+          "x": 844,
+          "y": 101
+        },
+        {
+          "id": "ce563378-9d1c-42e3-8108-3a43e2d7ad64",
+          "x": 1247,
+          "y": 102
+        },
+        {
+          "id": "ffdc9ea6-e728-46c9-9f70-6fd5d6ef2e25",
+          "x": 1244,
+          "y": 234
+        },
+        {
+          "id": "a96ee8e9-63a5-4465-a273-a9fe2211b9ee",
+          "x": 1026,
+          "y": 232
+        },
+        {
+          "id": "8c79be36-9c66-4442-8a9d-95950a842bfa",
+          "x": 1026,
+          "y": 303
+        },
+        {
+          "id": "9ac97f90-3d9a-425a-b156-2bae98fb9984",
+          "x": 844,
+          "y": 303
+        },
+        {
+          "id": "53629354-789c-4c72-b8e9-ee234837da67",
+          "x": 844,
+          "y": 99
+        }
+      ],
       rooms: [
         { name: "30.C-1.0061.006", className: "MB-30_C-1" },
         { name: "30.C-1.008", className: "MB-30_C-2" },
@@ -9213,6 +19594,45 @@ export const ZONE_MAPPING = {
       name: "MB130.D",
       className: "MB130_D",
       pdf: MB130DPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "be36297b-90ce-4a4a-8bca-dafa0966db5d",
+          "x": 160,
+          "y": 421
+        },
+        {
+          "id": "84b01917-c0b4-41e6-bdaa-07f2d94721fa",
+          "x": 449,
+          "y": 422
+        },
+        {
+          "id": "ec263d3a-5118-4ed3-bc7e-1b3f1620f7d1",
+          "x": 449,
+          "y": 483
+        },
+        {
+          "id": "c04c762e-16ee-4027-920d-273c66f49a52",
+          "x": 533,
+          "y": 484
+        },
+        {
+          "id": "b588a435-1c18-4ae8-9b97-d40dd0fdf6dd",
+          "x": 533,
+          "y": 721
+        },
+        {
+          "id": "c23ca3cf-5466-4631-a856-16ab2a4cddf1",
+          "x": 159,
+          "y": 718
+        },
+        {
+          "id": "22b6696a-20ce-47f6-83c1-5d91aa505e0a",
+          "x": 161,
+          "y": 420
+        }
+      ],
       rooms: [
         { name: "30.D-1.013.1", className: "MB-30_D-1" },
         { name: "30.D-1.013", className: "MB-30_D-2" },
@@ -9239,6 +19659,45 @@ export const ZONE_MAPPING = {
       name: "MB130.E",
       className: "MB130_E",
       pdf: MB130EPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "c7a2b938-cd70-457a-8ee3-e30d72ce6fc9",
+          "x": 103,
+          "y": 724
+        },
+        {
+          "id": "bc984242-e803-420b-b15d-40cc19d5f83e",
+          "x": 531,
+          "y": 726
+        },
+        {
+          "id": "62ebfa6f-b3dd-4b23-b552-294b9e76641b",
+          "x": 533,
+          "y": 863
+        },
+        {
+          "id": "e15b780d-1899-44ec-afa4-e20608506206",
+          "x": 447,
+          "y": 864
+        },
+        {
+          "id": "bf7405f4-013f-40aa-8a4e-f992954c1507",
+          "x": 448,
+          "y": 940
+        },
+        {
+          "id": "c90d5718-e49b-4862-b9eb-7eecc56e88a3",
+          "x": 103,
+          "y": 938
+        },
+        {
+          "id": "6bb2b451-f434-4a14-a45c-95fd55d8dbaf",
+          "x": 100,
+          "y": 722
+        }
+      ],
       rooms: [
         { name: "30.E-1.021.1", className: "MB-30_E-1" },
         { name: "30.E-1.021", className: "MB-30_E-2" },
@@ -9253,6 +19712,35 @@ export const ZONE_MAPPING = {
       name: "MB130.F",
       className: "MB130_F",
       pdf: MB130FPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "4262bc56-7db1-4db1-8e18-8593139cdb1b",
+          "x": 775,
+          "y": 375
+        },
+        {
+          "id": "f1057258-e380-4fe7-aa62-2b83b7fdb0da",
+          "x": 908,
+          "y": 373
+        },
+        {
+          "id": "ec9d7952-029d-41be-b89e-44e8fcfd1b43",
+          "x": 908,
+          "y": 537
+        },
+        {
+          "id": "cc16844e-a724-4802-b6b8-ee5af53b9eab",
+          "x": 774,
+          "y": 537
+        },
+        {
+          "id": "e118bae3-f289-4921-9039-8f18683fccd3",
+          "x": 775,
+          "y": 373
+        }
+      ],
       rooms: [
         { name: "30.F", className: "MB-30_F" }
       ]
@@ -9262,6 +19750,45 @@ export const ZONE_MAPPING = {
       name: "MB130.G",
       className: "MB130_G",
       pdf: MB130GPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "2e573958-0f8c-4d29-a43d-213343be24e5",
+          "x": 776,
+          "y": 630
+        },
+        {
+          "id": "a541368a-8128-45d0-bf37-a90dcd8d4868",
+          "x": 848,
+          "y": 629
+        },
+        {
+          "id": "9d514d0b-ec4d-42c4-835f-d292a12fd569",
+          "x": 849,
+          "y": 676
+        },
+        {
+          "id": "c3db2bd1-c744-4616-a78e-91563e82cde9",
+          "x": 907,
+          "y": 676
+        },
+        {
+          "id": "9abdff42-5df7-4f40-a986-480b5e97722d",
+          "x": 907,
+          "y": 839
+        },
+        {
+          "id": "e3cf25d0-5abd-46d9-8026-685121b94f89",
+          "x": 776,
+          "y": 839
+        },
+        {
+          "id": "f2bf1410-5b97-4f28-afe9-74a51713fd19",
+          "x": 775,
+          "y": 629
+        }
+      ],
       rooms: [
         { name: "30.G", className: "MB-30_G" }
       ]
@@ -9271,6 +19798,55 @@ export const ZONE_MAPPING = {
       name: "MB130.H",
       className: "MB130_H",
       pdf: MB130HPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "a5c9145d-6be5-4bf6-beee-7aa685dd32fc",
+          "x": 913,
+          "y": 369
+        },
+        {
+          "id": "f3e0f513-4a9e-48d7-b26e-449e9ca23969",
+          "x": 1241,
+          "y": 371
+        },
+        {
+          "id": "4f4a1cd1-4194-4210-98be-ac852ab1560e",
+          "x": 1240,
+          "y": 1275
+        },
+        {
+          "id": "28344f2a-a8ae-48bd-a85e-d4bbd82354fa",
+          "x": 816,
+          "y": 1273
+        },
+        {
+          "id": "525f4edc-b17b-43a0-aacd-57be47cbedf0",
+          "x": 814,
+          "y": 941
+        },
+        {
+          "id": "2cc2280a-055f-47aa-a37d-a056458236a0",
+          "x": 641,
+          "y": 940
+        },
+        {
+          "id": "59bc8ffa-0c68-4a9f-9001-b99c5fb703d8",
+          "x": 641,
+          "y": 913
+        },
+        {
+          "id": "795da4c3-d6a7-496e-9d32-24a48ae82942",
+          "x": 912,
+          "y": 910
+        },
+        {
+          "id": "7842669d-4dce-46d0-bcc0-50a08c1d790a",
+          "x": 914,
+          "y": 368
+        }
+      ],
       rooms: [
         { name: "30.H-30.H.2", className: "MB-30_H-1" },
         { name: "30.H-30.H.4", className: "MB-30_H-2" },
@@ -9283,6 +19859,35 @@ export const ZONE_MAPPING = {
       name: "MB130.I",
       className: "MB130_I",
       pdf: MB130IPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "41e62ae6-5958-4821-80f7-032763f50331",
+          "x": 640,
+          "y": 629
+        },
+        {
+          "id": "32ed5297-40ad-4428-91ed-5592d1cccaf9",
+          "x": 774,
+          "y": 629
+        },
+        {
+          "id": "a85643a9-88d1-4520-b373-3343d6a73902",
+          "x": 774,
+          "y": 841
+        },
+        {
+          "id": "051d055d-84bc-4c2d-ac59-a6b25d03ec24",
+          "x": 640,
+          "y": 842
+        },
+        {
+          "id": "3fcbc264-58e6-4e1d-a686-0364b5c14a94",
+          "x": 640,
+          "y": 628
+        }
+      ],
       rooms: [
         { name: "30.I-1.018", className: "MB-30_I-1" }
       ]
@@ -9292,6 +19897,35 @@ export const ZONE_MAPPING = {
       name: "MB130.J",
       className: "MB130_J",
       pdf: MB130JPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "57b2c8cf-6da3-4a5a-8254-430c9d0da2c5",
+          "x": 641,
+          "y": 844
+        },
+        {
+          "id": "d1e8fe09-b002-43e5-a2ef-09456a93fb58",
+          "x": 909,
+          "y": 842
+        },
+        {
+          "id": "988227ef-a2d8-4d97-af91-4dafe1f67378",
+          "x": 911,
+          "y": 909
+        },
+        {
+          "id": "565019e2-a496-4e11-900c-e474a52119af",
+          "x": 640,
+          "y": 905
+        },
+        {
+          "id": "ae92402f-6029-4f59-85a0-fc29b1eed215",
+          "x": 640,
+          "y": 845
+        }
+      ],
       rooms: [
         { name: "30.J-1.018", className: "MB-30_J-1" }
       ]
@@ -9301,6 +19935,55 @@ export const ZONE_MAPPING = {
       name: "MB130.K",
       className: "MB130_K",
       pdf: MB130KPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "32de1203-cdb6-4119-bf68-1120bc372d80",
+          "x": 99,
+          "y": 941
+        },
+        {
+          "id": "19a8a4c5-2865-4640-b88a-c32d43378b3c",
+          "x": 532,
+          "y": 944
+        },
+        {
+          "id": "e0adf89b-9b96-4cbf-ac28-202b345860ac",
+          "x": 531,
+          "y": 1135
+        },
+        {
+          "id": "d8309566-a09d-4ec0-a3d4-8f4f6808d3c8",
+          "x": 458,
+          "y": 1134
+        },
+        {
+          "id": "04f132ca-2dce-4b1f-9830-fe3f5d0a8bc7",
+          "x": 459,
+          "y": 1276
+        },
+        {
+          "id": "5087ad75-3617-4321-a427-681af34f3a3b",
+          "x": 127,
+          "y": 1272
+        },
+        {
+          "id": "8cff9646-8995-46a1-b545-b73a5d39497c",
+          "x": 127,
+          "y": 1202
+        },
+        {
+          "id": "4c9282b0-7188-436f-80a0-dca304e4b9ef",
+          "x": 102,
+          "y": 1200
+        },
+        {
+          "id": "9b92ec94-7c72-4260-b065-38fe356f07df",
+          "x": 101,
+          "y": 939
+        }
+      ],
       rooms: [
         { name: "30.K-1.035", className: "MB-30_K-1" },
         { name: "30.K-1.035.1", className: "MB-30_K-2" },
@@ -9321,6 +20004,35 @@ export const ZONE_MAPPING = {
       name: "MB130.L",
       className: "MB130_L",
       pdf: MB130LPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "78b7292e-951a-4bb6-b9cc-3efba83b9c5a",
+          "x": 640,
+          "y": 943
+        },
+        {
+          "id": "10ec2f64-0afc-4af7-b495-7fc73e0321cf",
+          "x": 811,
+          "y": 943
+        },
+        {
+          "id": "165c87be-e71d-4761-a59a-0d3beb835930",
+          "x": 814,
+          "y": 1274
+        },
+        {
+          "id": "a10194db-26e2-4a75-ba67-9ec4b31c2762",
+          "x": 638,
+          "y": 1274
+        },
+        {
+          "id": "7722215e-26d3-4c98-9f91-dbcd8ef927ce",
+          "x": 639,
+          "y": 941
+        }
+      ],
       rooms: [
         { name: "30.L-1.030", className: "MB-30_L-1" },
         { name: "30.L-1.034", className: "MB-30_L-2" },
@@ -9341,6 +20053,35 @@ export const ZONE_MAPPING = {
       name: "MB130.M",
       className: "MB130_M",
       pdf: MB130MPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "220488ab-88cd-42f5-9190-3a88186d93ac",
+          "x": 451,
+          "y": 370
+        },
+        {
+          "id": "ac905ced-5bd9-4904-87c7-070ca5aa2b2b",
+          "x": 535,
+          "y": 370
+        },
+        {
+          "id": "02073522-57c1-4982-af9b-7602ea4ff5f8",
+          "x": 534,
+          "y": 479
+        },
+        {
+          "id": "52a5ba71-da84-47b8-944a-11391b423758",
+          "x": 453,
+          "y": 479
+        },
+        {
+          "id": "4b470038-0853-4737-bcb5-dbecfca84f33",
+          "x": 451,
+          "y": 367
+        }
+      ],
       rooms: [
         { name: "30.M-1.009", className: "MB-30_M-1" }
       ]
@@ -9350,6 +20091,35 @@ export const ZONE_MAPPING = {
       name: "MB130.N",
       className: "MB130_N",
       pdf: MB130NPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "cc5efdc5-ddca-4329-b49d-1cbc6cc0cf35",
+          "x": 642,
+          "y": 373
+        },
+        {
+          "id": "289219e6-aacb-40e0-b3d2-6bc9f24ccc18",
+          "x": 772,
+          "y": 375
+        },
+        {
+          "id": "78434e2c-172a-4a83-a51b-1767dd8be9cd",
+          "x": 772,
+          "y": 569
+        },
+        {
+          "id": "ee9d2c14-3b66-407c-829d-fbd045937e2a",
+          "x": 643,
+          "y": 569
+        },
+        {
+          "id": "c1434b8b-b83f-4761-af53-4b825f809b9c",
+          "x": 642,
+          "y": 372
+        }
+      ],
       rooms: [
         { name: "30.N-1.010", className: "MB-30_N-1" }
       ]
@@ -9359,6 +20129,35 @@ export const ZONE_MAPPING = {
       name: "MB130.O",
       className: "MB130_O",
       pdf: MB130OPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "c9a96543-6c63-4fc3-b49a-7ddc41af87fb",
+          "x": 98,
+          "y": 1205
+        },
+        {
+          "id": "20c51213-712c-41e4-98d4-09158943960f",
+          "x": 125,
+          "y": 1205
+        },
+        {
+          "id": "89289769-a3d5-41df-8e1c-3fd226a435c5",
+          "x": 124,
+          "y": 1275
+        },
+        {
+          "id": "f34c3909-f59f-459f-beda-62a7e4d060c2",
+          "x": 99,
+          "y": 1275
+        },
+        {
+          "id": "7a7463b9-dbfe-432f-8bed-3e8d17ccffa0",
+          "x": 97,
+          "y": 1205
+        }
+      ],
       rooms: [
         { name: "30.O-SK07", className: "MB-30_O-1" }
       ]
@@ -9368,6 +20167,115 @@ export const ZONE_MAPPING = {
       name: "MB130.R1",
       className: "MB130_R1",
       pdf: MB130R1Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "20b0d689-4c34-403f-b3b9-1919ef75bb8b",
+          "x": 242,
+          "y": 103
+        },
+        {
+          "id": "af03da2b-624e-4b9c-8047-6ec0b0636335",
+          "x": 318,
+          "y": 104
+        },
+        {
+          "id": "23f361d0-1734-42fa-9213-fb806dbca078",
+          "x": 318,
+          "y": 307
+        },
+        {
+          "id": "96bd9d8d-4344-4139-bd9b-dfa8b204b685",
+          "x": 1025,
+          "y": 307
+        },
+        {
+          "id": "1179db2b-3e64-429c-a455-4dfdf6680189",
+          "x": 1026,
+          "y": 233
+        },
+        {
+          "id": "51af51a1-4180-47d8-8981-9254a95af7d3",
+          "x": 1064,
+          "y": 231
+        },
+        {
+          "id": "f00e0293-e7f1-472d-a956-607a73e2d138",
+          "x": 1064,
+          "y": 257
+        },
+        {
+          "id": "4f9e6135-b530-451d-9d29-c19ef2fa7c5b",
+          "x": 1074,
+          "y": 262
+        },
+        {
+          "id": "60098bcf-f152-42fd-b7ba-c47d1692cf3d",
+          "x": 1077,
+          "y": 308
+        },
+        {
+          "id": "1804b171-dd40-4339-9177-65de4a920d4d",
+          "x": 1238,
+          "y": 307
+        },
+        {
+          "id": "e521545f-b514-40b9-970a-27aab9949b99",
+          "x": 1239,
+          "y": 364
+        },
+        {
+          "id": "9322070d-3026-412a-ab9a-e9f09b26653d",
+          "x": 237,
+          "y": 365
+        },
+        {
+          "id": "5d385e7e-de9a-4385-9e53-abd648e91434",
+          "x": 238,
+          "y": 417
+        },
+        {
+          "id": "2597161c-0651-48cb-a894-a0a2b424b60c",
+          "x": 161,
+          "y": 416
+        },
+        {
+          "id": "75752011-cabf-47ae-a034-06fca8bf1659",
+          "x": 160,
+          "y": 719
+        },
+        {
+          "id": "d78a4e17-375e-4c06-9f06-b2f72aa41969",
+          "x": 101,
+          "y": 717
+        },
+        {
+          "id": "924e545d-9e8b-4c5f-ba7e-04c557c06f47",
+          "x": 100,
+          "y": 372
+        },
+        {
+          "id": "a0cf87da-1aca-4618-9995-14f641a611e2",
+          "x": 188,
+          "y": 372
+        },
+        {
+          "id": "f3585a56-0f25-4055-a67b-24be5bbc080e",
+          "x": 187,
+          "y": 177
+        },
+        {
+          "id": "19b80131-a666-4151-95a9-eda21af2a618",
+          "x": 237,
+          "y": 175
+        },
+        {
+          "id": "bb9d64ef-1cf8-4cad-8437-9f800298a4b8",
+          "x": 241,
+          "y": 105
+        }
+      ],
       rooms: [
         { name: "30.R.1-1.001.1", className: "MB-30_R_1-1" },
         { name: "30.R.1-1.001", className: "MB-30_R_1-2" }
@@ -9378,6 +20286,35 @@ export const ZONE_MAPPING = {
       name: "MB130.S1",
       className: "MB130_S1",
       pdf: MB130S1Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "c3b99441-be10-4f82-b832-7309e369ee66",
+          "x": 100,
+          "y": 103
+        },
+        {
+          "id": "fc661e85-b533-44e3-a787-c9e235b2fc50",
+          "x": 236,
+          "y": 103
+        },
+        {
+          "id": "c8d8b293-14a3-49e3-b620-798103b246ce",
+          "x": 237,
+          "y": 171
+        },
+        {
+          "id": "35a80984-e492-4aa7-89f5-845a1801b6f2",
+          "x": 100,
+          "y": 173
+        },
+        {
+          "id": "d09cd536-fdaa-4de5-a9ba-c16516117f47",
+          "x": 101,
+          "y": 104
+        }
+      ],
       rooms: [
         { name: "30.S.1-TR01", className: "MB-30_S_1-1" }
       ]
@@ -9387,6 +20324,45 @@ export const ZONE_MAPPING = {
       name: "MB130.S2",
       className: "MB130_S2",
       pdf: MB130S2Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "452644b3-fd2e-4947-b97e-6179cbc05b06",
+          "x": 1106,
+          "y": 262
+        },
+        {
+          "id": "f9ccad2f-dc12-47e1-9a66-1e418c6b8287",
+          "x": 1137,
+          "y": 261
+        },
+        {
+          "id": "441e6f9d-dd03-4bad-81bd-9e00d541e1f4",
+          "x": 1136,
+          "y": 237
+        },
+        {
+          "id": "541f03ce-fdeb-426f-bb6f-c2188a3cc2fc",
+          "x": 1245,
+          "y": 239
+        },
+        {
+          "id": "6c71833e-b927-48a4-a9a5-239dfc4b389a",
+          "x": 1243,
+          "y": 307
+        },
+        {
+          "id": "65af0e74-d643-4b91-bdd5-8d7aab8a0020",
+          "x": 1101,
+          "y": 306
+        },
+        {
+          "id": "c66d2126-b2ff-4791-bb57-239f10727a49",
+          "x": 1106,
+          "y": 262
+        }
+      ],
       rooms: [
         { name: "30.S.2-TR02", className: "MB-30_S_2-1" }
       ]
@@ -9396,6 +20372,35 @@ export const ZONE_MAPPING = {
       name: "MB130.S3",
       className: "MB130_S3",
       pdf: MB130S3Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "18c996ad-b1bd-440d-8b67-1daae08e7a6e",
+          "x": 464,
+          "y": 1140
+        },
+        {
+          "id": "d2d871ea-6128-4262-9b09-895ed3ddf2ff",
+          "x": 534,
+          "y": 1140
+        },
+        {
+          "id": "12d62887-6c63-4207-b97b-723e5a6e62ec",
+          "x": 535,
+          "y": 1272
+        },
+        {
+          "id": "0ee315a8-eff8-48a7-910c-b99fb4a72054",
+          "x": 465,
+          "y": 1272
+        },
+        {
+          "id": "4e7aba06-f80a-4292-997c-5ef61f7d010d",
+          "x": 463,
+          "y": 1139
+        }
+      ],
       rooms: [
         { name: "30.S.3-TR03", className: "MB-30_S_3-1" }
       ]
@@ -9405,6 +20410,55 @@ export const ZONE_MAPPING = {
       name: "MB130.T",
       className: "MB130_T",
       pdf: MB130TPdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "a1c89a23-dd1e-42d5-aa8b-6344a37d21d0",
+          "x": 537,
+          "y": 372
+        },
+        {
+          "id": "bcb852fd-9fbc-4c8a-913e-d12f85e32527",
+          "x": 637,
+          "y": 371
+        },
+        {
+          "id": "2859862f-7bac-4719-adcb-b356f422cad4",
+          "x": 638,
+          "y": 574
+        },
+        {
+          "id": "0fb218d6-8a73-4b0a-ad4a-44cd7b255f55",
+          "x": 774,
+          "y": 575
+        },
+        {
+          "id": "25033bea-9cbd-422b-9eb2-d7efa94c9340",
+          "x": 773,
+          "y": 625
+        },
+        {
+          "id": "4f296d6c-3204-47d8-8dcf-55b1cc50513a",
+          "x": 636,
+          "y": 625
+        },
+        {
+          "id": "b55244e0-9927-4a56-a655-390a243e4828",
+          "x": 637,
+          "y": 1275
+        },
+        {
+          "id": "d9715d38-7da9-483e-a676-0a505b6d80cd",
+          "x": 538,
+          "y": 1273
+        },
+        {
+          "id": "1d0528a1-a5d3-4547-a4d3-4e8be0ad28ef",
+          "x": 536,
+          "y": 370
+        }
+      ],
       rooms: [
         { name: "30.T-1.011", className: "MB-30_T-1" },
         { name: "30.T-1.025", className: "MB-30_T-2" },
@@ -9417,6 +20471,35 @@ export const ZONE_MAPPING = {
       name: "MB130.V1",
       className: "MB130_V1",
       pdf: MB130V1Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "f0a1ad29-6b7d-4197-b6c4-58a9c7231a3e",
+          "x": 102,
+          "y": 301
+        },
+        {
+          "id": "092c51e8-57b4-48d0-8176-82c757a153d6",
+          "x": 185,
+          "y": 302
+        },
+        {
+          "id": "bcbf3e10-22a1-4b32-9c51-61b6f2fe5c6b",
+          "x": 184,
+          "y": 366
+        },
+        {
+          "id": "4479e54a-2c88-4e68-88e7-5712fec91af0",
+          "x": 103,
+          "y": 366
+        },
+        {
+          "id": "4e4caf2c-e2f5-4f11-bcc1-730e2e61ea6b",
+          "x": 102,
+          "y": 300
+        }
+      ],
       rooms: [
         { name: "30.V.1-TR03", className: "MB-30_V_1-1" }
       ]
@@ -9426,6 +20509,35 @@ export const ZONE_MAPPING = {
       name: "MB130.V2",
       className: "MB130_V2",
       pdf: MB130V2Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "35202b8b-32a8-414a-a07f-db066b14ca98",
+          "x": 454,
+          "y": 872
+        },
+        {
+          "id": "91b854c4-a83f-4cf0-9c5d-a05b8ae29aa9",
+          "x": 527,
+          "y": 871
+        },
+        {
+          "id": "7a9266cd-1b57-4a7d-8b72-fb2c982aa12e",
+          "x": 529,
+          "y": 941
+        },
+        {
+          "id": "dd581f8d-ece3-4e32-8dfe-a17e6d393a58",
+          "x": 451,
+          "y": 941
+        },
+        {
+          "id": "4a838e9a-a9b9-415f-90f2-3630a0c2783b",
+          "x": 453,
+          "y": 870
+        }
+      ],
       rooms: [
         { name: "30.V.2-LI02", className: "MB-30_V_2-1" }
       ]
@@ -9435,6 +20547,35 @@ export const ZONE_MAPPING = {
       name: "MB130.Z1",
       className: "MB130_Z1",
       pdf: MB130Z1Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "a7cfa1a8-c284-41f8-8d16-34f21c8d7caf",
+          "x": 100,
+          "y": 177
+        },
+        {
+          "id": "6afc5903-7cd8-4165-ab33-eced1cb10f5e",
+          "x": 182,
+          "y": 177
+        },
+        {
+          "id": "d0498c5a-016d-4275-9e10-fb82eb917ca0",
+          "x": 181,
+          "y": 292
+        },
+        {
+          "id": "f70d2270-9dd6-45b3-a4a2-3c6099e76eb0",
+          "x": 102,
+          "y": 292
+        },
+        {
+          "id": "e80b3b4d-402c-4d14-bfca-e3710eb79d5c",
+          "x": 101,
+          "y": 178
+        }
+      ],
       rooms: [
         { name: "30.Z.1-SK01", className: "MB-30_Z_1-1" }
       ]
@@ -9444,6 +20585,35 @@ export const ZONE_MAPPING = {
       name: "MB130.Z2",
       className: "MB130_Z2",
       pdf: MB130Z2Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "80504c74-fb50-4be3-8abb-aac41ca5dd4c",
+          "x": 239,
+          "y": 370
+        },
+        {
+          "id": "5672cd7c-a37b-4fa7-b628-cb1ba3fa60a8",
+          "x": 447,
+          "y": 370
+        },
+        {
+          "id": "864e630f-8a55-45b3-b411-5ab2aa297f6c",
+          "x": 448,
+          "y": 416
+        },
+        {
+          "id": "fe7a40b4-445f-4874-b712-7a7ccb6abab4",
+          "x": 240,
+          "y": 415
+        },
+        {
+          "id": "da695339-48b2-40c2-b6e7-39ca8deac141",
+          "x": 239,
+          "y": 368
+        }
+      ],
       rooms: [
         { name: "30.Z.2-SK02", className: "MB-30_Z_2-1" }
       ]
@@ -9453,6 +20623,35 @@ export const ZONE_MAPPING = {
       name: "MB130.Z3",
       className: "MB130_Z3",
       pdf: MB130Z3Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "9e2a2277-0fa1-4bc3-a634-69fada0d2be0",
+          "x": 536,
+          "y": 105
+        },
+        {
+          "id": "99ffc1b1-27ce-4232-b228-d0551a72e9e8",
+          "x": 643,
+          "y": 105
+        },
+        {
+          "id": "59d17d0a-45a0-4473-8e15-d7405c08557e",
+          "x": 641,
+          "y": 148
+        },
+        {
+          "id": "49cd6998-5830-4fe6-b66f-c14ae8bcdd9a",
+          "x": 536,
+          "y": 149
+        },
+        {
+          "id": "5168fbb8-503e-44de-a902-a7b57955b61a",
+          "x": 537,
+          "y": 103
+        }
+      ],
       rooms: [
         { name: "30.Z.3-SK04", className: "MB-30_Z_3-1" }
       ]
@@ -9462,6 +20661,35 @@ export const ZONE_MAPPING = {
       name: "MB130.Z4",
       className: "MB130_Z4",
       pdf: MB130Z4Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "45a675eb-2904-4485-9199-21df9202b488",
+          "x": 770,
+          "y": 98
+        },
+        {
+          "id": "67518d0b-1d58-499a-8a6c-baacacc0d295",
+          "x": 844,
+          "y": 100
+        },
+        {
+          "id": "ab881751-5499-4e3e-a8a6-7c7e4957e8f5",
+          "x": 842,
+          "y": 148
+        },
+        {
+          "id": "ad3797f8-c717-4069-92e8-5efca1a8d8b0",
+          "x": 770,
+          "y": 149
+        },
+        {
+          "id": "1026ee36-919f-479f-ae3e-f777762183e6",
+          "x": 769,
+          "y": 100
+        }
+      ],
       rooms: [
         { name: "30.Z.4-SK05", className: "MB-30_Z_4-1" }
       ]
@@ -9471,6 +20699,55 @@ export const ZONE_MAPPING = {
       name: "MB130.Z5",
       className: "MB130_Z5",
       pdf: MB130Z5Pdf,
+      "pdfWidth": 1351,
+      "pdfHeight": 1377,
+      "points": [
+        {
+          "id": "32cfdd45-0973-44de-9532-97ce2f3b5226",
+          "x": 1062,
+          "y": 229
+        },
+        {
+          "id": "a55295cd-b4aa-4905-a3d7-f261e3fd130f",
+          "x": 1133,
+          "y": 230
+        },
+        {
+          "id": "9527b5c8-aa7a-46eb-9637-0b3c5747a1cb",
+          "x": 1135,
+          "y": 256
+        },
+        {
+          "id": "250195e6-8b7b-4bc8-b1db-6dd2095059bd",
+          "x": 1103,
+          "y": 257
+        },
+        {
+          "id": "965db209-5490-4504-b9f8-931847ae9df1",
+          "x": 1103,
+          "y": 305
+        },
+        {
+          "id": "7d8d0f34-e22f-44b2-b97c-423914b3aad8",
+          "x": 1078,
+          "y": 306
+        },
+        {
+          "id": "1e4b2baf-69cc-4a24-8aac-230ad8983a1e",
+          "x": 1074,
+          "y": 260
+        },
+        {
+          "id": "abdd271d-cf2e-4c24-933c-3022a118b829",
+          "x": 1065,
+          "y": 260
+        },
+        {
+          "id": "c4a475df-c87f-447a-989a-1935c5b108bb",
+          "x": 1062,
+          "y": 230
+        }
+      ],
       rooms: [
         { name: "30.Z.5-SK06", className: "MB-30_Z_5-1" }
       ]
