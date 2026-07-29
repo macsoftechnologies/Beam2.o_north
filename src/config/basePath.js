@@ -11,8 +11,13 @@ export const BASE_PATH = import.meta.env.BASE_URL.replace(/\/$/, '');
  *
  * @param {string} path - App-relative path, e.g. '/login', '/dashboard'
  */
-export const navigateTo = (path) => {
-  window.location.href = BASE_PATH + path;
+export const navigateTo = (path, replace = false) => {
+  const targetUrl = BASE_PATH + path;
+  if (replace) {
+    window.location.replace(targetUrl);
+  } else {
+    window.location.href = targetUrl;
+  }
 };
 
 /**

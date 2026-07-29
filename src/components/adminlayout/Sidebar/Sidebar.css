@@ -20,8 +20,110 @@
   overflow: hidden;
 }
 
-.sidebar.sidebar-closed {
-  transform: translateX(-100%);
+.sidebar.sidebar-collapsed {
+  width: 60px;
+}
+
+/* Mobile close (✕) button — absolute top-right corner of sidebar */
+.sidebar-close-btn {
+  display: none;
+  position: absolute;
+  top: 13px;
+  right: 8px;
+  z-index: 10000010;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1.5px solid rgba(239, 68, 68, 0.35);
+  color: #f87171;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  font-size: 17px;
+  line-height: 1;
+  transition: background 0.2s ease, transform 0.25s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.2);
+}
+
+.sidebar-close-btn .ti {
+  font-size: 17px;
+  line-height: 1;
+  color: #f87171;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-close-btn:hover {
+  background: rgba(239, 68, 68, 0.3);
+  border-color: rgba(239, 68, 68, 0.7);
+  transform: rotate(90deg) scale(1.12);
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.35);
+}
+
+.sidebar-close-btn:active {
+  transform: rotate(90deg) scale(0.92);
+}
+
+/* ── Collapsed state: hide text, show only icons ─────── */
+.sidebar.sidebar-collapsed .brand-text-wrap,
+.sidebar.sidebar-collapsed .nav-label,
+.sidebar.sidebar-collapsed .nav-badge,
+.sidebar.sidebar-collapsed .nav-chevron,
+.sidebar.sidebar-collapsed .nav-section-label,
+.sidebar.sidebar-collapsed .submenu,
+.sidebar.sidebar-collapsed .sub-submenu {
+  display: none;
+}
+
+.sidebar.sidebar-collapsed .sidebar-brand {
+  justify-content: center;
+  padding: 10px 4px 10px;
+}
+
+.sidebar.sidebar-collapsed .sidebar-inner {
+  padding: 8px 4px 24px;
+}
+
+.sidebar.sidebar-collapsed .nav-link {
+  justify-content: center;
+  padding: 7px 0;
+  gap: 0;
+}
+
+.sidebar.sidebar-collapsed .nav-link.active::before {
+  left: 0;
+}
+
+/* Tooltip on hover for collapsed icons */
+.sidebar.sidebar-collapsed .nav-link {
+  position: relative;
+}
+
+.sidebar.sidebar-collapsed .nav-link::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--sb-bg, #1a1d2e);
+  color: var(--sb-text-full, #e2e8f0);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--sb-border, #2a2d3e);
+  z-index: 10000003;
+}
+
+.sidebar.sidebar-collapsed .nav-link:hover::after {
+  opacity: 1;
 }
 
 /* ── Inner Scroll Area ───────────────────────────────────── */
@@ -29,7 +131,7 @@
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 16px 10px 24px;
+  padding: 8px 10px 24px;
   background: var(--sb-bg);
   transition: background 0.3s ease;
   scrollbar-width: thin;
@@ -53,15 +155,18 @@
   background: var(--sb-accent);
 }
 
-/* ── Brand ───────────────────────────────────────────────── */
+/* ── Brand (sticky header — never scrolls) ──────────────── */
 .sidebar-brand {
   display: flex;
   align-items: center;
   gap: 11px;
-  padding: 6px 8px 20px;
+  padding: 14px 12px 14px;
   border-bottom: 1px solid var(--sb-border);
-  margin-bottom: 14px;
-  transition: border-color 0.3s ease;
+  flex-shrink: 0;
+  background: var(--sb-bg);
+  transition: border-color 0.3s ease, background 0.3s ease;
+  position: relative;
+  z-index: 1;
 }
 
 .brand-mark {
@@ -358,4 +463,56 @@
 .nav-sub-link.nested.sub-active {
   color: var(--sb-accent);
   background: var(--sb-active-bg);
+}
+
+/* ── Desktop: no close button, smooth width transition ── */
+@media (min-width: 769px) {
+  .sidebar-close-btn {
+    display: none !important;
+  }
+
+  .sidebar {
+    transition: width 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+  }
+}
+
+/* ── Mobile: sidebar slides out completely when collapsed ── */
+@media (max-width: 768px) {
+  .sidebar {
+    transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+    width: var(--sidebar-w) !important;
+  }
+
+  .sidebar.sidebar-collapsed {
+    transform: translateX(-100%);
+    width: var(--sidebar-w) !important;
+  }
+
+  .sidebar:not(.sidebar-collapsed) {
+    transform: translateX(0);
+  }
+
+  /* Give brand header right padding so ✕ button doesn't overlap text */
+  .sidebar:not(.sidebar-collapsed) .sidebar-brand {
+    padding-right: 54px;
+  }
+
+  /* Shrink brand name on mobile */
+  .brand-name {
+    font-size: 10px;
+  }
+
+  /* Show close (✕) button at top-right of sidebar when open on mobile */
+  .sidebar:not(.sidebar-collapsed) .sidebar-close-btn {
+    display: flex !important;
+  }
+
+  /* Hide text elements in collapsed shouldn't matter since whole sidebar is hidden */
+  .sidebar.sidebar-collapsed .brand-text-wrap,
+  .sidebar.sidebar-collapsed .nav-label,
+  .sidebar.sidebar-collapsed .nav-badge,
+  .sidebar.sidebar-collapsed .nav-chevron,
+  .sidebar.sidebar-collapsed .nav-section-label {
+    display: block;
+  }
 }

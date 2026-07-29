@@ -5,7 +5,7 @@ import Modal from "../../components/common/Modal/Modal";
 import { FaEye, FaEdit, FaTrash, FaFilter, FaFileCsv, FaArrowDown, FaTimes, FaSearch } from "react-icons/fa";
 import * as XLSX from "xlsx";
 import EmployeeForm from "../../forms/Employeesform/Employeesform";
-import { getEmployees, addEmployee, updateEmployee, deleteEmployee, getRoles, searchEmployees, getContractors } from "../../services/authService";
+import { getEmployees, addEmployee, updateEmployee, deleteEmployee, getRoles, searchEmployees, getContractors, getDepartments } from "../../services/authService";
 import "../styles/pages.css";
 
 const PAGE_LIMIT_DEFAULT = 10;
@@ -69,6 +69,21 @@ const Employees = () => {
   const [filterName, setFilterName] = useState("");
   const [filterCompany, setFilterCompany] = useState("");
   const [contractors, setContractors] = useState([]);
+  const [departments, setDepartments] = useState([]);
+
+  // Fetch departments
+  useEffect(() => {
+    const fetchDepts = async () => {
+      try {
+        const res = await getDepartments(1, 100);
+        const rows = res?.data?.rows ?? res?.data ?? res ?? [];
+        setDepartments(rows);
+      } catch (err) {
+        console.error("Failed to load departments", err);
+      }
+    };
+    fetchDepts();
+  }, []);
 
   // Fetch roles
   useEffect(() => {
@@ -90,13 +105,29 @@ const Employees = () => {
       try {
         const res = await getContractors(1, 1000, true);
         const rows = res?.data?.rows ?? res?.data ?? res ?? [];
-        setContractors(rows);
+        const sortedRows = [...rows].sort((a, b) => 
+          (a.subContractorName || "").localeCompare(b.subContractorName || "", undefined, { sensitivity: 'base' })
+        );
+        setContractors(sortedRows);
       } catch (err) {
         console.error("Failed to load contractors", err);
       }
     };
     fetchContractorsList();
   }, []);
+
+  const getEmployeeTypeDisplay = (userType) => {
+    if (!userType) return "—";
+    const types = typeof userType === "string" ? userType.split(",") : Array.isArray(userType) ? userType : [userType];
+    return types.map(t => EMPLOYEE_TYPE_LABELS[t.trim()] || t.trim()).join(", ");
+  };
+
+  const getDepartmentDisplay = (item) => {
+    const deptId = item.departId || item.obserId;
+    if (!deptId) return "—";
+    const dept = departments.find(d => String(d.id) === String(deptId));
+    return dept ? dept.departmentName : "—";
+  };
 
   // Fetch employees with search and filters
   const fetchEmployees = useCallback(async (page = 1, searchKeyword = filterName, company = filterCompany) => {
@@ -139,15 +170,19 @@ const Employees = () => {
         alert("No data available to export.");
         return;
       }
-      const headers = ["S.No", "Employee Name", "Badge Id", "Designation", "Company Name", "Email ID", "Phonenumber"];
+      const headers = ["S.No", "Employee Name", "Badge Id", "Designation", "Employee Type", "Department", "Company Name", "Email ID", "Phonenumber"];
       const csvRows = rows.map((item, index) => {
         const badgeIdVal = item.badgeId ? '\t' + String(item.badgeId).replace(/"/g, '""') : "";
         const phoneVal = item.phonenumber ? '\t' + String(item.phonenumber).replace(/"/g, '""') : "";
+        const empTypeVal = getEmployeeTypeDisplay(item.userType);
+        const deptVal = getDepartmentDisplay(item);
         return [
           index + 1,
           `"${(item.employeeName || "").replace(/"/g, '""')}"`,
           `"${badgeIdVal}"`,
           `"${(item.designation || "").replace(/"/g, '""')}"`,
+          `"${(empTypeVal || "").replace(/"/g, '""')}"`,
+          `"${(deptVal || "").replace(/"/g, '""')}"`,
           `"${(item.companyName || "").replace(/"/g, '""')}"`,
           `"${(item.email || "").replace(/"/g, '""')}"`,
           `"${phoneVal}"`
@@ -175,7 +210,7 @@ const Employees = () => {
         alert("No data available to export.");
         return;
       }
-      const headers = ["S.No", "Employee Name", "Badge Id", "Designation", "Company Name", "Email ID", "Phonenumber"];
+      const headers = ["S.No", "Employee Name", "Badge Id", "Designation", "Employee Type", "Department", "Company Name", "Email ID", "Phonenumber"];
       const wsData = [
         headers,
         ...rows.map((item, index) => [
@@ -183,6 +218,8 @@ const Employees = () => {
           item.employeeName || "",
           item.badgeId || "",
           item.designation || "",
+          getEmployeeTypeDisplay(item.userType),
+          getDepartmentDisplay(item),
           item.companyName || "",
           item.email || "",
           item.phonenumber || ""
@@ -271,6 +308,8 @@ const Employees = () => {
     { header: "Employee Name", accessor: "name" },
     { header: "Badge Id", accessor: "badgeId" },
     { header: "Designation", accessor: "designation" },
+    { header: "Employee Type", accessor: "employeeType" },
+    { header: "Department", accessor: "department" },
     { header: "Company Name", accessor: "companyName" },
     { header: "Email ID", accessor: "email" },
     { header: "Phonenumber", accessor: "phoneNumber" },
@@ -284,6 +323,8 @@ const Employees = () => {
     serial: startIndex + index + 1,
     name: item.employeeName,
     phoneNumber: item.phonenumber,
+    employeeType: getEmployeeTypeDisplay(item.userType),
+    department: getDepartmentDisplay(item),
     actions: (
       <ActionButtons
         onView={() => handleView(item, index)}
@@ -315,7 +356,7 @@ const Employees = () => {
       <div className="dept-table-card" style={{ marginBottom: "16px", padding: "16px 24px" }}>
         <h3 style={{ margin: "0 0 12px 0", fontSize: "1rem", fontWeight: "600", color: "#F9FAFB" }}>Filters</h3>
         <div className="df-form" style={{ padding: "0" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "2.5fr 1.5fr auto", gap: "16px", alignItems: "flex-end", width: "100%" }}>
+          <div className="filters-grid">
             <div className="df-field" style={{ marginBottom: 0 }}>
               <label className="df-label" style={{ textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.05em' }}>EMPLOYEE NAME / SEARCH KEYWORD</label>
               <input type="text" className="df-input" placeholder="Search by name, email, badge, designation..." value={filterName} onChange={(e) => setFilterName(e.target.value)} />
@@ -329,11 +370,11 @@ const Employees = () => {
                 ))}
               </select>
             </div>
-            <div style={{ display: "flex", gap: "12px", paddingBottom: "2px" }}>
-              <button onClick={handleFilter} type="button" className="dept-add-btn" style={{ backgroundColor: '#CA8A04', color: '#fff', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+            <div className="filters-actions">
+              <button onClick={handleFilter} type="button" className="dept-add-btn" style={{ background: 'linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%)', color: '#fff', border: '1.5px solid #38bdf8', cursor: 'pointer', display: 'flex', alignItems: 'center', boxShadow: '0 4px 18px rgba(14,165,233,0.35)', transition: 'all 0.2s ease' }}>
                 <FaSearch style={{ marginRight: '6px' }} /> Search
               </button>
-              <button onClick={handleClear} type="button" className="dept-add-btn" style={{ backgroundColor: '#4B5563', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+              <button onClick={handleClear} type="button" className="dept-add-btn" style={{ background: 'rgba(14,165,233,0.07)', color: '#9ca3af', border: '1.5px solid rgba(14,165,233,0.22)', cursor: 'pointer', display: 'flex', alignItems: 'center', transition: 'all 0.2s ease' }}>
                 <FaTimes style={{ marginRight: '6px' }} /> Clear
               </button>
             </div>

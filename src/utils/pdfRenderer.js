@@ -40,11 +40,15 @@ async function getPdfDocument(pdf) {
     }
 }
 
-export async function renderPdf(pdf, width) {
+export async function renderPdf(pdf, width, height) {
     const pdfDoc = await getPdfDocument(pdf);
     const page = await pdfDoc.getPage(1);
     const viewport = page.getViewport({ scale: 1 });
-    const scale = width / viewport.width;
+
+    let scale = width / viewport.width;
+    if (height && (viewport.height * scale > height)) {
+        scale = height / viewport.height;
+    }
 
     const scaledViewport = page.getViewport({
         scale,
@@ -62,4 +66,4 @@ export async function renderPdf(pdf, width) {
     }).promise;
 
     return canvas;
-}
+}

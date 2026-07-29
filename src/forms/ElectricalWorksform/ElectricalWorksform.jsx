@@ -38,10 +38,10 @@ function ElectricalWorksform({ onClose, initialData, isEdit, onSubmit }) {
     <form className="df-form" onSubmit={handleSubmit} noValidate>
       <div className="df-grid">
 
-        {/* Module Number */}
+        {/* Category */}
         <div className="df-field">
           <label className="df-label">
-            Module Number <span className="df-required">*</span>
+            Category <span className="df-required">*</span>
           </label>
           <select
             className="df-select"
@@ -49,7 +49,7 @@ function ElectricalWorksform({ onClose, initialData, isEdit, onSubmit }) {
             onChange={(e) => setModuleNumber(e.target.value)}
             required
           >
-            <option value="">Module Number</option>
+            <option value="">Select Category</option>
             {MODULE_NUMBER_OPTIONS.map((m) => (
               <option key={m} value={m}>{m}</option>
             ))}

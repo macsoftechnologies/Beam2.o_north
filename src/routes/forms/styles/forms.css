@@ -285,41 +285,32 @@
   transition: all 0.2s ease !important;
 }
 
-/* Cancel Button */
-
+/* Cancel / Reset Button */
 .df-form .df-btn--cancel {
-  background: var(--bg-card-hover, #1f2937) !important;
-
+  background: rgba(14, 165, 233, 0.07) !important;
   color: var(--text-muted, #9ca3af) !important;
-
-  border: 1.5px solid var(--border-color, #374151) !important;
+  border: 1.5px solid rgba(14, 165, 233, 0.22) !important;
 }
 
 .df-form .df-btn--cancel:hover {
-  background: #374151 !important;
-  color: #f9fafb !important;
+  background: rgba(14, 165, 233, 0.14) !important;
+  color: #7dd3fc !important;
+  border-color: rgba(14, 165, 233, 0.45) !important;
 }
 
-/* Submit Button */
-
+/* Submit / Show / Search Button */
 .df-form .df-btn--submit {
-  background: var(--accent, #00e5a0) !important;
-
-  color: #0d1117 !important;
-
-  border: 1.5px solid var(--accent, #00e5a0) !important;
-
-  box-shadow: 0 0 18px rgba(0, 229, 160, 0.2) !important;
+  background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%) !important;
+  color: #ffffff !important;
+  border: 1.5px solid #38bdf8 !important;
+  box-shadow: 0 4px 18px rgba(14, 165, 233, 0.35) !important;
 }
 
 .df-form .df-btn--submit:hover {
-  background: var(--accent-hover, #00c488) !important;
-
-  border-color: var(--accent-hover, #00c488) !important;
-
-  transform: translateY(-1px) !important;
-
-  box-shadow: 0 0 24px rgba(0, 229, 160, 0.35) !important;
+  background: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%) !important;
+  border-color: #7dd3fc !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 28px rgba(14, 165, 233, 0.5) !important;
 }
 
 .df-form .df-btn:active {

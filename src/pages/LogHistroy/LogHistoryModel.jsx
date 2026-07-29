@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { formatToDenmarkDateTime } from "../../utils/dateUtils";
+import api, { API_BASE_URL } from "../../services/api";
 
 const TYPE_STYLES = {
     Hold: { color: "#f59e0b", bg: "#f59e0b22", icon: "⏸" },
@@ -25,33 +26,36 @@ const LogHistoryModal = ({ permit, onClose }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    const permitNo = permit?.PermitNo || permit?.permitNo || permit?.permit_no || permit?.Request_No || permit?.requestId || permit?.id;
+
     const handleViewLogsHtml = () => {
-        window.open(`http://187.127.171.51/requests/logs-design/${permit.PermitNo}`, "_blank");
+        if (!permitNo) return;
+        window.open(`${API_BASE_URL}/requests/logs-design/${permitNo}`, "_blank");
     };
 
     useEffect(() => {
-        if (!permit?.PermitNo) return;
+        if (!permitNo) return;
 
         const fetchLogs = async () => {
             setIsLoading(true);
             setError(null);
             try {
-                const res = await fetch(
-                    `http://187.127.171.51/requests/logs/permit/${permit.PermitNo}`
-                );
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                const json = await res.json();
-                setLogs(Array.isArray(json.data) ? json.data : []);
+                const res = await api.get(`/requests/logs/permit/${permitNo}`);
+                const resData = res?.data;
+                const rows = Array.isArray(resData)
+                    ? resData
+                    : (Array.isArray(resData?.data) ? resData.data : []);
+                setLogs(rows);
             } catch (err) {
                 setError("Failed to load permit logs.");
-                console.error(err);
+                console.error("Error fetching permit logs:", err);
             } finally {
                 setIsLoading(false);
             }
         };
 
         fetchLogs();
-    }, [permit?.PermitNo]);
+    }, [permitNo]);
 
     if (!permit) return null;
 

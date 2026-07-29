@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from "react";
+import { Navigate } from "react-router-dom";
 import { verifyOtp } from "../../../services/authService";
 import { showSuccess, showError } from "../../../components/common/Toast/Toast";
 import { navigateTo } from "../../../config/basePath";
+import { isTokenValid } from "../../../components/common/PublicRoute";
 import "./OTP.css";
 
 // ─── DIVISION CONFIG (must match Login.jsx) ─────────────────────────
@@ -16,9 +18,9 @@ const DIVISIONS = {
     name: "South",
     theme: "south",
   },
-  North: {
+  infrastructure: {
     label: "Division 03",
-    name: "North",
+    name: "Infrastructure",
     theme: "infra",
   },
 };
@@ -29,6 +31,40 @@ const ACTIVE_DIVISION = "north"; // ← change to match Login.jsx
 const OTP_LENGTH = 6;
 
 export default function OTP() {
+  if (isTokenValid()) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  const tempUserStr = localStorage.getItem("tempUser");
+  if (!tempUserStr) {
+    return <Navigate to="/login" replace />;
+  }
+
+  useEffect(() => {
+    const handleCheck = () => {
+      if (isTokenValid()) {
+        navigateTo("/dashboard", true);
+      } else if (!localStorage.getItem("tempUser")) {
+        navigateTo("/login", true);
+      }
+    };
+
+    if (isTokenValid()) {
+      navigateTo("/dashboard", true);
+      return;
+    }
+    if (!localStorage.getItem("tempUser")) {
+      navigateTo("/login", true);
+    }
+
+    window.addEventListener("pageshow", handleCheck);
+    window.addEventListener("popstate", handleCheck);
+
+    return () => {
+      window.removeEventListener("pageshow", handleCheck);
+      window.removeEventListener("popstate", handleCheck);
+    };
+  }, []);
   const [digits, setDigits] = useState(Array(OTP_LENGTH).fill(""));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -75,6 +111,10 @@ export default function OTP() {
     }
     if (e.key === "ArrowLeft" && idx > 0) inputRefs.current[idx - 1]?.focus();
     if (e.key === "ArrowRight" && idx < OTP_LENGTH - 1) inputRefs.current[idx + 1]?.focus();
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleVerify();
+    }
   };
 
   // Handle paste
@@ -121,13 +161,17 @@ export default function OTP() {
 
       if (response && (response.statusCode === 200 || response.status === true)) {
         // Save token and user details to localStorage
-        localStorage.setItem("token", response.access_token);
+        const tokenVal = response.access_token || response.token || response.auth_token || response.data?.access_token || response.data?.token;
+        if (tokenVal) {
+          localStorage.setItem("token", tokenVal);
+        }
 
         const activeUser = {
           id: response.id,
           username: response.username,
           role: response.userType, // UserType is the role
-          name: response.username
+          name: response.username,
+          typeId: response.typeId
         };
         localStorage.setItem("user", JSON.stringify(activeUser));
         localStorage.setItem("UserType", response.userType);
@@ -139,7 +183,7 @@ export default function OTP() {
 
         setTimeout(() => {
           setLoading(false);
-          navigateTo("/dashboard");
+          navigateTo("/dashboard", true);
         }, 1500);
       } else {
         setLoading(false);
@@ -186,7 +230,7 @@ export default function OTP() {
         <div className="otp-card">
 
           {/* Back */}
-          <a href="/login" className="back-btn">
+          <a href="https://187.127.171.51/m3north_frontend/login" className="back-btn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
@@ -284,7 +328,7 @@ export default function OTP() {
           </button>
 
           {/* Resend */}
-          <div className="resend-row">
+          {/* <div className="resend-row">
             Didn't receive the code?{" "}
             {canResend ? (
               <button className="resend-btn" onClick={handleResend}>
@@ -295,7 +339,7 @@ export default function OTP() {
                 Resend in <strong>{timer}s</strong>
               </span>
             )}
-          </div>
+          </div> */}
 
           {/* Division footer */}
           {/* <div className="otp-footer">

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useLocation, Link } from 'react-router-dom'
 import "./Sidebar.css";
 import { getMenuByRole } from './navigation.service';
+import LogoImg from "../../../assets/images/Logo.jpeg";
 
 /* ── NAV ITEM with collapsible submenu ── */
 function NavItem({ icon, label, badge, paths, children }) {
@@ -205,10 +206,17 @@ function Sidebar({ sidebarOpen }) {
 
         {/* Brand */}
         <div className="sidebar-brand">
-          <div className="brand-mark">
-            <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M5 0a.5.5 0 0 1 .5.5V2h1V.5a.5.5 0 0 1 1 0V2h1V.5a.5.5 0 0 1 1 0V2h1V.5a.5.5 0 0 1 1 0V2A2.5 2.5 0 0 1 14 4.5h1.5a.5.5 0 0 1 0 1H14v1h1.5a.5.5 0 0 1 0 1H14v1h1.5a.5.5 0 0 1 0 1H14v1h1.5a.5.5 0 0 1 0 1H14A2.5 2.5 0 0 1 11.5 14v1.5a.5.5 0 0 1-1 0V14h-1v1.5a.5.5 0 0 1-1 0V14h-1v1.5a.5.5 0 0 1-1 0V14h-1v1.5a.5.5 0 0 1-1 0V14A2.5 2.5 0 0 1 2 11.5H.5a.5.5 0 0 1 0-1H2v-1H.5a.5.5 0 0 1 0-1H2v-1H.5a.5.5 0 0 1 0-1H2v-1H.5a.5.5 0 0 1 0-1H2A2.5 2.5 0 0 1 4.5 2V.5A.5.5 0 0 1 5 0" />
-            </svg>
+          <div className="brand-mark" style={{ background: "transparent" }}>
+            <img
+              src={LogoImg}
+              alt="M3 Logo"
+              style={{
+                width: "100%",
+                height: "100%",
+                borderRadius: "11px",
+                objectFit: "cover",
+              }}
+            />
           </div>
           <div className="brand-text-wrap">
             <span className="brand-name">M3 North</span>

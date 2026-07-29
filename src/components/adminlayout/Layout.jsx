@@ -38,7 +38,7 @@ useEffect(() => {
   return (
     <div className="layout-root">
 
-      <Sidebar sidebarOpen={sidebarOpen} />
+      <Sidebar sidebarOpen={sidebarOpen} toggleSidebar={() => setSidebarOpen(p => !p)} />
 
       <div
           className={`sidebar-backdrop ${sidebarOpen ? 'visible' : ''}`}

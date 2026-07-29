@@ -17,6 +17,25 @@
   min-width: max-content;
 }
 
+/* Sticky left column for checkbox */
+.sticky-col-checkbox {
+  position: sticky !important;
+  left: 0 !important;
+  background-color: var(--bg-card, #111827) !important;
+  z-index: 10;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 4px 0 8px -4px rgba(0, 0, 0, 0.2);
+}
+
+th.sticky-col-checkbox {
+  background-color: var(--bg-dark, #0f172a) !important;
+  z-index: 20 !important;
+}
+
+.beam-tr:hover .sticky-col-checkbox {
+  background-color: var(--bg-card-hover, #1f2937) !important;
+}
+
 /* Sticky right columns for ListRequest table */
 .sticky-col-status {
   position: sticky !important;
@@ -45,6 +64,29 @@ th.sticky-col-operations {
 .beam-tr:hover .sticky-col-status,
 .beam-tr:hover .sticky-col-operations {
   background-color: var(--bg-card-hover, #1f2937) !important;
+}
+
+/* Selected row highlight */
+.beam-tr.row-selected {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  border-left: 3px solid #3b82f6;
+  transition: background-color 0.15s ease;
+}
+
+.beam-tr.row-selected .sticky-col-checkbox,
+.beam-tr.row-selected .sticky-col-status,
+.beam-tr.row-selected .sticky-col-operations {
+  background-color: rgba(30, 58, 100, 0.85) !important;
+}
+
+.beam-tr.row-selected:hover {
+  background-color: rgba(59, 130, 246, 0.22) !important;
+}
+
+.beam-tr.row-selected:hover .sticky-col-checkbox,
+.beam-tr.row-selected:hover .sticky-col-status,
+.beam-tr.row-selected:hover .sticky-col-operations {
+  background-color: rgba(30, 58, 110, 0.95) !important;
 }
 
 .hra-icon-thumb {
@@ -339,9 +381,7 @@ th.sticky-col-operations {
   display: inline-block;
 }
 
-.bulk-edit-dropdown-container:hover .bulk-edit-dropdown-menu {
-  display: block;
-}
+/* hover triggers disabled in favor of click toggle in JS */
 
 .bulk-edit-dropdown-menu {
   display: none;
@@ -433,4 +473,63 @@ th.sticky-col-operations {
 
 .animate-slide-in {
   animation: slide-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media (max-width: 768px) {
+  .sticky-col-status,
+  .sticky-col-operations {
+    position: static !important;
+    box-shadow: none !important;
+    border-left: none !important;
+  }
+  
+  th.sticky-col-status,
+  th.sticky-col-operations {
+    position: static !important;
+  }
+
+  .beam-table {
+    min-width: 1500px !important;
+  }
+
+  /* Bulk Toolbar mobile styles */
+  .bulk-actions-toolbar {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 16px !important;
+    padding: 16px !important;
+    text-align: center;
+  }
+  
+  .bat-info {
+    flex-direction: column !important;
+    gap: 6px !important;
+  }
+  
+  .bat-buttons {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+  
+  .bat-btn {
+    flex: 1 1 calc(50% - 8px) !important;
+    min-width: 120px !important;
+    justify-content: center !important;
+  }
+
+  .bulk-edit-dropdown-container {
+    flex: 1 1 calc(50% - 8px) !important;
+    width: 100% !important;
+  }
+  
+  .bulk-edit-dropdown-container .bat-btn {
+    width: 100% !important;
+  }
+
+  .bulk-edit-dropdown-menu {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
 }

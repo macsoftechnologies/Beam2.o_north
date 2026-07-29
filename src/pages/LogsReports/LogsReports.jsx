@@ -3,6 +3,7 @@ import Table from "../../components/common/Table/Table";
 import { getUserLogs } from "../../services/authService";
 import "../styles/pages.css";
 import { formatToDenmarkDateTime } from "../../utils/dateUtils";
+import { FaSearch } from "react-icons/fa";
 
 const PAGE_LIMIT_DEFAULT = 20;
 
@@ -116,6 +117,7 @@ const formatTimestamp = (ts) => {
 };
 
 const LogsReports = () => {
+  const [searchUser, setSearchUser]   = useState("");
   const [searchDate, setSearchDate]   = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageLimit]                   = useState(PAGE_LIMIT_DEFAULT);
@@ -124,10 +126,10 @@ const LogsReports = () => {
   const [totalCount, setTotalCount]   = useState(0);
   const [isLoading, setIsLoading]     = useState(false);
 
-  const fetchLogs = useCallback(async (page) => {
+  const fetchLogs = useCallback(async (page, userQuery = "", dateQuery = "") => {
     setIsLoading(true);
     try {
-      const res = await getUserLogs(page, pageLimit);
+      const res = await getUserLogs(page, pageLimit, userQuery, dateQuery);
       // Response: { statusCode, data: [...], total, page, limit, totalPages }
       const rows = res?.data ?? [];
       setLogs(rows);
@@ -141,17 +143,8 @@ const LogsReports = () => {
   }, [pageLimit]);
 
   useEffect(() => {
-    fetchLogs(currentPage);
-  }, [currentPage, fetchLogs]);
-
-  // Client-side date filter on the fetched page data
-  const filtered = searchDate
-    ? logs.filter((item) => {
-        if (!item.timestamp) return false;
-        // searchDate is "YYYY-MM-DD"; compare against ISO timestamp
-        return item.timestamp.startsWith(searchDate);
-      })
-    : logs;
+    fetchLogs(currentPage, searchUser, searchDate);
+  }, [currentPage, searchUser, searchDate, fetchLogs]);
 
   const columns = [
     { header: "Action",    accessor: "actionCell"   },
@@ -163,8 +156,7 @@ const LogsReports = () => {
     { header: "Timestamp", accessor: "timestampFmt" },
   ];
 
-
-  const tableData = filtered.map((item) => ({
+  const tableData = logs.map((item) => ({
     ...item,
     actionCell:   <ActionBadge action={item.action} />,
     urlCell:      <span style={{ fontSize: "12px", color: "#94a3b8", fontFamily: "monospace" }}>{item.url || "—"}</span>,
@@ -173,7 +165,6 @@ const LogsReports = () => {
     bodyCell:     <BodyCell body={item.body} />,
     timestampFmt: formatTimestamp(item.timestamp),
   }));
-
 
   return (
     <div className="dept-page">
@@ -190,15 +181,70 @@ const LogsReports = () => {
 
       <div className="dept-table-card">
 
-        {/* Date Filter */}
-        <div style={{ padding: "16px" }}>
-          <div style={{ position: "relative", maxWidth: "480px" }}>
+        {/* Filters Toolbar: Username Search & Date Filter */}
+        <div style={{
+          padding: "16px",
+          display: "flex",
+          gap: "16px",
+          flexWrap: "wrap",
+          alignItems: "center",
+          borderBottom: "1px solid var(--border-color, rgba(255, 255, 255, 0.08))"
+        }}>
+          {/* Username Search Field */}
+          <div style={{ position: "relative", flex: 1, minWidth: "240px", maxWidth: "380px", display: "flex", alignItems: "center" }}>
+            <FaSearch style={{ position: "absolute", left: "14px", color: "#7a8aab", fontSize: "14px", pointerEvents: "none" }} />
+            <input
+              type="text"
+              placeholder="Search by username / email..."
+              className="df-input"
+              style={{
+                width: "100%",
+                paddingLeft: "42px",
+                paddingRight: searchUser ? "36px" : "14px",
+                backgroundColor: "#1a2744",
+                border: "1px solid #2e3f66",
+                borderRadius: "8px",
+                color: "#ffffff",
+                fontSize: "14px",
+                height: "44px",
+                outline: "none"
+              }}
+              value={searchUser}
+              onChange={(e) => {
+                setSearchUser(e.target.value);
+                setCurrentPage(1);
+              }}
+            />
+            {searchUser && (
+              <button
+                type="button"
+                onClick={() => { setSearchUser(""); setCurrentPage(1); }}
+                style={{
+                  position: "absolute",
+                  right: "10px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  color: "#7a8aab",
+                  fontSize: "16px",
+                  lineHeight: 1,
+                  padding: "2px",
+                }}
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          {/* Date Filter Field */}
+          <div style={{ position: "relative", flex: 1, minWidth: "220px", maxWidth: "300px", display: "flex", alignItems: "center" }}>
             <CalendarIcon />
             <input
               type="date"
               className="df-input"
               style={{
-                maxWidth: "480px",
                 width: "100%",
                 paddingLeft: "42px",
                 paddingRight: searchDate ? "36px" : "14px",
@@ -219,6 +265,7 @@ const LogsReports = () => {
             />
             {searchDate && (
               <button
+                type="button"
                 onClick={() => { setSearchDate(""); setCurrentPage(1); }}
                 style={{
                   position: "absolute",

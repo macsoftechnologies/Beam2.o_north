@@ -175,7 +175,8 @@ import {
   getFloors,
   getZones,
   getRooms,
-  getUser
+  getUser,
+  getPrecautions
 } from "../../../services/authService";
 import {
   searchRequests,
@@ -210,18 +211,10 @@ const formatDateToDDMMYYYY = (dateStr) => {
   return dateStr;
 };
 
-// Helper to truncate long string values and attach title for hover info
-const trimLongValue = (value, maxLen) => {
+// Helper to pass long string values directly to Table component (where CSS handles ellipsis)
+const trimLongValue = (value) => {
   if (!value || value === "—") return "—";
-  const valStr = String(value);
-  if (valStr.length > maxLen) {
-    return (
-      <span title={valStr}>
-        {valStr.slice(0, maxLen)}...
-      </span>
-    );
-  }
-  return valStr;
+  return String(value);
 };
 
 // Helper to resolve zone name from building, floor/level, and rooms data
@@ -277,15 +270,14 @@ const resolveZoneNameFromRooms = (row) => {
 };
 
 const STATUS_OPTIONS = [
+  "Draft",
   "Hold",
-  "Saved",
-  "Opened",
   "Pre-Approved",
   "Approved",
-  "Closed",
   "Rejected",
+  "Opened",
   "Cancelled",
-  "Draft",
+  "Closed",
   "Auto-Cancelled"
 ];
 
@@ -293,27 +285,18 @@ const HRA_LIST = [
   { key: "Hot_work", label: "Hot Work", icon: "HotWorks.png", image: LOGO_MAP["HotWorks.png"] },
   { key: "working_on_electrical_system", label: "Electrical Systems", icon: "ElectricalSystems.png", image: LOGO_MAP["ElectricalSystems.png"] },
   { key: "working_hazardious_substen", label: "Hazardous Substances", icon: "substanceChemical.png", image: LOGO_MAP["substanceChemical.png"] },
-  { key: "pressure_tesing_of_equipment", label: "Testing Equipment", icon: "testingequipment.png", image: LOGO_MAP["testingequipment.png"] },
+  { key: "pressure_testing_of_equipment", label: "Testing Equipment", icon: "testingequipment.png", image: LOGO_MAP["testingequipment.png"] },
   { key: "working_at_height", label: "Working at Height", icon: "WorkingAtHight.png", image: LOGO_MAP["WorkingAtHight.png"] },
   { key: "working_confined_spaces", label: "Confined Space", icon: "ConfinedSpace.png", image: LOGO_MAP["ConfinedSpace.png"] },
-  { key: "work_in_atex_area", label: "ATEX Area", icon: "ATEXarea.png", image: LOGO_MAP["ATEXarea.png"] || null },
-  { key: "securing_facilities", label: "Securing Facilities", icon: "SecuringFacilities.png", image: LOGO_MAP["SecuringFacilities.png"] || null },
   { key: "excavation_works", label: "Excavation Works", icon: "ExcavationWorks.png", image: LOGO_MAP["ExcavationWorks.png"] },
   { key: "using_cranes_or_lifting", label: "Cranes & Lifting", icon: "Craneslifting.png", image: LOGO_MAP["Craneslifting.png"] },
   { key: "power_on", label: "Electrical Works", icon: "electrical_works.png", image: LOGO_MAP["electrical_works.png"] },
   { key: "pressurization", label: "Mechanical Works", icon: "mechanical1.png", image: LOGO_MAP["mechanical1.png"] }
 ];
 
-const MultiSelectDropdown = ({
-  placeholder,
-  options = [],
-  selectedValues = [],
-  onChange = () => { },
-  hasNone = false,
-  isHra = false,
-  disabled = false
-}) => {
+const MultiSelectDropdown = ({ options, selectedValues, onChange, placeholder, disabled, hasNone = false, searchPlaceholder = "Search contractor..." }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -325,40 +308,72 @@ const MultiSelectDropdown = ({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
   const handleToggle = () => {
-    if (!disabled) setIsOpen(!isOpen);
-  };
-
-  const handleCheckboxChange = (value, checked) => {
-    let nextValues = [...selectedValues];
-    if (hasNone && value === "none") {
-      if (checked) {
-        nextValues = ["none"];
-      } else {
-        nextValues = [];
-      }
-    } else {
-      if (checked) {
-        nextValues = nextValues.filter(v => v !== "none");
-        if (!nextValues.includes(value)) {
-          nextValues.push(value);
-        }
-      } else {
-        nextValues = nextValues.filter(v => v !== value);
-      }
+    if (!disabled) {
+      setIsOpen(!isOpen);
     }
-    onChange(nextValues);
   };
 
-  // Resolve trigger display label text
+  const handleCheckboxChange = (val, checked) => {
+    if (val === "none") {
+      onChange(checked ? ["none"] : []);
+      return;
+    }
+
+    let newSelected = selectedValues.filter(v => v !== "none");
+    if (checked) {
+      newSelected.push(val);
+    } else {
+      newSelected = newSelected.filter(v => v !== val);
+    }
+    onChange(newSelected);
+  };
+
+  const filteredOptions = useMemo(() => {
+    if (!searchQuery.trim()) return options;
+    const q = searchQuery.toLowerCase();
+    return options.filter(opt => {
+      if (opt.zones) {
+        return opt.zones.some(z => {
+          const l = typeof z === "object" ? (z.name ?? z.label ?? z) : z;
+          return String(l).toLowerCase().includes(q);
+        });
+      }
+      const label = opt.subContractorName || opt.building_name || opt.floor_name || opt.zone || opt.label || opt.name || opt;
+      return String(label).toLowerCase().includes(q);
+    });
+  }, [options, searchQuery]);
+
   let displayText = placeholder;
   if (selectedValues.length > 0) {
-    if (hasNone && selectedValues.includes("none")) {
+    if (selectedValues.includes("none")) {
       displayText = "None";
+    } else if (selectedValues.length === 1) {
+      const allOpts = [];
+      options.forEach(opt => {
+        if (opt.zones) {
+          opt.zones.forEach(z => {
+            if (typeof z === "object") {
+              allOpts.push({ value: String(z.id ?? z.value ?? z), label: z.name ?? z.label ?? z });
+            } else {
+              allOpts.push({ value: z, label: z });
+            }
+          });
+        } else {
+          allOpts.push(opt);
+        }
+      });
+
+      const opt = allOpts.find(o => {
+        const oVal = String(o?.value ?? o?.key ?? o?.id ?? o?.build_id ?? o);
+        return oVal === String(selectedValues[0]);
+      });
+      if (opt) {
+        displayText = opt.label || opt.building_name || opt.floor_name || opt.subContractorName || opt.zone || opt.value || opt.key || opt;
+      }
     } else {
       const selectedLabels = [];
-
-      // Flatten options to easily search labels
       const allOpts = [];
       options.forEach(opt => {
         if (opt.zones) {
@@ -451,6 +466,43 @@ const MultiSelectDropdown = ({
             padding: "6px 0"
           }}
         >
+          {/* Search bar inside dropdown */}
+          <div style={{ padding: "8px 12px", borderBottom: "1px solid var(--border-color, #374151)", position: "sticky", top: 0, backgroundColor: "var(--bg-card, #111827)", zIndex: 10, display: "flex", gap: "6px" }}>
+            <input
+              type="text"
+              placeholder={searchPlaceholder}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                flex: 1,
+                padding: "6px 10px",
+                fontSize: "13px",
+                borderRadius: "6px",
+                border: "1px solid var(--border-color, #374151)",
+                backgroundColor: "rgba(255, 255, 255, 0.05)",
+                color: "var(--text-main, #f9fafb)",
+                outline: "none"
+              }}
+            />
+            <button
+              type="button"
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                padding: "6px 10px",
+                backgroundColor: "var(--primary-color, #3b82f6)",
+                border: "none",
+                borderRadius: "6px",
+                color: "#fff",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+            >
+              <FaSearch size={12} />
+            </button>
+          </div>
           {hasNone && (
             <label
               style={{
@@ -478,7 +530,7 @@ const MultiSelectDropdown = ({
             </label>
           )}
 
-          {options.map((opt, idx) => {
+          {filteredOptions.map((opt, idx) => {
             // Support grouped zones/rooms
             if (opt.zones) {
               return (
@@ -541,6 +593,7 @@ const MultiSelectDropdown = ({
             const val = String(opt.value ?? opt.key ?? opt.id ?? opt.build_id ?? opt);
             const displayLabel = opt.label || opt.building_name || opt.floor_name || opt.subContractorName || opt;
             const isChecked = selectedValues.includes(val);
+            const imgUrl = opt.image || (opt.icon ? LOGO_MAP[opt.icon] : null);
 
             return (
               <label
@@ -548,7 +601,7 @@ const MultiSelectDropdown = ({
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: "12px",
+                  gap: "10px",
                   padding: "10px 16px",
                   cursor: "pointer",
                   transition: "background-color 0.2s",
@@ -572,6 +625,19 @@ const MultiSelectDropdown = ({
                     borderRadius: "4px"
                   }}
                 />
+                {imgUrl && (
+                  <img
+                    src={imgUrl}
+                    alt={displayLabel}
+                    style={{
+                      width: "22px",
+                      height: "22px",
+                      objectFit: "contain",
+                      borderRadius: "4px",
+                      flexShrink: 0
+                    }}
+                  />
+                )}
                 <span>{displayLabel}</span>
               </label>
             );
@@ -582,20 +648,82 @@ const MultiSelectDropdown = ({
   );
 };
 
+const isTodayDate = (dateVal) => {
+  if (!dateVal) return false;
+
+  let year, month, day;
+  const str = String(dateVal).trim();
+
+  if (str.includes("T")) {
+    const part = str.split("T")[0];
+    const parts = part.split("-");
+    if (parts.length === 3) {
+      year = parseInt(parts[0], 10);
+      month = parseInt(parts[1], 10);
+      day = parseInt(parts[2], 10);
+    }
+  } else if (str.includes("-")) {
+    const parts = str.split("-");
+    if (parts[0].length === 4) {
+      year = parseInt(parts[0], 10);
+      month = parseInt(parts[1], 10);
+      day = parseInt(parts[2], 10);
+    } else if (parts[2] && parts[2].length === 4) {
+      day = parseInt(parts[0], 10);
+      month = parseInt(parts[1], 10);
+      year = parseInt(parts[2], 10);
+    }
+  } else if (str.includes("/")) {
+    const parts = str.split("/");
+    if (parts[0].length === 4) {
+      year = parseInt(parts[0], 10);
+      month = parseInt(parts[1], 10);
+      day = parseInt(parts[2], 10);
+    } else if (parts[2] && parts[2].length === 4) {
+      day = parseInt(parts[0], 10);
+      month = parseInt(parts[1], 10);
+      year = parseInt(parts[2], 10);
+    }
+  }
+
+  if (!year || !month || !day || isNaN(year) || isNaN(month) || isNaN(day)) {
+    const d = new Date(dateVal);
+    if (!isNaN(d.getTime())) {
+      year = d.getFullYear();
+      month = d.getMonth() + 1;
+      day = d.getDate();
+    } else {
+      return false;
+    }
+  }
+
+  const today = new Date();
+  return (
+    today.getFullYear() === year &&
+    today.getMonth() + 1 === month &&
+    today.getDate() === day
+  );
+};
+
 const ListRequest = () => {
   const navigate = useNavigate();
-  const currentUser = getUser();
+  const currentUser = useMemo(() => getUser(), []);
+  const userContractorId = currentUser?.typeId || currentUser?.subContId || currentUser?.subContractorId;
   const location = useLocation();
 
   useEffect(() => {
-    if (location.state) {
-      const { status, fromDate, toDate } = location.state;
+    const queryParams = new URLSearchParams(location.search);
+    const qPermitNo = queryParams.get("permitNo") || queryParams.get("permit_no") || queryParams.get("search");
+
+    if (location.state || qPermitNo) {
+      const stateObj = location.state || {};
+      const { status, fromDate, toDate, permitNo, permit_no, search, keyword } = stateObj;
+      const targetPermit = permitNo || permit_no || search || keyword || qPermitNo;
+
       setSearchFilters(prev => {
         const updated = { ...prev };
         if (status) {
           updated.statuses = Array.isArray(status) ? status : [status];
-        } else {
-          updated.statuses = [];
         }
         if (fromDate !== undefined) {
           updated.fromDate = fromDate;
@@ -603,18 +731,21 @@ const ListRequest = () => {
         if (toDate !== undefined) {
           updated.toDate = toDate;
         }
+        if (targetPermit !== undefined && targetPermit !== null && targetPermit !== "") {
+          updated.permitNo = String(targetPermit).trim();
+        }
         return updated;
       });
       // Clear location state so they don't persist on page reload
       window.history.replaceState({}, document.title);
     }
-  }, [location.state]);
+  }, [location.state, location.search]);
 
   // ─── Component States ──────────────────────────────────────────────────────
   const [requests, setRequests] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [limit] = useState(10);
+  const [limit, setLimit] = useState(30);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
   const [loadingEditId, setLoadingEditId] = useState(null);
@@ -639,6 +770,7 @@ const ListRequest = () => {
     buildings: [],
     levels: [],
     areas: [],
+    zones: [],
     hras: [],
     permitType: "",
     permitUnder: "",
@@ -646,7 +778,10 @@ const ListRequest = () => {
     toDate: "",
     startTime: "",
     endTime: "",
-    nightShift: ""
+    nightShift: "",
+    newDate: "",
+    newEndTime: "",
+    typeOfActivityId: ""
   });
 
   // Modal Control States
@@ -677,41 +812,96 @@ const ListRequest = () => {
 
   // Bulk operation form inputs
   const [bulkTime, setBulkTime] = useState({ startTime: "", endTime: "", nightShift: false, newEndTime: "" });
-  const [bulkSafety, setBulkSafety] = useState("");
+  const [bulkSafety, setBulkSafety] = useState([]);
+  const [precautionsList, setPrecautionsList] = useState([]);
+  const [isPrecautionsDropdownOpen, setIsPrecautionsDropdownOpen] = useState(false);
+  const precautionsDropdownRef = useRef(null);
+  const [bulkDropdownOpen, setBulkDropdownOpen] = useState(false);
+  const bulkDropdownRef = useRef(null);
   const [bulkNote, setBulkNote] = useState("");
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
+  const [showSearchNewEndPicker, setShowSearchNewEndPicker] = useState(false);
   const [showBulkStartPicker, setShowBulkStartPicker] = useState(false);
   const [showBulkEndPicker, setShowBulkEndPicker] = useState(false);
   const [showBulkNewEndPicker, setShowBulkNewEndPicker] = useState(false);
+  const [showHStartPicker, setShowHStartPicker] = useState(false);
+  const [showHEndPicker, setShowHEndPicker] = useState(false);
+  const [showCopyStartPicker, setShowCopyStartPicker] = useState(false);
+  const [showCopyEndPicker, setShowCopyEndPicker] = useState(false);
+  const [showCopyNewEndPicker, setShowCopyNewEndPicker] = useState(false);
   const [logsData, setLogsData] = useState([]);
-  const [copyDates, setCopyDates] = useState({ from: "", to: "" });
+  const [copyDates, setCopyDates] = useState({ from: "", to: "", startTime: "", endTime: "", nightShift: false, newEndTime: "" });
 
-  // Check operator credentials
-  const isAdmin = currentUser?.role === "Admin";
-  const isDept = currentUser?.role === "Department";
-  const isDept1 = currentUser?.role === "Department1";
-  const isSubcontractor = currentUser?.role === "Subcontractor";
+  // Check operator credentials (with multi-role support)
+  const userRoles = useMemo(() => {
+    const roleVal = currentUser?.role || currentUser?.userType || "";
+    if (typeof roleVal === "string") {
+      return roleVal.split(",").map(r => r.trim().toLowerCase());
+    }
+    if (Array.isArray(roleVal)) {
+      return roleVal.map(r => String(r).trim().toLowerCase());
+    }
+    return [String(roleVal).trim().toLowerCase()];
+  }, [currentUser]);
+
+  const isAdmin = userRoles.includes("admin");
+  const isDept = userRoles.includes("department");
+  const isDept1 = userRoles.includes("department1");
+  const isSubcontractor = userRoles.includes("subcontractor");
+  const isObserver = userRoles.includes("observer");
   const canBulkAction = isAdmin || isDept || isDept1;
+  const isMultiDept = isDept && isDept1;
+
+  const checkIfHideCheckbox = useCallback((row) => {
+    if (isObserver || isSubcontractor) return true;
+    if (isAdmin || isMultiDept) return false;
+    if (isDept) {
+      const eitherIsConstruction = String(row.permit_under).toLowerCase() === "construction" ||
+                                    String(row.permit_type).toLowerCase() === "construction";
+      return !eitherIsConstruction;
+    }
+    if (isDept1) {
+      const bothAreConstruction = String(row.permit_under).toLowerCase() === "construction" &&
+                                   String(row.permit_type).toLowerCase() === "construction";
+      return bothAreConstruction;
+    }
+    return false;
+  }, [isAdmin, isDept, isDept1, isMultiDept, isObserver, isSubcontractor]);
 
   // ─── Fetch Selector Lists ──────────────────────────────────────────────────
   useEffect(() => {
     const fetchSelectors = async () => {
       try {
-        const [subRes, actRes, buildRes, floorRes, zoneRes, roomRes] = await Promise.all([
+        const [subRes, actRes, buildRes, floorRes, zoneRes, roomRes, precautionsRes] = await Promise.all([
           getContractors(1, 1000),
           getActivities(1, 1000),
           getBuildings(1, 1000),
           getFloors(1, 1000),
           getZones(1, 10000),
-          getRooms(1, 10000)
+          getRooms(1, 10000),
+          getPrecautions(1, 1000)
         ]);
-        setContractors(subRes?.data?.rows ?? subRes?.data ?? subRes ?? []);
+        const rawContractors = subRes?.data?.rows ?? subRes?.data ?? subRes ?? [];
+        const loadedContractors = rawContractors
+          .slice()
+          .sort((a, b) => (a.subContractorName || "").localeCompare(b.subContractorName || "", undefined, { sensitivity: "base" }));
+        setContractors(loadedContractors);
+        if (isSubcontractor) {
+          const defaultSubId = userContractorId ? String(userContractorId) : (loadedContractors.length > 0 ? String(loadedContractors[0].id) : "");
+          if (defaultSubId) {
+            setSearchFilters(prev => {
+              if (prev.contractors.length === 1 && prev.contractors[0] === defaultSubId) return prev;
+              return { ...prev, contractors: [defaultSubId] };
+            });
+          }
+        }
         setActivitiesList(actRes?.data?.rows ?? actRes?.data ?? actRes ?? []);
         setBuildingsList(buildRes?.data ?? []);
         setFloorsList(floorRes?.data ?? []);
         setZonesList(zoneRes?.data ?? []);
         setRoomsList(roomRes?.data?.rows ?? roomRes?.data ?? roomRes ?? []);
+        setPrecautionsList(precautionsRes?.data?.rows ?? precautionsRes?.data ?? precautionsRes ?? []);
       } catch (err) {
         console.error("Failed to load selectors lists", err);
       }
@@ -719,11 +909,92 @@ const ListRequest = () => {
     fetchSelectors();
   }, []);
 
+  // Default subcontractor filter if current user is a contractor
+  useEffect(() => {
+    if (isSubcontractor && userContractorId) {
+      const subIdStr = String(userContractorId);
+      setSearchFilters(prev => {
+        if (prev.contractors.length === 1 && prev.contractors[0] === subIdStr) return prev;
+        return {
+          ...prev,
+          contractors: [subIdStr]
+        };
+      });
+    }
+  }, [isSubcontractor, userContractorId]);
+
+  // Handle click outside for precautions dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (precautionsDropdownRef.current && !precautionsDropdownRef.current.contains(event.target)) {
+        setIsPrecautionsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Handle click outside for bulk edit dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (bulkDropdownRef.current && !bulkDropdownRef.current.contains(event.target)) {
+        setBulkDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   // Filter levels based on selected buildings
   const filteredLevels = useMemo(() => {
     if (searchFilters.buildings.length === 0) return floorsList;
     return floorsList.filter(f => searchFilters.buildings.includes(String(f.build_id)));
   }, [searchFilters.buildings, floorsList]);
+
+  // Filter zones based on selected levels/floors (and buildings)
+  const filteredZones = useMemo(() => {
+    let zonesToFilter = zonesList;
+
+    if (searchFilters.buildings && searchFilters.buildings.length > 0) {
+      const selectedBuildingIds = searchFilters.buildings.map(Number);
+      zonesToFilter = zonesToFilter.filter(z =>
+        z.building_id !== undefined && z.building_id !== null && selectedBuildingIds.includes(Number(z.building_id))
+      );
+    }
+
+    if (searchFilters.levels && searchFilters.levels.length > 0) {
+      const matchedFloorIds = floorsList
+        .filter(f => searchFilters.levels.includes(f.floor_name))
+        .map(f => Number(f.fl_id));
+
+      const zoneIdsFromRooms = roomsList
+        .filter(r => matchedFloorIds.includes(Number(r.fl_id)))
+        .map(r => Number(r.zone_id))
+        .filter(Boolean);
+
+      zonesToFilter = zonesToFilter.filter(z => {
+        const matchDirectFloorId = z.floor_id !== undefined && z.floor_id !== null && matchedFloorIds.includes(Number(z.floor_id));
+        const matchDirectLevelName = z.level !== undefined && z.level !== null && searchFilters.levels.includes(z.level);
+        const matchViaRooms = zoneIdsFromRooms.includes(Number(z.id));
+        return matchDirectFloorId || matchDirectLevelName || matchViaRooms;
+      });
+    }
+
+    const seenNames = new Set();
+    const result = [];
+    zonesToFilter.forEach(z => {
+      if (z.zone && !seenNames.has(z.zone)) {
+        seenNames.add(z.zone);
+        result.push(z);
+      }
+    });
+
+    return result;
+  }, [zonesList, floorsList, roomsList, searchFilters.buildings, searchFilters.levels]);
 
   // Filter rooms based on selected levels/floors and group them by zone names
   const filteredRooms = useMemo(() => {
@@ -782,18 +1053,25 @@ const ListRequest = () => {
       const payload = {
         Activity: searchFilters.keyword || null,
         PermitNo: searchFilters.permitNo || null,
-        Sub_Contractor_Id: searchFilters.contractors.length > 0 ? Number(searchFilters.contractors[0]) : null,
+        Sub_Contractor_Id: searchFilters.contractors.length > 0 ? searchFilters.contractors.join(",") : null,
         Request_status: searchFilters.statuses.length > 0 ? searchFilters.statuses.join(",") : null,
-        Building_Id: searchFilters.buildings.length > 0 ? Number(searchFilters.buildings[0]) : null,
+        Building_Id: searchFilters.buildings.length > 0 ? searchFilters.buildings.join(",") : null,
         Room_Type: searchFilters.levels.length > 0 ? searchFilters.levels.join(",") : null,
         Room_Nos: searchFilters.areas.length > 0 ? searchFilters.areas.join(",") : null,
+        zoneIds: zonesList.filter(z => searchFilters.zones && searchFilters.zones.includes(z.zone)).map(z => z.id).length > 0
+          ? zonesList.filter(z => searchFilters.zones && searchFilters.zones.includes(z.zone)).map(z => z.id)
+          : null,
+        zone: searchFilters.zones && searchFilters.zones.length > 0 ? searchFilters.zones.join(",") : null,
         permit_type: searchFilters.permitType || "",
         permit_under: searchFilters.permitUnder || "",
         night_shift: searchFilters.nightShift || "",
+        new_date: searchFilters.newDate || "",
+        new_end_time: searchFilters.newEndTime ? (searchFilters.newEndTime.length === 5 ? `${searchFilters.newEndTime}:00` : searchFilters.newEndTime) : "",
         fromDate: searchFilters.fromDate || "",
         toDate: searchFilters.toDate || "",
         Start_Time: searchFilters.startTime ? `${searchFilters.startTime}:00` : "",
         End_Time: searchFilters.endTime ? `${searchFilters.endTime}:00` : "",
+        Type_Of_Activity_Id: searchFilters.typeOfActivityId || null,
         Site_Id: 5,
         Page: page,
         End: limit
@@ -840,6 +1118,15 @@ const ListRequest = () => {
     }
   }, [searchFilters, limit]);
 
+  const isFirstFilterRender = useRef(true);
+  useEffect(() => {
+    if (isFirstFilterRender.current) {
+      isFirstFilterRender.current = false;
+      return;
+    }
+    setCurrentPage(1);
+  }, [searchFilters]);
+
   useEffect(() => {
     fetchRequests(currentPage);
   }, [currentPage, fetchRequests]);
@@ -854,11 +1141,12 @@ const ListRequest = () => {
     setSearchFilters({
       keyword: "",
       permitNo: "",
-      contractors: [],
+      contractors: isSubcontractor && currentUser?.typeId ? [String(currentUser.typeId)] : [],
       statuses: [],
       buildings: [],
       levels: [],
       areas: [],
+      zones: [],
       hras: [],
       permitType: "",
       permitUnder: "",
@@ -866,7 +1154,10 @@ const ListRequest = () => {
       toDate: "",
       startTime: "",
       endTime: "",
-      nightShift: ""
+      nightShift: "",
+      newDate: "",
+      newEndTime: "",
+      typeOfActivityId: ""
     });
     setCurrentPage(1);
   };
@@ -874,7 +1165,8 @@ const ListRequest = () => {
   // ─── Select Handling ───────────────────────────────────────────────────────
   const handleSelectAll = (checked) => {
     if (checked) {
-      setSelectedIds(requests.map(r => r.id));
+      const selectableRequests = requests.filter(r => !checkIfHideCheckbox(r));
+      setSelectedIds(selectableRequests.map(r => r.id));
     } else {
       setSelectedIds([]);
     }
@@ -978,8 +1270,41 @@ const ListRequest = () => {
     return currentUser?.role || "";
   };
 
+  const proceedWithStatusChange = (row, status) => {
+    const currentStatus = row?.Request_status || row?.request_status || "";
+    const workingDateVal = row?.Working_Date || row?.workingDate || row?.working_date || "";
+
+    const isWorkingDateToday = isTodayDate(workingDateVal);
+
+    setModalTarget(row);
+    setModalStatus(status);
+    setSubmitStatusOverride(null);
+    setInitials("");
+    setRejectReason("");
+    setCancelReason("");
+    setCloseNote("");
+    setClosingImageFiles([]);
+    setOpenActionType(isWorkingDateToday ? "Open" : "Cancel");
+    setApproveActionType("Approve");
+    setLowRiskHotwork(0);
+    setHighRiskHotwork(0);
+    setHotWorkChecklistFilled(0);
+    setFireGuardPresent(0);
+    setHHeatSource(0);
+    setHWorkplaceCheck(0);
+    setHFireDetectors(0);
+    setHStartTime("");
+    setHEndTime("");
+    setShowHStartPicker(false);
+    setShowHEndPicker(false);
+    setActiveModal("status");
+  };
+
   // Status transitions triggering dialogs
-  const handleStatusTransition = (row, status) => {
+  const handleStatusTransition = async (row, status) => {
+    const currentStatus = row?.Request_status || row?.request_status || "";
+    const workingDateVal = row?.Working_Date || row?.workingDate || row?.working_date || "";
+
     const permitType = row.permit_type || "";
     const permitUnder = row.permit_under || "";
 
@@ -1030,26 +1355,83 @@ const ListRequest = () => {
       }
     }
 
-    setModalTarget(row);
-    setModalStatus(status);
-    setSubmitStatusOverride(null);
-    setInitials("");
-    setRejectReason("");
-    setCancelReason("");
-    setCloseNote("");
-    setClosingImageFiles([]);
-    setOpenActionType("Open");
-    setApproveActionType("Approve");
-    setLowRiskHotwork(0);
-    setHighRiskHotwork(0);
-    setHotWorkChecklistFilled(0);
-    setFireGuardPresent(0);
-    setHHeatSource(0);
-    setHWorkplaceCheck(0);
-    setHFireDetectors(0);
-    setHStartTime("");
-    setHEndTime("");
-    setActiveModal("status");
+    // Check if there are existing permits with the same room/area and working date
+    const roomNosStr = row.Room_Nos || row.room_nos || "";
+    const splitingAreas = roomNosStr ? String(roomNosStr).split(",") : [];
+    const formattedArea = splitingAreas
+      .filter(val => val !== null && val !== undefined && val !== "")
+      .map(val => `${val}`.trim())
+      .join("|");
+
+    const workingDateStr = row.Working_Date || row.workingDate || "";
+    const formattedDate = workingDateStr ? String(workingDateStr).split("T")[0] : "";
+
+    const buildingIdClean = row.Building_Id || row.building_id;
+    const subconIdClean = row.Sub_Contractor_Id || row.sub_contractor_id;
+    const activityIdClean = row.Type_Of_Activity_Id || row.type_of_activity_id;
+    const roomTypeClean = (row.Room_Type || row.room_type || "").replace(/'/g, "").trim();
+
+    const searchCheckRequest = {
+      Room_Type: roomTypeClean,
+      fromDate: formattedDate,
+      toDate: formattedDate,
+      Page: 1,
+      End: 5,
+      Site_Id: 5,
+      Request_status: "Hold,Pre-Approved,Approved,Opened",
+      area: formattedArea || roomNosStr,
+      Room_Nos: roomNosStr
+    };
+
+    if (buildingIdClean && !isNaN(Number(String(buildingIdClean).replace(/'/g, "").trim()))) {
+      searchCheckRequest.Building_Id = Number(String(buildingIdClean).replace(/'/g, "").trim());
+    }
+    if (subconIdClean && !isNaN(Number(String(subconIdClean).replace(/'/g, "").trim()))) {
+      searchCheckRequest.Sub_Contractor_Id = Number(String(subconIdClean).replace(/'/g, "").trim());
+    }
+    if (activityIdClean && !isNaN(Number(String(activityIdClean).replace(/'/g, "").trim()))) {
+      searchCheckRequest.Type_Of_Activity_Id = Number(String(activityIdClean).replace(/'/g, "").trim());
+    }
+
+    try {
+      const res = await searchRequests(searchCheckRequest);
+      let responseData = res?.data ?? res;
+      let foundList = [];
+      if (Array.isArray(responseData)) {
+        if (responseData[0] && Array.isArray(responseData[0].data)) {
+          foundList = responseData[0].data;
+        } else {
+          foundList = responseData;
+        }
+      } else if (responseData?.rows) {
+        foundList = responseData.rows;
+      }
+
+      // Filter out current request
+      const duplicatePermits = foundList.filter(item => String(item.id) !== String(row.id));
+
+      if (duplicatePermits.length > 0) {
+        const result = await Swal.fire({
+          title: "Duplicate Permit Found",
+          text: "A permit already exists for this room and working date. Do you want to continue?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Continue",
+          cancelButtonText: "Cancel",
+          confirmButtonColor: "#3b82f6",
+          cancelButtonColor: "#6b7280"
+        });
+
+        if (result.isConfirmed) {
+          proceedWithStatusChange(row, status);
+        }
+      } else {
+        proceedWithStatusChange(row, status);
+      }
+    } catch (err) {
+      console.error("Error checking duplicate permit", err);
+      proceedWithStatusChange(row, status);
+    }
   };
 
   const handleStatusSubmit = async (e) => {
@@ -1080,7 +1462,11 @@ const ListRequest = () => {
       payload.cancel_reason = cancelReason.trim();
     } else if (nextStatus === "Opened") {
       if (modalStatus === "Opened") {
-        if (!initials.trim()) return showError("Supervisor/CONM initials signature required.");
+        const workingDateVal = modalTarget?.Working_Date || modalTarget?.workingDate || modalTarget?.working_date || "";
+        if (!isTodayDate(workingDateVal)) {
+          return showError("Permits can only be opened on their active Working Date. You can only cancel this permit.");
+        }
+        if (!initials.trim()) return showError("Supervisor Full Name / Phone Number is required.");
         payload.ConM_initials1 = initials.trim();
         if (modalTarget.Hot_work === 1) {
           if (Number(lowRiskHotwork) !== 1 && Number(highRiskHotwork) !== 1) {
@@ -1100,7 +1486,7 @@ const ListRequest = () => {
         payload.ConM_initials1 = modalTarget.ConM_initials1 || "";
       }
     } else if (nextStatus === "Closed") {
-      if (!closeNote.trim()) return showError("Please enter closing notes.");
+      if (!closeNote.trim()) return showError("Please enter closing notes / remarks.");
       payload.close_note = closeNote.trim();
       if (modalTarget.Hot_work === 1) {
         if (hHeatSource === null || hHeatSource === undefined) {
@@ -1163,15 +1549,45 @@ const ListRequest = () => {
       showSuccess(`Status changed to ${nextStatus} successfully`);
       setActiveModal(null);
       fetchRequests(currentPage);
-    } catch {
-      showError("Status update failed");
+    } catch (err) {
+      const backendMsg = err?.response?.data?.message;
+      const errMsg = Array.isArray(backendMsg)
+        ? backendMsg.join(", ")
+        : (typeof backendMsg === "string" ? backendMsg : null) || err?.message || "Status update failed";
+      showError(errMsg);
     }
   };
 
   // Bulk Actions
+  const validateBulkAction = () => {
+    if (selectedIds.length === 0) return false;
+    const restrictedStatuses = ["cancelled", "auto-cancelled", "auto cancelled", "closed", "rejected"];
+    const hasRestricted = requests
+      .filter((r) => selectedIds.includes(r.id))
+      .some((r) => {
+        const status = (r.Request_status || r.requestStatus || "").toLowerCase();
+        return restrictedStatuses.includes(status);
+      });
+
+    if (hasRestricted) {
+      showError("Bulk operations are not allowed on Cancelled, Auto-Cancelled, Closed, or Rejected permits.");
+      return false;
+    }
+    return true;
+  };
+
   const handleBulkStatusChange = (status) => {
-    if (selectedIds.length === 0) return;
+    if (!validateBulkAction()) return;
     const targetRequests = requests.filter(r => selectedIds.includes(r.id));
+
+    const invalidApproved = targetRequests.find(
+      r => (r.Request_status === "Approved" || r.request_status === "Approved") &&
+        !isTodayDate(r.Working_Date || r.workingDate || r.working_date)
+    );
+
+    if (invalidApproved) {
+      return showError("Status change is restricted for Approved permits when working date is not today.");
+    }
 
     setModalTarget(targetRequests);
     setModalStatus(status);
@@ -1191,11 +1607,11 @@ const ListRequest = () => {
     if (modalStatus === "Rejected") {
       payload.reject_reason = rejectReason.trim();
     } else {
-      if (isDept) payload.ConM_initials = initials.trim();
-      if (isDept1) payload.CoMM_initials = initials.trim();
-      if (isAdmin) {
+      if (initials.trim()) {
+        payload.initials = initials.trim();
         payload.ConM_initials = initials.trim();
         payload.CoMM_initials = initials.trim();
+        payload.ConM_initials1 = initials.trim();
       }
     }
 
@@ -1223,13 +1639,18 @@ const ListRequest = () => {
       }
       setActiveModal(null);
       fetchRequests(currentPage);
-    } catch {
-      showError("Bulk status update failed");
+    } catch (err) {
+      const backendMsg = err?.response?.data?.message;
+      const errMsg = Array.isArray(backendMsg)
+        ? backendMsg.join(", ")
+        : (typeof backendMsg === "string" ? backendMsg : null) || err?.message || "Bulk status update failed";
+      showError(errMsg);
     }
   };
 
   // Bulk Edit Dialogs
   const handleBulkTimeEdit = () => {
+    if (!validateBulkAction()) return;
     setBulkTime({ startTime: "", endTime: "", nightShift: false, newEndTime: "" });
     setActiveModal("time");
   };
@@ -1258,7 +1679,7 @@ const ListRequest = () => {
       if (bulkTime.nightShift) {
         if (bulkTime.newEndTime) {
           if (bulkTime.newEndTime >= bulkTime.startTime) {
-            showError("For night shift, new end time must be earlier than start time.");
+            showError("For working after midnight, new end time must be earlier than start time.");
             return;
           }
         }
@@ -1310,7 +1731,9 @@ const ListRequest = () => {
   };
 
   const handleBulkSafetyEdit = () => {
-    setBulkSafety("");
+    if (!validateBulkAction()) return;
+    setBulkSafety([]);
+    setIsPrecautionsDropdownOpen(false);
     setActiveModal("safety");
   };
 
@@ -1318,7 +1741,7 @@ const ListRequest = () => {
     e.preventDefault();
     const payload = {
       id: selectedIds.join(","),
-      safety: bulkSafety.trim(),
+      safety: bulkSafety.join(","),
       logs: []
     };
     try {
@@ -1326,12 +1749,17 @@ const ListRequest = () => {
       showSuccess("Selected permits safety instructions updated successfully");
       setActiveModal(null);
       fetchRequests(currentPage);
-    } catch {
-      showError("Bulk safety update failed");
+    } catch (err) {
+      const backendMsg = err?.response?.data?.message;
+      const errMsg = Array.isArray(backendMsg)
+        ? backendMsg.join(", ")
+        : (typeof backendMsg === "string" ? backendMsg : null) || err?.message || "Bulk safety update failed";
+      showError(errMsg);
     }
   };
 
   const handleBulkNotesEdit = () => {
+    if (!validateBulkAction()) return;
     setBulkNote("");
     setActiveModal("notes");
   };
@@ -1358,13 +1786,36 @@ const ListRequest = () => {
   // Copy permit request to range
   const handleCopyTrigger = (row) => {
     setModalTarget(row);
-    setCopyDates({ from: "", to: "" });
+    // Default the from/to date to the next calendar day after the permit's working date
+    const workingDate = row.Working_Date ? new Date(row.Working_Date) : new Date();
+    workingDate.setDate(workingDate.getDate() + 1);
+    const nextDateStr = workingDate.toISOString().split("T")[0];
+    const isNight = row.night_shift === 1 || row.night_shift === true;
+    const formatTimeHHMM = (t) => {
+      if (!t) return "";
+      const str = String(t).trim();
+      return str.length >= 5 ? str.substring(0, 5) : str;
+    };
+    setCopyDates({
+      from: nextDateStr,
+      to: nextDateStr,
+      startTime: formatTimeHHMM(row.Start_Time || row.start_time),
+      endTime: formatTimeHHMM(row.End_Time || row.end_time),
+      nightShift: isNight,
+      newEndTime: formatTimeHHMM(row.New_End_Time || row.new_end_time)
+    });
+    setShowCopyStartPicker(false);
+    setShowCopyEndPicker(false);
+    setShowCopyNewEndPicker(false);
     setActiveModal("copy");
   };
 
   const handleCopySubmit = async (e) => {
     e.preventDefault();
     if (!copyDates.from || !copyDates.to) return showError("Please select date range.");
+    if (!copyDates.startTime) return showError("Please enter Start Time.");
+    if (!copyDates.endTime) return showError("Please enter End Time.");
+    if (copyDates.nightShift && !copyDates.newEndTime) return showError("Working after midnight requires a New End Time.");
 
     const oneDay = 24 * 60 * 60 * 1000;
     const fromVal = new Date(copyDates.from);
@@ -1372,11 +1823,8 @@ const ListRequest = () => {
 
     if (toVal < fromVal) return showError("End date cannot be earlier than start date.");
 
-    if (copyDates.from === copyDates.to && modalTarget.Start_Time && modalTarget.End_Time) {
-      const isNightShift = modalTarget.night_shift === 1 || modalTarget.night_shift === true;
-      if (!isNightShift && modalTarget.End_Time < modalTarget.Start_Time) {
-        return showError("The copied request has an invalid time range (Start Time is later than End Time).");
-      }
+    if (!copyDates.nightShift && copyDates.endTime < copyDates.startTime) {
+      return showError("End Time cannot be earlier than Start Time for a day shift.");
     }
 
     const today = new Date();
@@ -1404,16 +1852,19 @@ const ListRequest = () => {
       Room_Nos: modalTarget.Room_Nos,
       Room_Type: modalTarget.Room_Type,
       Site_Id: modalTarget.Site_Id ? Number(modalTarget.Site_Id) : 5,
-      Start_Time: modalTarget.Start_Time,
+      Start_Time: copyDates.startTime ? (copyDates.startTime.length === 5 ? `${copyDates.startTime}:00` : copyDates.startTime) : "",
       Sub_Contractor_Id: modalTarget.Sub_Contractor_Id ? Number(modalTarget.Sub_Contractor_Id) : null,
       Type_Of_Activity_Id: modalTarget.Type_Of_Activity_Id ? String(modalTarget.Type_Of_Activity_Id) : "",
-      Assign_Start_Time: modalTarget.Start_Time,
-      Assign_End_Time: modalTarget.End_Time,
+      Assign_Start_Time: copyDates.startTime ? (copyDates.startTime.length === 5 ? `${copyDates.startTime}:00` : copyDates.startTime) : "",
+      Assign_End_Time: copyDates.endTime ? (copyDates.endTime.length === 5 ? `${copyDates.endTime}:00` : copyDates.endTime) : "",
       Assign_Start_Date: copyDates.from,
       Assign_End_Date: copyDates.to,
       Building_Id: modalTarget.Building_Id ? Number(modalTarget.Building_Id) : null,
       Company_Name: modalTarget.Company_Name,
-      End_Time: modalTarget.End_Time,
+      End_Time: copyDates.endTime ? (copyDates.endTime.length === 5 ? `${copyDates.endTime}:00` : copyDates.endTime) : "",
+      New_End_Time: copyDates.nightShift ? (copyDates.newEndTime ? (copyDates.newEndTime.length === 5 ? `${copyDates.newEndTime}:00` : copyDates.newEndTime) : undefined) : undefined,
+      night_shift: copyDates.nightShift ? 1 : 0,
+      Number_Of_Workers: modalTarget.Number_Of_Workers || undefined,
       Floor_Id: modalTarget.Floor_Id ? Number(modalTarget.Floor_Id) : null,
       Foreman: modalTarget.Foreman,
       Foreman_Phone_Number: modalTarget.Foreman_Phone_Number,
@@ -1425,25 +1876,30 @@ const ListRequest = () => {
 
     try {
       await createByCount(payload);
-      showSuccess("Permits cloned successfully");
+      showSuccess("Permits copied successfully");
       setActiveModal(null);
       fetchRequests(currentPage);
     } catch {
-      showError("Clone operation failed");
+      showError("Copy operation failed");
     }
   };
+
+  const selectableRequestsCount = useMemo(() => {
+    return requests.filter(r => !checkIfHideCheckbox(r)).length;
+  }, [requests, checkIfHideCheckbox]);
 
   // ─── Table Configuration ──────────────────────────────────────────────────
   const columns = [
     {
-      header: (
+      header: !isObserver && !isSubcontractor && (
         <input
           type="checkbox"
-          checked={requests.length > 0 && selectedIds.length === requests.length}
+          checked={selectableRequestsCount > 0 && selectedIds.length === selectableRequestsCount}
           onChange={(e) => handleSelectAll(e.target.checked)}
         />
       ),
       accessor: "checkboxCell",
+      className: "sticky-col-checkbox",
       style: { width: "40px", textAlign: "center" }
     },
     { header: "Permit Number", accessor: "PermitNo" },
@@ -1459,11 +1915,16 @@ const ListRequest = () => {
     { header: "Rooms", accessor: "rooms" },
     { header: "Working Date", accessor: "Working_Date" },
     { header: "Time", accessor: "timeCell" },
-    { header: "Night Shift", accessor: "nightShiftCell" },
+    { header: "Working After Midnight", accessor: "nightShiftCell" },
     { header: "New End Time", accessor: "newEndTimeCell" },
     { header: "Status", accessor: "statusCell", className: "sticky-col-status" },
     { header: "Operations", accessor: "operationsCell", className: "sticky-col-operations", style: { width: "180px", minWidth: "180px", maxWidth: "180px" } }
-  ];
+  ].filter(col => {
+    if (col.accessor === "checkboxCell" && (isObserver || isSubcontractor)) {
+      return false;
+    }
+    return true;
+  });
 
   const tableData = useMemo(() => {
     return requests.map((row) => {
@@ -1494,7 +1955,7 @@ const ListRequest = () => {
       // New End Time value
       const newEndTimeCell = row.new_end_time ? row.new_end_time.slice(0, 5) : "—";
 
-      // HRA icons logic
+      // HRA icons logic — only show logos for active HRAs (no black-and-white for inactive)
       const activeHras = HRA_LIST.filter(hra => row[hra.key] === 1 || row[hra.key] === "1" || row[hra.key] === true);
       const hraCell = (
         <div className="hra-icons-group">
@@ -1511,13 +1972,72 @@ const ListRequest = () => {
         </div>
       );
 
-      const isEditable = (isAdmin || isSubcontractor) &&
-        row.Request_status !== "Cancelled" &&
-        row.Request_status !== "Closed" &&
-        row.Request_status !== "Rejected" &&
-        row.Request_status !== "Auto-Cancelled" &&
-        row.Request_status !== "Auto Cancelled" &&
-        currentUser?.role !== "Observer";
+      const isDept1Commissioning = isDept1 && (
+        String(row.permit_under).toLowerCase() === "commissioning" ||
+        String(row.permit_type).toLowerCase() === "commissioning"
+      );
+
+      const isMultiDept = isDept && isDept1;
+
+      const isEditable = (() => {
+        const isStatusAllowed = row.Request_status !== "Cancelled" &&
+          row.Request_status !== "Closed" &&
+          row.Request_status !== "Rejected" &&
+          row.Request_status !== "Auto-Cancelled" &&
+          row.Request_status !== "Auto Cancelled" &&
+          currentUser?.role !== "Observer" &&
+          !isSubcontractor;
+
+        if (!isStatusAllowed) return false;
+        if (isAdmin || isMultiDept) return true;
+
+        if (isDept) {
+          const eitherIsConstruction = String(row.permit_under).toLowerCase() === "construction" ||
+                                        String(row.permit_type).toLowerCase() === "construction";
+          return eitherIsConstruction;
+        }
+
+        if (isDept1) {
+          return isDept1Commissioning;
+        }
+
+        return false;
+      })();
+
+      const isDeletable = (() => {
+        if (isAdmin || isMultiDept) return true;
+
+        if (isDept) {
+          const eitherIsConstruction = String(row.permit_under).toLowerCase() === "construction" ||
+                                        String(row.permit_type).toLowerCase() === "construction";
+          return eitherIsConstruction;
+        }
+
+        if (isDept1) {
+          return isDept1Commissioning;
+        }
+
+        return false;
+      })();
+
+      const isCopyable = (() => {
+        if (currentUser?.role === "Observer") return false;
+        if (isAdmin || isSubcontractor || isMultiDept) return true;
+
+        if (isDept) {
+          const eitherIsConstruction = String(row.permit_under).toLowerCase() === "construction" ||
+                                        String(row.permit_type).toLowerCase() === "construction";
+          return eitherIsConstruction;
+        }
+
+        if (isDept1) {
+          const bothAreConstruction = String(row.permit_under).toLowerCase() === "construction" &&
+                                       String(row.permit_type).toLowerCase() === "construction";
+          return !bothAreConstruction;
+        }
+
+        return false;
+      })();
 
       // Status chip render
       const statusClass = `status-badge status-badge--${row.Request_status?.toLowerCase().replace(" ", "-")}`;
@@ -1534,12 +2054,7 @@ const ListRequest = () => {
         // Subcontractor opening or closing permit
         if (isSubcontractor) {
           if (row.Request_status === "Approved") {
-            const today = new Date().toISOString().split("T")[0];
-            if (row.Working_Date === today) {
-              handleStatusTransition(row, "Opened");
-            } else {
-              showError("Subcontractor can only open a permit on the active Working Date.");
-            }
+            handleStatusTransition(row, "Opened");
           } else if (row.Request_status === "Opened") {
             handleStatusTransition(row, "Closed");
           }
@@ -1605,17 +2120,17 @@ const ListRequest = () => {
             <FaEye />
           </a>
 
-          {currentUser?.role !== "Observer" && (
+          {isCopyable && (
             <button
               className="op-action-btn op-action-btn--copy"
-              title="Clone/Copy Request"
+              title="Copy Request"
               onClick={() => handleCopyTrigger(row)}
             >
               <FaCopy />
             </button>
           )}
 
-          {isAdmin && (
+          {isDeletable && (
             <button
               className="op-action-btn op-action-btn--delete"
               title="Delete Request"
@@ -1637,13 +2152,14 @@ const ListRequest = () => {
 
       return {
         ...row,
-        checkboxCell: (
+        _rowClassName: selectedIds.includes(row.id) ? "row-selected" : "",
+        checkboxCell: !checkIfHideCheckbox(row) ? (
           <input
             type="checkbox"
             checked={selectedIds.includes(row.id)}
             onChange={(e) => handleSelectRow(e.target.checked, row.id)}
           />
-        ),
+        ) : null,
         contractorName: trimLongValue(contractorName, 25),
         buildingName: trimLongValue(buildingName, 20),
         zone: trimLongValue(zoneName, 20),
@@ -1694,123 +2210,8 @@ const ListRequest = () => {
       {filtersOpen && (
         <div className="form-card filters-card-wrapper premium-form-container">
           <form onSubmit={handleSearchSubmit} className="df-form">
-            <div className="df-grid df-grid--4-cols">
-              <div className="df-field">
-                <label className="df-label">Permit Number</label>
-                <input
-                  type="text"
-                  className="df-input"
-                  placeholder="e.g. 82389714..."
-                  value={searchFilters.permitNo}
-                  onChange={(e) => setSearchFilters(prev => ({ ...prev, permitNo: e.target.value }))}
-                />
-              </div>
-
-              <div className="df-field">
-                <label className="df-label">Keyword (Activity)</label>
-                <input
-                  type="text"
-                  className="df-input"
-                  placeholder="e.g. Piping, welding..."
-                  value={searchFilters.keyword}
-                  onChange={(e) => setSearchFilters(prev => ({ ...prev, keyword: e.target.value }))}
-                />
-              </div>
-
-              <div className="df-field">
-                <label className="df-label">Contractor</label>
-                <MultiSelectDropdown
-                  placeholder="Select Contractors"
-                  options={contractors}
-                  selectedValues={searchFilters.contractors}
-                  onChange={(vals) => setSearchFilters(prev => ({ ...prev, contractors: vals }))}
-                />
-              </div>
-
-              <div className="df-field">
-                <label className="df-label">Permit Status</label>
-                <MultiSelectDropdown
-                  placeholder="Select Statuses"
-                  options={STATUS_OPTIONS}
-                  selectedValues={searchFilters.statuses}
-                  onChange={(vals) => setSearchFilters(prev => ({ ...prev, statuses: vals }))}
-                />
-              </div>
-            </div>
-
-            <div className="df-grid df-grid--4-cols" style={{ marginTop: "16px" }}>
-              <div className="df-field">
-                <label className="df-label">Building</label>
-                <MultiSelectDropdown
-                  placeholder="Select Buildings"
-                  options={buildingsList}
-                  selectedValues={searchFilters.buildings}
-                  onChange={(vals) => setSearchFilters(prev => ({ ...prev, buildings: vals, levels: [], areas: [] }))}
-                />
-              </div>
-
-              <div className="df-field">
-                <label className="df-label">Level / Floor</label>
-                <MultiSelectDropdown
-                  placeholder="Select Levels"
-                  options={filteredLevels.map(f => f.floor_name)}
-                  selectedValues={searchFilters.levels}
-                  onChange={(vals) => setSearchFilters(prev => ({ ...prev, levels: vals, areas: [] }))}
-                  disabled={searchFilters.buildings.length === 0}
-                />
-              </div>
-
-              <div className="df-field">
-                <label className="df-label">Rooms</label>
-                <MultiSelectDropdown
-                  placeholder="Select Rooms"
-                  options={filteredRooms}
-                  selectedValues={searchFilters.areas}
-                  onChange={(vals) => setSearchFilters(prev => ({ ...prev, areas: vals }))}
-                  disabled={searchFilters.levels.length === 0}
-                />
-              </div>
-
-              <div className="df-field">
-                <label className="df-label">HRA Checklists</label>
-                <MultiSelectDropdown
-                  placeholder="Select HRA Checklists"
-                  options={HRA_LIST.map(h => ({ ...h, image: h.image || LOGO_MAP[h.icon] }))}
-                  selectedValues={searchFilters.hras}
-                  onChange={(vals) => setSearchFilters(prev => ({ ...prev, hras: vals }))}
-                  hasNone={true}
-                  isHra={true}
-                />
-              </div>
-            </div>
-
-            <div className="df-grid df-grid--4-cols" style={{ marginTop: "16px" }}>
-              <div className="df-field">
-                <label className="df-label">Permit Type</label>
-                <select
-                  className="df-select"
-                  value={searchFilters.permitType}
-                  onChange={(e) => setSearchFilters(prev => ({ ...prev, permitType: e.target.value }))}
-                >
-                  <option value="">All Types</option>
-                  <option value="Construction">Construction</option>
-                  <option value="Commissioning">Commissioning</option>
-                </select>
-              </div>
-
-              <div className="df-field">
-                <label className="df-label">Permit Under</label>
-                <select
-                  className="df-select"
-                  value={searchFilters.permitUnder}
-                  onChange={(e) => setSearchFilters(prev => ({ ...prev, permitUnder: e.target.value }))}
-                >
-                  <option value="">All Areas</option>
-                  <option value="Construction">Construction</option>
-                  <option value="Commissioning">Commissioning</option>
-                </select>
-              </div>
-
+            <div className="df-grid">
+              {/* Row 1: Working Date range (From) | Working Date range (To) */}
               <div className="df-field">
                 <label className="df-label">Working Date range (From)</label>
                 <input
@@ -1830,70 +2231,344 @@ const ListRequest = () => {
                   onChange={(e) => setSearchFilters(prev => ({ ...prev, toDate: e.target.value }))}
                 />
               </div>
-            </div>
 
-            <div className="df-grid df-grid--4-cols" style={{ marginTop: "16px" }}>
+              {/* Row 2: Building | Level / Floor */}
               <div className="df-field">
-                <label className="df-label">Start Time</label>
-                <input
-                  type="text"
-                  placeholder="00:00"
-                  readOnly
-                  className="df-input"
-                  value={searchFilters.startTime}
-                  onClick={() => setShowStartPicker(true)}
-                  style={{ cursor: 'pointer' }}
+                <label className="df-label">Building</label>
+                <MultiSelectDropdown
+                  placeholder="Select Buildings"
+                  options={buildingsList}
+                  selectedValues={searchFilters.buildings}
+                  onChange={(vals) => setSearchFilters(prev => ({ ...prev, buildings: vals, levels: [], areas: [] }))}
                 />
-                {showStartPicker && (
-                  <div className="timekeeper-modal-overlay" onClick={() => setShowStartPicker(false)}>
-                    <AnalogTimePicker
-                      initialTime={searchFilters.startTime || "12:00"}
-                      onSave={(newTime) => {
-                        setSearchFilters(prev => ({ ...prev, startTime: newTime }));
-                        setShowStartPicker(false);
-                      }}
-                      onCancel={() => setShowStartPicker(false)}
-                    />
-                  </div>
+              </div>
+
+              <div className="df-field">
+                <label className="df-label">Level / Floor</label>
+                <MultiSelectDropdown
+                  placeholder="Select Levels"
+                  options={filteredLevels.map(f => f.floor_name)}
+                  selectedValues={searchFilters.levels}
+                  onChange={(vals) => setSearchFilters(prev => ({ ...prev, levels: vals, areas: [], zones: [] }))}
+                />
+              </div>
+
+              {/* Row 3: Zones | Rooms */}
+              <div className="df-field">
+                <label className="df-label">Zones</label>
+                <MultiSelectDropdown
+                  placeholder="Select Zones"
+                  options={filteredZones.map(z => z.zone)}
+                  selectedValues={searchFilters.zones || []}
+                  onChange={(vals) => setSearchFilters(prev => ({ ...prev, zones: vals }))}
+                />
+              </div>
+
+              <div className="df-field">
+                <label className="df-label">Rooms</label>
+                <MultiSelectDropdown
+                  placeholder="Select Rooms"
+                  options={filteredRooms}
+                  selectedValues={searchFilters.areas}
+                  onChange={(vals) => setSearchFilters(prev => ({ ...prev, areas: vals }))}
+                />
+              </div>
+
+              {/* Row 4: Contractor | Permit Status */}
+              <div className="df-field">
+                <label className="df-label">Contractor</label>
+                {isSubcontractor ? (
+                  <input
+                    type="text"
+                    className="df-input df-readonly"
+                    value={contractors.length > 0 ? (contractors.find(c => String(c.id) === String(currentUser?.typeId))?.subContractorName || contractors[0]?.subContractorName) : "Loading..."}
+                    readOnly
+                  />
+                ) : (
+                  <MultiSelectDropdown
+                    placeholder="Select Contractors"
+                    options={contractors}
+                    selectedValues={searchFilters.contractors}
+                    onChange={(vals) => setSearchFilters(prev => ({ ...prev, contractors: vals }))}
+                  />
                 )}
               </div>
 
               <div className="df-field">
-                <label className="df-label">End Time</label>
-                <input
-                  type="text"
-                  placeholder="00:00"
-                  readOnly
-                  className="df-input"
-                  value={searchFilters.endTime}
-                  onClick={() => setShowEndPicker(true)}
-                  style={{ cursor: 'pointer' }}
+                <label className="df-label">Permit Status</label>
+                <MultiSelectDropdown
+                  placeholder="Select Statuses"
+                  options={STATUS_OPTIONS}
+                  selectedValues={searchFilters.statuses}
+                  onChange={(vals) => setSearchFilters(prev => ({ ...prev, statuses: vals }))}
                 />
-                {showEndPicker && (
-                  <div className="timekeeper-modal-overlay" onClick={() => setShowEndPicker(false)}>
-                    <AnalogTimePicker
-                      initialTime={searchFilters.endTime || "12:00"}
-                      onSave={(newTime) => {
-                        setSearchFilters(prev => ({ ...prev, endTime: newTime }));
-                        setShowEndPicker(false);
-                      }}
-                      onCancel={() => setShowEndPicker(false)}
-                    />
-                  </div>
-                )}
               </div>
 
+              {/* Row 5: Type of activity | Keyword (Activity) */}
               <div className="df-field">
-                <label className="df-label">Night Shift</label>
+                <label className="df-label">Type of activity</label>
                 <select
                   className="df-select"
-                  value={searchFilters.nightShift}
-                  onChange={(e) => setSearchFilters(prev => ({ ...prev, nightShift: e.target.value }))}
+                  value={searchFilters.typeOfActivityId}
+                  onChange={(e) => setSearchFilters(prev => ({ ...prev, typeOfActivityId: e.target.value }))}
                 >
-                  <option value="">All Shifts</option>
-                  <option value="1">Yes</option>
-                  <option value="0">No</option>
+                  <option value="">All Activities</option>
+                  {activitiesList.map(act => (
+                    <option key={act.id} value={act.id}>{act.activityName}</option>
+                  ))}
                 </select>
+              </div>
+
+              <div className="df-field">
+                <label className="df-label">Keyword (Activity)</label>
+                <input
+                  type="text"
+                  className="df-input"
+                  placeholder="e.g. Piping, welding..."
+                  value={searchFilters.keyword}
+                  onChange={(e) => setSearchFilters(prev => ({ ...prev, keyword: e.target.value }))}
+                />
+              </div>
+
+              {/* Row 6: Start Time | End Time | Night Shift */}
+              <div className="df-field--full time-nightshift-grid">
+                <div className="df-field">
+                  <label className="df-label">Start Time</label>
+                  <div style={{ position: "relative", width: "100%" }}>
+                    <input
+                      type="text"
+                      placeholder="00:00"
+                      readOnly
+                      className="df-input"
+                      value={searchFilters.startTime}
+                      onClick={() => setShowStartPicker(true)}
+                      style={{ cursor: 'pointer', paddingRight: searchFilters.startTime ? "30px" : "12px" }}
+                    />
+                    {searchFilters.startTime && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSearchFilters(prev => ({ ...prev, startTime: "" }));
+                        }}
+                        style={{
+                          position: "absolute",
+                          right: "10px",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          background: "none",
+                          border: "none",
+                          color: "var(--text-muted, #9ca3af)",
+                          cursor: "pointer",
+                          fontSize: "14px",
+                          padding: "4px"
+                        }}
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+                  {showStartPicker && (
+                    <div className="timekeeper-modal-overlay" onClick={() => setShowStartPicker(false)}>
+                      <AnalogTimePicker
+                        initialTime={searchFilters.startTime || "12:00"}
+                        onSave={(newTime) => {
+                          setSearchFilters(prev => ({ ...prev, startTime: newTime }));
+                          setShowStartPicker(false);
+                        }}
+                        onCancel={() => setShowStartPicker(false)}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div className="df-field">
+                  <label className="df-label">End Time</label>
+                  <div style={{ position: "relative", width: "100%" }}>
+                    <input
+                      type="text"
+                      placeholder="00:00"
+                      readOnly
+                      className="df-input"
+                      value={searchFilters.endTime}
+                      onClick={() => setShowEndPicker(true)}
+                      style={{ cursor: 'pointer', paddingRight: searchFilters.endTime ? "30px" : "12px" }}
+                    />
+                    {searchFilters.endTime && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSearchFilters(prev => ({ ...prev, endTime: "" }));
+                        }}
+                        style={{
+                          position: "absolute",
+                          right: "10px",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          background: "none",
+                          border: "none",
+                          color: "var(--text-muted, #9ca3af)",
+                          cursor: "pointer",
+                          fontSize: "14px",
+                          padding: "4px"
+                        }}
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+                  {showEndPicker && (
+                    <div className="timekeeper-modal-overlay" onClick={() => setShowEndPicker(false)}>
+                      <AnalogTimePicker
+                        initialTime={searchFilters.endTime || "12:00"}
+                        onSave={(newTime) => {
+                          setSearchFilters(prev => ({ ...prev, endTime: newTime }));
+                          setShowEndPicker(false);
+                        }}
+                        onCancel={() => setShowEndPicker(false)}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div className="df-field" style={{ display: "flex", flexDirection: "column", justifyContent: "flex-end", height: "100%" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", height: "46px", paddingLeft: "12px", border: "1.5px solid var(--border-color, #374151)", borderRadius: "12px", backgroundColor: "var(--bg-card, #111827)" }}>
+                    <input
+                      type="checkbox"
+                      id="listRequestNightShiftCheckbox"
+                      checked={Boolean(searchFilters.nightShift === "1" || searchFilters.nightShift === 1 || searchFilters.nightShift === true)}
+                      onChange={(e) => {
+                        const checked = e.target.checked;
+                        setSearchFilters(prev => ({
+                          ...prev,
+                          nightShift: checked ? "1" : "",
+                          newDate: checked ? prev.newDate : "",
+                          newEndTime: checked ? prev.newEndTime : ""
+                        }));
+                      }}
+                      style={{ width: "16px", height: "16px", cursor: "pointer", accentColor: "var(--accent, #00e5a0)" }}
+                    />
+                    <label htmlFor="listRequestNightShiftCheckbox" className="df-label" style={{ margin: 0, cursor: "pointer", textTransform: "none", fontSize: "14px", fontWeight: "normal", color: "var(--text-main, #f9fafb)" }}>
+                      Working after midnight? Yes
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Conditional Working After Midnight Fields */}
+              {(searchFilters.nightShift === "1" || searchFilters.nightShift === 1 || searchFilters.nightShift === true) && (
+                <>
+                  <div className="df-field">
+                    <label className="df-label">New Date</label>
+                    <input
+                      type="date"
+                      className="df-input"
+                      value={searchFilters.newDate || ""}
+                      onChange={(e) => setSearchFilters(prev => ({ ...prev, newDate: e.target.value }))}
+                    />
+                  </div>
+                  <div className="df-field">
+                    <label className="df-label">New End Time</label>
+                    <div style={{ position: "relative", width: "100%" }}>
+                      <input
+                        type="text"
+                        placeholder="00:00"
+                        readOnly
+                        className="df-input"
+                        value={searchFilters.newEndTime || ""}
+                        onClick={() => setShowSearchNewEndPicker(true)}
+                        style={{ cursor: 'pointer', paddingRight: searchFilters.newEndTime ? "30px" : "12px" }}
+                      />
+                      {searchFilters.newEndTime && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSearchFilters(prev => ({ ...prev, newEndTime: "" }));
+                          }}
+                          style={{
+                            position: "absolute",
+                            right: "10px",
+                            top: "50%",
+                            transform: "translateY(-50%)",
+                            background: "none",
+                            border: "none",
+                            color: "var(--text-muted, #9ca3af)",
+                            cursor: "pointer",
+                            fontSize: "14px",
+                            padding: "4px"
+                          }}
+                        >
+                          ✕
+                        </button>
+                      )}
+                    </div>
+                    {showSearchNewEndPicker && (
+                      <div className="timekeeper-modal-overlay" onClick={() => setShowSearchNewEndPicker(false)}>
+                        <AnalogTimePicker
+                          initialTime={searchFilters.newEndTime || "12:00"}
+                          onSave={(newTime) => {
+                            setSearchFilters(prev => ({ ...prev, newEndTime: newTime }));
+                            setShowSearchNewEndPicker(false);
+                          }}
+                          onCancel={() => setShowSearchNewEndPicker(false)}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+
+              {/* Row 7: Permit Under | Permit Type */}
+              <div className="df-field">
+                <label className="df-label">Permit Under</label>
+                <select
+                  className="df-select"
+                  value={searchFilters.permitUnder}
+                  onChange={(e) => setSearchFilters(prev => ({ ...prev, permitUnder: e.target.value }))}
+                >
+                  <option value="">All Areas</option>
+                  <option value="Construction">Construction</option>
+                  <option value="Commissioning">Commissioning</option>
+                </select>
+              </div>
+
+              <div className="df-field">
+                <label className="df-label">Permit Type</label>
+                <select
+                  className="df-select"
+                  value={searchFilters.permitType}
+                  onChange={(e) => setSearchFilters(prev => ({ ...prev, permitType: e.target.value }))}
+                >
+                  <option value="">All Types</option>
+                  <option value="Construction">Construction</option>
+                  <option value="Commissioning">Commissioning</option>
+                </select>
+              </div>
+
+              {/* Row 8: Permit Number | HRA Checklists */}
+              <div className="df-field">
+                <label className="df-label">Permit Number</label>
+                <input
+                  type="text"
+                  className="df-input"
+                  placeholder="e.g. 82389714..."
+                  value={searchFilters.permitNo}
+                  onChange={(e) => setSearchFilters(prev => ({ ...prev, permitNo: e.target.value }))}
+                />
+              </div>
+
+              <div className="df-field">
+                <label className="df-label">HRA Checklists</label>
+                <MultiSelectDropdown
+                  placeholder="Select HRA Checklists"
+                  options={HRA_LIST.map(h => ({ ...h, image: h.image || LOGO_MAP[h.icon] }))}
+                  selectedValues={searchFilters.hras}
+                  onChange={(vals) => setSearchFilters(prev => ({ ...prev, hras: vals }))}
+                  hasNone={true}
+                  isHra={true}
+                />
               </div>
             </div>
 
@@ -1953,15 +2628,48 @@ const ListRequest = () => {
                 </button>
 
                 {/* Operations Dropdown */}
-                <div className="bulk-edit-dropdown-container">
-                  <button className="bat-btn bat-btn--edit">
+                <div className="bulk-edit-dropdown-container" ref={bulkDropdownRef}>
+                  <button 
+                    type="button"
+                    className="bat-btn bat-btn--edit"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setBulkDropdownOpen(prev => !prev);
+                    }}
+                  >
                     Bulk Edit Controls
                   </button>
-                  <div className="bulk-edit-dropdown-menu">
-                    <button onClick={handleBulkTimeEdit}>Shift &amp; Working Time</button>
-                    <button onClick={handleBulkSafetyEdit}>Safety Precautions</button>
-                    <button onClick={handleBulkNotesEdit}>Add Note</button>
-                  </div>
+                  {bulkDropdownOpen && (
+                    <div className="bulk-edit-dropdown-menu" style={{ display: "block" }}>
+                      <button 
+                        type="button"
+                        onClick={() => {
+                          handleBulkTimeEdit();
+                          setBulkDropdownOpen(false);
+                        }}
+                      >
+                        Shift &amp; Working Time
+                      </button>
+                      <button 
+                        type="button"
+                        onClick={() => {
+                          handleBulkSafetyEdit();
+                          setBulkDropdownOpen(false);
+                        }}
+                      >
+                        Safety Precautions
+                      </button>
+                      <button 
+                        type="button"
+                        onClick={() => {
+                          handleBulkNotesEdit();
+                          setBulkDropdownOpen(false);
+                        }}
+                      >
+                        Add Note
+                      </button>
+                    </div>
+                  )}
                 </div>
               </>
             )}
@@ -2000,7 +2708,7 @@ const ListRequest = () => {
         {!isLoading && requests.length > 0 && (
           <div style={{
             display: "flex",
-            justifyContent: "center",
+            justifyContent: "space-between",
             alignItems: "center",
             marginTop: "16px",
             paddingTop: "16px",
@@ -2009,7 +2717,45 @@ const ListRequest = () => {
             fontSize: "14px",
             fontWeight: 500
           }}>
-            Showing {requests.length} of <strong style={{ color: "var(--text-main, #f9fafb)", marginLeft: "4px", marginRight: "4px" }}>{totalCount}</strong> permits
+            <div>
+              Showing {requests.length} of <strong style={{ color: "var(--text-main, #f9fafb)", marginLeft: "4px", marginRight: "4px" }}>{totalCount}</strong> permits
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <span style={{ fontSize: "13px", color: "var(--text-muted, #9ca3af)", fontWeight: 500 }}>Permits per page:</span>
+              <div style={{
+                display: "inline-flex",
+                background: "rgba(255, 255, 255, 0.05)",
+                border: "1px solid var(--border-color, rgba(255, 255, 255, 0.12))",
+                borderRadius: "8px",
+                padding: "3px",
+                gap: "4px"
+              }}>
+                {[30, 50].map((size) => (
+                  <button
+                    key={size}
+                    type="button"
+                    onClick={() => {
+                      setLimit(size);
+                      setCurrentPage(1);
+                    }}
+                    style={{
+                      border: "none",
+                      background: limit === size ? "var(--primary-color, #3b82f6)" : "transparent",
+                      color: limit === size ? "#ffffff" : "var(--text-muted, #9ca3af)",
+                      padding: "4px 14px",
+                      borderRadius: "6px",
+                      fontSize: "13px",
+                      fontWeight: limit === size ? "600" : "500",
+                      cursor: "pointer",
+                      transition: "all 0.2s ease",
+                      boxShadow: limit === size ? "0 2px 8px rgba(59, 130, 246, 0.3)" : "none"
+                    }}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -2029,10 +2775,44 @@ const ListRequest = () => {
           <form onSubmit={handleStatusSubmit} className="df-form">
             <div style={{ maxHeight: "50vh", overflowY: "auto", paddingRight: "8px", marginBottom: "16px" }}>
               <div style={{ marginBottom: "16px" }}>
-                <p style={{ color: "#d1d5db", fontSize: "14px" }}>
-                  Changing status of Permit No: <strong style={{ color: "#fff" }}>{modalTarget.PermitNo}</strong>
+                <p style={{ color: "var(--text-muted, inherit)", fontSize: "14px" }}>
+                  Changing status of Permit No: <strong style={{ color: "var(--text-h, inherit)" }}>{modalTarget.PermitNo}</strong>
                 </p>
               </div>
+
+              {/* Opening Confirmation Declaration */}
+              {modalStatus === "Opened" && openActionType === "Open" && (
+                <div style={{
+                  background: "rgba(59, 130, 246, 0.12)",
+                  borderLeft: "4px solid #3b82f6",
+                  padding: "12px 16px",
+                  borderRadius: "6px",
+                  marginBottom: "16px",
+                  color: "var(--text-h, inherit)",
+                  fontSize: "13px",
+                  fontWeight: "500",
+                  lineHeight: "1.5"
+                }}>
+                  I confirm that the permit is met with all conditions according to RAMS/SPA requirements and take responsibility for safe work execution.
+                </div>
+              )}
+
+              {/* Closing Confirmation Declaration */}
+              {modalStatus === "Closed" && (
+                <div style={{
+                  background: "rgba(16, 185, 129, 0.12)",
+                  borderLeft: "4px solid #10b981",
+                  padding: "12px 16px",
+                  borderRadius: "6px",
+                  marginBottom: "16px",
+                  color: "var(--text-h, inherit)",
+                  fontSize: "13px",
+                  fontWeight: "500",
+                  lineHeight: "1.5"
+                }}>
+                  I confirm that the work activities under this permit are completed and the area has been made safe, clean and ensure that all post work conditions are fulfilled.
+                </div>
+              )}
 
               {/* Action choice if status is Pre-Approved or Approved */}
               {(modalStatus === "Pre-Approved" || modalStatus === "Approved") && (
@@ -2058,11 +2838,26 @@ const ListRequest = () => {
                   <select
                     className="df-select"
                     value={openActionType}
-                    onChange={(e) => setOpenActionType(e.target.value)}
+                    onChange={(e) => {
+                      const selectedAction = e.target.value;
+                      const workingDateVal = modalTarget?.Working_Date || modalTarget?.workingDate || modalTarget?.working_date || "";
+                      if (selectedAction === "Open" && !isTodayDate(workingDateVal)) {
+                        showError("Permits can only be opened on their active Working Date.");
+                        return;
+                      }
+                      setOpenActionType(selectedAction);
+                    }}
                   >
-                    <option value="Open">Open Permit</option>
+                    <option value="Open" disabled={!isTodayDate(modalTarget?.Working_Date || modalTarget?.workingDate || modalTarget?.working_date || "")}>
+                      Open Permit {!isTodayDate(modalTarget?.Working_Date || modalTarget?.workingDate || modalTarget?.working_date || "") ? "(Working date is not today)" : ""}
+                    </option>
                     <option value="Cancel">Cancel Permit</option>
                   </select>
+                  {!isTodayDate(modalTarget?.Working_Date || modalTarget?.workingDate || modalTarget?.working_date || "") && (
+                    <p style={{ color: "#f59e0b", fontSize: "12px", marginTop: "6px" }}>
+                      Note: Permit working date does not match today. Opening this permit is restricted, but you can cancel the permit.
+                    </p>
+                  )}
                 </div>
               )}
 
@@ -2087,19 +2882,16 @@ const ListRequest = () => {
               {(((modalStatus === "Pre-Approved" || modalStatus === "Approved") && approveActionType === "Approve") || (modalStatus === "Opened" && openActionType === "Open")) && (
                 <div className="df-field" style={{ marginBottom: "16px" }}>
                   <label className="df-label">
-                    Initials Signature <span className="df-required">*</span>
+                    {modalStatus === "Opened" ? "Supervisor Full Name / Phone Number" : "Initials Signature"} <span className="df-required">*</span>
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="Enter your initials..."
+                    placeholder={modalStatus === "Opened" ? "Enter supervisor full name / phone number..." : "Enter your initials..."}
                     className="df-input"
                     value={initials}
                     onChange={(e) => setInitials(e.target.value)}
                   />
-                  <span style={{ color: "#9ca3af", fontSize: "12px", marginTop: "4px", display: "block" }}>
-                    Signing as: <strong style={{ color: "#00e5a0" }}>{getSigningRoleDescription(modalTarget, modalStatus)}</strong> ({currentUser?.displayName})
-                  </span>
                 </div>
               )}
 
@@ -2295,8 +3087,9 @@ const ListRequest = () => {
                       value={hHeatSource}
                       onChange={(e) => setHHeatSource(Number(e.target.value))}
                     >
-                      <option value={0}>No</option>
                       <option value={1}>Yes</option>
+                      <option value={0}>No</option>
+                      <option value={2}>N/A</option>
                     </select>
                   </div>
 
@@ -2307,8 +3100,9 @@ const ListRequest = () => {
                       value={hWorkplaceCheck}
                       onChange={(e) => setHWorkplaceCheck(Number(e.target.value))}
                     >
-                      <option value={0}>No</option>
                       <option value={1}>Yes</option>
+                      <option value={0}>No</option>
+                      <option value={2}>N/A</option>
                     </select>
                   </div>
 
@@ -2319,31 +3113,112 @@ const ListRequest = () => {
                       value={hFireDetectors}
                       onChange={(e) => setHFireDetectors(Number(e.target.value))}
                     >
-                      <option value={0}>No</option>
                       <option value={1}>Yes</option>
+                      <option value={0}>No</option>
+                      <option value={2}>N/A</option>
                     </select>
                   </div>
 
                   <div className="df-grid" style={{ gap: "16px" }}>
                     <div className="df-field" style={{ marginBottom: "12px" }}>
                       <label className="df-label">1hr time : <span className="df-required">*</span></label>
-                      <input
-                        type="time"
-                        required
-                        className="df-input"
-                        value={hStartTime}
-                        onChange={(e) => setHStartTime(e.target.value)}
-                      />
+                      <div style={{ position: "relative", width: "100%" }}>
+                        <input
+                          type="text"
+                          placeholder="00:00"
+                          readOnly
+                          required
+                          className="df-input"
+                          value={hStartTime}
+                          onClick={() => setShowHStartPicker(true)}
+                          style={{ cursor: "pointer", paddingRight: hStartTime ? "30px" : "12px" }}
+                        />
+                        {hStartTime && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setHStartTime("");
+                            }}
+                            style={{
+                              position: "absolute",
+                              right: "10px",
+                              top: "50%",
+                              transform: "translateY(-50%)",
+                              background: "none",
+                              border: "none",
+                              color: "var(--text-muted, #9ca3af)",
+                              cursor: "pointer",
+                              fontSize: "14px",
+                              padding: "4px"
+                            }}
+                          >
+                            ✕
+                          </button>
+                        )}
+                      </div>
+                      {showHStartPicker && (
+                        <div className="timekeeper-modal-overlay" onClick={() => setShowHStartPicker(false)}>
+                          <AnalogTimePicker
+                            initialTime={hStartTime || "12:00"}
+                            onSave={(newTime) => {
+                              setHStartTime(newTime);
+                              setShowHStartPicker(false);
+                            }}
+                            onCancel={() => setShowHStartPicker(false)}
+                          />
+                        </div>
+                      )}
                     </div>
                     <div className="df-field" style={{ marginBottom: "12px" }}>
                       <label className="df-label">3hrs time : <span className="df-required">*</span></label>
-                      <input
-                        type="time"
-                        required
-                        className="df-input"
-                        value={hEndTime}
-                        onChange={(e) => setHEndTime(e.target.value)}
-                      />
+                      <div style={{ position: "relative", width: "100%" }}>
+                        <input
+                          type="text"
+                          placeholder="00:00"
+                          readOnly
+                          required
+                          className="df-input"
+                          value={hEndTime}
+                          onClick={() => setShowHEndPicker(true)}
+                          style={{ cursor: "pointer", paddingRight: hEndTime ? "30px" : "12px" }}
+                        />
+                        {hEndTime && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setHEndTime("");
+                            }}
+                            style={{
+                              position: "absolute",
+                              right: "10px",
+                              top: "50%",
+                              transform: "translateY(-50%)",
+                              background: "none",
+                              border: "none",
+                              color: "var(--text-muted, #9ca3af)",
+                              cursor: "pointer",
+                              fontSize: "14px",
+                              padding: "4px"
+                            }}
+                          >
+                            ✕
+                          </button>
+                        )}
+                      </div>
+                      {showHEndPicker && (
+                        <div className="timekeeper-modal-overlay" onClick={() => setShowHEndPicker(false)}>
+                          <AnalogTimePicker
+                            initialTime={hEndTime || "12:00"}
+                            onSave={(newTime) => {
+                              setHEndTime(newTime);
+                              setShowHEndPicker(false);
+                            }}
+                            onCancel={() => setShowHEndPicker(false)}
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -2366,18 +3241,6 @@ const ListRequest = () => {
                   <button
                     type="submit"
                     className="df-btn df-btn--submit"
-                    disabled={
-                      !closeNote.trim() ||
-                      (modalTarget.Hot_work === 1 &&
-                        (hHeatSource === null ||
-                          hHeatSource === undefined ||
-                          hWorkplaceCheck === null ||
-                          hWorkplaceCheck === undefined ||
-                          hFireDetectors === null ||
-                          hFireDetectors === undefined ||
-                          !hStartTime ||
-                          !hEndTime))
-                    }
                     onClick={() => setSubmitStatusOverride("Closed")}
                   >
                     Close Permit
@@ -2528,7 +3391,7 @@ const ListRequest = () => {
                     }));
                   }}
                 />
-                <span className="checkbox-label">Is this a night shift?</span>
+                <span className="checkbox-label">Is this working after midnight?</span>
               </label>
             </div>
           </div>
@@ -2536,7 +3399,7 @@ const ListRequest = () => {
           {bulkTime.nightShift && (
             <div className="df-grid night-shift-subform" style={{ marginTop: "16px" }}>
               <div className="df-field">
-                <label className="df-label">New End Time (Night Shift)</label>
+                <label className="df-label">New End Time (Working After Midnight)</label>
                 <input
                   type="text"
                   placeholder="00:00"
@@ -2581,16 +3444,53 @@ const ListRequest = () => {
         size="md"
       >
         <form onSubmit={handleBulkSafetySubmit} className="df-form">
-          <div className="df-field">
-            <label className="df-label">Special Safety Precautions / Conditions</label>
-            <textarea
-              required
-              rows={4}
-              placeholder="Enter special instructions or safety details..."
-              className="df-textarea"
-              value={bulkSafety}
-              onChange={(e) => setBulkSafety(e.target.value)}
-            />
+          <div ref={precautionsDropdownRef} className="df-field" style={{ position: "relative" }}>
+            <label className="df-label">Safety Precautions</label>
+            <div style={{ position: "relative" }}>
+              <input
+                type="text"
+                className="df-input"
+                style={{ cursor: "pointer", background: "rgba(255, 255, 255, 0.02)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+                placeholder="Click to select safety precautions..."
+                value={
+                  bulkSafety?.length > 0
+                    ? bulkSafety.map(id => precautionsList.find(x => String(x.id) === String(id))?.precaution || id).join(", ")
+                    : ""
+                }
+                readOnly
+                onClick={() => setIsPrecautionsDropdownOpen(prev => !prev)}
+              />
+              <span style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", color: "#9ca3af", pointerEvents: "none", fontSize: "10px" }}>
+                ▼
+              </span>
+            </div>
+
+            {isPrecautionsDropdownOpen && precautionsList.length > 0 && (
+              <div className="zone-rooms-dropdown" style={{ background: "var(--bg-card)", border: "1px solid var(--border-color)", borderRadius: "8px", padding: "16px", marginTop: "8px", boxShadow: "var(--shadow-md)", position: "absolute", top: "100%", left: 0, width: "100%", zIndex: 100, maxHeight: "200px", overflowY: "auto" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                  {precautionsList.map((p) => {
+                    const isChecked = bulkSafety.includes(String(p.id));
+                    return (
+                      <label key={p.id} className="custom-checkbox-label" style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }}>
+                        <input
+                          type="checkbox"
+                          className="custom-checkbox-input"
+                          checked={isChecked}
+                          onChange={() => {
+                            const current = bulkSafety || [];
+                            const newValues = isChecked
+                              ? current.filter(val => val !== String(p.id))
+                              : [...current, String(p.id)];
+                            setBulkSafety(newValues);
+                          }}
+                        />
+                        <span>{p.precaution}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="df-footer" style={{ marginTop: "24px" }}>
@@ -2639,39 +3539,228 @@ const ListRequest = () => {
       <Modal
         open={activeModal === "copy"}
         onClose={() => setActiveModal(null)}
-        title="Copy/Clone Request to Consecutive Dates"
+        title="Copy Request to Consecutive Dates"
         size="md"
+        scrollable={true}
       >
         {modalTarget && (
           <form onSubmit={handleCopySubmit} className="df-form">
-            <div style={{ marginBottom: "16px" }}>
-              <p style={{ color: "#d1d5db" }}>
-                Cloning request Permit No: <strong style={{ color: "#fff" }}>{modalTarget.PermitNo}</strong>
-              </p>
-            </div>
-            <div className="df-grid">
-              <div className="df-field">
-                <label className="df-label">Copy Range (From)</label>
-                <input
-                  type="date"
-                  required
-                  className="df-input"
-                  min={new Date().toISOString().split("T")[0]}
-                  value={copyDates.from}
-                  onChange={(e) => setCopyDates(p => ({ ...p, from: e.target.value }))}
-                />
+            <div style={{ maxHeight: "60vh", overflowY: "auto", paddingRight: "8px", marginBottom: "16px" }}>
+              <div style={{ marginBottom: "16px" }}>
+                <p style={{ color: "var(--text-muted, inherit)" }}>
+                  Copying request Permit No: <strong style={{ color: "var(--text-main, inherit)" }}>{modalTarget.PermitNo}</strong>
+                </p>
               </div>
-              <div className="df-field">
-                <label className="df-label">Copy Range (To)</label>
-                <input
-                  type="date"
-                  required
-                  className="df-input"
-                  min={new Date().toISOString().split("T")[0]}
-                  value={copyDates.to}
-                  onChange={(e) => setCopyDates(p => ({ ...p, to: e.target.value }))}
-                />
+
+              {/* Date Range */}
+              <div className="df-grid">
+                <div className="df-field">
+                  <label className="df-label">Working Date (From)</label>
+                  <input
+                    type="date"
+                    required
+                    className="df-input"
+                    min={new Date().toISOString().split("T")[0]}
+                    value={copyDates.from}
+                    onChange={(e) => setCopyDates(p => ({ ...p, from: e.target.value }))}
+                  />
+                </div>
+                <div className="df-field">
+                  <label className="df-label">Working Date (To)</label>
+                  <input
+                    type="date"
+                    required
+                    className="df-input"
+                    min={copyDates.from || new Date().toISOString().split("T")[0]}
+                    value={copyDates.to}
+                    onChange={(e) => setCopyDates(p => ({ ...p, to: e.target.value }))}
+                  />
+                </div>
               </div>
+
+              {/* Times matching NewRequest.jsx design */}
+              <div className="df-grid" style={{ marginTop: "16px" }}>
+                <div className="df-field">
+                  <label className="df-label">Start Time <span className="req-star">*</span></label>
+                  <div style={{ position: "relative", width: "100%" }}>
+                    <input
+                      type="text"
+                      placeholder="00:00"
+                      readOnly
+                      className="df-input"
+                      value={copyDates.startTime || ""}
+                      onClick={() => setShowCopyStartPicker(true)}
+                      style={{ cursor: 'pointer', paddingRight: copyDates.startTime ? "30px" : "12px" }}
+                    />
+                    {copyDates.startTime && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setCopyDates(p => ({ ...p, startTime: "" }));
+                        }}
+                        style={{
+                          position: "absolute",
+                          right: "10px",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          background: "none",
+                          border: "none",
+                          color: "var(--text-muted, #9ca3af)",
+                          cursor: "pointer",
+                          fontSize: "14px",
+                          padding: "4px"
+                        }}
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+                  {showCopyStartPicker && (
+                    <div className="timekeeper-modal-overlay" onClick={() => setShowCopyStartPicker(false)}>
+                      <AnalogTimePicker
+                        initialTime={copyDates.startTime || "12:00"}
+                        onSave={(newTime) => {
+                          setCopyDates(p => ({ ...p, startTime: newTime }));
+                          setShowCopyStartPicker(false);
+                        }}
+                        onCancel={() => setShowCopyStartPicker(false)}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div className="df-field">
+                  <label className="df-label">End Time <span className="req-star">*</span></label>
+                  <div style={{ position: "relative", width: "100%" }}>
+                    <input
+                      type="text"
+                      placeholder="00:00"
+                      readOnly
+                      className={`df-input${copyDates.nightShift ? " df-readonly" : ""}`}
+                      value={copyDates.endTime || ""}
+                      disabled={copyDates.nightShift}
+                      onClick={() => {
+                        if (!copyDates.nightShift) {
+                          setShowCopyEndPicker(true);
+                        }
+                      }}
+                      style={{ cursor: copyDates.nightShift ? 'not-allowed' : 'pointer', paddingRight: copyDates.endTime && !copyDates.nightShift ? "30px" : "12px" }}
+                    />
+                    {copyDates.endTime && !copyDates.nightShift && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setCopyDates(p => ({ ...p, endTime: "" }));
+                        }}
+                        style={{
+                          position: "absolute",
+                          right: "10px",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          background: "none",
+                          border: "none",
+                          color: "var(--text-muted, #9ca3af)",
+                          cursor: "pointer",
+                          fontSize: "14px",
+                          padding: "4px"
+                        }}
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+                  {showCopyEndPicker && (
+                    <div className="timekeeper-modal-overlay" onClick={() => setShowCopyEndPicker(false)}>
+                      <AnalogTimePicker
+                        initialTime={copyDates.endTime || "12:00"}
+                        onSave={(newTime) => {
+                          setCopyDates(p => ({ ...p, endTime: newTime }));
+                          setShowCopyEndPicker(false);
+                        }}
+                        onCancel={() => setShowCopyEndPicker(false)}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Working After Midnight */}
+              <div style={{ marginTop: "16px" }}>
+                <label className="checkbox-container" style={{ display: "inline-flex", alignItems: "center", gap: "8px", color: "var(--text-main, #d1d5db)", cursor: "pointer", fontSize: "14px" }}>
+                  <input
+                    type="checkbox"
+                    checked={copyDates.nightShift}
+                    onChange={(e) => {
+                      const checked = e.target.checked;
+                      setCopyDates(p => ({
+                        ...p,
+                        nightShift: checked,
+                        newEndTime: checked ? p.newEndTime : ""
+                      }));
+                    }}
+                    style={{ accentColor: "var(--accent, #00e5a0)" }}
+                  />
+                  <span>Is this working after midnight?</span>
+                </label>
+              </div>
+
+              {/* New End Time (Working After Midnight) */}
+              {copyDates.nightShift && (
+                <div className="df-grid" style={{ marginTop: "16px" }}>
+                  <div className="df-field">
+                    <label className="df-label">New End Time (Working After Midnight) <span className="req-star">*</span></label>
+                    <div style={{ position: "relative", width: "100%" }}>
+                      <input
+                        type="text"
+                        placeholder="00:00"
+                        readOnly
+                        className="df-input"
+                        value={copyDates.newEndTime || ""}
+                        onClick={() => setShowCopyNewEndPicker(true)}
+                        style={{ cursor: 'pointer', paddingRight: copyDates.newEndTime ? "30px" : "12px" }}
+                      />
+                      {copyDates.newEndTime && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setCopyDates(p => ({ ...p, newEndTime: "" }));
+                          }}
+                          style={{
+                            position: "absolute",
+                            right: "10px",
+                            top: "50%",
+                            transform: "translateY(-50%)",
+                            background: "none",
+                            border: "none",
+                            color: "var(--text-muted, #9ca3af)",
+                            cursor: "pointer",
+                            fontSize: "14px",
+                            padding: "4px"
+                          }}
+                        >
+                          ✕
+                        </button>
+                      )}
+                    </div>
+                    {showCopyNewEndPicker && (
+                      <div className="timekeeper-modal-overlay" onClick={() => setShowCopyNewEndPicker(false)}>
+                        <AnalogTimePicker
+                          initialTime={copyDates.newEndTime || "12:00"}
+                          onSave={(newTime) => {
+                            setCopyDates(p => ({ ...p, newEndTime: newTime }));
+                            setShowCopyNewEndPicker(false);
+                          }}
+                          onCancel={() => setShowCopyNewEndPicker(false)}
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <div className="df-field" />
+                </div>
+              )}
             </div>
 
             <div className="df-footer" style={{ marginTop: "24px" }}>
@@ -2679,7 +3768,7 @@ const ListRequest = () => {
                 Cancel
               </button>
               <button type="submit" className="df-btn df-btn--submit">
-                Clone Permits
+                Copy Permits
               </button>
             </div>
           </form>

@@ -600,7 +600,7 @@
 }
 
 .companies-scroll-list {
-  max-height: 180px;
+  max-height: 220px;
   overflow-y: auto;
   overflow-x: hidden;
   border: 1px solid var(--border-color);
@@ -608,6 +608,22 @@
   background-color: rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
+  padding-right: 2px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+.companies-scroll-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.companies-scroll-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.companies-scroll-list::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
 }
 
 .company-list-item {
@@ -1094,11 +1110,37 @@ html[data-theme="light"] .mini-avatar {
   border-color: var(--accent-primary);
 }
 
+.exec-date-input {
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color, #374151);
+  color: var(--text-main, #ffffff);
+  font-family: inherit;
+}
+
+.exec-date-input:focus {
+  border-color: var(--accent-primary);
+}
+
+.exec-date-input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+
 /* Light theme overrides */
 html[data-theme="light"] .exec-building-select {
   background-color: #ffffff;
   border-color: #cbd5e1;
   color: #0f172a;
+}
+
+html[data-theme="light"] .exec-date-input {
+  background-color: #ffffff;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+html[data-theme="light"] .exec-date-input::-webkit-calendar-picker-indicator {
+  filter: none;
 }
 
 /* Styling for option tags in dropdowns to prevent white-on-white text in dark/color themes */

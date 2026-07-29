@@ -341,7 +341,7 @@ const Table = ({
               data.map((row, index) => (
                 <tr
                   key={index}
-                  className={`beam-tr ${row._rowonClick ? "beam-tr--clickable" : ""}`}
+                  className={`beam-tr ${row._rowonClick ? "beam-tr--clickable" : ""} ${row._rowClassName || ""}`}
                   onClick={(e) => {
                     if (!row._rowonClick) return;
                     const target = e.target;
@@ -350,11 +350,36 @@ const Table = ({
                     row._rowonClick(e);
                   }}
                 >
-                  {columns.map((col) => (
-                    <td key={col.accessor} className={`beam-td ${col.className || ""}`} style={col.style}>
-                      {row[col.accessor]}
-                    </td>
-                  ))}
+                  {columns.map((col) => {
+                    const widthStyle = {};
+                    if (columnWidths[col.accessor]) {
+                      widthStyle.width = `${columnWidths[col.accessor]}px`;
+                      widthStyle.maxWidth = `${columnWidths[col.accessor]}px`;
+                    } else if (col.style?.width) {
+                      widthStyle.width = col.style.width;
+                      widthStyle.maxWidth = col.style.maxWidth || col.style.width;
+                    } else {
+                      const isSpecialCol = col.accessor === "checkboxCell" || col.accessor === "operationsCell" || col.accessor === "statusCell" || col.accessor === "hraCell";
+                      if (!isSpecialCol) {
+                        widthStyle.maxWidth = "200px";
+                      }
+                    }
+
+                    // Extract text for tooltip title dynamically if the row value is a string/number
+                    const cellVal = row[col.accessor];
+                    const tooltipText = (typeof cellVal === "string" || typeof cellVal === "number") ? String(cellVal) : undefined;
+
+                    return (
+                      <td
+                        key={col.accessor}
+                        className={`beam-td ${col.className || ""}`}
+                        style={{ ...col.style, ...widthStyle }}
+                        title={tooltipText}
+                      >
+                        {cellVal}
+                      </td>
+                    );
+                  })}
                 </tr>
               ))
 

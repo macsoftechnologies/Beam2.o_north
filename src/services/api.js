@@ -50,7 +50,7 @@ api.interceptors.response.use(
             localStorage.removeItem("token");
             localStorage.removeItem("tempUser");
             localStorage.removeItem("secretkey");
-            navigateTo("/login");
+            navigateTo("/login", true);
         }
 
         // Also log failed mutating calls so failures are auditable

@@ -2,6 +2,9 @@ import Swal from "sweetalert2";
 
 // Helper: style the close button on every toast
 const styleCloseBtn = (popup) => {
+  if (popup && popup.parentElement) {
+    popup.parentElement.style.zIndex = "99999999";
+  }
   const btn = popup.querySelector(".swal2-close");
   if (!btn) return;
   Object.assign(btn.style, {

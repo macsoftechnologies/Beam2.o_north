@@ -865,7 +865,7 @@ function Dashboard() {
             { label: 'Closed', value: todaySummary.closedCount, color: '#10B981' },
             { label: 'Rejected', value: todaySummary.rejectedCount, color: '#EF4444' },
             { label: 'Cancelled', value: todaySummary.cancelledCount, color: '#F43F5E' },
-            { label: 'Night Shift', value: todaySummary.nightshiftCount, color: '#FCD34D' },
+            { label: 'Working After Midnight', value: todaySummary.nightshiftCount, color: '#FCD34D' },
           ].map(({ label, value, color }) => {
             const handleRowClick = () => {
               const todayStr = new Date().toISOString().split('T')[0];
@@ -880,7 +880,7 @@ function Dashboard() {
               else if (label === 'Closed') status = 'Closed';
               else if (label === 'Rejected') status = 'Rejected';
               else if (label === 'Cancelled') status = 'Cancelled';
-              else if (label === 'Night Shift') {
+              else if (label === 'Working After Midnight' || label === 'Night Shift') {
                 nightShift = "1";
               }
 
@@ -1058,7 +1058,13 @@ function Dashboard() {
           <div className="logs-card">
             <div className="card-title" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Icons.Clock /> Recent Logs</span>
-              <a href="/logs-reports" style={{ fontSize: '12px', color: '#8B5CF6', textDecoration: 'none', fontWeight: 600 }}>View All</a>
+              <button
+                type="button"
+                onClick={() => navigate('/logs-reports')}
+                style={{ background: 'none', border: 'none', fontSize: '12px', color: '#8B5CF6', textDecoration: 'none', fontWeight: 600, cursor: 'pointer', padding: 0 }}
+              >
+                View All
+              </button>
             </div>
             {recentLogsData.length === 0 ? (
               <p style={{ color: 'var(--text-muted)', fontSize: '13px', padding: '12px 0' }}>No logs available</p>

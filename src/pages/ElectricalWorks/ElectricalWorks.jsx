@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { showSuccess, showError, showDeleteConfirm, showDeleteSuccess } from "../../components/common/Toast/Toast";
 import Table from "../../components/common/Table/Table";
 import Modal from "../../components/common/Modal/Modal";
-import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
+import { FaEye, FaEdit, FaTrash, FaSearch, FaTimes } from "react-icons/fa";
 import ElectricalWorksForm from "../../forms/ElectricalWorksform/ElectricalWorksform";
 import { getElectricalWorks, addElectricalWork, updateElectricalWork, deleteElectricalWork } from "../../services/authService";
 import "../styles/pages.css";
@@ -33,12 +33,14 @@ const ElectricalWorks = () => {
   const [pageLimit]                                       = useState(PAGE_LIMIT_DEFAULT);
   const [totalCount, setTotalCount]                       = useState(0);
   const [isLoading, setIsLoading]                         = useState(false);
+  const [filterSearch, setFilterSearch]                   = useState("");
+  const [appliedSearch, setAppliedSearch]                 = useState("");
 
   // Fetch electrical works
-  const fetchElectricalWorks = useCallback(async (page = 1) => {
+  const fetchElectricalWorks = useCallback(async (page = 1, searchKeyword = appliedSearch) => {
     setIsLoading(true);
     try {
-      const res = await getElectricalWorks(page, pageLimit);
+      const res = await getElectricalWorks(page, pageLimit, searchKeyword);
       const rows = res?.data ?? res ?? [];
       const count = res?.total ?? rows.length;
       setElectricalWorkList(rows);
@@ -48,11 +50,22 @@ const ElectricalWorks = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [pageLimit]);
+  }, [pageLimit, appliedSearch]);
 
   useEffect(() => {
-    fetchElectricalWorks(currentPage);
-  }, [currentPage, fetchElectricalWorks]);
+    fetchElectricalWorks(currentPage, appliedSearch);
+  }, [currentPage, appliedSearch, fetchElectricalWorks]);
+
+  const handleFilter = () => {
+    setCurrentPage(1);
+    setAppliedSearch(filterSearch);
+  };
+
+  const handleClear = () => {
+    setFilterSearch("");
+    setAppliedSearch("");
+    setCurrentPage(1);
+  };
 
   const handleView = (item, index) => {
     setSelectedElectricalWork({ ...item, serial: startIndex + index + 1 });
@@ -74,7 +87,7 @@ const ElectricalWorks = () => {
         ? currentPage - 1
         : currentPage;
       setCurrentPage(newPage);
-      fetchElectricalWorks(newPage);
+      fetchElectricalWorks(newPage, appliedSearch);
     } catch {
       showError("Failed to delete electrical work");
     }
@@ -92,7 +105,7 @@ const ElectricalWorks = () => {
         showSuccess("Electrical Work added successfully");
         setOpen(false);
       }
-      fetchElectricalWorks(currentPage);
+      fetchElectricalWorks(currentPage, appliedSearch);
     } catch {
       showError("Operation failed");
     }
@@ -136,6 +149,43 @@ const ElectricalWorks = () => {
             <span className="dept-add-btn__icon">＋</span>
             Add Electrical Work
           </button>
+        </div>
+      </div>
+
+      {/* Filters Card */}
+      <div className="dept-table-card" style={{ marginBottom: "16px", padding: "16px 24px" }}>
+        <h3 style={{ margin: "0 0 12px 0", fontSize: "1rem", fontWeight: "600", color: "#F9FAFB" }}>Filters</h3>
+        <div className="df-form" style={{ padding: "0" }}>
+          <div className="filters-grid">
+            <div className="df-field" style={{ marginBottom: 0 }}>
+              <label className="df-label" style={{ textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.05em' }}>ELECTRICAL WORK</label>
+              <input
+                type="text"
+                className="df-input"
+                placeholder="Search by electrical work name"
+                value={filterSearch}
+                onChange={(e) => setFilterSearch(e.target.value)}
+              />
+            </div>
+            <div className="filters-actions">
+              <button
+                onClick={handleFilter}
+                type="button"
+                className="dept-add-btn"
+                style={{ background: 'linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%)', color: '#fff', border: '1.5px solid #38bdf8', cursor: 'pointer', display: 'flex', alignItems: 'center', boxShadow: '0 4px 18px rgba(14,165,233,0.35)', transition: 'all 0.2s ease' }}
+              >
+                <FaSearch style={{ marginRight: '6px' }} /> Search
+              </button>
+              <button
+                onClick={handleClear}
+                type="button"
+                className="dept-add-btn"
+                style={{ background: 'rgba(14,165,233,0.07)', color: '#9ca3af', border: '1.5px solid rgba(14,165,233,0.22)', cursor: 'pointer', display: 'flex', alignItems: 'center', transition: 'all 0.2s ease' }}
+              >
+                <FaTimes style={{ marginRight: '6px' }} /> Clear
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 

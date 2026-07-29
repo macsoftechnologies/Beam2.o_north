@@ -1,7 +1,9 @@
 import { useMemo, useState, useRef, useEffect } from "react";
+import { FaSearch } from "react-icons/fa";
 import "../../styles/pages.css";
 import "../../../forms/styles/forms.css";
 import "./NewRequest.css";
+import Modal from "../../../components/common/Modal/Modal";
 
 const AnalogTimePicker = ({ initialTime, onSave, onCancel }) => {
   const [hour, setHour] = useState(12);
@@ -170,6 +172,194 @@ const AnalogTimePicker = ({ initialTime, onSave, onCancel }) => {
   );
 };
 
+const SearchableSingleSelect = ({ options = [], value, onChange, placeholder, disabled, className, valueKey = "id", labelKey = "subContractorName" }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const selectedOption = options.find(o => String(o[valueKey] ?? o.value ?? o.id) === String(value));
+  const displayText = selectedOption ? (selectedOption[labelKey] || selectedOption.label || selectedOption.name) : placeholder;
+
+  const filteredOptions = useMemo(() => {
+    if (!search.trim()) return options;
+    const q = search.toLowerCase();
+    return options.filter(o => {
+      const label = o[labelKey] || o.label || o.name || "";
+      return String(label).toLowerCase().includes(q);
+    });
+  }, [options, search, labelKey]);
+
+  return (
+    <div ref={containerRef} style={{ position: "relative", width: "100%" }}>
+      <div
+        className={`df-input ${className || ""}`}
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          cursor: disabled ? "not-allowed" : "pointer",
+          userSelect: "none",
+          opacity: disabled ? 0.6 : 1,
+          color: selectedOption ? "var(--text-main, #f9fafb)" : "var(--text-muted, #9ca3af)"
+        }}
+      >
+        <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          {displayText}
+        </span>
+        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          {value && !disabled && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onChange({ target: { value: "" } });
+              }}
+              style={{
+                background: "none",
+                border: "none",
+                color: "#9ca3af",
+                cursor: "pointer",
+                padding: "2px",
+                fontSize: "12px"
+              }}
+            >
+              ✕
+            </button>
+          )}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transform: isOpen ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </div>
+      </div>
+
+      {isOpen && !disabled && (
+        <div
+          style={{
+            position: "absolute",
+            top: "calc(100% + 4px)",
+            left: 0,
+            width: "100%",
+            maxHeight: "260px",
+            backgroundColor: "var(--bg-card, #111827)",
+            border: "1.5px solid var(--border-color, #374151)",
+            borderRadius: "8px",
+            zIndex: 99999,
+            boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden"
+          }}
+        >
+          <div style={{ padding: "8px", borderBottom: "1px solid var(--border-color, #374151)", display: "flex", gap: "6px" }}>
+            <input
+              type="text"
+              placeholder="Search contractor..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onClick={(e) => e.stopPropagation()}
+              autoFocus
+              style={{
+                flex: 1,
+                padding: "6px 10px",
+                fontSize: "13px",
+                borderRadius: "6px",
+                border: "1px solid var(--border-color, #374151)",
+                backgroundColor: "rgba(255, 255, 255, 0.05)",
+                color: "var(--text-main, #f9fafb)",
+                outline: "none"
+              }}
+            />
+            <button
+              type="button"
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                padding: "6px 10px",
+                backgroundColor: "var(--primary-color, #3b82f6)",
+                border: "none",
+                borderRadius: "6px",
+                color: "#fff",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+            >
+              <FaSearch size={12} />
+            </button>
+          </div>
+
+          <div style={{ overflowY: "auto", maxHeight: "200px", padding: "4px 0" }}>
+            <div
+              onClick={() => {
+                onChange({ target: { value: "" } });
+                setIsOpen(false);
+                setSearch("");
+              }}
+              style={{
+                padding: "8px 12px",
+                cursor: "pointer",
+                fontSize: "13px",
+                color: "var(--text-muted, #9ca3af)",
+                backgroundColor: !value ? "rgba(255,255,255,0.05)" : "transparent"
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.08)"}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = !value ? "rgba(255,255,255,0.05)" : "transparent"}
+            >
+              {placeholder}
+            </div>
+
+            {filteredOptions.map((o) => {
+              const val = String(o[valueKey] ?? o.value ?? o.id);
+              const label = o[labelKey] || o.label || o.name;
+              const isSelected = String(value) === val;
+
+              return (
+                <div
+                  key={val}
+                  onClick={() => {
+                    onChange({ target: { value: val } });
+                    setIsOpen(false);
+                    setSearch("");
+                  }}
+                  style={{
+                    padding: "8px 12px",
+                    cursor: "pointer",
+                    fontSize: "13px",
+                    color: isSelected ? "#00e5a0" : "var(--text-main, #f9fafb)",
+                    backgroundColor: isSelected ? "rgba(0, 229, 160, 0.1)" : "transparent",
+                    fontWeight: isSelected ? "600" : "normal"
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = isSelected ? "rgba(0, 229, 160, 0.15)" : "rgba(255, 255, 255, 0.08)"}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = isSelected ? "rgba(0, 229, 160, 0.1)" : "transparent"}
+                >
+                  {label}
+                </div>
+              );
+            })}
+
+            {filteredOptions.length === 0 && (
+              <div style={{ padding: "12px", textAlign: "center", color: "#9ca3af", fontSize: "13px" }}>
+                No contractors found
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 import FloorDrawing from "../FloorDrawing/FloorDrawing";
 
 import { FLOOR_PDFS } from "../../../data/pdfMapping";
@@ -177,6 +367,7 @@ import { ZONE_MAPPING } from "../../../data/zones";
 import { BUILDINGS } from "../../../data/buildings";
 import { getContractors, getActivities, getElectricalWorks, getMechanicalWorks, getBuildings, getFloors, getZones, getRooms, getUser, getPrecautions } from "../../../services/authService";
 import { createRequest, updateRequest, addRamsFiles, deleteRamsFile, addListReqstNote } from "../../../services/requestService";
+import { API_BASE_URL } from "../../../services/api";
 import { showSuccess, showError } from "../../../components/common/Toast/Toast";
 import { useNavigate, useLocation } from "react-router-dom";
 import { HotWorks, ElectricalSystems, substanceChemical, WorkingAtHight, ConfinedSpace, ExcavationWorks, Craneslifting, electrical_works, mechanical1, testingequipment } from "../../../config/logos";
@@ -234,6 +425,31 @@ const getNextDate = (dateStr) => {
   return `${nextY}-${nextM}-${nextD}`;
 };
 
+const mapFileItem = (f) => {
+  if (!f) return null;
+  if (typeof f === 'string') {
+    const fileName = f.split('/').pop().split('\\').pop();
+    return { id: undefined, name: fileName, file: f };
+  }
+  const fileId = f.id !== undefined ? f.id : (f.ramsFileId !== undefined ? f.ramsFileId : f.rams_file_id);
+  const filePath = f.file || f.ramsFile || f.rams_file || f.file_name || f.name || '';
+  const rawName = f.file_name || f.name || (typeof filePath === 'string' ? filePath : '') || '';
+  const fileName = typeof rawName === 'string' && rawName.trim()
+    ? rawName.split('/').pop().split('\\').pop()
+    : 'Attachment';
+  return { id: fileId, name: fileName, file: filePath };
+};
+
+const getFileUrl = (file) => {
+  if (!file) return "#";
+  const filePath = file.file || file.ramsFile || file.rams_file || "";
+  if (typeof filePath === "string" && (filePath.startsWith("http://") || filePath.startsWith("https://"))) {
+    return filePath;
+  }
+  const filename = file.name || (typeof filePath === "string" ? filePath.split("/").pop().split("\\").pop() : "");
+  return `${API_BASE_URL}/requests/${filename}`;
+};
+
 function NewRequest() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -261,6 +477,18 @@ function NewRequest() {
 
   const [building, setBuilding] = useState("");
   const [level, setLevel] = useState("");
+  const currentUser = useMemo(() => getUser(), []);
+  const userRoles = useMemo(() => {
+    const roleVal = currentUser?.role || currentUser?.userType || "";
+    if (typeof roleVal === "string") {
+      return roleVal.split(",").map(r => r.trim().toLowerCase());
+    }
+    if (Array.isArray(roleVal)) {
+      return roleVal.map(r => String(r).trim().toLowerCase());
+    }
+    return [String(roleVal).trim().toLowerCase()];
+  }, [currentUser]);
+  const isSubcontractor = userRoles.includes("subcontractor");
   const [isnewrequestcreated, setIsnewrequestcreated] = useState(false);
   const [selectedRooms, setSelectedRooms] = useState([]);
   const [selectedZone, setSelectedZone] = useState(null);
@@ -268,12 +496,20 @@ function NewRequest() {
   const [isElectricalDropdownOpen, setIsElectricalDropdownOpen] = useState(false);
   const [isMechanicalDropdownOpen, setIsMechanicalDropdownOpen] = useState(false);
   const [isPrecautionsDropdownOpen, setIsPrecautionsDropdownOpen] = useState(false);
+  const [eleSearch, setEleSearch] = useState("");
+  const [mechSearch, setMechSearch] = useState("");
+  const [electricalCategory, setElectricalCategory] = useState("");
+  const [isFetchingEle, setIsFetchingEle] = useState(false);
+  const [isFetchingMech, setIsFetchingMech] = useState(false);
+  const electricalWorksNamesCache = useRef({});
+  const mechanicalWorksNamesCache = useRef({});
 
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [fieldErrors, setFieldErrors] = useState({});
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [showNewEndPicker, setShowNewEndPicker] = useState(false);
+  const [showRamsHoldModal, setShowRamsHoldModal] = useState(false);
   const [tempStartTime, setTempStartTime] = useState("");
   const [tempEndTime, setTempEndTime] = useState("");
   const [tempNewEndTime, setTempNewEndTime] = useState("");
@@ -324,7 +560,7 @@ function NewRequest() {
           const res = await addRamsFiles(fd);
           showSuccess("RAMS File uploaded successfully");
           if (res?.files) {
-            setExistingFiles(res.files.map(f => ({ id: f.id, name: f.file_name, file: f.file })));
+            setExistingFiles(res.files.map(mapFileItem).filter(Boolean));
           }
         } catch (err) {
           showError("Failed to upload file attachment.");
@@ -360,14 +596,14 @@ function NewRequest() {
     Activity: "",
     Type_Of_Activity_Id: "",
     rams_number: "",
-    permit_type: "Construction",
+    permit_type: "",
     description_of_activity: "",
     Working_Date: "",
     Start_Time: "",
     End_Time: "",
     night_shift: false,
-    new_date: "",
-    new_end_time: "",
+    new_date: "none",
+    new_end_time: "none",
     Site_Id: "5",
     Tools: "",
     Machinery: "",
@@ -548,7 +784,17 @@ function NewRequest() {
           getPrecautions(1, 1000)
         ]);
 
-        setContractors(contractorsRes?.data?.rows ?? contractorsRes?.data ?? contractorsRes ?? []);
+        const rawContractors = contractorsRes?.data?.rows ?? contractorsRes?.data ?? contractorsRes ?? [];
+        const loadedContractors = rawContractors
+          .slice()
+          .sort((a, b) => (a.subContractorName || "").localeCompare(b.subContractorName || "", undefined, { sensitivity: "base" }));
+        setContractors(loadedContractors);
+        if (isSubcontractor && loadedContractors.length > 0) {
+          setFormData(prev => ({
+            ...prev,
+            Sub_Contractor_Id: String(loadedContractors[0].id)
+          }));
+        }
         setActivitiesList(activitiesRes?.data?.rows ?? activitiesRes?.data ?? activitiesRes ?? []);
         setElectricalWorksList(electricalRes?.data ?? []);
         setMechanicalWorksList(mechanicalRes?.data ?? []);
@@ -567,6 +813,57 @@ function NewRequest() {
     loadSelectors();
   }, []);
 
+  // Cache electrical and mechanical works names to persist them during filtering
+  useEffect(() => {
+    electricalWorksList.forEach(x => {
+      if (x.id) {
+        electricalWorksNamesCache.current[String(x.id)] = x.electrical_works;
+      }
+    });
+  }, [electricalWorksList]);
+
+  useEffect(() => {
+    mechanicalWorksList.forEach(x => {
+      if (x.id) {
+        mechanicalWorksNamesCache.current[String(x.id)] = x.mechanical_works || x.name;
+      }
+    });
+  }, [mechanicalWorksList]);
+
+  // Fetch electrical works dynamically on search or category select
+  useEffect(() => {
+    if (formData.work_type !== "Electrical Works") return;
+    const delayDebounce = setTimeout(async () => {
+      setIsFetchingEle(true);
+      try {
+        const res = await getElectricalWorks(1, 1000, eleSearch, electricalCategory);
+        setElectricalWorksList(res?.data ?? []);
+      } catch (err) {
+        console.error("Error fetching electrical works:", err);
+      } finally {
+        setIsFetchingEle(false);
+      }
+    }, 300);
+    return () => clearTimeout(delayDebounce);
+  }, [electricalCategory, eleSearch, formData.work_type]);
+
+  // Fetch mechanical works dynamically on search
+  useEffect(() => {
+    if (formData.work_type !== "Mechanical Works") return;
+    const delayDebounce = setTimeout(async () => {
+      setIsFetchingMech(true);
+      try {
+        const res = await getMechanicalWorks(1, 1000, mechSearch);
+        setMechanicalWorksList(res?.data ?? []);
+      } catch (err) {
+        console.error("Error fetching mechanical works:", err);
+      } finally {
+        setIsFetchingMech(false);
+      }
+    }, 300);
+    return () => clearTimeout(delayDebounce);
+  }, [mechSearch, formData.work_type]);
+
   // Handle click outside for precautions dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -580,6 +877,16 @@ function NewRequest() {
     };
   }, []);
 
+  // Default subcontractor id if current user is a contractor
+  useEffect(() => {
+    if (isSubcontractor && currentUser?.typeId) {
+      setFormData(prev => ({
+        ...prev,
+        Sub_Contractor_Id: String(currentUser.typeId)
+      }));
+    }
+  }, [isSubcontractor, currentUser]);
+
   // Bind edit request data once selectors have finished loading
   useEffect(() => {
     if (!isLoadingSelectors && editRequest) {
@@ -590,28 +897,35 @@ function NewRequest() {
       // Match room IDs to room names to render correctly in FloorDrawing.
       // Also normalise casing: DB may store "ZONE 1" but ZONE_MAPPING uses "Zone 1".
       if (editRequest.Room_Nos) {
-        const editRoomIds = String(editRequest.Room_Nos).split(",");
-        const matchedRooms = roomsList.filter(r =>
-          editRoomIds.includes(String(r.room_id ?? r.id))
-        );
+        const editRoomParts = String(editRequest.Room_Nos).split(",").map(x => x.trim()).filter(Boolean);
+        const isIds = editRoomParts.every(part => /^\d+$/.test(part));
+        let matchedNames = [];
 
-        // Build a lookup of all canonical room names from ZONE_MAPPING (all levels)
-        const allZoneMappingRooms = Object.values(ZONE_MAPPING)
-          .flat()
-          .flatMap(zoneGroup => zoneGroup.rooms)
-          .map(r => (typeof r === "object" ? r.name : r));
-
-        const matchedNames = matchedRooms.map(r => {
-          const dbName = r.room_name || "";
-          // Try exact match first
-          const exact = allZoneMappingRooms.find(n => n === dbName);
-          if (exact) return exact;
-          // Try case-insensitive match
-          const caseMatch = allZoneMappingRooms.find(
-            n => n.toLowerCase().trim() === dbName.toLowerCase().trim()
+        if (isIds) {
+          const matchedRooms = roomsList.filter(r =>
+            editRoomParts.includes(String(r.room_id ?? r.id))
           );
-          return caseMatch || dbName;
-        });
+
+          // Build a lookup of all canonical room names from ZONE_MAPPING (all levels)
+          const allZoneMappingRooms = Object.values(ZONE_MAPPING)
+            .flat()
+            .flatMap(zoneGroup => zoneGroup.rooms)
+            .map(r => (typeof r === "object" ? r.name : r));
+
+          matchedNames = matchedRooms.map(r => {
+            const dbName = r.room_name || "";
+            // Try exact match first
+            const exact = allZoneMappingRooms.find(n => n === dbName);
+            if (exact) return exact;
+            // Try case-insensitive match
+            const caseMatch = allZoneMappingRooms.find(
+              n => n.toLowerCase().trim() === dbName.toLowerCase().trim()
+            );
+            return caseMatch || dbName;
+          });
+        } else {
+          matchedNames = editRoomParts;
+        }
 
         setSelectedRooms(matchedNames);
 
@@ -675,8 +989,9 @@ function NewRequest() {
       } // end if (editRequest.Room_Nos)
 
       // Display existing file attachments
-      if (editRequest.files) {
-        setExistingFiles(editRequest.files.map(f => ({ id: f.id, name: f.file_name, file: f.file })));
+      const rawFilesList = editRequest.files || editRequest.ramsFiles || editRequest.rams_files || editRequest.rams_file;
+      if (rawFilesList && Array.isArray(rawFilesList)) {
+        setExistingFiles(rawFilesList.map(mapFileItem).filter(Boolean));
       }
 
       // Load notes history
@@ -697,14 +1012,18 @@ function NewRequest() {
         Activity: editRequest.Activity || "",
         Type_Of_Activity_Id: editRequest.Type_Of_Activity_Id || "",
         rams_number: editRequest.rams_number || "",
-        permit_type: editRequest.permit_type || "Construction",
+        permit_type: editRequest.permit_type || "",
         description_of_activity: editRequest.description_of_activity || "",
         Working_Date: editRequest.Working_Date || "",
         Start_Time: editRequest.Start_Time ? editRequest.Start_Time.slice(0, 5) : "",
         End_Time: editRequest.End_Time ? editRequest.End_Time.slice(0, 5) : "",
-        night_shift: editRequest.night_shift === 1 || editRequest.night_shift === true,
-        new_date: editRequest.new_date || "",
-        new_end_time: editRequest.new_end_time ? editRequest.new_end_time.slice(0, 5) : "",
+        night_shift: editRequest.night_shift === 1 || editRequest.night_shift === true || editRequest.night_shift === "1",
+        new_date: (editRequest.night_shift === 1 || editRequest.night_shift === true || editRequest.night_shift === "1")
+          ? (editRequest.new_date && editRequest.new_date !== "none" ? editRequest.new_date : "")
+          : "none",
+        new_end_time: (editRequest.night_shift === 1 || editRequest.night_shift === true || editRequest.night_shift === "1")
+          ? (editRequest.new_end_time && editRequest.new_end_time !== "none" ? editRequest.new_end_time.slice(0, 5) : "")
+          : "none",
         Site_Id: editRequest.Site_Id || "5",
         Tools: editRequest.Tools || "",
         Machinery: editRequest.Machinery || "",
@@ -735,7 +1054,7 @@ function NewRequest() {
         floatLabel8: formatDbValue(editRequest.combustible_material),
         floatLabel9: formatDbValue(editRequest.safety_measures),
         floatLabel10: formatDbValue(editRequest.extinguishers_and_fire_blanket),
-        NEWHOTWORK: formatDbValue(editRequest.welding_activitiy ?? "0"),
+        NEWHOTWORK: formatDbValue(editRequest.welding_activity ?? editRequest.welding_activitiy ?? "0"),
         NEWHOTWORK1: formatDbValue(editRequest.heat_treatment),
         NEWHOTWORK2: formatDbValue(editRequest.air_extraction_be_established),
 
@@ -764,7 +1083,7 @@ function NewRequest() {
         floatLabel39: formatDbValue(editRequest.lanyard_attachments),
         floatLabel40: formatDbValue(editRequest.rescue_plan),
         floatLabel41: formatDbValue(editRequest.avoid_hazards),
-        floatLabel42: formatDbValue(editRequest.height_training),
+        floatLabel42: formatDbValue(editRequest.height_training ?? "0"),
         floatLabel43: formatDbValue(editRequest.supervision),
         floatLabel44: formatDbValue(editRequest.shock_absorbing),
         floatLabel45: formatDbValue(editRequest.height_equipments),
@@ -800,7 +1119,7 @@ function NewRequest() {
         // Using Crane or Lifting
         using_cranes_or_lifting: formatDbValue(editRequest.using_cranes_or_lifting ?? "0"),
         floatLabel80: formatDbValue(editRequest.appointed_person),
-        floatLabel81: formatDbValue(editRequest.vendor_supplier),
+        floatLabel81: formatDbValue(editRequest.vendor_supplies ?? editRequest.vendor_supplier ?? "0"),
         floatLabel82: formatDbValue(editRequest.lift_plan),
         floatLabel83: formatDbValue(editRequest.supplied_and_inspected),
         floatLabel84: formatDbValue(editRequest.legal_required_certificates),
@@ -857,7 +1176,7 @@ function NewRequest() {
         floatLabel104: formatDbValue(editRequest.pipework_mic),
         floatLabel105: formatDbValue(editRequest.loto_plan_attached),
         floatLabel106: formatDbValue(editRequest.exclusion_zone_calculated),
-        floatLabel107: formatDbValue(editRequest.pneumatic_hydrostatic),
+        floatLabel107: formatDbValue(editRequest.pneumatic_hydrostatic ?? editRequest.pnematic_hydrostatic ?? "0"),
         pressure_pneumatic: editRequest.pressure_pneumatic || "",
         floatLabel108: formatDbValue(editRequest.pressure_of_the_test),
         pressure_hydrostatic: editRequest.pressure_hydrostatic || "",
@@ -971,7 +1290,7 @@ function NewRequest() {
       if (start) {
         if (shift) {
           if (newEnd && newEnd >= start) {
-            next.new_end_time = "For night shift, new end time must be earlier than start time.";
+            next.new_end_time = "For working after midnight, new end time must be earlier than start time.";
           }
         } else {
           if (end && start >= end) {
@@ -988,22 +1307,53 @@ function NewRequest() {
       if (field === "work_type") {
         updated.electrical_works = [];
         updated.mechanical_works = [];
+        setEleSearch("");
+        setMechSearch("");
+        setElectricalCategory("");
       }
 
-      if (field === "night_shift" && value === true) {
-        if (prev.Working_Date) {
-          updated.new_date = getNextDate(prev.Working_Date);
+      if (field === "night_shift") {
+        const isNight = value === true || value === 1 || value === "1";
+        if (isNight) {
+          if (prev.Working_Date) {
+            updated.new_date = getNextDate(prev.Working_Date);
+          } else {
+            updated.new_date = "";
+          }
+          updated.End_Time = "23:59";
+          if (updated.new_end_time === "none") {
+            updated.new_end_time = "";
+          }
+        } else {
+          updated.new_date = "none";
+          updated.new_end_time = "none";
         }
-        updated.End_Time = "23:59";
       }
 
-      if (field === "Working_Date" && prev.night_shift === true) {
-        updated.new_date = getNextDate(value);
+      if (field === "Working_Date") {
+        const isNight = prev.night_shift === true || prev.night_shift === 1 || prev.night_shift === "1";
+        if (isNight) {
+          updated.new_date = getNextDate(value);
+        } else {
+          updated.new_date = "none";
+          updated.new_end_time = "none";
+        }
       }
 
       return updated;
     });
   };
+
+  const roomStatusMap = useMemo(() => {
+    const mapping = {};
+    roomsList.forEach(r => {
+      const zoneObj = zonesList.find(z => String(z.id) === String(r.zone_id));
+      if (zoneObj && r.room_name) {
+        mapping[r.room_name.toLowerCase().trim()] = zoneObj.status;
+      }
+    });
+    return mapping;
+  }, [roomsList, zonesList]);
 
   const handleRoomsSelected = (rooms, zone) => {
     const zoneRoomNames = zone.rooms.map(r => typeof r === "object" ? r.name : r);
@@ -1046,6 +1396,7 @@ function NewRequest() {
   // Validate all mandatory fields; show inline errors below each field
   const validateHoldFields = () => {
     const errors = {};
+    if (!formData.permit_type) errors.permit_type = "Please select Permit Type.";
     if (!formData.Sub_Contractor_Id) errors.Sub_Contractor_Id = "Please select a Contractor.";
     if (!formData.new_sub_contractor?.trim()) errors.new_sub_contractor = "Please enter Sub Contractor name.";
     if (!formData.Foreman?.trim()) errors.Foreman = "Please enter Foreman-Supervisor name.";
@@ -1057,6 +1408,14 @@ function NewRequest() {
     if (!formData.Working_Date) errors.Working_Date = "Please select a working Date.";
     if (!formData.Start_Time) errors.Start_Time = "Please enter Start Time.";
     if (!formData.End_Time) errors.End_Time = "Please enter End Time.";
+    if (formData.night_shift) {
+      if (!formData.new_date || formData.new_date === "none" || !formData.new_date.trim()) {
+        errors.new_date = "Please select New Date.";
+      }
+      if (!formData.new_end_time || formData.new_end_time === "none" || !formData.new_end_time.trim()) {
+        errors.new_end_time = "Please enter New End Time.";
+      }
+    }
 
     // Commissioning permit type validation
     if (formData.permit_type === "Commissioning") {
@@ -1252,7 +1611,7 @@ function NewRequest() {
       if (formData.night_shift) {
         if (formData.new_end_time) {
           if (formData.new_end_time >= formData.Start_Time) {
-            errors.new_end_time = "For night shift, new end time must be earlier than start time.";
+            errors.new_end_time = "For working after midnight, new end time must be earlier than start time.";
           }
         }
       } else {
@@ -1288,6 +1647,17 @@ function NewRequest() {
       return;
     }
 
+    if (!formData.permit_type) {
+      setFieldErrors(prev => ({ ...prev, permit_type: "Please select Permit Type." }));
+      setTimeout(() => {
+        const firstErr = document.querySelector(".field-error");
+        if (firstErr) firstErr.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 50);
+      return;
+    }
+
+    // Night shift validations are handled at the field level inside timeErrors/errors checking
+
     // 1. Tally selected location items to resolve database IDs
     const Building_Id = building ? Number(building) : null;
 
@@ -1319,39 +1689,41 @@ function NewRequest() {
     }
 
     // Find Room IDs — multi-strategy matching
-    // Strategy 1: Match by zone_id + case-insensitive room_name
     const selectedRoomsLower = selectedRooms.map(n => n.toLowerCase().trim());
-    let matchedRoomIds = roomsList
-      .filter((r) =>
-        matchedZoneIds.includes(r.zone_id ?? r.zoneStatusId) &&
-        selectedRoomsLower.includes((r.room_name || "").toLowerCase().trim())
-      )
-      .map((r) => r.room_id ?? r.id);
-
-    // Strategy 2: Fallback — match by fl_id + case-insensitive room_name
-    if (matchedRoomIds.length === 0 && Floor_Id) {
-      matchedRoomIds = roomsList
-        .filter((r) =>
-          String(r.fl_id) === String(Floor_Id) &&
-          selectedRoomsLower.includes((r.room_name || "").toLowerCase().trim())
-        )
-        .map((r) => r.room_id ?? r.id);
+    let matchedRoomIds = [];
+    if (selectedRoomsLower.length > 0) {
+      matchedRoomIds = selectedRooms.map(roomName => {
+        const roomNameLower = roomName.toLowerCase().trim();
+        // 1. Try matching with building + floor
+        let matched = roomsList.find(r =>
+          (r.room_name || "").toLowerCase().trim() === roomNameLower &&
+          (Floor_Id ? String(r.fl_id) === String(Floor_Id) : true) &&
+          (Building_Id ? String(r.building_id) === String(Building_Id) : true)
+        );
+        // 2. Try matching with building
+        if (!matched) {
+          matched = roomsList.find(r =>
+            (r.room_name || "").toLowerCase().trim() === roomNameLower &&
+            (Building_Id ? String(r.building_id) === String(Building_Id) : true)
+          );
+        }
+        // 3. Match by name alone
+        if (!matched) {
+          matched = roomsList.find(r =>
+            (r.room_name || "").toLowerCase().trim() === roomNameLower
+          );
+        }
+        return matched ? (matched.room_id ?? matched.id) : null;
+      }).filter(id => id !== null && id !== undefined);
     }
 
-    // Strategy 3: Fallback — include ALL rooms belonging to the matched zones
-    if (matchedRoomIds.length === 0 && matchedZoneIds.length > 0) {
-      matchedRoomIds = roomsList
-        .filter((r) => matchedZoneIds.includes(r.zone_id ?? r.zoneStatusId))
-        .map((r) => r.room_id ?? r.id);
-    }
-
-    let Room_Nos = matchedRoomIds.join(",");
+    let Room_Nos = [...new Set(matchedRoomIds)].join(",");
     if (!Room_Nos && isEditMode && editRequest?.Room_Nos) {
       Room_Nos = String(editRequest.Room_Nos);
     }
 
     // Frontend validations
-    if (!isEditMode && formData.Working_Date) {
+    if (formData.Working_Date) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const selected = new Date(formData.Working_Date);
@@ -1372,12 +1744,20 @@ function NewRequest() {
     if (formData.night_shift && formData.new_end_time && !timeRegex.test(formData.new_end_time)) {
       timeErrors.new_end_time = "New End time must be in 24-hour format (HH:MM).";
     }
+    if (formData.night_shift) {
+      if (!formData.new_date || formData.new_date === "none" || !String(formData.new_date).trim()) {
+        timeErrors.new_date = "Please select New Date.";
+      }
+      if (!formData.new_end_time || formData.new_end_time === "none" || !String(formData.new_end_time).trim()) {
+        timeErrors.new_end_time = "Please enter New End Time.";
+      }
+    }
 
     if (formData.Start_Time) {
       if (formData.night_shift) {
         if (formData.new_end_time) {
           if (formData.new_end_time >= formData.Start_Time) {
-            timeErrors.new_end_time = "For night shift, new end time must be earlier than start time.";
+            timeErrors.new_end_time = "For working after midnight, new end time must be earlier than start time.";
           }
         }
       } else {
@@ -1458,6 +1838,21 @@ function NewRequest() {
     const currentUser = getUser();
     const currentUserId = currentUser?.id || 1;
 
+    const isNightShift = formData.night_shift === true || formData.night_shift === 1 || formData.night_shift === "1";
+
+    const newDateVal = isNightShift
+      ? (formData.new_date && formData.new_date !== "none" ? formData.new_date : (formData.Working_Date ? getNextDate(formData.Working_Date) : "none"))
+      : "none";
+
+    let newEndTimeVal = "none";
+    if (isNightShift) {
+      if (formData.new_end_time && formData.new_end_time !== "none") {
+        newEndTimeVal = formData.new_end_time.includes(":") && formData.new_end_time.split(":").length === 2
+          ? `${formData.new_end_time}:00`
+          : formData.new_end_time;
+      }
+    }
+
     // 2. Prepare payload
     const payload = {
       ...formData,
@@ -1472,10 +1867,11 @@ function NewRequest() {
       userId: currentUserId,
       Request_Date: isEditMode ? editRequest.Request_Date : new Date().toISOString().split("T")[0],
       Working_Date: formData.Working_Date,
-      Start_Time: formData.Start_Time ? `${formData.Start_Time}:00` : "",
-      End_Time: formData.End_Time ? `${formData.End_Time}:00` : "",
-      night_shift: formData.night_shift ? 1 : 0,
-      new_end_time: formData.new_end_time ? `${formData.new_end_time}:00` : "",
+      Start_Time: formData.Start_Time ? (formData.Start_Time.includes(":") && formData.Start_Time.split(":").length === 2 ? `${formData.Start_Time}:00` : formData.Start_Time) : "",
+      End_Time: formData.End_Time ? (formData.End_Time.includes(":") && formData.End_Time.split(":").length === 2 ? `${formData.End_Time}:00` : formData.End_Time) : "",
+      night_shift: isNightShift ? 1 : 0,
+      new_date: newDateVal,
+      new_end_time: newEndTimeVal,
       Assign_Start_Time: formData.Start_Time ? `${formData.Start_Time}:00` : "",
       Assign_End_Time: formData.End_Time ? `${formData.End_Time}:00` : "",
       Assign_Start_Date: formData.Working_Date,
@@ -1500,8 +1896,12 @@ function NewRequest() {
       pressurization: formData.pressurization === "1" ? 1 : 0,
       pressure_testing_of_equipment: formData.pressure_testing_of_equipment === "1" ? 1 : 0,
       Number_Of_Workers: formData.Number_Of_Workers,
-      electrical_works: Array.isArray(formData.electrical_works) ? formData.electrical_works.join(",") : "",
-      mechanical_works: Array.isArray(formData.mechanical_works) ? formData.mechanical_works.join(",") : "",
+      electrical_works: (Array.isArray(formData.electrical_works) && formData.electrical_works.filter(x => x && x !== "N/A").length > 0)
+        ? formData.electrical_works.filter(x => x && x !== "N/A").join(",")
+        : "N/A",
+      mechanical_works: (Array.isArray(formData.mechanical_works) && formData.mechanical_works.filter(x => x && x !== "N/A").length > 0)
+        ? formData.mechanical_works.filter(x => x && x !== "N/A").join(",")
+        : "N/A",
       Safety_Precautions: Array.isArray(formData.Safety_Precautions) ? formData.Safety_Precautions.join(",") : "",
 
       // General Safety Checklist
@@ -1523,6 +1923,7 @@ function NewRequest() {
       combustible_material: formData.floatLabel8 || 0,
       safety_measures: formData.floatLabel9 || 0,
       extinguishers_and_fire_blanket: formData.floatLabel10 || 0,
+      welding_activity: formData.NEWHOTWORK || 0,
       welding_activitiy: formData.NEWHOTWORK || 0,
       heat_treatment: formData.NEWHOTWORK1 || 0,
       air_extraction_be_established: formData.NEWHOTWORK2 || 0,
@@ -1599,6 +2000,7 @@ function NewRequest() {
 
       // Using Cranes or Lifting
       appointed_person: formData.floatLabel80 || 0,
+      vendor_supplies: formData.floatLabel81 || 0,
       vendor_supplier: formData.floatLabel81 || 0,
       lift_plan: formData.floatLabel82 || 0,
       supplied_and_inspected: formData.floatLabel83 || 0,
@@ -1657,6 +2059,7 @@ function NewRequest() {
       loto_plan_attached: formData.floatLabel105 || 0,
       exclusion_zone_calculated: formData.floatLabel106 || 0,
       pneumatic_hydrostatic: formData.floatLabel107 || 0,
+      pnematic_hydrostatic: formData.floatLabel107 || 0,
       pressure_of_the_test: formData.floatLabel108 || 0,
       safety_valves_calibrated: formData.floatLabel109 || 0,
     };
@@ -1799,20 +2202,26 @@ function NewRequest() {
             <div className="df-grid" style={{ marginTop: "16px" }}>
               <div className="df-field">
                 <label className="df-label">Contractor <span className="req-star">*</span></label>
-                <select
-                  className={`df-select${fieldErrors.Sub_Contractor_Id ? " field-input-error" : ""}`}
-                  value={formData.Sub_Contractor_Id}
-                  onChange={(e) => handleFieldChange("Sub_Contractor_Id", e.target.value)}
-                >
-                  <option value="">Select Contractor</option>
-                  {contractors.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.subContractorName}
-                    </option>
-                  ))}
-                </select>
+                {isSubcontractor ? (
+                  <input
+                    type="text"
+                    className="df-input df-readonly"
+                    value={contractors.length > 0 ? (contractors.find(c => String(c.id) === String(formData.Sub_Contractor_Id))?.subContractorName || contractors[0]?.subContractorName) : "Loading..."}
+                    readOnly
+                  />
+                ) : (
+                  <SearchableSingleSelect
+                    options={contractors}
+                    value={formData.Sub_Contractor_Id}
+                    onChange={(e) => handleFieldChange("Sub_Contractor_Id", e.target.value)}
+                    placeholder="Select Contractor"
+                    disabled={isSubcontractor}
+                    className={fieldErrors.Sub_Contractor_Id ? "field-input-error" : ""}
+                  />
+                )}
                 {fieldErrors.Sub_Contractor_Id && <span className="field-error">{fieldErrors.Sub_Contractor_Id}</span>}
               </div>
+
               <div className="df-field">
                 <label className="df-label">Sub Contractor <span className="req-star">*</span></label>
                 <input
@@ -1828,15 +2237,17 @@ function NewRequest() {
 
             <div className="df-grid" style={{ marginTop: "16px" }}>
               <div className="df-field">
-                <label className="df-label">Permit Type</label>
+                <label className="df-label">Permit Type <span className="req-star">*</span></label>
                 <select
-                  className="df-select"
+                  className={`df-select${fieldErrors.permit_type ? " field-input-error" : ""}`}
                   value={formData.permit_type}
                   onChange={(e) => handleFieldChange("permit_type", e.target.value)}
                 >
+                  <option value="">Select Permit Type</option>
                   <option value="Construction">Construction</option>
                   <option value="Commissioning">Commissioning</option>
                 </select>
+                {fieldErrors.permit_type && <span className="field-error">{fieldErrors.permit_type}</span>}
               </div>
               <div className="df-field">
                 <label className="df-label">Foreman-Supervisor <span className="req-star">*</span></label>
@@ -1928,7 +2339,7 @@ function NewRequest() {
                   type="date"
                   className={`df-input${fieldErrors.Working_Date ? " field-input-error" : ""}`}
                   value={formData.Working_Date}
-                  min={!isEditMode ? new Date().toISOString().split("T")[0] : undefined}
+                  min={new Date().toISOString().split("T")[0]}
                   onChange={(e) => handleFieldChange("Working_Date", e.target.value)}
                   onClick={(e) => { try { e.target.showPicker(); } catch (err) { void err; } }}
                 />
@@ -1972,13 +2383,16 @@ function NewRequest() {
                   type="text"
                   placeholder="00:00"
                   readOnly
-                  className={`df-input${fieldErrors.End_Time ? " field-input-error" : ""}`}
+                  className={`df-input${fieldErrors.End_Time ? " field-input-error" : ""}${formData.night_shift ? " df-readonly" : ""}`}
                   value={formData.End_Time}
+                  disabled={formData.night_shift}
                   onClick={() => {
-                    setTempEndTime(formData.End_Time || "12:00");
-                    setShowEndPicker(true);
+                    if (!formData.night_shift) {
+                      setTempEndTime(formData.End_Time || "12:00");
+                      setShowEndPicker(true);
+                    }
                   }}
-                  style={{ cursor: 'pointer' }}
+                  style={{ cursor: formData.night_shift ? 'not-allowed' : 'pointer' }}
                 />
                 {fieldErrors.End_Time && <span className="field-error">{fieldErrors.End_Time}</span>}
 
@@ -2002,7 +2416,7 @@ function NewRequest() {
                     checked={formData.night_shift}
                     onChange={(e) => handleFieldChange("night_shift", e.target.checked)}
                   />
-                  <span className="checkbox-label">Is this a night shift?</span>
+                  <span className="checkbox-label">Is this working after midnight?</span>
                 </label>
               </div>
             </div>
@@ -2010,16 +2424,19 @@ function NewRequest() {
             {formData.night_shift && (
               <div className="df-grid night-shift-subform" style={{ marginTop: "16px" }}>
                 <div className="df-field">
-                  <label className="df-label">New Date (Night Shift)</label>
+                  <label className="df-label">New Date (Working After Midnight) <span className="req-star">*</span></label>
                   <input
                     type="date"
-                    className="df-input"
+                    className={`df-input${fieldErrors.new_date ? " field-input-error" : ""}${formData.night_shift ? " df-readonly" : ""}`}
                     value={formData.new_date}
+                    disabled={formData.night_shift}
                     onChange={(e) => handleFieldChange("new_date", e.target.value)}
+                    style={{ cursor: formData.night_shift ? 'not-allowed' : 'default' }}
                   />
+                  {fieldErrors.new_date && <span className="field-error">{fieldErrors.new_date}</span>}
                 </div>
                 <div className="df-field">
-                  <label className="df-label">New End Time (Night Shift)</label>
+                  <label className="df-label">New End Time (Working After Midnight) <span className="req-star">*</span></label>
                   <input
                     type="text"
                     placeholder="00:00"
@@ -2104,7 +2521,7 @@ function NewRequest() {
               </div>
 
               {isDropdownOpen && zonesToDisplay.length > 0 && (
-                <div className="zone-rooms-dropdown" style={{ background: "var(--bg-card)", border: "1px solid var(--border-color)", borderRadius: "8px", padding: "16px", marginTop: "8px", boxShadow: "var(--shadow-md)", zIndex: 100 }}>
+                <div className="zone-rooms-dropdown" style={{ background: "var(--bg-card)", border: "1px solid var(--border-color)", borderRadius: "8px", padding: "16px", marginTop: "8px", boxShadow: "var(--shadow-md)", position: "absolute", top: "100%", left: 0, width: "100%", zIndex: 100, maxHeight: "200px", overflowY: "auto" }}>
                   {zonesToDisplay.map((zoneToDraw) => (
                     <div key={zoneToDraw.name} style={{ marginBottom: "20px" }}>
                       <div style={{ fontWeight: "bold", color: "var(--color-safe, #00e5a0)", marginBottom: "12px", fontSize: "14px" }}>
@@ -2187,7 +2604,14 @@ function NewRequest() {
                 {isEditMode ? (
                   existingFiles.map((file, idx) => (
                     <div key={file.id || idx} className="file-item">
-                      <span>{file.name}</span>
+                      <a
+                        href={getFileUrl(file)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: "#3b82f6", textDecoration: "underline", cursor: "pointer", fontWeight: 500 }}
+                      >
+                        {file.name || "Attachment"}
+                      </a>
                       <button
                         type="button"
                         className="file-remove-btn"
@@ -2200,7 +2624,14 @@ function NewRequest() {
                 ) : (
                   uploadedFiles.map((file, idx) => (
                     <div key={idx} className="file-item">
-                      <span>{file.name}</span>
+                      <a
+                        href={file instanceof File ? URL.createObjectURL(file) : "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: "#3b82f6", textDecoration: "underline", cursor: "pointer", fontWeight: 500 }}
+                      >
+                        {file.name}
+                      </a>
                       <button
                         type="button"
                         className="file-remove-btn"
@@ -2241,60 +2672,94 @@ function NewRequest() {
                 </div>
 
                 {formData.work_type === "Electrical Works" && (
-                  <div className="df-field" ref={electricalDropdownRef} style={{ position: "relative" }}>
-                    <label className="df-label">Electrical Works <span className="req-star">*</span></label>
-                    <div style={{ position: "relative" }}>
-                      <input
-                        type="text"
-                        className={`df-input${fieldErrors.electrical_works ? " field-input-error" : ""}`}
-                        style={{ cursor: "pointer", background: "rgba(255, 255, 255, 0.02)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
-                        placeholder="Click to select electrical works..."
-                        value={
-                          formData.electrical_works?.length > 0
-                            ? formData.electrical_works.map(id => electricalWorksList.find(x => String(x.id) === String(id))?.electrical_works || id).join(", ")
-                            : ""
-                        }
-                        readOnly
-                        onClick={() => setIsElectricalDropdownOpen(prev => !prev)}
-                      />
-                      <i className="ti ti-chevron-down" style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", color: "#9ca3af", pointerEvents: "none", fontSize: "16px" }} />
+                  <>
+                    <div className="df-field">
+                      <label className="df-label">Electrical Category</label>
+                      <select
+                        className="df-select"
+                        value={electricalCategory}
+                        onChange={(e) => {
+                          setElectricalCategory(e.target.value);
+                          setEleSearch(""); // Reset search query on category switch
+                        }}
+                      >
+                        <option value="">All Categories</option>
+                        <option value="Panel Numbers">Panel Numbers</option>
+                        <option value="System Numbers">System Numbers</option>
+                      </select>
                     </div>
-                    {fieldErrors.electrical_works && <span className="field-error">{fieldErrors.electrical_works}</span>}
 
-                    {isElectricalDropdownOpen && groupedElectrical.length > 0 && (
-                      <div className="zone-rooms-dropdown" style={{ background: "var(--bg-card)", border: "1px solid var(--border-color)", borderRadius: "8px", padding: "16px", marginTop: "8px", boxShadow: "var(--shadow-md)", position: "absolute", top: "100%", left: 0, width: "100%", zIndex: 100, maxHeight: "300px", overflowY: "auto" }}>
-                        {groupedElectrical.map((g) => (
-                          <div key={g.module} style={{ marginBottom: "20px" }}>
-                            <div style={{ fontWeight: "bold", color: "var(--color-safe, #00e5a0)", marginBottom: "12px", fontSize: "14px", textTransform: "uppercase" }}>
-                              {g.module}
-                            </div>
-                            <div style={{ display: "flex", flexDirection: "column", gap: "12px", paddingLeft: "8px" }}>
-                              {g.items.map((i) => {
-                                const isChecked = (formData.electrical_works || []).includes(String(i.id));
-                                return (
-                                  <label key={i.id} className="custom-checkbox-label" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                    <input
-                                      type="checkbox"
-                                      className="custom-checkbox-input"
-                                      checked={isChecked}
-                                      onChange={() => {
-                                        const current = formData.electrical_works || [];
-                                        const newValues = isChecked
-                                          ? current.filter(val => val !== String(i.id))
-                                          : [...current, String(i.id)];
-                                        handleFieldChange("electrical_works", newValues);
-                                      }}
-                                    />
-                                    <span>{i.name}</span>
-                                  </label>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        ))}
+                    <div className="df-field" ref={electricalDropdownRef} style={{ position: "relative" }}>
+                      <label className="df-label">Electrical Works <span className="req-star">*</span></label>
+                      <div style={{ position: "relative" }}>
+                        <input
+                          type="text"
+                          className={`df-input${fieldErrors.electrical_works ? " field-input-error" : ""}`}
+                          style={{ cursor: "pointer", background: "rgba(255, 255, 255, 0.02)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+                          placeholder="Click to select electrical works..."
+                          value={
+                            formData.electrical_works?.length > 0
+                              ? formData.electrical_works.map(id => electricalWorksNamesCache.current[String(id)] || id).join(", ")
+                              : ""
+                          }
+                          readOnly
+                          onClick={() => setIsElectricalDropdownOpen(prev => !prev)}
+                        />
+                        <i className="ti ti-chevron-down" style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", color: "#9ca3af", pointerEvents: "none", fontSize: "16px" }} />
                       </div>
-                    )}
-                  </div>
+                      {fieldErrors.electrical_works && <span className="field-error">{fieldErrors.electrical_works}</span>}
+
+                      {isElectricalDropdownOpen && groupedElectrical.length > 0 && (
+                        <div className="zone-rooms-dropdown" style={{ background: "var(--bg-card)", border: "1px solid var(--border-color)", borderRadius: "8px", padding: "16px", marginTop: "8px", boxShadow: "var(--shadow-md)", position: "absolute", top: "100%", left: 0, width: "100%", zIndex: 100, maxHeight: "300px", overflowY: "auto" }}>
+                          <div style={{ marginBottom: "12px", position: "sticky", top: 0, zIndex: 10, background: "var(--bg-card)" }}>
+                            <input
+                              type="text"
+                              className="df-input"
+                              placeholder="Search..."
+                              value={eleSearch}
+                              onChange={(e) => setEleSearch(e.target.value)}
+                              onClick={(e) => e.stopPropagation()}
+                              style={{ width: "100%", padding: "8px 12px", fontSize: "13px" }}
+                            />
+                            {isFetchingEle && (
+                              <div style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)" }}>
+                                <span className="spinner-mini" />
+                              </div>
+                            )}
+                          </div>
+                          {groupedElectrical.map((g) => (
+                            <div key={g.module} style={{ marginBottom: "20px" }}>
+                              <div style={{ fontWeight: "bold", color: "var(--color-safe, #00e5a0)", marginBottom: "12px", fontSize: "14px", textTransform: "uppercase" }}>
+                                {g.module}
+                              </div>
+                              <div style={{ display: "flex", flexDirection: "column", gap: "12px", paddingLeft: "8px" }}>
+                                {g.items.map((i) => {
+                                  const isChecked = (formData.electrical_works || []).includes(String(i.id));
+                                  return (
+                                    <label key={i.id} className="custom-checkbox-label" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                      <input
+                                        type="checkbox"
+                                        className="custom-checkbox-input"
+                                        checked={isChecked}
+                                        onChange={() => {
+                                          const current = formData.electrical_works || [];
+                                          const newValues = isChecked
+                                            ? current.filter(val => val !== String(i.id))
+                                            : [...current, String(i.id)];
+                                          handleFieldChange("electrical_works", newValues);
+                                        }}
+                                      />
+                                      <span>{i.name}</span>
+                                    </label>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </>
                 )}
 
                 {formData.work_type === "Mechanical Works" && (
@@ -2308,7 +2773,7 @@ function NewRequest() {
                         placeholder="Click to select mechanical works..."
                         value={
                           formData.mechanical_works?.length > 0
-                            ? formData.mechanical_works.map(id => mechanicalWorksOptions.find(x => String(x.id) === String(id))?.name || id).join(", ")
+                            ? formData.mechanical_works.map(id => mechanicalWorksNamesCache.current[String(id)] || id).join(", ")
                             : ""
                         }
                         readOnly
@@ -2320,6 +2785,22 @@ function NewRequest() {
 
                     {isMechanicalDropdownOpen && mechanicalWorksOptions.length > 0 && (
                       <div className="zone-rooms-dropdown" style={{ background: "var(--bg-card)", border: "1px solid var(--border-color)", borderRadius: "8px", padding: "16px", marginTop: "8px", boxShadow: "var(--shadow-md)", position: "absolute", top: "100%", left: 0, width: "100%", zIndex: 100, maxHeight: "300px", overflowY: "auto" }}>
+                        <div style={{ marginBottom: "12px", position: "sticky", top: 0, zIndex: 10, background: "var(--bg-card)" }}>
+                          <input
+                            type="text"
+                            className="df-input"
+                            placeholder="Search..."
+                            value={mechSearch}
+                            onChange={(e) => setMechSearch(e.target.value)}
+                            onClick={(e) => e.stopPropagation()}
+                            style={{ width: "100%", padding: "8px 12px", fontSize: "13px" }}
+                          />
+                          {isFetchingMech && (
+                            <div style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)" }}>
+                              <span className="spinner-mini" />
+                            </div>
+                          )}
+                        </div>
                         <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                           {mechanicalWorksOptions.map((m) => {
                             const isChecked = (formData.mechanical_works || []).includes(String(m.id));
@@ -2444,7 +2925,7 @@ function NewRequest() {
             <h2 className="form-card-title">Safety Precautions & Tasks</h2>
 
             {/* Hotwork dropdown */}
-            <div style={{ display: "flex", gap: "16px", marginBottom: "20px", alignItems: "center" }}>
+            <div className="precaution-row">
               <img src={HotWorks} alt="HotWorks" style={{ width: "64px", height: "64px", borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "1px solid rgba(255,255,255,0.08)", background: "#fff" }} />
               <div className="df-field" style={{ flex: 1 }}>
                 <label className="df-label">Is Hotwork Required?</label>
@@ -2613,7 +3094,7 @@ function NewRequest() {
             )}
 
             {/* Temporary Electrical Systems dropdown */}
-            <div style={{ display: "flex", gap: "16px", marginBottom: "20px", alignItems: "center" }}>
+            <div className="precaution-row">
               <img src={ElectricalSystems} alt="ElectricalSystems" style={{ width: "64px", height: "64px", borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "1px solid rgba(255,255,255,0.08)", background: "#fff" }} />
               <div className="df-field" style={{ flex: 1 }}>
                 <label className="df-label">Working on Site Temporary Electrical Systems?</label>
@@ -2694,7 +3175,7 @@ function NewRequest() {
             )}
 
             {/* Hazardous Substances dropdown */}
-            <div style={{ display: "flex", gap: "16px", marginBottom: "20px", alignItems: "center" }}>
+            <div className="precaution-row">
               <img src={substanceChemical} alt="Chemicals" style={{ width: "64px", height: "64px", borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "1px solid rgba(255,255,255,0.08)", background: "#fff" }} />
               <div className="df-field" style={{ flex: 1 }}>
                 <label className="df-label">Working with Hazardous Substances/Chemicals?</label>
@@ -2810,7 +3291,7 @@ function NewRequest() {
             )}
 
             {/* Working at Height dropdown */}
-            <div style={{ display: "flex", gap: "16px", marginBottom: "20px", alignItems: "center" }}>
+            <div className="precaution-row">
               <img src={WorkingAtHight} alt="Working at Height" style={{ width: "64px", height: "64px", borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "1px solid rgba(255,255,255,0.08)", background: "#fff" }} />
               <div className="df-field" style={{ flex: 1 }}>
                 <label className="df-label">WORKING AT HEIGHT?</label>
@@ -2987,7 +3468,7 @@ function NewRequest() {
             )}
 
             {/* Working in Confined Spaces dropdown */}
-            <div style={{ display: "flex", gap: "16px", marginBottom: "20px", alignItems: "center" }}>
+            <div className="precaution-row">
               <img src={ConfinedSpace} alt="Confined Spaces" style={{ width: "64px", height: "64px", borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "1px solid rgba(255,255,255,0.08)", background: "#fff" }} />
               <div className="df-field" style={{ flex: 1 }}>
                 <label className="df-label">WORKING IN CONFINED SPACES?</label>
@@ -3103,7 +3584,7 @@ function NewRequest() {
             )}
 
             {/* Excavation Works dropdown */}
-            <div style={{ display: "flex", gap: "16px", marginBottom: "20px", alignItems: "center" }}>
+            <div className="precaution-row">
               <img src={ExcavationWorks} alt="Excavation Works" style={{ width: "64px", height: "64px", borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "1px solid rgba(255,255,255,0.08)", background: "#fff" }} />
               <div className="df-field" style={{ flex: 1 }}>
                 <label className="df-label">EXCAVATION WORKS?</label>
@@ -3232,7 +3713,7 @@ function NewRequest() {
             )}
 
             {/* Using Crane or Lifting dropdown */}
-            <div style={{ display: "flex", gap: "16px", marginBottom: "20px", alignItems: "center" }}>
+            <div className="precaution-row">
               <img src={Craneslifting} alt="Crane Lifting" style={{ width: "64px", height: "64px", borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "1px solid rgba(255,255,255,0.08)", background: "#fff" }} />
               <div className="df-field" style={{ flex: 1 }}>
                 <label className="df-label">USING CRANE OR LIFTING?</label>
@@ -3624,7 +4105,7 @@ function NewRequest() {
                     )}
 
                     {/* Working on OR near live electrical systems */}
-                    <div style={{ display: "flex", gap: "16px", marginBottom: "20px", alignItems: "center", marginTop: "20px" }}>
+                    <div className="precaution-row" style={{ marginTop: "20px" }}>
                       <img src={electrical_works} alt="electrical_works" style={{ width: "64px", height: "64px", borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "1px solid rgba(255,255,255,0.08)", background: "#fff" }} />
                       <div className="df-field" style={{ flex: 1 }}>
                         <label className="df-label">Working on OR near live electrical systems (Live testing, commissioning, fault finding, working inside live enclosures)</label>
@@ -3750,7 +4231,7 @@ function NewRequest() {
             {/* pressurization starts */}
             {formData.permit_type === "Commissioning" && !shouldShowElectricianCert() && (
               <>
-                <div style={{ display: "flex", gap: "16px", marginBottom: "20px", alignItems: "center", marginTop: "20px" }}>
+                <div className="precaution-row" style={{ marginTop: "20px" }}>
                   <img src={mechanical1} alt="mechanical1" style={{ width: "64px", height: "64px", borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "1px solid rgba(255,255,255,0.08)", background: "#fff" }} />
                   <div className="df-field" style={{ flex: 1 }}>
                     <label className="df-label">Energization of Mechanical equipment</label>
@@ -3875,7 +4356,7 @@ function NewRequest() {
             {/* Pressure Testing dropdown */}
             {formData.permit_type === "Commissioning" && !shouldShowElectricianCert() && (
               <>
-                <div style={{ display: "flex", gap: "16px", alignItems: "center", marginTop: "20px" }}>
+                <div className="precaution-row" style={{ marginTop: "20px" }}>
                   <img src={testingequipment} alt="testingequipment" style={{ width: "64px", height: "64px", borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "1px solid rgba(255,255,255,0.08)", background: "#fff" }} />
                   <div className="df-field" style={{ flex: 1 }}>
                     <label className="df-label">PRESSURE TESTING OF EQUIPMENT REQUIRED?</label>
@@ -4040,7 +4521,7 @@ function NewRequest() {
 
             <div style={{ marginBottom: "20px" }}>
               <label className="df-label" style={{ marginBottom: "16px" }}>Task Specific PPE Required: <span className="req-star">*</span></label>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "20px" }}>
+              <div className="ppe-grid">
 
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", background: "rgba(255,255,255,0.02)", padding: "16px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.05)" }}>
                   <img src={Eyeprotection} alt="Eye Protection" style={{ width: "64px", height: "64px", marginBottom: "8px" }} />
@@ -4146,7 +4627,7 @@ function NewRequest() {
                 </div>
 
                 {isPrecautionsDropdownOpen && precautionsList.length > 0 && (
-                  <div className="zone-rooms-dropdown" style={{ background: "#111827", border: "1px solid rgba(255, 255, 255, 0.15)", borderRadius: "8px", padding: "16px", marginTop: "8px", boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.3)", position: "absolute", top: "100%", left: 0, width: "100%", zIndex: 100, maxHeight: "250px", overflowY: "auto" }}>
+                  <div className="zone-rooms-dropdown" style={{ background: "var(--bg-card)", border: "1px solid var(--border-color)", borderRadius: "8px", padding: "16px", marginTop: "8px", boxShadow: "var(--shadow-md)", position: "absolute", top: "100%", left: 0, width: "100%", zIndex: 100, maxHeight: "250px", overflowY: "auto" }}>
                     <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                       {precautionsList.map((p) => {
                         const isChecked = (formData.Safety_Precautions || []).includes(String(p.id));
@@ -4246,7 +4727,11 @@ function NewRequest() {
                   type="button"
                   className="nr-btn nr-btn--ghost"
                   style={{ background: "#2563eb", color: "#fff", borderColor: "#2563eb", boxShadow: "0 0 18px rgba(37, 99, 235, 0.2)" }}
-                  onClick={(e) => { if (validateHoldFields()) handleSubmit(e, "Hold"); }}
+                  onClick={(e) => {
+                    if (validateHoldFields()) {
+                      setShowRamsHoldModal(true);
+                    }
+                  }}
                 >
                   Change to Hold
                 </button>
@@ -4261,6 +4746,44 @@ function NewRequest() {
             )}
           </div>
         </form>
+
+        <Modal
+          open={showRamsHoldModal}
+          onClose={() => setShowRamsHoldModal(false)}
+          title="RAMS Confirmation"
+          size="sm"
+          centered={true}
+        >
+          <div className="df-form" style={{ padding: "8px 0" }}>
+            <p style={{ color: "var(--text-main, inherit)", fontSize: "15px", marginBottom: "24px", lineHeight: "1.5" }}>
+              Can you confirm the RAMS for this work is approved by ConM/HSE?
+            </p>
+            <div style={{ display: "flex", gap: "12px" }}>
+              <button
+                type="button"
+                className="nr-btn nr-btn--primary"
+                style={{ padding: "8px 24px" }}
+                onClick={(e) => {
+                  setShowRamsHoldModal(false);
+                  handleSubmit(e, "Hold");
+                }}
+              >
+                Yes
+              </button>
+              <button
+                type="button"
+                className="nr-btn nr-btn--ghost"
+                style={{ padding: "8px 24px" }}
+                onClick={(e) => {
+                  setShowRamsHoldModal(false);
+                  handleSubmit(e, "Draft");
+                }}
+              >
+                No
+              </button>
+            </div>
+          </div>
+        </Modal>
       </div>
 
     );
@@ -4340,6 +4863,7 @@ function NewRequest() {
             level={level}
             selectedRooms={selectedRooms}
             onRoomsSelected={handleRoomsSelected}
+            roomStatusMap={roomStatusMap}
           />
           {selectedRooms.length > 0 && (
             <div className="drawing-floating-action" style={{ display: "flex", justifyContent: "center", margin: "16px 0" }}>

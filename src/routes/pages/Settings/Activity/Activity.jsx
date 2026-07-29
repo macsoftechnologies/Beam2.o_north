@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { showSuccess, showError, showDeleteConfirm, showDeleteSuccess } from "../../../components/common/Toast/Toast";
 import Table from "../../../components/common/Table/Table";
 import Modal from "../../../components/common/Modal/Modal";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
 import Activityform from "../../../forms/Activityform/Activityform";
 import { getActivities, addActivity, updateActivity, deleteActivity } from "../../../services/authService";
 import "../../styles/pages.css";
@@ -14,20 +14,17 @@ const Activity = () => {
   const [editOpen, setEditOpen] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState(null);
   const [activityList, setActivityList] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageLimit] = useState(PAGE_LIMIT_DEFAULT);
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
-  // ─── Pagination ───────────────────────────────────────────────────────────
-  const totalPages = Math.ceil((totalCount || activityList.length) / pageLimit);
-  const startIndex = (currentPage - 1) * pageLimit;
-
-  // ─── Fetch list ───────────────────────────────────────────────────────────
-  const fetchActivities = useCallback(async (page = 1) => {
+  // ─── Fetch list with Backend Search & Pagination ─────────────────────────
+  const fetchActivities = useCallback(async (page = 1, query = "") => {
     setIsLoading(true);
     try {
-      const res = await getActivities(page, pageLimit);
+      const res = await getActivities(page, pageLimit, query);
       const rows = res?.data?.rows ?? res?.data ?? res ?? [];
       const count = res?.data?.count ?? res?.total ?? rows.length;
       setActivityList(rows);
@@ -40,8 +37,12 @@ const Activity = () => {
   }, [pageLimit]);
 
   useEffect(() => {
-    fetchActivities(currentPage);
-  }, [currentPage, fetchActivities]);
+    fetchActivities(currentPage, searchTerm);
+  }, [currentPage, searchTerm, fetchActivities]);
+
+  // ─── Pagination ───────────────────────────────────────────────────────────
+  const totalPages = Math.max(1, Math.ceil(totalCount / pageLimit));
+  const startIndex = (currentPage - 1) * pageLimit;
 
   // ─── Handlers ─────────────────────────────────────────────────────────────
   const handleEdit = (item, index) => {
@@ -59,7 +60,7 @@ const Activity = () => {
         ? currentPage - 1
         : currentPage;
       setCurrentPage(newPage);
-      fetchActivities(newPage);
+      fetchActivities(newPage, searchTerm);
     } catch {
       showError("Failed to delete activity");
     }
@@ -77,7 +78,7 @@ const Activity = () => {
         showSuccess("Activity added successfully");
         setOpen(false);
       }
-      fetchActivities(currentPage);
+      fetchActivities(currentPage, searchTerm);
     } catch {
       showError("Operation failed");
     }
@@ -127,7 +128,7 @@ const Activity = () => {
         </div>
         <div className="dept-page-header__right">
           <span className="dept-count-badge">
-            {totalCount || activityList.length} Total
+            {totalCount} Total
           </span>
           <button
             className="dept-add-btn"
@@ -137,6 +138,69 @@ const Activity = () => {
             Add Activity
           </button>
         </div>
+      </div>
+
+      {/* ── Search Toolbar ── */}
+      <div style={{
+        marginBottom: "16px",
+        display: "flex",
+        alignItems: "center",
+        gap: "12px",
+        background: "var(--bg-card, #111827)",
+        padding: "12px 16px",
+        borderRadius: "12px",
+        border: "1px solid var(--border-color, #374151)",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.15)"
+      }}>
+        <div style={{ position: "relative", flex: 1, maxWidth: "360px", display: "flex", alignItems: "center" }}>
+          <FaSearch style={{ position: "absolute", left: "12px", color: "var(--text-muted, #9ca3af)", fontSize: "14px" }} />
+          <input
+            type="text"
+            placeholder="Search activity name..."
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
+            style={{
+              width: "100%",
+              padding: "8px 36px 8px 36px",
+              borderRadius: "8px",
+              border: "1px solid var(--border-color, #374151)",
+              backgroundColor: "rgba(255, 255, 255, 0.05)",
+              color: "var(--text-main, #f9fafb)",
+              fontSize: "14px",
+              outline: "none",
+              transition: "border-color 0.2s"
+            }}
+          />
+          {searchTerm && (
+            <button
+              type="button"
+              onClick={() => {
+                setSearchTerm("");
+                setCurrentPage(1);
+              }}
+              style={{
+                position: "absolute",
+                right: "10px",
+                background: "none",
+                border: "none",
+                color: "#9ca3af",
+                cursor: "pointer",
+                fontSize: "14px",
+                padding: "2px"
+              }}
+            >
+              ✕
+            </button>
+          )}
+        </div>
+        {searchTerm && (
+          <span style={{ fontSize: "13px", color: "var(--text-muted, #9ca3af)" }}>
+            Found <strong style={{ color: "var(--text-main, #f9fafb)" }}>{totalCount}</strong> matching activities
+          </span>
+        )}
       </div>
 
       {/* ── Table Card ── */}

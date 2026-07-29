@@ -10,6 +10,7 @@ function FloorDrawing({
   level,
   selectedRooms = [],
   onRoomsSelected,
+  roomStatusMap,
 }) {
   const [selectedZone, setSelectedZone] = useState(null);
   const [hoveredZoneId, setHoveredZoneId] = useState(null);
@@ -149,6 +150,7 @@ function FloorDrawing({
             }
             setSelectedZone(null);
           }}
+          roomStatusMap={roomStatusMap}
         />
       )}
     </>

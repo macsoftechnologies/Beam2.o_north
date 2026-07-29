@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Table from "../../components/common/Table/Table";
 import { searchRequests } from "../../services/requestService";
+import { API_BASE_URL } from "../../services/api";
 import "../styles/pages.css";
 import LogHistoryModal from "./LogHistoryModel";
 
@@ -14,19 +15,10 @@ const formatDateToDDMMYYYY = (dateStr) => {
   }
   return dateStr;
 };
-
-// Helper to truncate long string values and attach title for hover info
-const trimLongValue = (value, maxLen) => {
+// Helper to pass long string values directly to Table component (where CSS handles ellipsis)
+const trimLongValue = (value) => {
   if (!value || value === "—") return "—";
-  const valStr = String(value);
-  if (valStr.length > maxLen) {
-    return (
-      <span title={valStr}>
-        {valStr.slice(0, maxLen)}...
-      </span>
-    );
-  }
-  return valStr;
+  return String(value);
 };
 
 const PAGE_LIMIT_DEFAULT = 30;
@@ -99,7 +91,7 @@ const LogHistory = () => {
     { header: "Area", accessor: "area" },
     { header: "Level", accessor: "level" },
     { header: "Working Date", accessor: "workingDate" },
-    { header: "Night Shift", accessor: "nightShift" },
+    { header: "Working After Midnight", accessor: "nightShift" },
     { header: "New Date", accessor: "newDate" },
     { header: "Actions", accessor: "actions" },
   ];
@@ -129,7 +121,7 @@ const LogHistory = () => {
         <button
           className="dept-action-btn dept-action-btn--view"
           title="View Details Drawing"
-          onClick={() => window.open(`http://187.127.171.51/requests/logs-design/${item.PermitNo}`, '_blank')}
+          onClick={() => window.open(`${API_BASE_URL}/requests/logs-design/${item.PermitNo}`, '_blank')}
         >
           👁
         </button>

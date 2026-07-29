@@ -64,8 +64,12 @@ export const deleteDepartment = async (id) => {
 };
 
 // ---------------- Contractors (Subcontractors) APIs ----------------
-export const getContractors = async (page = 1, limit = 10, isExport = false) => {
-    const res = await api.get(`/subcontractors/?page=${page}&limit=${limit}&isExport=${isExport}`);
+export const getContractors = async (page = 1, limit = 10, isExport = false, search = "") => {
+    let url = `/subcontractors/?page=${page}&limit=${limit}&isExport=${isExport}`;
+    if (search) {
+        url += `&search=${encodeURIComponent(search)}`;
+    }
+    const res = await api.get(url);
     return res.data;
 };
 
@@ -159,14 +163,20 @@ export const getBuildings = async (page = 1, limit = 100) => {
     return res.data;
 };
 
-export const getFloors = async (page = 1, limit = 100) => {
-    const res = await api.get(`/floors?page=${page}&limit=${limit}`);
+export const getFloors = async (page = 1, limit = 100, bid = "", search = "") => {
+    let url = `/floors?page=${page}&limit=${limit}`;
+    if (bid) url += `&bid=${bid}`;
+    if (search) url += `&search=${encodeURIComponent(search)}`;
+    const res = await api.get(url);
     return res.data;
 };
 
 // ---------------- Electrical Works APIs ----------------
-export const getElectricalWorks = async (page = 1, limit = 10) => {
-    const res = await api.get(`/electrical?page=${page}&limit=${limit}`);
+export const getElectricalWorks = async (page = 1, limit = 10, search = "", module = "") => {
+    let url = `/electrical?page=${page}&limit=${limit}`;
+    if (search) url += `&search=${encodeURIComponent(search)}`;
+    if (module) url += `&module=${encodeURIComponent(module)}`;
+    const res = await api.get(url);
     return res.data;
 };
 
@@ -186,8 +196,10 @@ export const deleteElectricalWork = async (id) => {
 };
 
 // ---------------- Mechanical Works APIs ----------------
-export const getMechanicalWorks = async (page = 1, limit = 10) => {
-    const res = await api.get(`/mechanical?page=${page}&limit=${limit}`);
+export const getMechanicalWorks = async (page = 1, limit = 10, search = "") => {
+    let url = `/mechanical?page=${page}&limit=${limit}`;
+    if (search) url += `&search=${encodeURIComponent(search)}`;
+    const res = await api.get(url);
     return res.data;
 };
 
@@ -207,8 +219,12 @@ export const deleteMechanicalWork = async (id) => {
 };
 
 // ---------------- Activities APIs ----------------
-export const getActivities = async (page = 1, limit = 10) => {
-    const res = await api.get(`/activities?page=${page}&limit=${limit}`);
+export const getActivities = async (page = 1, limit = 10, search = "") => {
+    let url = `/activities?page=${page}&limit=${limit}`;
+    if (search) {
+        url += `&search=${encodeURIComponent(search)}`;
+    }
+    const res = await api.get(url);
     return res.data;
 };
 
@@ -283,8 +299,11 @@ export const deleteFloor = async (id) => {
 };
 
 // Rooms CRUD
-export const getRooms = async (page = 1, limit = 10) => {
-    const res = await api.get(`/rooms?page=${page}&limit=${limit}`);
+export const getRooms = async (page = 1, limit = 10, flid = "", search = "") => {
+    let url = `/rooms?page=${page}&limit=${limit}`;
+    if (flid) url += `&flid=${flid}`;
+    if (search) url += `&search=${encodeURIComponent(search)}`;
+    const res = await api.get(url);
     return res.data;
 };
 
@@ -349,7 +368,14 @@ export const searchDashboardRequests = async (payload) => {
 };
 
 // ---------------- Logs Reports ----------------
-export const getUserLogs = async (page = 1, limit = 20) => {
-    const res = await api.get(`/employee/logs-reports?page=${page}&limit=${limit}`);
+export const getUserLogs = async (page = 1, limit = 20, username = "", date = "") => {
+    let url = `/employee/logs-reports?page=${page}&limit=${limit}`;
+    if (username) {
+        url += `&username=${encodeURIComponent(username)}`;
+    }
+    if (date) {
+        url += `&date=${encodeURIComponent(date)}`;
+    }
+    const res = await api.get(url);
     return res.data;
 };

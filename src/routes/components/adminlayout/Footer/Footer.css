@@ -52,18 +52,42 @@
 }
 
 
+/* ── Footer Content Wrapper ── */
+.footer-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.footer-top-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.footer-content span {
+  font-size: 12px;
+  color: var(--footer-text, #94A3B8);
+  line-height: 1.5;
+}
+
 /* ─────────────────────────────────────────
    § 3.  FOOTER RESPONSIVE
 ───────────────────────────────────────── */
 @media (max-width: 768px) {
   .site-footer {
-    padding: 12px 16px;
-    flex-direction: column;
-    gap: 4px;
-    text-align: center;
+    padding: 16px !important;
   }
 
-  .site-footer .footer-sep {
-    display: none;
+  .footer-content {
+    flex-direction: column !important;
+    gap: 4px !important;
+    text-align: center !important;
+  }
+
+  .footer-content .footer-sep {
+    display: none !important;
   }
 }

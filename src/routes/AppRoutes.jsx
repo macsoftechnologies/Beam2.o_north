@@ -32,6 +32,7 @@ import ExecutiveDashboard from "../pages/ExecutiveDashboard/ExecutiveDashboard";
 
 
 import ProtectedRoute from "../components/common/ProtectedRoute";
+import PublicRoute from "../components/common/PublicRoute";
 import ListRequest from "../pages/Request/ListRequest/ListRequest";
 import PolygonEditor from "../pages/PolygonEditor/PolygonEditor";
 
@@ -40,10 +41,10 @@ function AppRoutes() {
     <BrowserRouter basename="/m3north_frontend">
       <Routes>
 
-        {/* Public Routes */}
-        <Route path="/" element={<PortalSelection />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/otp" element={<Otp />} />
+        {/* Public Routes - restricted if user has valid token */}
+        <Route path="/" element={<PublicRoute><PortalSelection /></PublicRoute>} />
+        <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+        <Route path="/otp" element={<PublicRoute><Otp /></PublicRoute>} />
         <Route path='/polygons' element={<PolygonEditor />} />
 
         {/* Protected Layout */}
@@ -56,7 +57,14 @@ function AppRoutes() {
           }
         >
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/executive-dashboard" element={<ExecutiveDashboard />} />
+          <Route
+            path="/executive-dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["Admin", "admin", "SuperAdmin", "superadmin", "Department", "department", "Department1", "department1"]}>
+                <ExecutiveDashboard />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/departments"
             element={
@@ -148,7 +156,7 @@ function AppRoutes() {
           <Route
             path="/reports"
             element={
-              <ProtectedRoute allowedRoles={["Admin", "Department", "Department1"]}>
+              <ProtectedRoute allowedRoles={["Admin", "admin", "SuperAdmin", "superadmin", "Department", "department", "Department1", "department1", "Subcontractor", "subcontractor", "Observer", "observer"]}>
                 <Reports />
               </ProtectedRoute>
             }

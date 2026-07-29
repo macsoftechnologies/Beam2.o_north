@@ -11,10 +11,10 @@ const portalConfig = {
     route: "south",
   },
 
-  North: {
-    name: "North",
+  infrastructure: {
+    name: "Infrastructure",
     color: "#f59e0b",
-    route: "North",
+    route: "infrastructure",
   },
 };
 

@@ -3,9 +3,8 @@ import { showSuccess } from "../../components/common/Toast/Toast";
 import "./ExecutiveDashboard.css";
 import groundFloorPlan from "../../assets/images/ground_floor_plan.png";
 
+// PDF Imports for Buildings
 import { renderPdf } from "../../utils/pdfRenderer";
-import { BUILDINGS } from "../../../data/buildings";
-import { FLOOR_PDFS } from "../../../data/pdfMapping";
 
 // Mock Data for Overview
 const OVERVIEW_METRICS = [
@@ -120,84 +119,27 @@ function ExecutiveDashboard() {
   const [selectedRoomType, setSelectedRoomType] = useState("All room types");
   const [isLeftOpen, setIsLeftOpen] = useState(true);
   const [isRightOpen, setIsRightOpen] = useState(true);
-  const [selectedBuilding, setSelectedBuilding] = useState("MA Purification");
+  const [selectedBuilding, setSelectedBuilding] = useState("MU90");
   const [floorPdfImg, setFloorPdfImg] = useState(null);
   const [loadingPdf, setLoadingPdf] = useState(false);
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
 
   useEffect(() => {
-    if (activeTab !== "Overview") {
-      const bObj = BUILDINGS.find(
-        (b) => b.name.toLowerCase().trim() === selectedBuilding.toLowerCase().trim()
-      );
-      const bId = bObj ? bObj.id : "";
-      const pdfsForBuilding = FLOOR_PDFS[bId];
-      let pdfFile = null;
-
-      if (pdfsForBuilding) {
-        const tabLower = activeTab.toLowerCase().trim();
-        let targetKeys = [];
-        if (tabLower.includes("ground")) {
-          targetKeys = ["ground", "0", "basement"];
-        } else if (tabLower.includes("1st") || tabLower.includes("1")) {
-          targetKeys = ["first", "1", "1st"];
-        } else if (tabLower.includes("2nd") || tabLower.includes("2")) {
-          targetKeys = ["second", "2", "2nd"];
-        } else if (tabLower.includes("3rd") || tabLower.includes("3")) {
-          targetKeys = ["third", "3", "3rd"];
-        } else if (tabLower.includes("4th") || tabLower.includes("4")) {
-          targetKeys = ["fourth", "4", "4th"];
-        } else if (tabLower.includes("roof")) {
-          targetKeys = ["roof", "r"];
-        }
-
-        const foundKey = Object.keys(pdfsForBuilding).find((key) => {
-          const keyLower = key.toLowerCase().trim();
-          return targetKeys.some((tk) => keyLower.includes(tk));
-        });
-
-        if (foundKey) {
-          pdfFile = pdfsForBuilding[foundKey];
-        } else {
-          pdfFile = Object.values(pdfsForBuilding)[0];
-        }
-      }
-
+    if (activeTab !== "Overview" && activeTab !== "Ground Floor") {
+      const pdfFile = BUILDING_PDFS[selectedBuilding];
       if (pdfFile) {
         setLoadingPdf(true);
         renderPdf(pdfFile, 1000).then((canvas) => {
-          canvas.toBlob((blob) => {
-            if (!blob) {
-              setLoadingPdf(false);
-              return;
-            }
-            const url = URL.createObjectURL(blob);
-            setFloorPdfImg((prev) => {
-              if (prev && prev.startsWith("blob:")) {
-                URL.revokeObjectURL(prev);
-              }
-              return url;
-            });
-            setLoadingPdf(false);
-          }, "image/png");
+          setFloorPdfImg(canvas.toDataURL());
+          setLoadingPdf(false);
         }).catch((err) => {
           console.error("Error rendering PDF:", err);
           setLoadingPdf(false);
         });
-      } else {
-        setFloorPdfImg((prev) => {
-          if (prev && prev.startsWith("blob:")) {
-            URL.revokeObjectURL(prev);
-          }
-          return null;
-        });
       }
     } else {
-      setFloorPdfImg((prev) => {
-        if (prev && prev.startsWith("blob:")) {
-          URL.revokeObjectURL(prev);
-        }
-        return null;
-      });
+      setFloorPdfImg(null);
     }
   }, [selectedBuilding, activeTab]);
 
@@ -210,15 +152,6 @@ function ExecutiveDashboard() {
         toggleBtn.click();
       }
     }
-
-    return () => {
-      setFloorPdfImg((prev) => {
-        if (prev && prev.startsWith("blob:")) {
-          URL.revokeObjectURL(prev);
-        }
-        return null;
-      });
-    };
   }, []);
 
   // Checkbox Filter States
@@ -300,25 +233,88 @@ function ExecutiveDashboard() {
         </div>
       </header>
 
-      {/* ── BUILDING SELECTOR ── */}
-      {activeTab !== "Overview" && (
-        <div className="exec-building-selector-row">
-          <div className="exec-building-selector-group">
-            <span className="exec-building-lbl">BUILDING</span>
-            <select
-              className="exec-building-select"
-              value={selectedBuilding}
-              onChange={(e) => setSelectedBuilding(e.target.value)}
-            >
-              {BUILDINGS.map((b) => (
-                <option key={b.id} value={b.name}>
-                  {b.name}
-                </option>
-              ))}
-            </select>
-          </div>
+      {/* ── BUILDING & DATE SELECTOR ── */}
+      <div className="exec-building-selector-row" style={{ margin: "10px 24px 12px 24px", padding: "12px 16px", display: "flex", gap: "24px", flexWrap: "wrap", alignItems: "center" }}>
+        <div className="exec-building-selector-group">
+          <span className="exec-building-lbl">BUILDING</span>
+          <select
+            className="exec-building-select"
+            value={selectedBuilding}
+            onChange={(e) => setSelectedBuilding(e.target.value)}
+          >
+            <option value="" disabled>— Select a Building —</option>
+            <option value="MU90">MU90</option>
+            <option value="MU91">MU91</option>
+            <option value="MA">MA</option>
+            <option value="MA Basement">MA Basement</option>
+            <option value="MA.II">MA.II</option>
+            <option value="MA.III">MA.III</option>
+            <option value="MB">MB</option>
+            <option value="External Areas">External Areas</option>
+          </select>
         </div>
-      )}
+
+        {/* Date Range Inputs */}
+        <div style={{ display: "flex", gap: "16px", alignItems: "center", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            <span className="exec-building-lbl">START DATE</span>
+            <input
+              type="date"
+              className="exec-date-input"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
+              style={{
+                borderRadius: "6px",
+                padding: "8px 12px",
+                fontSize: "13px",
+                height: "38px",
+                outline: "none"
+              }}
+            />
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            <span className="exec-building-lbl">END DATE</span>
+            <input
+              type="date"
+              className="exec-date-input"
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
+              style={{
+                borderRadius: "6px",
+                padding: "8px 12px",
+                fontSize: "13px",
+                height: "38px",
+                outline: "none"
+              }}
+            />
+          </div>
+
+          {(fromDate || toDate) && (
+            <button
+              type="button"
+              onClick={() => {
+                setFromDate("");
+                setToDate("");
+              }}
+              style={{
+                marginTop: "16px",
+                backgroundColor: "transparent",
+                border: "none",
+                color: "var(--accent, #00e5a0)",
+                cursor: "pointer",
+                fontSize: "13px",
+                fontWeight: "600",
+                display: "flex",
+                alignItems: "center",
+                gap: "4px"
+              }}
+            >
+              ✕ Clear Date
+            </button>
+          )}
+        </div>
+      </div>
 
       {/* ── FLOOR TABS ── */}
       <div className="exec-tabs-container">
@@ -694,7 +690,7 @@ function ExecutiveDashboard() {
                   ) : (
                     <>
                       <img
-                        src={floorPdfImg || groundFloorPlan}
+                        src={activeTab === "Ground Floor" ? groundFloorPlan : (floorPdfImg || groundFloorPlan)}
                         alt={`${activeTab} CAD drawing`}
                         className="static-cad-image"
                       />

@@ -106,3 +106,48 @@ export const createByCount = async (payload) => {
   const res = await api.post("/requests/createbycount", payload);
   return res.data;
 };
+
+// Executive Dashboard Overview API
+export const getDashboardOverview = async (buildingParam, fromDate, toDate) => {
+  const params = {};
+  if (buildingParam) {
+    if (typeof buildingParam === "object" && buildingParam !== null) {
+      if (buildingParam.buildingId || buildingParam.id) params.buildingId = buildingParam.buildingId || buildingParam.id;
+      if (buildingParam.building || buildingParam.name || buildingParam.building_name) {
+        params.building = buildingParam.building || buildingParam.name || buildingParam.building_name;
+      }
+      if (buildingParam.fromDate) params.fromDate = buildingParam.fromDate;
+      if (buildingParam.toDate) params.toDate = buildingParam.toDate;
+    } else if (typeof buildingParam === "number" || (!isNaN(Number(buildingParam)) && String(buildingParam).trim() !== "")) {
+      params.buildingId = buildingParam;
+      params.building = buildingParam;
+    } else {
+      params.building = buildingParam;
+    }
+  }
+  if (fromDate) params.fromDate = fromDate;
+  if (toDate) params.toDate = toDate;
+  const res = await api.get("/requests/dashboard/overview", { params });
+  return res.data;
+};
+
+// Executive Dashboard Building & Floor Metrics API
+export const getDashboardBuildingMetrics = async (payload, floor) => {
+  if (typeof payload === "object" && payload !== null) {
+    try {
+      const res = await api.post("/requests/dashboard/building", payload);
+      return res.data;
+    } catch (err) {
+      if (err?.response?.status === 404) {
+        const res = await api.get("/requests/dashboard/building", { params: payload });
+        return res.data;
+      }
+      throw err;
+    }
+  }
+  const params = {};
+  if (payload) params.building = payload;
+  if (floor) params.floor = floor;
+  const res = await api.get("/requests/dashboard/building", { params });
+  return res.data;
+};

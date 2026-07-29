@@ -812,3 +812,107 @@
   font-weight: 600;
   text-align: right;
 }
+
+/* ── Filters Grid Responsive Layout ── */
+.filters-grid {
+  display: grid;
+  grid-template-columns: 2.5fr 1.5fr auto;
+  gap: 16px;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.filters-actions {
+  display: flex;
+  gap: 12px;
+  padding-bottom: 2px;
+}
+
+@media (max-width: 768px) {
+  .filters-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  
+  .filters-actions {
+    width: 100% !important;
+    padding-bottom: 0 !important;
+  }
+  
+  .filters-actions button {
+    flex: 1 !important;
+    justify-content: center !important;
+    height: 46px !important; /* matches inputs height for symmetry */
+  }
+}
+
+/* ── Mobile Form Footer Stacking ── */
+@media (max-width: 640px) {
+  .df-form .df-footer {
+    flex-direction: column-reverse !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+  .df-form .df-footer .nr-btn {
+    width: 100% !important;
+    justify-content: center !important;
+    height: 42px !important;
+  }
+}
+
+/* ── Mobile Page Header Actions Stacking ── */
+@media (max-width: 576px) {
+  .dept-page-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+  .dept-page-header__right {
+    width: 100% !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+  }
+  .dept-page-header__right button,
+  .dept-page-header__right a {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
+
+/* ── Reports Time & Night Shift Grid ── */
+.time-nightshift-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+@media (max-width: 768px) {
+  .time-nightshift-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+}
+
+/* ── Mobile Form Padding & Gap Reductions ── */
+@media (max-width: 576px) {
+  .dept-table-card {
+    padding: 16px !important;
+  }
+  
+  .dept-table-card .df-form {
+    padding: 0 !important;
+  }
+  
+  .df-form .df-grid {
+    row-gap: 12px !important;
+  }
+}
+
+/* ── Reports Page Mobile Table Scroll Min Width ── */
+@media (max-width: 768px) {
+  .reports-page .beam-table {
+    min-width: 1400px !important;
+  }
+}

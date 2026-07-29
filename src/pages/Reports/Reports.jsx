@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import Table from "../../components/common/Table/Table";
-import { FaFileCsv, FaArrowDown } from "react-icons/fa";
+import { FaFileCsv, FaArrowDown, FaSearch } from "react-icons/fa";
 import * as XLSX from "xlsx";
 
 const AnalogTimePicker = ({ initialTime, onSave, onCancel }) => {
@@ -167,15 +167,207 @@ const AnalogTimePicker = ({ initialTime, onSave, onCancel }) => {
     </div>
   );
 };
+
+const SearchableSingleSelect = ({ options = [], value, onChange, placeholder, disabled, className, valueKey = "id", labelKey = "subContractorName" }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const selectedOption = options.find(o => String(o[valueKey] ?? o.value ?? o.id) === String(value));
+  const displayText = selectedOption ? (selectedOption[labelKey] || selectedOption.label || selectedOption.name) : placeholder;
+
+  const filteredOptions = useMemo(() => {
+    if (!search.trim()) return options;
+    const q = search.toLowerCase();
+    return options.filter(o => {
+      const label = o[labelKey] || o.label || o.name || "";
+      return String(label).toLowerCase().includes(q);
+    });
+  }, [options, search, labelKey]);
+
+  return (
+    <div ref={containerRef} style={{ position: "relative", width: "100%" }}>
+      <div
+        className={`df-input ${className || ""}`}
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          cursor: disabled ? "not-allowed" : "pointer",
+          userSelect: "none",
+          opacity: disabled ? 0.6 : 1,
+          color: selectedOption ? "var(--text-main, #f9fafb)" : "var(--text-muted, #9ca3af)"
+        }}
+      >
+        <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          {displayText}
+        </span>
+        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          {value && !disabled && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onChange({ target: { value: "" } });
+              }}
+              style={{
+                background: "none",
+                border: "none",
+                color: "#9ca3af",
+                cursor: "pointer",
+                padding: "2px",
+                fontSize: "12px"
+              }}
+            >
+              ✕
+            </button>
+          )}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transform: isOpen ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </div>
+      </div>
+
+      {isOpen && !disabled && (
+        <div
+          style={{
+            position: "absolute",
+            top: "calc(100% + 4px)",
+            left: 0,
+            width: "100%",
+            maxHeight: "260px",
+            backgroundColor: "var(--bg-card, #111827)",
+            border: "1.5px solid var(--border-color, #374151)",
+            borderRadius: "8px",
+            zIndex: 99999,
+            boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden"
+          }}
+        >
+          <div style={{ padding: "8px", borderBottom: "1px solid var(--border-color, #374151)", display: "flex", gap: "6px" }}>
+            <input
+              type="text"
+              placeholder="Search contractor..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onClick={(e) => e.stopPropagation()}
+              autoFocus
+              style={{
+                flex: 1,
+                padding: "6px 10px",
+                fontSize: "13px",
+                borderRadius: "6px",
+                border: "1px solid var(--border-color, #374151)",
+                backgroundColor: "rgba(255, 255, 255, 0.05)",
+                color: "var(--text-main, #f9fafb)",
+                outline: "none"
+              }}
+            />
+            <button
+              type="button"
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                padding: "6px 10px",
+                backgroundColor: "var(--primary-color, #3b82f6)",
+                border: "none",
+                borderRadius: "6px",
+                color: "#fff",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+            >
+              <FaSearch size={12} />
+            </button>
+          </div>
+
+          <div style={{ overflowY: "auto", maxHeight: "200px", padding: "4px 0" }}>
+            <div
+              onClick={() => {
+                onChange({ target: { value: "" } });
+                setIsOpen(false);
+                setSearch("");
+              }}
+              style={{
+                padding: "8px 12px",
+                cursor: "pointer",
+                fontSize: "13px",
+                color: "var(--text-muted, #9ca3af)",
+                backgroundColor: !value ? "rgba(255,255,255,0.05)" : "transparent"
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.08)"}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = !value ? "rgba(255,255,255,0.05)" : "transparent"}
+            >
+              {placeholder}
+            </div>
+
+            {filteredOptions.map((o) => {
+              const val = String(o[valueKey] ?? o.value ?? o.id);
+              const label = o[labelKey] || o.label || o.name;
+              const isSelected = String(value) === val;
+
+              return (
+                <div
+                  key={val}
+                  onClick={() => {
+                    onChange({ target: { value: val } });
+                    setIsOpen(false);
+                    setSearch("");
+                  }}
+                  style={{
+                    padding: "8px 12px",
+                    cursor: "pointer",
+                    fontSize: "13px",
+                    color: isSelected ? "#00e5a0" : "var(--text-main, #f9fafb)",
+                    backgroundColor: isSelected ? "rgba(0, 229, 160, 0.1)" : "transparent",
+                    fontWeight: isSelected ? "600" : "normal"
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = isSelected ? "rgba(0, 229, 160, 0.15)" : "rgba(255, 255, 255, 0.08)"}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = isSelected ? "rgba(0, 229, 160, 0.1)" : "transparent"}
+                >
+                  {label}
+                </div>
+              );
+            })}
+
+            {filteredOptions.length === 0 && (
+              <div style={{ padding: "12px", textAlign: "center", color: "#9ca3af", fontSize: "13px" }}>
+                No contractors found
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 import {
   getContractors,
   getBuildings,
   getFloors,
   getZones,
-  getPlans
+  getRooms,
+  getPlans,
+  getActivities,
+  getUser
 } from "../../services/authService";
 import { planRequests, searchRequests } from "../../services/requestService";
 import { buildingDataWithIds } from "../../data/buildingDataWithIds";
+import { ZONE_MAPPING } from "../../data/zones";
 import "../styles/pages.css";
 import "../../forms/styles/forms.css";
 
@@ -195,16 +387,15 @@ import MechanicalWorksLogo from "../../assets/images/logos/mechanical1.png";
 const YEARS = [2024, 2025, 2026, 2027, 2028, 2029];
 
 const STATUS_OPTIONS = [
-  "Hold",
   "Draft",
+  "Hold",
+  "Pre-Approved",
   "Approved",
   "Rejected",
   "Opened",
   "Closed",
   "Cancelled",
-  "Pre-Approved",
   "Auto-Cancelled",
-  "Auto-Cancel"
 ];
 
 const HRA_LIST = [
@@ -214,8 +405,6 @@ const HRA_LIST = [
   { key: "pressure_tesing_of_equipment", label: "Testing Equipment", image: TestingEquipmentLogo },
   { key: "working_at_height", label: "Working at Height", image: WorkingAtHightLogo },
   { key: "working_confined_spaces", label: "Confined Space", image: ConfinedSpaceLogo },
-  { key: "work_in_atex_area", label: "ATEX Area", image: null },
-  { key: "securing_facilities", label: "Securing Facilities", image: null },
   { key: "excavation_works", label: "Excavation Works", image: ExcavationWorksLogo },
   { key: "using_cranes_or_lifting", label: "Cranes & Lifting", image: CranesLiftingLogo },
   { key: "power_on", label: "Electrical Works", image: ElectricalWorksLogo },
@@ -241,7 +430,63 @@ const INITIAL_FILTERS = {
   newWorkDate: "",
   newEndTime: "",
   status: [],
-  hras: []
+  zones: [],
+  hras: [],
+  typeOfActivityId: "",
+  permitNo: "",
+  keyword: ""
+};
+
+// Helper to resolve zone name from building, floor/level, and rooms data
+const resolveZoneNameFromRooms = (row) => {
+  // 1. If the request already has a valid zone name from the database, use it
+  const dbZoneName = (row.zone && typeof row.zone === "object")
+    ? row.zone.zone
+    : (row.zone || "");
+  if (dbZoneName && dbZoneName !== "—") {
+    return dbZoneName;
+  }
+
+  // 2. Otherwise, look up from ZONE_MAPPING by matching room names or room IDs
+  const roomStr = row.room_names || row.Room_Nos;
+  if (!roomStr) return "—";
+
+  const roomsToMatch = String(roomStr).split(",").map(r => r.trim().toLowerCase());
+
+  const levelKey = row.Room_Type || "";
+  let zonesToSearch = [];
+
+  if (levelKey) {
+    const levelLower = levelKey.toLowerCase().trim();
+    const foundKey = Object.keys(ZONE_MAPPING).find(k =>
+      k.toLowerCase().trim().includes(levelLower) || levelLower.includes(k.toLowerCase().trim())
+    );
+    if (foundKey) {
+      zonesToSearch = ZONE_MAPPING[foundKey] || [];
+    }
+  }
+
+  if (zonesToSearch.length === 0) {
+    zonesToSearch = Object.values(ZONE_MAPPING).flat();
+  }
+
+  // Find a zoneGroup that contains a room with matching name or ID
+  for (const zoneGroup of zonesToSearch) {
+    if (zoneGroup.rooms) {
+      for (const room of zoneGroup.rooms) {
+        const roomName = (typeof room === "object" ? room.name : room) || "";
+        const roomId = (typeof room === "object" ? room.id : "") || "";
+        if (
+          roomsToMatch.includes(roomName.toLowerCase().trim()) ||
+          (roomId && roomsToMatch.includes(String(roomId).toLowerCase().trim()))
+        ) {
+          return zoneGroup.name || "—";
+        }
+      }
+    }
+  }
+
+  return "—";
 };
 
 // ─── Custom Multiple Select Dropdown Component ──────────────────────────────
@@ -301,7 +546,13 @@ const MultiSelectDropdown = ({
       const allOpts = [];
       options.forEach(opt => {
         if (opt.zones) {
-          opt.zones.forEach(z => allOpts.push({ value: z, label: z }));
+          opt.zones.forEach(z => {
+            if (typeof z === "object") {
+              allOpts.push({ value: String(z.id ?? z.value ?? z), label: z.name ?? z.label ?? z });
+            } else {
+              allOpts.push({ value: z, label: z });
+            }
+          });
         } else {
           allOpts.push(opt);
         }
@@ -428,7 +679,10 @@ const MultiSelectDropdown = ({
                     {opt.floorName}
                   </div>
                   {opt.zones.map((z, zIdx) => {
-                    const isChecked = selectedValues.includes(z);
+                    const zVal = String(typeof z === "object" ? (z.id ?? z.value ?? z) : z);
+                    const zLabel = typeof z === "object" ? (z.name ?? z.label ?? z) : z;
+                    const isChecked = selectedValues.includes(zVal);
+
                     return (
                       <label
                         key={zIdx}
@@ -450,7 +704,7 @@ const MultiSelectDropdown = ({
                         <input
                           type="checkbox"
                           checked={isChecked}
-                          onChange={(e) => handleCheckboxChange(z, e.target.checked)}
+                          onChange={(e) => handleCheckboxChange(zVal, e.target.checked)}
                           style={{
                             width: "16px",
                             height: "16px",
@@ -459,7 +713,7 @@ const MultiSelectDropdown = ({
                             borderRadius: "4px"
                           }}
                         />
-                        <span>{z}</span>
+                        <span>{zLabel}</span>
                       </label>
                     );
                   })}
@@ -501,11 +755,11 @@ const MultiSelectDropdown = ({
                     borderRadius: "4px"
                   }}
                 />
-                {isHra && opt.image && (
+                {(opt.image || opt.icon) && (
                   <img
-                    src={opt.image}
+                    src={opt.image || opt.icon}
                     alt={displayLabel}
-                    style={{ width: "24px", height: "24px", objectFit: "contain", borderRadius: "4px" }}
+                    style={{ width: "22px", height: "22px", objectFit: "contain", borderRadius: "4px", flexShrink: 0 }}
                   />
                 )}
                 <span>{displayLabel}</span>
@@ -560,7 +814,31 @@ const StatusBadge = ({ status }) => {
 };
 
 const Reports = () => {
+  const currentUser = useMemo(() => getUser(), []);
+  const userRoles = useMemo(() => {
+    const roleVal = currentUser?.role || currentUser?.userType || "";
+    if (typeof roleVal === "string") {
+      return roleVal.split(",").map(r => r.trim().toLowerCase());
+    }
+    if (Array.isArray(roleVal)) {
+      return roleVal.map(r => String(r).trim().toLowerCase());
+    }
+    return [String(roleVal).trim().toLowerCase()];
+  }, [currentUser]);
+  const userContractorId = currentUser?.typeId || currentUser?.subContId || currentUser?.subContractorId;
+  const isSubcontractor = userRoles.includes("subcontractor");
+
   const [filters, setFilters] = useState(INITIAL_FILTERS);
+
+  // Default subcontractor filter if current user is a contractor
+  useEffect(() => {
+    if (isSubcontractor && userContractorId) {
+      setFilters(prev => ({
+        ...prev,
+        subContractor: String(userContractorId)
+      }));
+    }
+  }, [isSubcontractor, userContractorId]);
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [showNewEndPicker, setShowNewEndPicker] = useState(false);
@@ -574,7 +852,9 @@ const Reports = () => {
   const [buildingsList, setBuildingsList] = useState([]);
   const [floorsList, setFloorsList] = useState([]);
   const [zonesList, setZonesList] = useState([]);
+  const [roomsList, setRoomsList] = useState([]);
   const [weeksList, setWeeksList] = useState([]);
+  const [activitiesList, setActivitiesList] = useState([]);
   const [isLoadingSelectors, setIsLoadingSelectors] = useState(true);
   const [isSearching, setIsSearching] = useState(false);
 
@@ -582,16 +862,33 @@ const Reports = () => {
   useEffect(() => {
     const fetchSelectors = async () => {
       try {
-        const [subRes, buildRes, floorRes, zoneRes] = await Promise.all([
+        const [subRes, buildRes, floorRes, zoneRes, roomRes, actRes] = await Promise.all([
           getContractors(1, 1000),
           getBuildings(1, 1000),
           getFloors(1, 1000),
-          getZones(1, 1000)
+          getZones(1, 10000),
+          getRooms(1, 10000),
+          getActivities(1, 1000)
         ]);
-        setContractors(subRes?.data?.rows ?? subRes?.data ?? subRes ?? []);
+        const rawContractors = subRes?.data?.rows ?? subRes?.data ?? subRes ?? [];
+        const loadedContractors = rawContractors
+          .slice()
+          .sort((a, b) => (a.subContractorName || "").localeCompare(b.subContractorName || "", undefined, { sensitivity: "base" }));
+        setContractors(loadedContractors);
+        if (isSubcontractor) {
+          const defaultSubId = userContractorId || (loadedContractors.length > 0 ? loadedContractors[0].id : "");
+          if (defaultSubId) {
+            setFilters(prev => ({
+              ...prev,
+              subContractor: String(defaultSubId)
+            }));
+          }
+        }
         setBuildingsList(buildRes?.data ?? []);
         setFloorsList(floorRes?.data ?? []);
         setZonesList(zoneRes?.data ?? []);
+        setRoomsList(roomRes?.data?.rows ?? roomRes?.data ?? roomRes ?? []);
+        setActivitiesList(actRes?.data?.rows ?? actRes?.data ?? actRes ?? []);
       } catch (err) {
         console.error("Failed to load selectors lists", err);
       } finally {
@@ -601,8 +898,9 @@ const Reports = () => {
     fetchSelectors();
   }, []);
 
-  // ─── Filtered Levels and Areas derived from buildingDataWithIds ────────────
+  // ─── Filtered Levels, Zones, and Areas ─────────────────────────────────────
   const buildingsOptions = useMemo(() => {
+    if (buildingsList && buildingsList.length > 0) return buildingsList;
     const uniqueIds = [...new Set(buildingDataWithIds.map(b => String(b.buildingId)))];
     return uniqueIds.map(id => {
       const apiBuild = buildingsList.find(b => String(b.build_id) === id);
@@ -613,52 +911,87 @@ const Reports = () => {
     });
   }, [buildingsList]);
 
-  const allFloors = useMemo(() => {
-    const floors = [];
-    buildingDataWithIds.forEach(building => {
-      floors.push({
-        buildingId: String(building.buildingId),
-        floorName: building.planType
-      });
-    });
-    return floors;
-  }, []);
+  // Filter levels based on selected buildings
+  const filteredLevels = useMemo(() => {
+    if (filters.building.length === 0) return floorsList;
+    return floorsList.filter(f => filters.building.includes(String(f.build_id)));
+  }, [filters.building, floorsList]);
 
-  const allRooms = useMemo(() => {
-    const rooms = [];
-    buildingDataWithIds.forEach(building => {
-      building.zoneList?.forEach(zone => {
-        rooms.push({
-          buildingId: String(building.buildingId),
-          planType: building.planType,
-          floorName: zone.floorName,
-          zones: zone.zoneSubList?.map(sub => sub.value) || []
-        });
-      });
-    });
-    return rooms;
-  }, []);
+  // Filter zones based on selected levels/floors (and buildings)
+  const filteredZones = useMemo(() => {
+    let zonesToFilter = zonesList;
 
-  const filteredFloors = useMemo(() => {
-    if (filters.building.length === 0) {
-      return [...new Set(allFloors.map(f => f.floorName))];
+    if (filters.building && filters.building.length > 0) {
+      const selectedBuildingIds = filters.building.map(Number);
+      zonesToFilter = zonesToFilter.filter(z =>
+        z.building_id !== undefined && z.building_id !== null && selectedBuildingIds.includes(Number(z.building_id))
+      );
     }
-    return [
-      ...new Set(
-        allFloors
-          .filter(f => filters.building.includes(f.buildingId))
-          .map(f => f.floorName)
-      )
-    ];
-  }, [filters.building, allFloors]);
 
-  const filteredRooms = useMemo(() => {
-    return allRooms.filter(room => {
-      const buildingMatch = filters.building.length === 0 || filters.building.includes(room.buildingId);
-      const levelMatch = filters.level.length === 0 || filters.level.includes(room.planType);
-      return buildingMatch && levelMatch;
+    if (filters.level && filters.level.length > 0) {
+      const matchedFloorIds = floorsList
+        .filter(f => filters.level.includes(f.floor_name))
+        .map(f => Number(f.fl_id));
+
+      const zoneIdsFromRooms = roomsList
+        .filter(r => matchedFloorIds.includes(Number(r.fl_id)))
+        .map(r => Number(r.zone_id))
+        .filter(Boolean);
+
+      zonesToFilter = zonesToFilter.filter(z => {
+        const matchDirectFloorId = z.floor_id !== undefined && z.floor_id !== null && matchedFloorIds.includes(Number(z.floor_id));
+        const matchDirectLevelName = z.level !== undefined && z.level !== null && filters.level.includes(z.level);
+        const matchViaRooms = zoneIdsFromRooms.includes(Number(z.id));
+        return matchDirectFloorId || matchDirectLevelName || matchViaRooms;
+      });
+    }
+
+    const seenNames = new Set();
+    const result = [];
+    zonesToFilter.forEach(z => {
+      if (z.zone && !seenNames.has(z.zone)) {
+        seenNames.add(z.zone);
+        result.push(z);
+      }
     });
-  }, [filters.building, filters.level, allRooms]);
+
+    return result;
+  }, [zonesList, floorsList, roomsList, filters.building, filters.level]);
+
+  // Filter rooms based on selected levels/floors and group them by zone names
+  const filteredRooms = useMemo(() => {
+    let roomsToGroup = roomsList;
+
+    if (filters.building.length > 0) {
+      roomsToGroup = roomsToGroup.filter(r => filters.building.includes(String(r.building_id)));
+    }
+
+    if (filters.level.length > 0) {
+      const matchedFloorIds = floorsList
+        .filter(f => filters.level.includes(f.floor_name))
+        .map(f => f.fl_id);
+      roomsToGroup = roomsToGroup.filter(r => matchedFloorIds.includes(r.fl_id));
+    }
+
+    const groupMap = {};
+
+    roomsToGroup.forEach(r => {
+      const zoneObj = zonesList.find(z => String(z.id) === String(r.zone_id));
+      const zoneName = zoneObj ? zoneObj.zone : "Other Areas";
+      if (!groupMap[zoneName]) {
+        groupMap[zoneName] = [];
+      }
+      groupMap[zoneName].push({
+        id: r.room_id,
+        name: r.room_name
+      });
+    });
+
+    return Object.keys(groupMap).map(zoneName => ({
+      floorName: zoneName,
+      zones: groupMap[zoneName]
+    }));
+  }, [roomsList, zonesList, floorsList, filters.building, filters.level]);
 
   // ─── Change Handlers ────────────────────────────────────────────────────────
   const handleChange = (field, value) => {
@@ -668,6 +1001,10 @@ const Reports = () => {
         next.date = "";
         next.year = "";
         next.weekno = "";
+        if (value === "2") {
+          next.workingDateFrom = "";
+          next.workingDateTo = "";
+        }
       }
       return next;
     });
@@ -739,17 +1076,43 @@ const Reports = () => {
       searchPayload.Site_Id = 5;
       // searchPayload.Page = 1;
       // searchPayload.End = 5000;
-      searchPayload.Building_Id = filters.building.length > 0 ? Number(filters.building[0]) : null;
-      searchPayload.Sub_Contractor_Id = filters.subContractor ? Number(filters.subContractor) : null;
+      searchPayload.Building_Id = Array.isArray(filters.building) && filters.building.length > 0 ? filters.building.join(",") : (filters.building || null);
+      if (isSubcontractor && userContractorId) {
+        searchPayload.Sub_Contractor_Id = String(userContractorId);
+      } else {
+        searchPayload.Sub_Contractor_Id = Array.isArray(filters.subContractor) && filters.subContractor.length > 0 ? filters.subContractor.join(",") : (filters.subContractor || null);
+      }
       searchPayload.Room_Type = filters.level.length > 0 ? filters.level.join(",") : "";
-      searchPayload.area = filters.area.length > 0 ? filters.area.join("|") : "";
+      const selectedZoneIds = zonesList
+        .filter(z => filters.zones && filters.zones.includes(z.zone))
+        .map(z => z.id);
+      searchPayload.zoneIds = selectedZoneIds.length > 0 ? selectedZoneIds : null;
+      searchPayload.zone = filters.zones && filters.zones.length > 0 ? filters.zones.join(",") : null;
+      searchPayload.Room_Nos = filters.area.length > 0 ? filters.area.join(",") : null;
+      searchPayload.area = filters.area.length > 0 ? filters.area.join(",") : "";
       searchPayload.permit_type = filters.permitType || "";
       searchPayload.permit_under = filters.permitUnder || "";
       searchPayload.night_shift = filters.nightShift ? "1" : "0";
+      searchPayload.Type_Of_Activity_Id = filters.typeOfActivityId || null;
+      searchPayload.PermitNo = filters.permitNo || null;
+      searchPayload.Activity = filters.keyword || null;
 
       const targetDate = (filters.reportType === "1" && filters.date) ? filters.date : "";
-      searchPayload.fromDate = targetDate || filters.workingDateFrom || "";
-      searchPayload.toDate = targetDate || filters.workingDateTo || "";
+
+      // For Weekly Report, parse the selected week string to extract fromDate and toDate
+      // Week string format: "2026/07/20  -  2026/07/26  -  30"
+      let weekFromDate = "";
+      let weekToDate = "";
+      if (filters.reportType === "2" && filters.weekno) {
+        const parts = filters.weekno.split("-").map(p => p.trim());
+        if (parts.length >= 2) {
+          weekFromDate = parts[0].trim().replace(/\//g, "-");
+          weekToDate = parts[1].trim().replace(/\//g, "-");
+        }
+      }
+
+      searchPayload.fromDate = weekFromDate || targetDate || filters.workingDateFrom || "";
+      searchPayload.toDate = weekToDate || targetDate || filters.workingDateTo || "";
 
       // Suffix start/end time with :00 if present
       searchPayload.Start_Time = filters.startTime ? (filters.startTime.length === 5 ? `${filters.startTime}:00` : filters.startTime) : "";
@@ -766,9 +1129,9 @@ const Reports = () => {
       const hrasList = Array.isArray(filters.hras) ? filters.hras : [];
       const hasNone = hrasList.includes("none");
       if (hasNone) {
-        searchPayload.hras = 0;
+        searchPayload.hras = "0";
       } else if (hrasList.length > 0) {
-        searchPayload.hras = 1;
+        searchPayload.hras = "1";
         hrasList.forEach(hraKey => {
           searchPayload[hraKey] = 1;
         });
@@ -808,7 +1171,10 @@ const Reports = () => {
   };
 
   const handleReset = () => {
-    setFilters(INITIAL_FILTERS);
+    setFilters({
+      ...INITIAL_FILTERS,
+      subContractor: isSubcontractor && currentUser?.typeId ? String(currentUser.typeId) : ""
+    });
     setTableData([]);
     setHasSearched(false);
     setWeeksList([]);
@@ -878,12 +1244,42 @@ const Reports = () => {
       return "";
     };
 
+    const resolveActivityName = (row) => {
+      const actId = row.Type_Of_Activity_Id ?? row.type_of_activity_id ?? row.typeOfActivityId ?? row.Activity;
+      if (actId !== null && actId !== undefined && actId !== "" && activitiesList && activitiesList.length > 0) {
+        const found = activitiesList.find(a => String(a.id) === String(actId) || String(a.activity_id) === String(actId) || String(a.activityId) === String(actId));
+        if (found) {
+          return found.activityName || found.activity_name || found.name || found.Activity || found.label || String(actId);
+        }
+      }
+      if (row.Activity && isNaN(Number(String(row.Activity).trim()))) {
+        return row.Activity;
+      }
+      if (row.Type_Of_Activity && isNaN(Number(String(row.Type_Of_Activity).trim()))) {
+        return row.Type_Of_Activity;
+      }
+      return actId ? String(actId) : (row.Activity || "");
+    };
+
+    const resolveTypeOfWork = (row) => {
+      const permitKind = (row.permit_type || row.permit_under || "").trim();
+      if (permitKind.toLowerCase() !== "commissioning") {
+        return "";
+      }
+      if (row.work_type) return row.work_type;
+      if (row.Work_Type) return row.Work_Type;
+      if (row.electrical_works && row.electrical_works.length > 0) return "Electrical Works";
+      if (row.mechanical_works && row.mechanical_works.length > 0) return "Mechanical Works";
+      return "";
+    };
+
     const headers = [
       "PermitNo", "PermitUnder", "PermitType", "ContractorName", "Sub_Contractor_Name",
-      "Building_Name", "Level", "Room_Nos", "Activity", "description_of_activity",
-      "Rams_Number", "HRAs", "Auth", "Comment", "Start_Time", "End_Time",
-      "Night_Shift", "New_End_Time", "Request_status", "Notes", "Working_Date",
-      "Day", "New_Date", "New_Day", "CoNM_initials", "CoMM_initials", "Opened_By",
+      "Building_Name", "Level", "Zone", "Room_Nos", "Type_Of_Activity", "Type_Of_Work",
+      "Number_Of_Workers", "Activity", "description_of_activity", "Rams_Number", "HRAs",
+      "Start_Time", "End_Time", "Night_Shift", "New_End_Time", "Request_status", "Notes",
+      "Working_Date", "Day", "New_Date", "New_Day", "CoNM_initials", "CoMM_initials",
+      "Opening_Person_Name", "Opening_Time", "Closing_Person_Name", "Closing_Time",
       "Reject_Reason", "Cancel_Reason"
     ];
 
@@ -899,13 +1295,15 @@ const Reports = () => {
         Sub_Contractor_Name: x.new_sub_contractor || "",
         Building_Name: x.building_name || "",
         Level: x.Room_Type || "",
+        Zone: resolveZoneNameFromRooms(x),
         Room_Nos: x.Room_Nos || "",
+        Type_Of_Activity: resolveActivityName(x),
+        Type_Of_Work: resolveTypeOfWork(x),
+        Number_Of_Workers: x.Number_Of_Workers || x.number_of_workers || "",
         Activity: x.Activity || "",
         description_of_activity: x.description_of_activity || "",
         Rams_Number: x.rams_number || "",
         HRAs: printHRAS(x),
-        Auth: "",
-        Comment: "",
         Start_Time: x.Start_Time || "",
         End_Time: x.End_Time || "",
         Night_Shift: x.night_shift == 1 ? 'Yes' : 'No',
@@ -918,7 +1316,10 @@ const Reports = () => {
         New_Day: findNewDay(x),
         CoNM_initials: x.ConM_initials || "",
         CoMM_initials: x.CoMM_initials || "",
-        Opened_By: x.ConM_initials1 || "",
+        Opening_Person_Name: x.ConM_initials1 || x.opened_by || "",
+        Opening_Time: x.open_time || x.h_start_time || "",
+        Closing_Person_Name: x.closed_by || x.close_note || "",
+        Closing_Time: x.close_time || x.h_end_time || "",
         Reject_Reason: x.reject_reason || "",
         Cancel_Reason: x.cancel_reason || ""
       };
@@ -987,12 +1388,42 @@ const Reports = () => {
       return "";
     };
 
+    const resolveActivityName = (row) => {
+      const actId = row.Type_Of_Activity_Id ?? row.type_of_activity_id ?? row.typeOfActivityId ?? row.Activity;
+      if (actId !== null && actId !== undefined && actId !== "" && activitiesList && activitiesList.length > 0) {
+        const found = activitiesList.find(a => String(a.id) === String(actId) || String(a.activity_id) === String(actId) || String(a.activityId) === String(actId));
+        if (found) {
+          return found.activityName || found.activity_name || found.name || found.Activity || found.label || String(actId);
+        }
+      }
+      if (row.Activity && isNaN(Number(String(row.Activity).trim()))) {
+        return row.Activity;
+      }
+      if (row.Type_Of_Activity && isNaN(Number(String(row.Type_Of_Activity).trim()))) {
+        return row.Type_Of_Activity;
+      }
+      return actId ? String(actId) : (row.Activity || "");
+    };
+
+    const resolveTypeOfWork = (row) => {
+      const permitKind = (row.permit_type || row.permit_under || "").trim();
+      if (permitKind.toLowerCase() !== "commissioning") {
+        return "";
+      }
+      if (row.work_type) return row.work_type;
+      if (row.Work_Type) return row.Work_Type;
+      if (row.electrical_works && row.electrical_works.length > 0) return "Electrical Works";
+      if (row.mechanical_works && row.mechanical_works.length > 0) return "Mechanical Works";
+      return "";
+    };
+
     const headers = [
       "PermitNo", "PermitUnder", "PermitType", "ContractorName", "Sub_Contractor_Name",
-      "Building_Name", "Level", "Room_Nos", "Activity", "description_of_activity",
-      "Rams_Number", "HRAs", "Auth", "Comment", "Start_Time", "End_Time",
-      "Night_Shift", "New_End_Time", "Request_status", "Notes", "Working_Date",
-      "Day", "New_Date", "New_Day", "CoNM_initials", "CoMM_initials", "Opened_By",
+      "Building_Name", "Level", "Zone", "Room_Nos", "Type_Of_Activity", "Type_Of_Work",
+      "Number_Of_Workers", "Activity", "description_of_activity", "Rams_Number", "HRAs",
+      "Start_Time", "End_Time", "Night_Shift", "New_End_Time", "Request_status", "Notes",
+      "Working_Date", "Day", "New_Date", "New_Day", "CoNM_initials", "CoMM_initials",
+      "Opening_Person_Name", "Opening_Time", "Closing_Person_Name", "Closing_Time",
       "Reject_Reason", "Cancel_Reason"
     ];
 
@@ -1008,13 +1439,15 @@ const Reports = () => {
         Sub_Contractor_Name: x.new_sub_contractor || "",
         Building_Name: x.building_name || "",
         Level: x.Room_Type || "",
+        Zone: resolveZoneNameFromRooms(x),
         Room_Nos: x.Room_Nos || "",
+        Type_Of_Activity: resolveActivityName(x),
+        Type_Of_Work: resolveTypeOfWork(x),
+        Number_Of_Workers: x.Number_Of_Workers || x.number_of_workers || "",
         Activity: x.Activity || "",
         description_of_activity: x.description_of_activity || "",
         Rams_Number: x.rams_number || "",
         HRAs: printHRAS(x),
-        Auth: "",
-        Comment: "",
         Start_Time: x.Start_Time || "",
         End_Time: x.End_Time || "",
         Night_Shift: x.night_shift == 1 ? 'Yes' : 'No',
@@ -1027,7 +1460,10 @@ const Reports = () => {
         New_Day: findNewDay(x),
         CoNM_initials: x.ConM_initials || "",
         CoMM_initials: x.CoMM_initials || "",
-        Opened_By: x.ConM_initials1 || "",
+        Opening_Person_Name: x.ConM_initials1 || x.opened_by || "",
+        Opening_Time: x.open_time || x.h_start_time || "",
+        Closing_Person_Name: x.closed_by || x.close_note || "",
+        Closing_Time: x.close_time || x.h_end_time || "",
         Reject_Reason: x.reject_reason || "",
         Cancel_Reason: x.cancel_reason || ""
       };
@@ -1077,10 +1513,11 @@ const Reports = () => {
     { header: "Sub-Contractor", accessor: "new_sub_contractor" },
     { header: "Level", accessor: "Room_Type" },
     { header: "Building Name", accessor: "building_name" },
+    { header: "Zone", accessor: "zone" },
     { header: "Area", accessor: "Room_Nos" },
     { header: "Working Date", accessor: "Working_Date" },
     { header: "Time", accessor: "timeCell" },
-    { header: "Night Shift", accessor: "nightShiftCell" },
+    { header: "Working After Midnight", accessor: "nightShiftCell" },
     { header: "New Date", accessor: "newDateCell" },
     { header: "New End Time", accessor: "newEndTime" },
     { header: "Status", accessor: "statusCell" }
@@ -1108,6 +1545,7 @@ const Reports = () => {
 
     return {
       ...item,
+      zone: resolveZoneNameFromRooms(item),
       Working_Date: formatMediumDate(item.Working_Date),
       timeCell: `${item.Start_Time || ""} - ${item.End_Time || ""}`,
       nightShiftCell: item.night_shift == 1 ? "Yes" : "No",
@@ -1118,7 +1556,7 @@ const Reports = () => {
   });
 
   return (
-    <div className="dept-page">
+    <div className="dept-page reports-page">
       {/* Page Header */}
       <div className="dept-page-header">
         <div className="dept-page-header__left">
@@ -1187,23 +1625,32 @@ const Reports = () => {
               </select>
             </div>
 
-            {/* Row 3: Contractor | Building */}
+            {/* Row 3: Working Date range (From) | Working Date range (To) */}
             <div className="df-field">
-              <label className="df-label">Contractor</label>
-              <select
-                className="df-select"
-                value={filters.subContractor}
-                onChange={(e) => handleChange("subContractor", e.target.value)}
-              >
-                <option value="">Select Contractor</option>
-                {contractors.map(c => (
-                  <option key={c.id} value={c.id}>{c.subContractorName}</option>
-                ))}
-              </select>
+              <label className="df-label">Working Date range (From)</label>
+              <input
+                type="date"
+                className="df-input"
+                disabled={filters.reportType === "2"}
+                value={filters.workingDateFrom}
+                onChange={(e) => handleChange("workingDateFrom", e.target.value)}
+              />
             </div>
 
             <div className="df-field">
-              <label className="df-label">Building (Multiple)</label>
+              <label className="df-label">Working Date range (To)</label>
+              <input
+                type="date"
+                className="df-input"
+                disabled={filters.reportType === "2"}
+                value={filters.workingDateTo}
+                onChange={(e) => handleChange("workingDateTo", e.target.value)}
+              />
+            </div>
+
+            {/* Row 4: Building | Level / Floor */}
+            <div className="df-field">
+              <label className="df-label">Building</label>
               <MultiSelectDropdown
                 placeholder="Select Buildings"
                 options={buildingsOptions}
@@ -1214,40 +1661,134 @@ const Reports = () => {
               />
             </div>
 
-            {/* Row 4: Working Date (from) | Working Date (to) */}
             <div className="df-field">
-              <label className="df-label">Working Date (from)</label>
-              <input
-                type="date"
-                className="df-input"
-                value={filters.workingDateFrom}
-                onChange={(e) => handleChange("workingDateFrom", e.target.value)}
+              <label className="df-label">Level / Floor</label>
+              <MultiSelectDropdown
+                placeholder="Select Levels"
+                options={filteredLevels.map(f => f.floor_name)}
+                selectedValues={filters.level}
+                onChange={(vals) => {
+                  setFilters(prev => ({ ...prev, level: vals, area: [], zones: [] }));
+                }}
+              />
+            </div>
+
+            {/* Row 5: Zones | Rooms */}
+            <div className="df-field">
+              <label className="df-label">Zones</label>
+              <MultiSelectDropdown
+                placeholder="Select Zones"
+                options={filteredZones.map(z => z.zone)}
+                selectedValues={filters.zones || []}
+                onChange={(vals) => handleChange("zones", vals)}
               />
             </div>
 
             <div className="df-field">
-              <label className="df-label">Working Date (to)</label>
-              <input
-                type="date"
-                className="df-input"
-                value={filters.workingDateTo}
-                onChange={(e) => handleChange("workingDateTo", e.target.value)}
+              <label className="df-label">Rooms</label>
+              <MultiSelectDropdown
+                placeholder="Select Rooms"
+                options={filteredRooms}
+                selectedValues={filters.area}
+                onChange={(vals) => handleChange("area", vals)}
               />
             </div>
 
-            {/* Row 5: Start Time | End Time & Night Shift (3 columns nested in full-width wrapper) */}
-            <div className="df-field--full" style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "18px" }}>
-              <div className="df-field">
-                <label className="df-label">Start Time</label>
+            {/* Row 6: Contractor | Permit Status */}
+            <div className="df-field">
+              <label className="df-label">Contractor</label>
+              {isSubcontractor ? (
                 <input
                   type="text"
-                  placeholder="00:00"
+                  className="df-input df-readonly"
+                  value={contractors.length > 0 ? (contractors.find(c => String(c.id) === String(userContractorId))?.subContractorName || contractors.find(c => String(c.id) === String(filters.subContractor))?.subContractorName || contractors[0]?.subContractorName) : "Loading..."}
                   readOnly
-                  className="df-input"
-                  value={filters.startTime}
-                  onClick={() => setShowStartPicker(true)}
-                  style={{ cursor: 'pointer' }}
                 />
+              ) : (
+                <SearchableSingleSelect
+                  options={contractors}
+                  value={filters.subContractor}
+                  onChange={(e) => handleChange("subContractor", e.target.value)}
+                  placeholder="Select Contractor"
+                  disabled={isSubcontractor}
+                />
+              )}
+            </div>
+
+            <div className="df-field">
+              <label className="df-label">Permit Status</label>
+              <MultiSelectDropdown
+                placeholder="Select Statuses"
+                options={STATUS_OPTIONS}
+                selectedValues={filters.status}
+                onChange={(vals) => handleChange("status", vals)}
+              />
+            </div>
+
+            {/* Row 7: Type of activity | Keyword (Activity) */}
+            <div className="df-field">
+              <label className="df-label">Type of activity</label>
+              <select
+                className="df-select"
+                value={filters.typeOfActivityId}
+                onChange={(e) => handleChange("typeOfActivityId", e.target.value)}
+              >
+                <option value="">All Activities</option>
+                {activitiesList.map(act => (
+                  <option key={act.id} value={act.id}>{act.activityName}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="df-field">
+              <label className="df-label">Keyword (Activity)</label>
+              <input
+                type="text"
+                className="df-input"
+                placeholder="e.g. Piping, welding..."
+                value={filters.keyword}
+                onChange={(e) => handleChange("keyword", e.target.value)}
+              />
+            </div>
+
+            {/* Row 8: Start Time | End Time | Night Shift */}
+            <div className="df-field--full time-nightshift-grid">
+              <div className="df-field">
+                <label className="df-label">Start Time</label>
+                <div style={{ position: "relative", width: "100%" }}>
+                  <input
+                    type="text"
+                    placeholder="00:00"
+                    readOnly
+                    className="df-input"
+                    value={filters.startTime}
+                    onClick={() => setShowStartPicker(true)}
+                    style={{ cursor: 'pointer', paddingRight: filters.startTime ? "30px" : "12px" }}
+                  />
+                  {filters.startTime && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleChange("startTime", "");
+                      }}
+                      style={{
+                        position: "absolute",
+                        right: "10px",
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        background: "none",
+                        border: "none",
+                        color: "var(--text-muted, #9ca3af)",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                        padding: "4px"
+                      }}
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
                 {showStartPicker && (
                   <div className="timekeeper-modal-overlay" onClick={() => setShowStartPicker(false)}>
                     <AnalogTimePicker
@@ -1264,15 +1805,40 @@ const Reports = () => {
 
               <div className="df-field">
                 <label className="df-label">End Time</label>
-                <input
-                  type="text"
-                  placeholder="00:00"
-                  readOnly
-                  className="df-input"
-                  value={filters.endTime}
-                  onClick={() => setShowEndPicker(true)}
-                  style={{ cursor: 'pointer' }}
-                />
+                <div style={{ position: "relative", width: "100%" }}>
+                  <input
+                    type="text"
+                    placeholder="00:00"
+                    readOnly
+                    className="df-input"
+                    value={filters.endTime}
+                    onClick={() => setShowEndPicker(true)}
+                    style={{ cursor: 'pointer', paddingRight: filters.endTime ? "30px" : "12px" }}
+                  />
+                  {filters.endTime && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleChange("endTime", "");
+                      }}
+                      style={{
+                        position: "absolute",
+                        right: "10px",
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        background: "none",
+                        border: "none",
+                        color: "var(--text-muted, #9ca3af)",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                        padding: "4px"
+                      }}
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
                 {showEndPicker && (
                   <div className="timekeeper-modal-overlay" onClick={() => setShowEndPicker(false)}>
                     <AnalogTimePicker
@@ -1305,7 +1871,7 @@ const Reports = () => {
                     style={{ width: "16px", height: "16px", cursor: "pointer", accentColor: "var(--accent, #00e5a0)" }}
                   />
                   <label htmlFor="nightShiftCheckbox" className="df-label" style={{ margin: 0, cursor: "pointer", textTransform: "none", fontSize: "14px", fontWeight: "normal", color: "var(--text-main, #f9fafb)" }}>
-                    Night shift? Yes
+                    Working after midnight? Yes
                   </label>
                 </div>
               </div>
@@ -1325,15 +1891,40 @@ const Reports = () => {
                 </div>
                 <div className="df-field">
                   <label className="df-label">New End Time</label>
-                  <input
-                    type="text"
-                    placeholder="00:00"
-                    readOnly
-                    className="df-input"
-                    value={filters.newEndTime}
-                    onClick={() => setShowNewEndPicker(true)}
-                    style={{ cursor: 'pointer' }}
-                  />
+                  <div style={{ position: "relative", width: "100%" }}>
+                    <input
+                      type="text"
+                      placeholder="00:00"
+                      readOnly
+                      className="df-input"
+                      value={filters.newEndTime}
+                      onClick={() => setShowNewEndPicker(true)}
+                      style={{ cursor: 'pointer', paddingRight: filters.newEndTime ? "30px" : "12px" }}
+                    />
+                    {filters.newEndTime && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleChange("newEndTime", "");
+                        }}
+                        style={{
+                          position: "absolute",
+                          right: "10px",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          background: "none",
+                          border: "none",
+                          color: "var(--text-muted, #9ca3af)",
+                          cursor: "pointer",
+                          fontSize: "14px",
+                          padding: "4px"
+                        }}
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
                   {showNewEndPicker && (
                     <div className="timekeeper-modal-overlay" onClick={() => setShowNewEndPicker(false)}>
                       <AnalogTimePicker
@@ -1350,43 +1941,7 @@ const Reports = () => {
               </>
             )}
 
-            {/* Row 6: Level | Area */}
-            <div className="df-field">
-              <label className="df-label">Level (Multiple)</label>
-              <MultiSelectDropdown
-                placeholder="Select Levels"
-                options={filteredFloors}
-                selectedValues={filters.level}
-                onChange={(vals) => {
-                  setFilters(prev => ({ ...prev, level: vals, area: [] }));
-                }}
-              />
-            </div>
-
-            <div className="df-field">
-              <label className="df-label">Area (Multiple)</label>
-              <MultiSelectDropdown
-                placeholder="Select Areas"
-                options={filteredRooms}
-                selectedValues={filters.area}
-                onChange={(vals) => handleChange("area", vals)}
-              />
-            </div>
-
-            {/* Row 7: Permit Type | Permit Under */}
-            <div className="df-field">
-              <label className="df-label">Permit Type</label>
-              <select
-                className="df-select"
-                value={filters.permitType}
-                onChange={(e) => handleChange("permitType", e.target.value)}
-              >
-                <option value="">Select Permit Type</option>
-                <option value="Construction">Construction</option>
-                <option value="Commissioning">Commissioning</option>
-              </select>
-            </div>
-
+            {/* Row 9: Permit Under | Permit Type */}
             <div className="df-field">
               <label className="df-label">Permit Under</label>
               <select
@@ -1400,19 +1955,33 @@ const Reports = () => {
               </select>
             </div>
 
-            {/* Row 8: Status | HRA'S */}
             <div className="df-field">
-              <label className="df-label">Status (Multiple)</label>
-              <MultiSelectDropdown
-                placeholder="Select Statuses"
-                options={STATUS_OPTIONS}
-                selectedValues={filters.status}
-                onChange={(vals) => handleChange("status", vals)}
+              <label className="df-label">Permit Type</label>
+              <select
+                className="df-select"
+                value={filters.permitType}
+                onChange={(e) => handleChange("permitType", e.target.value)}
+              >
+                <option value="">Select Permit Type</option>
+                <option value="Construction">Construction</option>
+                <option value="Commissioning">Commissioning</option>
+              </select>
+            </div>
+
+            {/* Row 10: Permit Number | HRA Checklists */}
+            <div className="df-field">
+              <label className="df-label">Permit Number</label>
+              <input
+                type="text"
+                className="df-input"
+                placeholder="e.g. 82389714..."
+                value={filters.permitNo}
+                onChange={(e) => handleChange("permitNo", e.target.value)}
               />
             </div>
 
             <div className="df-field">
-              <label className="df-label">HRA Checklists (Multiple)</label>
+              <label className="df-label">HRA Checklists</label>
               <MultiSelectDropdown
                 placeholder="Select HRA Checklists"
                 options={HRA_LIST}

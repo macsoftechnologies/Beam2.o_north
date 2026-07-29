@@ -57,10 +57,13 @@ function Employeesform({ onClose, initialData, isEdit, onSubmit }) {
         const roles = rolesRes?.data?.rows ?? rolesRes?.data ?? rolesRes ?? [];
         const deps = depsRes?.data?.rows ?? depsRes?.data ?? depsRes ?? [];
         const subs = subsRes?.data?.rows ?? subsRes?.data ?? subsRes ?? [];
+        const sortedSubs = [...subs].sort((a, b) =>
+          (a.subContractorName || "").localeCompare(b.subContractorName || "", undefined, { sensitivity: 'base' })
+        );
 
         setRolesList(roles);
         setDepartmentList(deps);
-        setSubcontractorList(subs);
+        setSubcontractorList(sortedSubs);
       } catch (err) {
         console.error("Failed to fetch form data sources", err);
       }

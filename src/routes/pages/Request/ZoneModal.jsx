@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import { pdfjs } from "react-pdf";
 import PdfPolygonViewer from "../../components/PdfPolygonViewer";
+import { showError } from "../../components/common/Toast/Toast";
 
 // Using a direct CDN URL avoids Nginx MIME-type issues with .mjs workers
 // when the app is deployed under a sub-path (e.g. /m3north_frontend/).
@@ -12,6 +13,7 @@ function ZoneModal({
   selectedRooms: globalSelectedRooms = [],
   onClose,
   onConfirm,
+  roomStatusMap,
 }) {
   const [selectedRooms, setSelectedRooms] = useState(globalSelectedRooms);
   const [viewerWidth, setViewerWidth] = useState(900);
@@ -25,11 +27,32 @@ function ZoneModal({
   }, [globalSelectedRooms]);
 
   const toggleRoom = (roomName) => {
-    setSelectedRooms((prev) =>
-      prev.includes(roomName)
-        ? prev.filter((r) => r !== roomName)
-        : [...prev, roomName]
-    );
+    if (selectedRooms.includes(roomName)) {
+      setSelectedRooms((prev) => prev.filter((r) => r !== roomName));
+      return;
+    }
+
+    const newRoomStatus = roomStatusMap ? roomStatusMap[roomName.toLowerCase().trim()] : null;
+    if (newRoomStatus) {
+      const activeStatus = selectedRooms.reduce((status, name) => {
+        if (status) return status;
+        return roomStatusMap ? roomStatusMap[name.toLowerCase().trim()] : null;
+      }, null);
+
+      if (activeStatus && activeStatus !== newRoomStatus) {
+        const statusLabelMap = {
+          UC: "Construction",
+          C: "Commissioning",
+          HO: "Hand Over",
+        };
+        const activeLabel = statusLabelMap[activeStatus] || activeStatus;
+        const newLabel = statusLabelMap[newRoomStatus] || newRoomStatus;
+        showError(`Cannot select a room in a ${newLabel} zone when a room in a ${activeLabel} zone is already selected.`);
+        return;
+      }
+    }
+
+    setSelectedRooms((prev) => [...prev, roomName]);
   };
 
   // Lock body scroll while open
@@ -95,6 +118,9 @@ function ZoneModal({
         onClick={(e) => e.stopPropagation()}
       >
         <style>{`
+          .swal2-container {
+            z-index: 99999999 !important;
+          }
           @media (max-width: 1024px) {
             .zone-modal-mobile-tabs {
               display: flex !important;

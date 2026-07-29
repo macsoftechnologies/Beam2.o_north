@@ -1,10 +1,35 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Navigate } from "react-router-dom";
 import { login } from "../../../services/authService";
 import { showSuccess, showError } from "../../../components/common/Toast/Toast";
 import { navigateTo } from "../../../config/basePath";
+import { isTokenValid } from "../../../components/common/PublicRoute";
 import "./Login.css";
 
 export default function Login() {
+  if (isTokenValid()) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  useEffect(() => {
+    const handleCheck = () => {
+      if (isTokenValid()) {
+        navigateTo("/dashboard", true);
+      }
+    };
+
+    if (isTokenValid()) {
+      navigateTo("/dashboard", true);
+    }
+
+    window.addEventListener("pageshow", handleCheck);
+    window.addEventListener("popstate", handleCheck);
+
+    return () => {
+      window.removeEventListener("pageshow", handleCheck);
+      window.removeEventListener("popstate", handleCheck);
+    };
+  }, []);
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -42,7 +67,7 @@ export default function Login() {
 
         setTimeout(() => {
           setLoading(false);
-          navigateTo("/otp");
+          navigateTo("/otp", true);
         }, 1500);
       } else {
         setLoading(false);

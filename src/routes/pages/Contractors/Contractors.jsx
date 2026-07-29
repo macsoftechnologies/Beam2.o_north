@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { showSuccess, showError, showDeleteConfirm, showDeleteSuccess } from "../../components/common/Toast/Toast";
 import Table from "../../components/common/Table/Table";
 import Modal from "../../components/common/Modal/Modal";
-import { FaEye, FaEdit, FaTrash, FaFilter, FaFileCsv, FaArrowDown, FaTimes } from "react-icons/fa";
+import { FaEye, FaEdit, FaTrash, FaFilter, FaFileCsv, FaArrowDown, FaTimes, FaSearch } from "react-icons/fa";
 import * as XLSX from "xlsx";
 import ContractorForm from "../../forms/Contractorsform/Contractorform";
 import { getContractors, addContractor, updateContractor, deleteContractor, getDepartments } from "../../services/authService";
@@ -96,6 +96,8 @@ const Contractors = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [departments, setDepartments] = useState([]);
   const [userRole, setUserRole] = useState("");
+  const [filterSearch, setFilterSearch] = useState("");
+  const [appliedSearch, setAppliedSearch] = useState("");
 
   useEffect(() => {
     try {
@@ -112,10 +114,10 @@ const Contractors = () => {
   }, []);
 
   // Fetch subcontractors and departments
-  const fetchContractors = useCallback(async (page = 1) => {
+  const fetchContractors = useCallback(async (page = 1, search = "") => {
     setIsLoading(true);
     try {
-      const res = await getContractors(page, pageLimit);
+      const res = await getContractors(page, pageLimit, false, search);
       const rawData = res?.data ?? (Array.isArray(res) ? res : []);
       const rows = Array.isArray(rawData) ? rawData : (rawData?.rows ?? []);
       const count = res?.total ?? (Array.isArray(rawData) ? rawData.length : (rawData?.count ?? 0));
@@ -141,17 +143,29 @@ const Contractors = () => {
     fetchDepts();
   }, []);
 
+  // Fetch when page or applied search changes
   useEffect(() => {
-    fetchContractors(currentPage);
-  }, [currentPage, fetchContractors]);
+    fetchContractors(currentPage, appliedSearch);
+  }, [currentPage, appliedSearch, fetchContractors]);
+
+  const handleFilter = () => {
+    setCurrentPage(1);
+    setAppliedSearch(filterSearch);
+  };
+
+  const handleClear = () => {
+    setFilterSearch("");
+    setAppliedSearch("");
+    setCurrentPage(1);
+  };
 
   const handleView = (item, index) => {
-    setSelectedContractor({ ...item, serial: startIndex + index + 1 });
+    setSelectedContractor({ ...item, serial: (currentPage - 1) * pageLimit + index + 1 });
     setViewOpen(true);
   };
 
   const handleEdit = (item, index) => {
-    setSelectedContractor({ ...item, serial: startIndex + index + 1 });
+    setSelectedContractor({ ...item, serial: (currentPage - 1) * pageLimit + index + 1 });
     setEditOpen(true);
   };
 
@@ -161,11 +175,7 @@ const Contractors = () => {
     try {
       await deleteContractor(item.id);
       showDeleteSuccess();
-      const newPage = contractorList.length === 1 && currentPage > 1
-        ? currentPage - 1
-        : currentPage;
-      setCurrentPage(newPage);
-      fetchContractors(newPage);
+      fetchContractors(currentPage, searchTerm);
     } catch {
       showError("Failed to delete contractor");
     }
@@ -176,7 +186,6 @@ const Contractors = () => {
       const formDataObj = new FormData();
       formDataObj.append("subContractorName", formData.subContractorName);
       formDataObj.append("departId", formData.departId);
-      // Status field removed
       if (formData.logoFile) {
         formDataObj.append("logo", formData.logoFile);
       } else if (formData.logoCleared) {
@@ -193,7 +202,7 @@ const Contractors = () => {
         showSuccess("Contractor added successfully");
         setOpen(false);
       }
-      fetchContractors(currentPage);
+      fetchContractors(currentPage, appliedSearch);
     } catch {
       showError("Operation failed");
     }
@@ -201,7 +210,7 @@ const Contractors = () => {
 
   const handleExportCSV = async () => {
     try {
-      const res = await getContractors(1, 100000, true);
+      const res = await getContractors(1, 100000, true, appliedSearch);
       const rows = res?.data?.rows ?? res?.data ?? res ?? [];
       if (rows.length === 0) {
         alert("No data available to export.");
@@ -233,7 +242,7 @@ const Contractors = () => {
 
   const handleExportExcel = async () => {
     try {
-      const res = await getContractors(1, 100000, true);
+      const res = await getContractors(1, 100000, true, appliedSearch);
       const rows = res?.data?.rows ?? res?.data ?? res ?? [];
       if (rows.length === 0) {
         alert("No data available to export.");
@@ -269,27 +278,23 @@ const Contractors = () => {
     }
   };
 
-  const totalPages = Math.ceil((totalCount || contractorList.length) / pageLimit);
+  const totalPages = Math.ceil(totalCount / pageLimit);
   const startIndex = (currentPage - 1) * pageLimit;
 
   const columns = [
     { header: "S.No", accessor: "serial" },
     { header: "Name", accessor: "name" },
-    { header: "Department", accessor: "department" },
     { header: "Logo", accessor: "logoCell" },
     { header: "Actions", accessor: "actions" },
   ];
 
   const tableData = contractorList.map((item, index) => {
-    const matchedDept = departments.find(d => String(d.id) === String(item.departId));
-    const deptName = matchedDept ? matchedDept.departmentName : "—";
     const logoUrl = getLogoUrl(item.logo);
     const isAuthorized = ["superadmin", "admin"].includes(String(userRole).toLowerCase());
     return {
       ...item,
       serial: startIndex + index + 1,
       name: item.subContractorName,
-      department: deptName,
       logoCell: <LogoCell logoUrl={logoUrl} name={item.subContractorName} size={45} />,
       actions: (
         <ActionButtons
@@ -311,11 +316,50 @@ const Contractors = () => {
           <p className="dept-page-subtitle">Manage and configure all contractor records</p>
         </div>
         <div className="dept-page-header__right">
-          <span className="dept-count-badge">{(totalCount || contractorList.length)} Total</span>
+          <span className="dept-count-badge">
+            {totalCount} Total
+          </span>
           <button className="dept-add-btn" onClick={() => { setSelectedContractor(null); setOpen(true); }}>
             <span className="dept-add-btn__icon">＋</span>
             Add Contractor
           </button>
+        </div>
+      </div>
+
+      {/* Filters Card */}
+      <div className="dept-table-card" style={{ marginBottom: "16px", padding: "16px 24px" }}>
+        <h3 style={{ margin: "0 0 12px 0", fontSize: "1rem", fontWeight: "600", color: "#F9FAFB" }}>Filters</h3>
+        <div className="df-form" style={{ padding: "0" }}>
+          <div className="filters-grid">
+            <div className="df-field" style={{ marginBottom: 0 }}>
+              <label className="df-label" style={{ textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.05em' }}>CONTRACTOR COMPANY NAME</label>
+              <input
+                type="text"
+                className="df-input"
+                placeholder="Search by company name..."
+                value={filterSearch}
+                onChange={(e) => setFilterSearch(e.target.value)}
+              />
+            </div>
+            <div className="filters-actions">
+              <button
+                onClick={handleFilter}
+                type="button"
+                className="dept-add-btn"
+                style={{ background: 'linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%)', color: '#fff', border: '1.5px solid #38bdf8', cursor: 'pointer', display: 'flex', alignItems: 'center', boxShadow: '0 4px 18px rgba(14,165,233,0.35)', transition: 'all 0.2s ease' }}
+              >
+                <FaSearch style={{ marginRight: '6px' }} /> Search
+              </button>
+              <button
+                onClick={handleClear}
+                type="button"
+                className="dept-add-btn"
+                style={{ background: 'rgba(14,165,233,0.07)', color: '#9ca3af', border: '1.5px solid rgba(14,165,233,0.22)', cursor: 'pointer', display: 'flex', alignItems: 'center', transition: 'all 0.2s ease' }}
+              >
+                <FaTimes style={{ marginRight: '6px' }} /> Clear
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 

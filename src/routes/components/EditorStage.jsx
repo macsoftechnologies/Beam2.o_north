@@ -6,6 +6,7 @@ import {
     Line,
     Circle,
 } from "react-konva";
+import useImage from "use-image";
 import { renderPdf } from "../utils/pdfRenderer";
 
 export default function EditorStage({
@@ -17,7 +18,7 @@ export default function EditorStage({
     setCurrentPolygon,
 }) {
 
-    const [pdfCanvas, setPdfCanvas] = useState(null);
+    const [imageUrl, setImageUrl] = useState(null);
 
     const [stageSize, setStageSize] = useState({
         width: containerWidth,
@@ -25,6 +26,8 @@ export default function EditorStage({
     });
 
     const [isDrawing, setIsDrawing] = useState(false);
+
+    const [image] = useImage(imageUrl);
 
     useEffect(() => {
         if (!pdf) return;
@@ -37,7 +40,7 @@ export default function EditorStage({
                 height: canvas.height,
             });
 
-            setPdfCanvas(canvas);
+            setImageUrl(canvas.toDataURL());
         }
 
         loadPdf();
@@ -190,9 +193,9 @@ export default function EditorStage({
                 {/* PDF */}
 
                 <Layer listening={false}>
-                    {pdfCanvas && (
+                    {image && (
                         <KonvaImage
-                            image={pdfCanvas}
+                            image={image}
                             width={stageSize.width}
                             height={stageSize.height}
                         />

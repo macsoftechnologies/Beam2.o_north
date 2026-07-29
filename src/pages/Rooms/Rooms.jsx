@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { showSuccess, showError, showDeleteConfirm, showDeleteSuccess } from "../../components/common/Toast/Toast";
 import Table from "../../components/common/Table/Table";
 import Modal from "../../components/common/Modal/Modal";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash, FaSearch, FaTimes } from "react-icons/fa";
 import RoomForm from "../../forms/Roomform/Roomform";
 import { addRoom, getRooms, updateRoom, deleteRoom, getBuildings, getFloors, getZones } from "../../services/authService";
 import "../styles/pages.css";
@@ -22,6 +22,8 @@ const Rooms = () => {
   const [floors, setFloors] = useState([]);
   const [zones, setZones] = useState([]);
   const [userRole, setUserRole] = useState("");
+  const [filterRoomName, setFilterRoomName] = useState("");
+  const [appliedRoomName, setAppliedRoomName] = useState("");
 
   useEffect(() => {
     try {
@@ -76,24 +78,35 @@ const Rooms = () => {
   const startIndex = (currentPage - 1) * pageLimit;
 
   // ─── Fetch list ───────────────────────────────────────────────────────────
-  const fetchRoomsList = useCallback(async (page = 1) => {
+  const fetchRoomsList = useCallback(async (page = 1, searchKeyword = appliedRoomName) => {
     setIsLoading(true);
     try {
-      const res = await getRooms(page, pageLimit);
-      const rows = res?.data?.rows ?? res?.data ?? res ?? [];
-      const count = res?.data?.count ?? res?.total ?? rows.length;
-      setRoomList(rows);
+      const res = await getRooms(page, pageLimit, "", searchKeyword);
+      const rawData = res?.data?.rows ?? res?.data ?? res ?? [];
+      const count = res?.data?.count ?? res?.total ?? rawData.length;
+      setRoomList(rawData);
       setTotalCount(count);
     } catch (err) {
       showError("Failed to load rooms");
     } finally {
       setIsLoading(false);
     }
-  }, [pageLimit]);
+  }, [pageLimit, appliedRoomName]);
 
   useEffect(() => {
-    fetchRoomsList(currentPage);
-  }, [currentPage, fetchRoomsList]);
+    fetchRoomsList(currentPage, appliedRoomName);
+  }, [currentPage, appliedRoomName, fetchRoomsList]);
+
+  const handleFilter = () => {
+    setCurrentPage(1);
+    setAppliedRoomName(filterRoomName);
+  };
+
+  const handleClear = () => {
+    setFilterRoomName("");
+    setAppliedRoomName("");
+    setCurrentPage(1);
+  };
 
   // ─── Handlers ─────────────────────────────────────────────────────────────
   const handleEdit = (item, index) => {
@@ -111,7 +124,7 @@ const Rooms = () => {
         ? currentPage - 1
         : currentPage;
       setCurrentPage(newPage);
-      fetchRoomsList(newPage);
+      fetchRoomsList(newPage, appliedRoomName);
     } catch (err) {
       showError("Failed to delete room");
     }
@@ -129,7 +142,7 @@ const Rooms = () => {
         showSuccess("Room added successfully");
         setOpen(false);
       }
-      fetchRoomsList(currentPage);
+      fetchRoomsList(currentPage, appliedRoomName);
     } catch (err) {
       showError("Operation failed");
     }
@@ -204,6 +217,43 @@ const Rooms = () => {
             <span className="dept-add-btn__icon">＋</span>
             Add Room
           </button>
+        </div>
+      </div>
+
+      {/* Filters Card */}
+      <div className="dept-table-card" style={{ marginBottom: "16px", padding: "16px 24px" }}>
+        <h3 style={{ margin: "0 0 12px 0", fontSize: "1rem", fontWeight: "600", color: "#F9FAFB" }}>Filters</h3>
+        <div className="df-form" style={{ padding: "0" }}>
+          <div className="filters-grid">
+            <div className="df-field" style={{ marginBottom: 0 }}>
+              <label className="df-label" style={{ textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.05em' }}>ROOM NAME</label>
+              <input
+                type="text"
+                className="df-input"
+                placeholder="Search by room name"
+                value={filterRoomName}
+                onChange={(e) => setFilterRoomName(e.target.value)}
+              />
+            </div>
+            <div className="filters-actions">
+              <button
+                onClick={handleFilter}
+                type="button"
+                className="dept-add-btn"
+                style={{ background: 'linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%)', color: '#fff', border: '1.5px solid #38bdf8', cursor: 'pointer', display: 'flex', alignItems: 'center', boxShadow: '0 4px 18px rgba(14,165,233,0.35)', transition: 'all 0.2s ease' }}
+              >
+                <FaSearch style={{ marginRight: '6px' }} /> Search
+              </button>
+              <button
+                onClick={handleClear}
+                type="button"
+                className="dept-add-btn"
+                style={{ background: 'rgba(14,165,233,0.07)', color: '#9ca3af', border: '1.5px solid rgba(14,165,233,0.22)', cursor: 'pointer', display: 'flex', alignItems: 'center', transition: 'all 0.2s ease' }}
+              >
+                <FaTimes style={{ marginRight: '6px' }} /> Clear
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
