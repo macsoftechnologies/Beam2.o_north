@@ -41943,7 +41943,6 @@ export const ZONE_MAPPING = {
     }
   ],
 
-
   // MAIII Floors
   'MA.III 0': [
     {
@@ -70427,6 +70426,4 @@ export const ZONE_MAPPING = {
       ]
     },
   ]
-
-
 };
