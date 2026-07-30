@@ -207,6 +207,9 @@ const Floors = () => {
                 placeholder="Search by floor name"
                 value={filterFloorName}
                 onChange={(e) => setFilterFloorName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleFilter();
+                }}
               />
             </div>
             <div className="filters-actions">

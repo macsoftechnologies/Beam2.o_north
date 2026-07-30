@@ -1103,7 +1103,7 @@ html[data-theme="steel-gray"] .week-badge                { background: var(--col
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999;
+  z-index: 10000050;
 }
 
 .timekeeper-modal-container {

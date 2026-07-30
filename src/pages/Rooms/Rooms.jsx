@@ -233,6 +233,9 @@ const Rooms = () => {
                 placeholder="Search by room name"
                 value={filterRoomName}
                 onChange={(e) => setFilterRoomName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleFilter();
+                }}
               />
             </div>
             <div className="filters-actions">

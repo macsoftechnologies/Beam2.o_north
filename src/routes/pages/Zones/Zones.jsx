@@ -290,7 +290,16 @@ const Zones = () => {
           <div className="filters-grid">
             <div className="df-field" style={{ marginBottom: 0 }}>
               <label className="df-label" style={{ textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.05em' }}>ZONE NAME</label>
-              <input type="text" className="df-input" placeholder="Search by zone name" value={filterZoneName} onChange={(e) => setFilterZoneName(e.target.value)} />
+              <input
+                type="text"
+                className="df-input"
+                placeholder="Search by zone name"
+                value={filterZoneName}
+                onChange={(e) => setFilterZoneName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleFilter();
+                }}
+              />
             </div>
             <div className="df-field" style={{ marginBottom: 0 }}>
               <label className="df-label" style={{ textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.05em' }}>STATUS</label>

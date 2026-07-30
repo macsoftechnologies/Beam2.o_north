@@ -165,6 +165,9 @@ const ElectricalWorks = () => {
                 placeholder="Search by electrical work name"
                 value={filterSearch}
                 onChange={(e) => setFilterSearch(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleFilter();
+                }}
               />
             </div>
             <div className="filters-actions">

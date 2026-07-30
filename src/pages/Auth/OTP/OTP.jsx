@@ -230,7 +230,7 @@ export default function OTP() {
         <div className="otp-card">
 
           {/* Back */}
-          <a href="https://187.127.171.51/m3north_frontend/login" className="back-btn">
+          <a href="http://187.127.171.51/m3north_frontend/login" className="back-btn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>

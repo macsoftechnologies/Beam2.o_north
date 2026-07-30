@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
+import ReactDOM from "react-dom";
 import Table from "../../components/common/Table/Table";
 import { FaFileCsv, FaArrowDown, FaSearch } from "react-icons/fa";
 import * as XLSX from "xlsx";
@@ -117,54 +118,63 @@ const AnalogTimePicker = ({ initialTime, onSave, onCancel }) => {
   const handX = center + handLength * Math.cos(handRad);
   const handY = center + handLength * Math.sin(handRad);
 
-  return (
-    <div className="timekeeper-modal-container custom-picker" onClick={(e) => e.stopPropagation()}>
-      <div className="timekeeper-header">
-        <div className="timekeeper-time-display">
-          <span
-            className={`timekeeper-time-unit ${mode === "hour" ? "active" : ""}`}
-            onClick={(e) => { e.stopPropagation(); setMode("hour"); }}
-          >
-            {String(hour).padStart(2, "0")}
-          </span>
-          <span className="timekeeper-time-colon">:</span>
-          <span
-            className={`timekeeper-time-unit ${mode === "minute" ? "active" : ""}`}
-            onClick={(e) => { e.stopPropagation(); setMode("minute"); }}
-          >
-            {String(minute).padStart(2, "0")}
-          </span>
+  return ReactDOM.createPortal(
+    <div
+      className="timekeeper-modal-overlay"
+      onClick={(e) => {
+        e.stopPropagation();
+        onCancel();
+      }}
+    >
+      <div className="timekeeper-modal-container custom-picker" onClick={(e) => e.stopPropagation()}>
+        <div className="timekeeper-header">
+          <div className="timekeeper-time-display">
+            <span
+              className={`timekeeper-time-unit ${mode === "hour" ? "active" : ""}`}
+              onClick={(e) => { e.stopPropagation(); setMode("hour"); }}
+            >
+              {String(hour).padStart(2, "0")}
+            </span>
+            <span className="timekeeper-time-colon">:</span>
+            <span
+              className={`timekeeper-time-unit ${mode === "minute" ? "active" : ""}`}
+              onClick={(e) => { e.stopPropagation(); setMode("minute"); }}
+            >
+              {String(minute).padStart(2, "0")}
+            </span>
+          </div>
+        </div>
+
+        <div className="timekeeper-dial-wrapper">
+          <div className="timekeeper-dial" style={{ width: `${size}px`, height: `${size}px` }}>
+            <svg className="timekeeper-hand-svg" width={size} height={size}>
+              <line
+                x1={center}
+                y1={center}
+                x2={handX}
+                y2={handY}
+                stroke="#0ea5e9"
+                strokeWidth="2"
+              />
+              <circle cx={center} cy={center} r="4" fill="#0ea5e9" />
+              <circle cx={handX} cy={handY} r="14" fill="rgba(14, 165, 233, 0.3)" />
+              <circle cx={handX} cy={handY} r="4" fill="#0ea5e9" />
+            </svg>
+            {mode === "hour" ? renderHourNumbers() : renderMinuteNumbers()}
+          </div>
+        </div>
+
+        <div className="timekeeper-modal-actions">
+          <button type="button" className="timekeeper-modal-btn" onClick={(e) => { e.stopPropagation(); onCancel(); }}>
+            Cancel
+          </button>
+          <button type="button" className="timekeeper-modal-btn" onClick={handleSave}>
+            OK
+          </button>
         </div>
       </div>
-
-      <div className="timekeeper-dial-wrapper">
-        <div className="timekeeper-dial" style={{ width: `${size}px`, height: `${size}px` }}>
-          <svg className="timekeeper-hand-svg" width={size} height={size}>
-            <line
-              x1={center}
-              y1={center}
-              x2={handX}
-              y2={handY}
-              stroke="#0ea5e9"
-              strokeWidth="2"
-            />
-            <circle cx={center} cy={center} r="4" fill="#0ea5e9" />
-            <circle cx={handX} cy={handY} r="14" fill="rgba(14, 165, 233, 0.3)" />
-            <circle cx={handX} cy={handY} r="4" fill="#0ea5e9" />
-          </svg>
-          {mode === "hour" ? renderHourNumbers() : renderMinuteNumbers()}
-        </div>
-      </div>
-
-      <div className="timekeeper-modal-actions">
-        <button type="button" className="timekeeper-modal-btn" onClick={(e) => { e.stopPropagation(); onCancel(); }}>
-          Cancel
-        </button>
-        <button type="button" className="timekeeper-modal-btn" onClick={handleSave}>
-          OK
-        </button>
-      </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

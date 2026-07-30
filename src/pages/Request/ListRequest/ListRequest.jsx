@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import ReactDOM from "react-dom";
 import { useNavigate, useLocation } from "react-router-dom";
 import { LOGO_MAP } from "../../../config/logos";
 import { FaEdit, FaEye, FaCopy, FaTrash, FaPlus, FaFilter, FaHistory, FaCheck, FaTimes, FaEllipsisV, FaSearch } from "react-icons/fa";
@@ -118,54 +119,63 @@ const AnalogTimePicker = ({ initialTime, onSave, onCancel }) => {
   const handX = center + handLength * Math.cos(handRad);
   const handY = center + handLength * Math.sin(handRad);
 
-  return (
-    <div className="timekeeper-modal-container custom-picker" onClick={(e) => e.stopPropagation()}>
-      <div className="timekeeper-header">
-        <div className="timekeeper-time-display">
-          <span
-            className={`timekeeper-time-unit ${mode === "hour" ? "active" : ""}`}
-            onClick={(e) => { e.stopPropagation(); setMode("hour"); }}
-          >
-            {String(hour).padStart(2, "0")}
-          </span>
-          <span className="timekeeper-time-colon">:</span>
-          <span
-            className={`timekeeper-time-unit ${mode === "minute" ? "active" : ""}`}
-            onClick={(e) => { e.stopPropagation(); setMode("minute"); }}
-          >
-            {String(minute).padStart(2, "0")}
-          </span>
+  return ReactDOM.createPortal(
+    <div
+      className="timekeeper-modal-overlay"
+      onClick={(e) => {
+        e.stopPropagation();
+        onCancel();
+      }}
+    >
+      <div className="timekeeper-modal-container custom-picker" onClick={(e) => e.stopPropagation()}>
+        <div className="timekeeper-header">
+          <div className="timekeeper-time-display">
+            <span
+              className={`timekeeper-time-unit ${mode === "hour" ? "active" : ""}`}
+              onClick={(e) => { e.stopPropagation(); setMode("hour"); }}
+            >
+              {String(hour).padStart(2, "0")}
+            </span>
+            <span className="timekeeper-time-colon">:</span>
+            <span
+              className={`timekeeper-time-unit ${mode === "minute" ? "active" : ""}`}
+              onClick={(e) => { e.stopPropagation(); setMode("minute"); }}
+            >
+              {String(minute).padStart(2, "0")}
+            </span>
+          </div>
+        </div>
+
+        <div className="timekeeper-dial-wrapper">
+          <div className="timekeeper-dial" style={{ width: `${size}px`, height: `${size}px` }}>
+            <svg className="timekeeper-hand-svg" width={size} height={size}>
+              <line
+                x1={center}
+                y1={center}
+                x2={handX}
+                y2={handY}
+                stroke="#0ea5e9"
+                strokeWidth="2"
+              />
+              <circle cx={center} cy={center} r="4" fill="#0ea5e9" />
+              <circle cx={handX} cy={handY} r="14" fill="rgba(14, 165, 233, 0.3)" />
+              <circle cx={handX} cy={handY} r="4" fill="#0ea5e9" />
+            </svg>
+            {mode === "hour" ? renderHourNumbers() : renderMinuteNumbers()}
+          </div>
+        </div>
+
+        <div className="timekeeper-modal-actions">
+          <button type="button" className="timekeeper-modal-btn" onClick={(e) => { e.stopPropagation(); onCancel(); }}>
+            Cancel
+          </button>
+          <button type="button" className="timekeeper-modal-btn" onClick={handleSave}>
+            OK
+          </button>
         </div>
       </div>
-
-      <div className="timekeeper-dial-wrapper">
-        <div className="timekeeper-dial" style={{ width: `${size}px`, height: `${size}px` }}>
-          <svg className="timekeeper-hand-svg" width={size} height={size}>
-            <line
-              x1={center}
-              y1={center}
-              x2={handX}
-              y2={handY}
-              stroke="#0ea5e9"
-              strokeWidth="2"
-            />
-            <circle cx={center} cy={center} r="4" fill="#0ea5e9" />
-            <circle cx={handX} cy={handY} r="14" fill="rgba(14, 165, 233, 0.3)" />
-            <circle cx={handX} cy={handY} r="4" fill="#0ea5e9" />
-          </svg>
-          {mode === "hour" ? renderHourNumbers() : renderMinuteNumbers()}
-        </div>
-      </div>
-
-      <div className="timekeeper-modal-actions">
-        <button type="button" className="timekeeper-modal-btn" onClick={(e) => { e.stopPropagation(); onCancel(); }}>
-          Cancel
-        </button>
-        <button type="button" className="timekeeper-modal-btn" onClick={handleSave}>
-          OK
-        </button>
-      </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 import {
@@ -191,6 +201,7 @@ import {
   getRequestById,
   updateRequest
 } from "../../../services/requestService";
+import { API_BASE_URL } from "../../../services/api";
 import { showSuccess, showError, showDeleteConfirm, showDeleteSuccess } from "../../../components/common/Toast/Toast";
 import Table from "../../../components/common/Table/Table";
 import Modal from "../../../components/common/Modal/Modal";
@@ -848,7 +859,10 @@ const ListRequest = () => {
   const isAdmin = userRoles.includes("admin");
   const isDept = userRoles.includes("department");
   const isDept1 = userRoles.includes("department1");
-  const isSubcontractor = userRoles.includes("subcontractor");
+  const isSubcontractor = userRoles.includes("subcontractor") ||
+    userRoles.includes("contractor") ||
+    userRoles.includes("sub_contractor") ||
+    userRoles.includes("sub-contractor");;
   const isObserver = userRoles.includes("observer");
   const canBulkAction = isAdmin || isDept || isDept1;
   const isMultiDept = isDept && isDept1;
@@ -858,12 +872,12 @@ const ListRequest = () => {
     if (isAdmin || isMultiDept) return false;
     if (isDept) {
       const eitherIsConstruction = String(row.permit_under).toLowerCase() === "construction" ||
-                                    String(row.permit_type).toLowerCase() === "construction";
+        String(row.permit_type).toLowerCase() === "construction";
       return !eitherIsConstruction;
     }
     if (isDept1) {
       const bothAreConstruction = String(row.permit_under).toLowerCase() === "construction" &&
-                                   String(row.permit_type).toLowerCase() === "construction";
+        String(row.permit_type).toLowerCase() === "construction";
       return bothAreConstruction;
     }
     return false;
@@ -1985,15 +1999,17 @@ const ListRequest = () => {
           row.Request_status !== "Rejected" &&
           row.Request_status !== "Auto-Cancelled" &&
           row.Request_status !== "Auto Cancelled" &&
-          currentUser?.role !== "Observer" &&
-          !isSubcontractor;
+          currentUser?.role !== "Observer";
 
         if (!isStatusAllowed) return false;
+        if (isSubcontractor) {
+          return row.Request_status === "Draft";
+        }
         if (isAdmin || isMultiDept) return true;
 
         if (isDept) {
           const eitherIsConstruction = String(row.permit_under).toLowerCase() === "construction" ||
-                                        String(row.permit_type).toLowerCase() === "construction";
+            String(row.permit_type).toLowerCase() === "construction";
           return eitherIsConstruction;
         }
 
@@ -2009,7 +2025,7 @@ const ListRequest = () => {
 
         if (isDept) {
           const eitherIsConstruction = String(row.permit_under).toLowerCase() === "construction" ||
-                                        String(row.permit_type).toLowerCase() === "construction";
+            String(row.permit_type).toLowerCase() === "construction";
           return eitherIsConstruction;
         }
 
@@ -2026,13 +2042,13 @@ const ListRequest = () => {
 
         if (isDept) {
           const eitherIsConstruction = String(row.permit_under).toLowerCase() === "construction" ||
-                                        String(row.permit_type).toLowerCase() === "construction";
+            String(row.permit_type).toLowerCase() === "construction";
           return eitherIsConstruction;
         }
 
         if (isDept1) {
           const bothAreConstruction = String(row.permit_under).toLowerCase() === "construction" &&
-                                       String(row.permit_type).toLowerCase() === "construction";
+            String(row.permit_type).toLowerCase() === "construction";
           return !bothAreConstruction;
         }
 
@@ -2111,7 +2127,7 @@ const ListRequest = () => {
           )}
 
           <a
-            href={`http://187.127.171.51/requests/permit-design/${row.PermitNo}`}
+            href={`${API_BASE_URL.replace(/\/$/, "")}/requests/permit-design/${row.PermitNo}`}
             target="_blank"
             rel="noreferrer"
             className="op-action-btn op-action-btn--view"
@@ -2209,7 +2225,16 @@ const ListRequest = () => {
       {/* Dynamic Search Filters Card */}
       {filtersOpen && (
         <div className="form-card filters-card-wrapper premium-form-container">
-          <form onSubmit={handleSearchSubmit} className="df-form">
+          <form
+            onSubmit={handleSearchSubmit}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleSearchSubmit(e);
+              }
+            }}
+            className="df-form"
+          >
             <div className="df-grid">
               {/* Row 1: Working Date range (From) | Working Date range (To) */}
               <div className="df-field">
@@ -2327,6 +2352,12 @@ const ListRequest = () => {
                   placeholder="e.g. Piping, welding..."
                   value={searchFilters.keyword}
                   onChange={(e) => setSearchFilters(prev => ({ ...prev, keyword: e.target.value }))}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleSearchSubmit(e);
+                    }
+                  }}
                 />
               </div>
 
@@ -2556,6 +2587,12 @@ const ListRequest = () => {
                   placeholder="e.g. 82389714..."
                   value={searchFilters.permitNo}
                   onChange={(e) => setSearchFilters(prev => ({ ...prev, permitNo: e.target.value }))}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleSearchSubmit(e);
+                    }
+                  }}
                 />
               </div>
 
@@ -2629,7 +2666,7 @@ const ListRequest = () => {
 
                 {/* Operations Dropdown */}
                 <div className="bulk-edit-dropdown-container" ref={bulkDropdownRef}>
-                  <button 
+                  <button
                     type="button"
                     className="bat-btn bat-btn--edit"
                     onClick={(e) => {
@@ -2641,7 +2678,7 @@ const ListRequest = () => {
                   </button>
                   {bulkDropdownOpen && (
                     <div className="bulk-edit-dropdown-menu" style={{ display: "block" }}>
-                      <button 
+                      <button
                         type="button"
                         onClick={() => {
                           handleBulkTimeEdit();
@@ -2650,7 +2687,7 @@ const ListRequest = () => {
                       >
                         Shift &amp; Working Time
                       </button>
-                      <button 
+                      <button
                         type="button"
                         onClick={() => {
                           handleBulkSafetyEdit();
@@ -2659,7 +2696,7 @@ const ListRequest = () => {
                       >
                         Safety Precautions
                       </button>
-                      <button 
+                      <button
                         type="button"
                         onClick={() => {
                           handleBulkNotesEdit();
@@ -3335,16 +3372,14 @@ const ListRequest = () => {
                 style={{ cursor: 'pointer' }}
               />
               {showBulkStartPicker && (
-                <div className="timekeeper-modal-overlay" onClick={() => setShowBulkStartPicker(false)}>
-                  <AnalogTimePicker
-                    initialTime={bulkTime.startTime || "12:00"}
-                    onSave={(newTime) => {
-                      setBulkTime(p => ({ ...p, startTime: newTime }));
-                      setShowBulkStartPicker(false);
-                    }}
-                    onCancel={() => setShowBulkStartPicker(false)}
-                  />
-                </div>
+                <AnalogTimePicker
+                  initialTime={bulkTime.startTime || "12:00"}
+                  onSave={(newTime) => {
+                    setBulkTime(p => ({ ...p, startTime: newTime }));
+                    setShowBulkStartPicker(false);
+                  }}
+                  onCancel={() => setShowBulkStartPicker(false)}
+                />
               )}
             </div>
             <div className="df-field">
@@ -3362,16 +3397,14 @@ const ListRequest = () => {
                 style={{ cursor: bulkTime.nightShift ? 'default' : 'pointer' }}
               />
               {!bulkTime.nightShift && showBulkEndPicker && (
-                <div className="timekeeper-modal-overlay" onClick={() => setShowBulkEndPicker(false)}>
-                  <AnalogTimePicker
-                    initialTime={bulkTime.endTime || "12:00"}
-                    onSave={(newTime) => {
-                      setBulkTime(p => ({ ...p, endTime: newTime }));
-                      setShowBulkEndPicker(false);
-                    }}
-                    onCancel={() => setShowBulkEndPicker(false)}
-                  />
-                </div>
+                <AnalogTimePicker
+                  initialTime={bulkTime.endTime || "12:00"}
+                  onSave={(newTime) => {
+                    setBulkTime(p => ({ ...p, endTime: newTime }));
+                    setShowBulkEndPicker(false);
+                  }}
+                  onCancel={() => setShowBulkEndPicker(false)}
+                />
               )}
             </div>
           </div>
@@ -3410,16 +3443,14 @@ const ListRequest = () => {
                   style={{ cursor: 'pointer' }}
                 />
                 {showBulkNewEndPicker && (
-                  <div className="timekeeper-modal-overlay" onClick={() => setShowBulkNewEndPicker(false)}>
-                    <AnalogTimePicker
-                      initialTime={bulkTime.newEndTime || "12:00"}
-                      onSave={(newTime) => {
-                        setBulkTime(p => ({ ...p, newEndTime: newTime }));
-                        setShowBulkNewEndPicker(false);
-                      }}
-                      onCancel={() => setShowBulkNewEndPicker(false)}
-                    />
-                  </div>
+                  <AnalogTimePicker
+                    initialTime={bulkTime.newEndTime || "12:00"}
+                    onSave={(newTime) => {
+                      setBulkTime(p => ({ ...p, newEndTime: newTime }));
+                      setShowBulkNewEndPicker(false);
+                    }}
+                    onCancel={() => setShowBulkNewEndPicker(false)}
+                  />
                 )}
               </div>
             </div>

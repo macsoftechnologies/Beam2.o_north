@@ -359,7 +359,16 @@ const Employees = () => {
           <div className="filters-grid">
             <div className="df-field" style={{ marginBottom: 0 }}>
               <label className="df-label" style={{ textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.05em' }}>EMPLOYEE NAME / SEARCH KEYWORD</label>
-              <input type="text" className="df-input" placeholder="Search by name, email, badge, designation..." value={filterName} onChange={(e) => setFilterName(e.target.value)} />
+              <input
+                type="text"
+                className="df-input"
+                placeholder="Search by name, email, badge, designation..."
+                value={filterName}
+                onChange={(e) => setFilterName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleFilter();
+                }}
+              />
             </div>
             <div className="df-field" style={{ marginBottom: 0 }}>
               <label className="df-label" style={{ textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.05em' }}>COMPANY NAME</label>

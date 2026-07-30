@@ -163,6 +163,9 @@ const MechanicalWorks = () => {
                 placeholder="Search by mechanical work name"
                 value={filterSearch}
                 onChange={(e) => setFilterSearch(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleFilter();
+                }}
               />
             </div>
             <div className="filters-actions">
