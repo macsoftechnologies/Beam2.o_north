@@ -2719,7 +2719,7 @@ function NewRequest() {
                       </div>
                       {fieldErrors.electrical_works && <span className="field-error">{fieldErrors.electrical_works}</span>}
 
-                      {isElectricalDropdownOpen && groupedElectrical.length > 0 && (
+                      {isElectricalDropdownOpen && (
                         <div className="zone-rooms-dropdown" style={{ background: "var(--bg-card)", border: "1px solid var(--border-color)", borderRadius: "8px", padding: "16px", marginTop: "8px", boxShadow: "var(--shadow-md)", position: "absolute", top: "100%", left: 0, width: "100%", zIndex: 100, maxHeight: "300px", overflowY: "auto" }}>
                           <div style={{ marginBottom: "12px", position: "sticky", top: 0, zIndex: 10, background: "var(--bg-card)" }}>
                             <input
@@ -2737,35 +2737,41 @@ function NewRequest() {
                               </div>
                             )}
                           </div>
-                          {groupedElectrical.map((g) => (
-                            <div key={g.module} style={{ marginBottom: "20px" }}>
-                              <div style={{ fontWeight: "bold", color: "var(--color-safe, #00e5a0)", marginBottom: "12px", fontSize: "14px", textTransform: "uppercase" }}>
-                                {g.module}
+                          {groupedElectrical.length > 0 ? (
+                            groupedElectrical.map((g) => (
+                              <div key={g.module} style={{ marginBottom: "20px" }}>
+                                <div style={{ fontWeight: "bold", color: "var(--color-safe, #00e5a0)", marginBottom: "12px", fontSize: "14px", textTransform: "uppercase" }}>
+                                  {g.module}
+                                </div>
+                                <div style={{ display: "flex", flexDirection: "column", gap: "12px", paddingLeft: "8px" }}>
+                                  {g.items.map((i) => {
+                                    const isChecked = (formData.electrical_works || []).includes(String(i.id));
+                                    return (
+                                      <label key={i.id} className="custom-checkbox-label" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                        <input
+                                          type="checkbox"
+                                          className="custom-checkbox-input"
+                                          checked={isChecked}
+                                          onChange={() => {
+                                            const current = formData.electrical_works || [];
+                                            const newValues = isChecked
+                                              ? current.filter(val => val !== String(i.id))
+                                              : [...current, String(i.id)];
+                                            handleFieldChange("electrical_works", newValues);
+                                          }}
+                                        />
+                                        <span>{i.name}</span>
+                                      </label>
+                                    );
+                                  })}
+                                </div>
                               </div>
-                              <div style={{ display: "flex", flexDirection: "column", gap: "12px", paddingLeft: "8px" }}>
-                                {g.items.map((i) => {
-                                  const isChecked = (formData.electrical_works || []).includes(String(i.id));
-                                  return (
-                                    <label key={i.id} className="custom-checkbox-label" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                      <input
-                                        type="checkbox"
-                                        className="custom-checkbox-input"
-                                        checked={isChecked}
-                                        onChange={() => {
-                                          const current = formData.electrical_works || [];
-                                          const newValues = isChecked
-                                            ? current.filter(val => val !== String(i.id))
-                                            : [...current, String(i.id)];
-                                          handleFieldChange("electrical_works", newValues);
-                                        }}
-                                      />
-                                      <span>{i.name}</span>
-                                    </label>
-                                  );
-                                })}
-                              </div>
+                            ))
+                          ) : (
+                            <div style={{ padding: "12px 0", color: "#9ca3af", fontSize: "13px", textAlign: "center" }}>
+                              No electrical works found
                             </div>
-                          ))}
+                          )}
                         </div>
                       )}
                     </div>
@@ -2793,7 +2799,7 @@ function NewRequest() {
                     </div>
                     {fieldErrors.mechanical_works && <span className="field-error">{fieldErrors.mechanical_works}</span>}
 
-                    {isMechanicalDropdownOpen && mechanicalWorksOptions.length > 0 && (
+                    {isMechanicalDropdownOpen && (
                       <div className="zone-rooms-dropdown" style={{ background: "var(--bg-card)", border: "1px solid var(--border-color)", borderRadius: "8px", padding: "16px", marginTop: "8px", boxShadow: "var(--shadow-md)", position: "absolute", top: "100%", left: 0, width: "100%", zIndex: 100, maxHeight: "300px", overflowY: "auto" }}>
                         <div style={{ marginBottom: "12px", position: "sticky", top: 0, zIndex: 10, background: "var(--bg-card)" }}>
                           <input
@@ -2811,28 +2817,34 @@ function NewRequest() {
                             </div>
                           )}
                         </div>
-                        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                          {mechanicalWorksOptions.map((m) => {
-                            const isChecked = (formData.mechanical_works || []).includes(String(m.id));
-                            return (
-                              <label key={m.id} className="custom-checkbox-label" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                <input
-                                  type="checkbox"
-                                  className="custom-checkbox-input"
-                                  checked={isChecked}
-                                  onChange={() => {
-                                    const current = formData.mechanical_works || [];
-                                    const newValues = isChecked
-                                      ? current.filter(val => val !== String(m.id))
-                                      : [...current, String(m.id)];
-                                    handleFieldChange("mechanical_works", newValues);
-                                  }}
-                                />
-                                <span>{m.name}</span>
-                              </label>
-                            );
-                          })}
-                        </div>
+                        {mechanicalWorksOptions.length > 0 ? (
+                          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                            {mechanicalWorksOptions.map((m) => {
+                              const isChecked = (formData.mechanical_works || []).includes(String(m.id));
+                              return (
+                                <label key={m.id} className="custom-checkbox-label" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                  <input
+                                    type="checkbox"
+                                    className="custom-checkbox-input"
+                                    checked={isChecked}
+                                    onChange={() => {
+                                      const current = formData.mechanical_works || [];
+                                      const newValues = isChecked
+                                        ? current.filter(val => val !== String(m.id))
+                                        : [...current, String(m.id)];
+                                      handleFieldChange("mechanical_works", newValues);
+                                    }}
+                                  />
+                                  <span>{m.name}</span>
+                                </label>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <div style={{ padding: "12px 0", color: "#9ca3af", fontSize: "13px", textAlign: "center" }}>
+                            No mechanical works found
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>

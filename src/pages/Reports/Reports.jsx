@@ -1604,38 +1604,7 @@ const Reports = () => {
               />
             </div>
 
-            {/* Row 2: Year | Week */}
-            <div className="df-field">
-              <label className="df-label">Year</label>
-              <select
-                className="df-select"
-                disabled={filters.reportType === "1"}
-                value={filters.year}
-                onChange={(e) => handleYearChange(e.target.value)}
-              >
-                <option value="">Select Year</option>
-                {YEARS.map(y => (
-                  <option key={y} value={y}>{y}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="df-field">
-              <label className="df-label">Week</label>
-              <select
-                className="df-select"
-                disabled={filters.reportType === "1" || !filters.year}
-                value={filters.weekno}
-                onChange={(e) => handleChange("weekno", e.target.value)}
-              >
-                <option value="">Select Week</option>
-                {weeksList.map((wk, idx) => (
-                  <option key={idx} value={wk}>{wk}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Row 3: Working Date range (From) | Working Date range (To) */}
+            {/* Row 1: Working Date range (From) | Working Date range (To) */}
             <div className="df-field">
               <label className="df-label">Working Date range (From)</label>
               <input
@@ -1658,7 +1627,7 @@ const Reports = () => {
               />
             </div>
 
-            {/* Row 4: Building | Level / Floor */}
+            {/* Row 2: Building | Level / Floor */}
             <div className="df-field">
               <label className="df-label">Building</label>
               <MultiSelectDropdown
@@ -1683,7 +1652,7 @@ const Reports = () => {
               />
             </div>
 
-            {/* Row 5: Zones | Rooms */}
+            {/* Row 3: Zones | Rooms */}
             <div className="df-field">
               <label className="df-label">Zones</label>
               <MultiSelectDropdown
@@ -1704,7 +1673,7 @@ const Reports = () => {
               />
             </div>
 
-            {/* Row 6: Contractor | Permit Status */}
+            {/* Row 4: Contractor | Permit Status */}
             <div className="df-field">
               <label className="df-label">Contractor</label>
               {isSubcontractor ? (
@@ -1735,33 +1704,7 @@ const Reports = () => {
               />
             </div>
 
-            {/* Row 7: Type of activity | Keyword (Activity) */}
-            <div className="df-field">
-              <label className="df-label">Type of activity</label>
-              <select
-                className="df-select"
-                value={filters.typeOfActivityId}
-                onChange={(e) => handleChange("typeOfActivityId", e.target.value)}
-              >
-                <option value="">All Activities</option>
-                {activitiesList.map(act => (
-                  <option key={act.id} value={act.id}>{act.activityName}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="df-field">
-              <label className="df-label">Keyword (Activity)</label>
-              <input
-                type="text"
-                className="df-input"
-                placeholder="e.g. Piping, welding..."
-                value={filters.keyword}
-                onChange={(e) => handleChange("keyword", e.target.value)}
-              />
-            </div>
-
-            {/* Row 8: Start Time | End Time | Night Shift */}
+            {/* Row 5: Start Time | End Time | Night Shift */}
             <div className="df-field--full time-nightshift-grid">
               <div className="df-field">
                 <label className="df-label">Start Time</label>
@@ -1951,7 +1894,7 @@ const Reports = () => {
               </>
             )}
 
-            {/* Row 9: Permit Under | Permit Type */}
+            {/* Row 6: Permit Under | Permit Type */}
             <div className="df-field">
               <label className="df-label">Permit Under</label>
               <select

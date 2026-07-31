@@ -80,11 +80,16 @@ function FloorDrawing({
           </div>
         </div>
 
-        {/* ── Right Panel: Zones Directory (unchanged) ── */}
+        {/* ── Right Panel: Zones Directory ── */}
         <div className="floor-drawing-sidebar-card">
           <div className="floor-sidebar-header">
-            <h4>Zones Directory</h4>
-            <p>Select a zone to allocate work rooms</p>
+            <h4 style={{ margin: 0, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span>Zones Directory</span>
+              <span className="zone-count-badge" style={{ fontSize: "11px", fontWeight: 600, padding: "2px 8px", borderRadius: "12px", background: "rgba(59, 130, 246, 0.15)", color: "#60a5fa", border: "1px solid rgba(59, 130, 246, 0.3)" }}>
+                {zones.length} {zones.length === 1 ? "Zone" : "Zones"}
+              </span>
+            </h4>
+            <p style={{ margin: "4px 0 0 0" }}>Select a zone to allocate work rooms</p>
           </div>
 
           <div className="zones-list-container">

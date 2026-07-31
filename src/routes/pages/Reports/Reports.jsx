@@ -1735,33 +1735,7 @@ const Reports = () => {
               />
             </div>
 
-            {/* Row 7: Type of activity | Keyword (Activity) */}
-            <div className="df-field">
-              <label className="df-label">Type of activity</label>
-              <select
-                className="df-select"
-                value={filters.typeOfActivityId}
-                onChange={(e) => handleChange("typeOfActivityId", e.target.value)}
-              >
-                <option value="">All Activities</option>
-                {activitiesList.map(act => (
-                  <option key={act.id} value={act.id}>{act.activityName}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="df-field">
-              <label className="df-label">Keyword (Activity)</label>
-              <input
-                type="text"
-                className="df-input"
-                placeholder="e.g. Piping, welding..."
-                value={filters.keyword}
-                onChange={(e) => handleChange("keyword", e.target.value)}
-              />
-            </div>
-
-            {/* Row 8: Start Time | End Time | Night Shift */}
+            {/* Row 7: Start Time | End Time | Night Shift */}
             <div className="df-field--full time-nightshift-grid">
               <div className="df-field">
                 <label className="df-label">Start Time</label>
@@ -1951,7 +1925,7 @@ const Reports = () => {
               </>
             )}
 
-            {/* Row 9: Permit Under | Permit Type */}
+            {/* Row 8: Permit Under | Permit Type */}
             <div className="df-field">
               <label className="df-label">Permit Under</label>
               <select
