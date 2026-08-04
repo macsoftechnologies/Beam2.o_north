@@ -937,7 +937,7 @@ function NewRequest() {
           matchedNames = editRoomParts;
         }
 
-        setSelectedRooms(matchedNames);
+        setSelectedRooms(Array.from(new Set(matchedNames)));
 
         // Auto-set selectedZone by matching zone_name from the fetched request
         // against the zone entries for the selected level in ZONE_MAPPING
@@ -1366,11 +1366,7 @@ function NewRequest() {
   }, [roomsList, zonesList]);
 
   const handleRoomsSelected = (rooms, zone) => {
-    const zoneRoomNames = zone.rooms.map(r => typeof r === "object" ? r.name : r);
-    setSelectedRooms(prev => {
-      const filtered = prev.filter(r => !zoneRoomNames.includes(r));
-      return [...filtered, ...rooms];
-    });
+    setSelectedRooms(Array.from(new Set(rooms)));
     setSelectedZone(zone);
   };
 
@@ -2158,11 +2154,12 @@ function NewRequest() {
   };
 
   const toggleRoomSelection = (roomName) => {
-    setSelectedRooms(prev =>
-      prev.includes(roomName)
+    setSelectedRooms(prev => {
+      const updated = prev.includes(roomName)
         ? prev.filter(r => r !== roomName)
-        : [...prev, roomName]
-    );
+        : [...prev, roomName];
+      return Array.from(new Set(updated));
+    });
   };
 
   if (isnewrequestcreated) {

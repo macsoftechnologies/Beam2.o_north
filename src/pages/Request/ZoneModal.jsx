@@ -223,7 +223,13 @@ function ZoneModal({
               cursor: "pointer",
             }}
           >
-            Rooms Checklist ({selectedRooms.length})
+          {(() => {
+            const selectedRoomsInZoneCount = (zone?.rooms || []).filter((r) => {
+              const name = typeof r === "object" ? r.name : r;
+              return selectedRooms.includes(name);
+            }).length;
+            return `Rooms Checklist (${selectedRoomsInZoneCount})`;
+          })()}
           </button>
         </div>
 

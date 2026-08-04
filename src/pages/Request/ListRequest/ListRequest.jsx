@@ -1800,10 +1800,6 @@ const ListRequest = () => {
   // Copy permit request to range
   const handleCopyTrigger = (row) => {
     setModalTarget(row);
-    // Default the from/to date to the next calendar day after the permit's working date
-    const workingDate = row.Working_Date ? new Date(row.Working_Date) : new Date();
-    workingDate.setDate(workingDate.getDate() + 1);
-    const nextDateStr = workingDate.toISOString().split("T")[0];
     const isNight = row.night_shift === 1 || row.night_shift === true;
     const formatTimeHHMM = (t) => {
       if (!t) return "";
@@ -1811,8 +1807,8 @@ const ListRequest = () => {
       return str.length >= 5 ? str.substring(0, 5) : str;
     };
     setCopyDates({
-      from: nextDateStr,
-      to: nextDateStr,
+      from: "",
+      to: "",
       startTime: formatTimeHHMM(row.Start_Time || row.start_time),
       endTime: formatTimeHHMM(row.End_Time || row.end_time),
       nightShift: isNight,
