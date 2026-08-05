@@ -230,9 +230,14 @@ const trimLongValue = (value) => {
 // Helper to resolve zone name from building, floor/level, and rooms data
 const resolveZoneNameFromRooms = (row) => {
   // 1. If the request already has a valid zone name from the database, use it
-  const dbZoneName = (row.zone && typeof row.zone === "object")
-    ? row.zone.zone
-    : (row.zone || "");
+  let dbZoneName = "";
+  if (typeof row.zone_name === "string" && row.zone_name.trim().length > 0 && row.zone_name !== "—") {
+    dbZoneName = row.zone_name.trim();
+  } else if (typeof row.zone === "string" && row.zone.trim().length > 0 && row.zone !== "—") {
+    dbZoneName = row.zone.trim();
+  } else if (row.zone && typeof row.zone === "object" && typeof row.zone.zone === "string") {
+    dbZoneName = row.zone.zone;
+  }
   if (dbZoneName && dbZoneName !== "—") {
     return dbZoneName;
   }
@@ -1930,7 +1935,7 @@ const ListRequest = () => {
   // Copy permit request to range
   const handleCopyTrigger = (row) => {
     setModalTarget(row);
-    const isNight = row.night_shift === 1 || row.night_shift === true;
+    const isNight = row.night_shift === 1 || row.night_shift === true || row.night_shift === "1";
     const formatTimeHHMM = (t) => {
       if (!t) return "";
       const str = String(t).trim();
@@ -1940,7 +1945,7 @@ const ListRequest = () => {
       from: "",
       to: "",
       startTime: formatTimeHHMM(row.Start_Time || row.start_time),
-      endTime: formatTimeHHMM(row.End_Time || row.end_time),
+      endTime: isNight ? "23:59" : formatTimeHHMM(row.End_Time || row.end_time),
       nightShift: isNight,
       newEndTime: formatTimeHHMM(row.New_End_Time || row.new_end_time)
     });
@@ -3840,9 +3845,11 @@ const ListRequest = () => {
                     checked={copyDates.nightShift}
                     onChange={(e) => {
                       const checked = e.target.checked;
+                      const origEndTime = modalTarget ? (modalTarget.End_Time || modalTarget.end_time || "").slice(0, 5) : "";
                       setCopyDates(p => ({
                         ...p,
                         nightShift: checked,
+                        endTime: checked ? "23:59" : (origEndTime || p.endTime),
                         newEndTime: checked ? p.newEndTime : ""
                       }));
                     }}
