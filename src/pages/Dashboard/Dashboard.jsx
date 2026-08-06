@@ -222,8 +222,15 @@ function Dashboard() {
   const navigate = useNavigate();
   const user = localStorage.getItem("user");
   const parsedUser = user ? JSON.parse(user) : null;
-  const userRole = localStorage.getItem("UserType") || parsedUser?.role || parsedUser?.userType || "";
-  const isContractor = String(userRole).toLowerCase() === 'subcontractor';
+  const rawRole = (localStorage.getItem("UserType") || parsedUser?.role || parsedUser?.userType || parsedUser?.user_type || "").toLowerCase();
+  const userTypesArr = Array.isArray(parsedUser?.userTypes)
+    ? parsedUser.userTypes.map(t => String(t).toLowerCase())
+    : (Array.isArray(parsedUser?.userType) ? parsedUser.userType.map(t => String(t).toLowerCase()) : [rawRole]);
+
+  const isObserver = rawRole.includes("observer") || userTypesArr.some(t => t.includes("observer"));
+  const isDepartment = rawRole.includes("department") || userTypesArr.some(t => t.includes("department"));
+  const isContractor = rawRole.includes("subcontractor") || rawRole.includes("contractor") || userTypesArr.some(t => t.includes("subcontractor") || t.includes("contractor"));
+  const isDepartmentOrContractor = isDepartment || isContractor;
 
   const barChartRef = useRef(null)
   const donutChartRef = useRef(null)
@@ -759,17 +766,23 @@ function Dashboard() {
     <div>
 
       {/* ── QUICK ACTIONS ── */}
-      <div className="dash-actions">
-        <button className="btn-action-primary" onClick={handleAdd}>
-          <Icons.Plus /> New Request
-        </button>
-        <button className="btn-action-outline" onClick={handleUpdate}>
-          <Icons.PersonPlus /> New Employee
-        </button>
-        <button className="btn-action-outline" onClick={handleDelete}>
-          <Icons.Briefcase /> New Contractor
-        </button>
-      </div>
+      {!isObserver && (
+        <div className="dash-actions">
+          <button className="btn-action-primary" onClick={handleAdd}>
+            <Icons.Plus /> New Request
+          </button>
+          {!isDepartmentOrContractor && (
+            <>
+              <button className="btn-action-outline" onClick={handleUpdate}>
+                <Icons.PersonPlus /> New Employee
+              </button>
+              <button className="btn-action-outline" onClick={handleDelete}>
+                <Icons.Briefcase /> New Contractor
+              </button>
+            </>
+          )}
+        </div>
+      )}
 
       {/* ── STAT CARDS ── */}
       <div className="stat-cards-row">

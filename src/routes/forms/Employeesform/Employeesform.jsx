@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { getContractors, getDepartments, getRoles } from "../../services/authService";
+import { showError } from "../../components/common/Toast/Toast";
 import "../../forms/styles/forms.css";
 
 // ─── Employee Type options ───────────────────────────────────────────────────
@@ -91,7 +92,7 @@ function Employeesform({ onClose, initialData, isEdit, onSubmit }) {
       setAccess(initialData.access !== undefined ? (initialData.access === 1 || initialData.access === "1" || initialData.access === true) : true);
       setEmail(initialData.email || "");
       setUsername(initialData.username || "");
-      setPassword(initialData.password || "");
+      setPassword(""); // Leave blank in edit mode to avoid corrupting existing password
     }
   }, [initialData, isEdit]);
 
@@ -155,6 +156,37 @@ function Employeesform({ onClose, initialData, isEdit, onSubmit }) {
   // ── Submit ────────────────────────────────────────────────────────────────
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!employeeTypes || employeeTypes.length === 0 || !employeeTypes.join(",").trim()) {
+      showError("Please select at least one Employee Type");
+      return;
+    }
+
+    if ((employeeTypes.includes("Department") || employeeTypes.includes("Department1")) && !departId) {
+      showError("Please select a Department");
+      return;
+    }
+
+    if (employeeTypes.includes("Subcontractor") && !subContId) {
+      showError("Please select a Contractor");
+      return;
+    }
+
+    if (employeeTypes.includes("Observer") && !obserId) {
+      showError("Please select a Department for Observer");
+      return;
+    }
+
+    if (access) {
+      if (!username || !username.trim()) {
+        showError("UserName is required when Access is ON");
+        return;
+      }
+      if (!isEdit && (!password || !password.trim())) {
+        showError("Password is required when Access is ON");
+        return;
+      }
+    }
 
     const payload = {
       badgeId: employeeBadgeId,
@@ -510,8 +542,8 @@ function Employeesform({ onClose, initialData, isEdit, onSubmit }) {
                 className="df-input"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-                required
+                placeholder={isEdit ? "Leave blank to keep unchanged" : "Password"}
+                required={!isEdit}
               />
             </div>
           </>

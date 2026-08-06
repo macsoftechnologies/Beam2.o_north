@@ -520,6 +520,7 @@ function NewRequest() {
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [showNewEndPicker, setShowNewEndPicker] = useState(false);
   const [showRamsHoldModal, setShowRamsHoldModal] = useState(false);
+  const [isSubmittingPermit, setIsSubmittingPermit] = useState(false);
   const [tempStartTime, setTempStartTime] = useState("");
   const [tempEndTime, setTempEndTime] = useState("");
   const [tempNewEndTime, setTempNewEndTime] = useState("");
@@ -2117,6 +2118,7 @@ function NewRequest() {
       });
     }
 
+    setIsSubmittingPermit(true);
     try {
       if (isEditMode) {
         // Submit update request
@@ -2158,6 +2160,8 @@ function NewRequest() {
       console.error(err);
       const errMsg = err.response?.data?.message || err.message || "Operation failed. Please try again.";
       showError(errMsg);
+    } finally {
+      setIsSubmittingPermit(false);
     }
   };
 
@@ -2344,6 +2348,79 @@ function NewRequest() {
               {fieldErrors.description_of_activity && <span className="field-error">{fieldErrors.description_of_activity}</span>}
             </div>
           </div>
+
+          {/* Attachments Section */}
+          <div className="form-card">
+            <h2 className="form-card-title">Attachments</h2>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "24px", alignItems: "start" }}>
+              <div>
+                <button
+                  type="button"
+                  className="logo-btn-sty"
+                  onClick={triggerFileInput}
+                >
+                  Add Files
+                </button>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  style={{ display: "none" }}
+                  multiple
+                />
+              </div>
+              <div className="file-list-container">
+                {isEditMode ? (
+                  existingFiles.map((file, idx) => (
+                    <div key={file.id || idx} className="file-item">
+                      <a
+                        href={getFileUrl(file)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: "#3b82f6", textDecoration: "underline", cursor: "pointer", fontWeight: 500 }}
+                      >
+                        {file.name || "Attachment"}
+                      </a>
+                      <button
+                        type="button"
+                        className="file-remove-btn"
+                        onClick={() => handleRemoveFile(idx, file.id)}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))
+                ) : (
+                  uploadedFiles.map((file, idx) => (
+                    <div key={idx} className="file-item">
+                      <a
+                        href={file instanceof File ? URL.createObjectURL(file) : "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: "#3b82f6", textDecoration: "underline", cursor: "pointer", fontWeight: 500 }}
+                      >
+                        {file.name}
+                      </a>
+                      <button
+                        type="button"
+                        className="file-remove-btn"
+                        onClick={() => handleRemoveFile(idx)}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))
+                )}
+                {isEditMode && existingFiles.length === 0 && (
+                  <span style={{ color: "#9ca3af", fontStyle: "italic", fontSize: "13px" }}>No files uploaded yet.</span>
+                )}
+                {!isEditMode && uploadedFiles.length === 0 && (
+                  <span style={{ color: "#9ca3af", fontStyle: "italic", fontSize: "13px" }}>No files uploaded yet.</span>
+                )}
+              </div>
+            </div>
+          </div>
+
           {/* Schedule Section */}
           <div className="form-card">
             <h2 className="form-card-title">Schedule & Location</h2>
@@ -2591,78 +2668,6 @@ function NewRequest() {
                   onChange={(e) => handleFieldChange("Machinery", e.target.value)}
                 />
                 {fieldErrors.Machinery && <span className="field-error">{fieldErrors.Machinery}</span>}
-              </div>
-            </div>
-          </div>
-
-          {/* Attachments Section */}
-          <div className="form-card">
-            <h2 className="form-card-title">Attachments</h2>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "24px", alignItems: "start" }}>
-              <div>
-                <button
-                  type="button"
-                  className="logo-btn-sty"
-                  onClick={triggerFileInput}
-                >
-                  Add Files
-                </button>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
-                  style={{ display: "none" }}
-                  multiple
-                />
-              </div>
-              <div className="file-list-container">
-                {isEditMode ? (
-                  existingFiles.map((file, idx) => (
-                    <div key={file.id || idx} className="file-item">
-                      <a
-                        href={getFileUrl(file)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ color: "#3b82f6", textDecoration: "underline", cursor: "pointer", fontWeight: 500 }}
-                      >
-                        {file.name || "Attachment"}
-                      </a>
-                      <button
-                        type="button"
-                        className="file-remove-btn"
-                        onClick={() => handleRemoveFile(idx, file.id)}
-                      >
-                        ×
-                      </button>
-                    </div>
-                  ))
-                ) : (
-                  uploadedFiles.map((file, idx) => (
-                    <div key={idx} className="file-item">
-                      <a
-                        href={file instanceof File ? URL.createObjectURL(file) : "#"}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ color: "#3b82f6", textDecoration: "underline", cursor: "pointer", fontWeight: 500 }}
-                      >
-                        {file.name}
-                      </a>
-                      <button
-                        type="button"
-                        className="file-remove-btn"
-                        onClick={() => handleRemoveFile(idx)}
-                      >
-                        ×
-                      </button>
-                    </div>
-                  ))
-                )}
-                {isEditMode && existingFiles.length === 0 && (
-                  <span style={{ color: "#9ca3af", fontStyle: "italic", fontSize: "13px" }}>No files uploaded yet.</span>
-                )}
-                {!isEditMode && uploadedFiles.length === 0 && (
-                  <span style={{ color: "#9ca3af", fontStyle: "italic", fontSize: "13px" }}>No files uploaded yet.</span>
-                )}
               </div>
             </div>
           </div>
@@ -4811,6 +4816,47 @@ function NewRequest() {
             </div>
           </div>
         </Modal>
+
+        {/* Fullscreen Overlay Loader when submitting permit */}
+        {isSubmittingPermit && (
+          <div style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(15, 23, 42, 0.85)",
+            backdropFilter: "blur(8px)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 999999,
+            color: "#ffffff"
+          }}>
+            <div style={{
+              width: "56px",
+              height: "56px",
+              border: "4px solid rgba(0, 229, 160, 0.2)",
+              borderTop: "4px solid #00e5a0",
+              borderRadius: "50%",
+              animation: "spin 0.8s linear infinite",
+              marginBottom: "20px"
+            }} />
+            <style>{`
+              @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+              }
+            `}</style>
+            <h3 style={{ fontSize: "20px", fontWeight: "600", marginBottom: "8px", color: "#f9fafb" }}>
+              {isEditMode ? "Updating Work Permit Request..." : "Creating Work Permit Request..."}
+            </h3>
+            <p style={{ fontSize: "14px", color: "#9ca3af" }}>
+              Please wait while the permit request is being processed...
+            </p>
+          </div>
+        )}
       </div>
 
     );
@@ -4903,6 +4949,47 @@ function NewRequest() {
               </button>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Fullscreen Overlay Loader when submitting permit */}
+      {isSubmittingPermit && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(15, 23, 42, 0.85)",
+          backdropFilter: "blur(8px)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 999999,
+          color: "#ffffff"
+        }}>
+          <div style={{
+            width: "56px",
+            height: "56px",
+            border: "4px solid rgba(0, 229, 160, 0.2)",
+            borderTop: "4px solid #00e5a0",
+            borderRadius: "50%",
+            animation: "spin 0.8s linear infinite",
+            marginBottom: "20px"
+          }} />
+          <style>{`
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          `}</style>
+          <h3 style={{ fontSize: "20px", fontWeight: "600", marginBottom: "8px", color: "#f9fafb" }}>
+            {isEditMode ? "Updating Work Permit Request..." : "Creating Work Permit Request..."}
+          </h3>
+          <p style={{ fontSize: "14px", color: "#9ca3af" }}>
+            Please wait while the permit request is being processed...
+          </p>
         </div>
       )}
     </div>
