@@ -104,34 +104,11 @@ const Buildings = () => {
     { header: "S.No", accessor: "serial" },
     { header: "Building Name", accessor: "building_name" },
     { header: "Status", accessor: "building_status" },
-    { header: "Actions", accessor: "actions" },
   ];
-
-  const isAuthorized = ["superadmin", "admin"].includes(String(userRole).toLowerCase());
 
   const tableData = buildingList.map((item, index) => ({
     ...item,
     serial: startIndex + index + 1,
-    actions: (
-      <div className="dept-action-btns">
-        <button
-          className="dept-action-btn dept-action-btn--edit"
-          title="Edit"
-          onClick={() => handleEdit(item, index)}
-        >
-          <FaEdit />
-        </button>
-        {isAuthorized && (
-          <button
-            className="dept-action-btn dept-action-btn--delete"
-            title="Delete"
-            onClick={() => handleDelete(item)}
-          >
-            <FaTrash />
-          </button>
-        )}
-      </div>
-    ),
   }));
 
   // ─── Render ───────────────────────────────────────────────────────────────

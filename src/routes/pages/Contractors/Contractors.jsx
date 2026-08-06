@@ -175,7 +175,11 @@ const Contractors = () => {
     try {
       await deleteContractor(item.id);
       showDeleteSuccess();
-      fetchContractors(currentPage, searchTerm);
+      const newPage = contractorList.length === 1 && currentPage > 1
+        ? currentPage - 1
+        : currentPage;
+      setCurrentPage(newPage);
+      fetchContractors(newPage, appliedSearch);
     } catch {
       showError("Failed to delete contractor");
     }

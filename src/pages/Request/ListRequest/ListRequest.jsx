@@ -2147,17 +2147,8 @@ const ListRequest = () => {
       })();
 
       const isDeletable = (() => {
-        if (isAdmin || isMultiDept) return true;
-
-        if (isDept) {
-          const eitherIsConstruction = String(row.permit_under).toLowerCase() === "construction" ||
-            String(row.permit_type).toLowerCase() === "construction";
-          return eitherIsConstruction;
-        }
-
-        if (isDept1) {
-          return isDept1Commissioning;
-        }
+        if (isDept || isDept1 || isMultiDept) return false;
+        if (isAdmin) return true;
 
         return false;
       })();

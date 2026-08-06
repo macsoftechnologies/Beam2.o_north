@@ -93,6 +93,7 @@ function ZoneForm({ onClose, initialData, isEdit, onSubmit }) {
             value={building}
             onChange={handleBuildingChange}
             required
+            disabled={isEdit}
           >
             <option value="">Select Building</option>
             {buildingsList.map((b) => (
@@ -111,7 +112,7 @@ function ZoneForm({ onClose, initialData, isEdit, onSubmit }) {
             value={level}
             onChange={(e) => setLevel(e.target.value)}
             required
-            disabled={!building}
+            disabled={isEdit || !building}
           >
             <option value="">Select Level</option>
             {filteredFloorsList.map((l) => (
@@ -132,6 +133,7 @@ function ZoneForm({ onClose, initialData, isEdit, onSubmit }) {
             onChange={(e) => setZone(e.target.value)}
             placeholder="e.g. Restricted Lab B"
             required
+            disabled={isEdit}
           />
         </div>
 
@@ -159,7 +161,7 @@ function ZoneForm({ onClose, initialData, isEdit, onSubmit }) {
         <button type="button" className="df-btn df-btn--cancel" onClick={onClose}>
           Cancel
         </button>
-        <button type="submit" className="df-btn df-btn--submit" disabled={!building || !level || !zone.trim()}>
+        <button type="submit" className="df-btn df-btn--submit" disabled={!building || (!level && !isEdit) || !zone.trim()}>
           {isEdit ? "Update Zone" : "Add Zone"}
         </button>
       </div>

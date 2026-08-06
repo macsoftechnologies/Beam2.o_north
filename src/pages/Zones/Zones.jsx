@@ -228,8 +228,6 @@ const Zones = () => {
     { header: "Actions", accessor: "actions" },
   ];
 
-  const isAuthorized = ["superadmin", "admin"].includes(String(userRole).toLowerCase());
-
   const tableData = zoneList.map((item, index) => ({
     ...item,
     serial: startIndex + index + 1,
@@ -244,15 +242,6 @@ const Zones = () => {
         >
           <FaEdit />
         </button>
-        {isAuthorized && (
-          <button
-            className="dept-action-btn dept-action-btn--delete"
-            title="Delete"
-            onClick={() => handleDelete(item)}
-          >
-            <FaTrash />
-          </button>
-        )}
       </div>
     ),
   }));
@@ -273,13 +262,6 @@ const Zones = () => {
           <span className="dept-count-badge">
             {totalCount || zoneList.length} Total
           </span>
-          <button
-            className="dept-add-btn"
-            onClick={() => { setSelectedZone(null); setOpen(true); }}
-          >
-            <span className="dept-add-btn__icon">＋</span>
-            Add Zone
-          </button>
         </div>
       </div>
 

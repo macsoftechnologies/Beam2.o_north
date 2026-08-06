@@ -233,7 +233,6 @@ const OperatoriconMenu = [
         state: "",
         sub: [
             { name: "Operations Dashboard", state: "user/dashboard" },
-            { name: "Executive Dashboard", state: "user/executive-dashboard" },
         ],
     },
     {
@@ -272,7 +271,6 @@ const Operator1iconMenu = [
         state: "",
         sub: [
             { name: "Operations Dashboard", state: "user/dashboard" },
-            { name: "Executive Dashboard", state: "user/executive-dashboard" },
         ],
     },
     {

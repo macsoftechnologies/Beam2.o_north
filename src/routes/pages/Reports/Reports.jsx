@@ -394,7 +394,8 @@ import ElectricalWorksLogo from "../../assets/images/logos/electrical_works.png"
 import MechanicalWorksLogo from "../../assets/images/logos/mechanical1.png";
 
 // ─── Static options ───────────────────────────────────────────────────────────
-const YEARS = [2024, 2025, 2026, 2027, 2028, 2029];
+const CURRENT_YEAR = new Date().getFullYear();
+const YEARS = Array.from({ length: 11 }, (_, i) => String(CURRENT_YEAR - 5 + i));
 
 const STATUS_OPTIONS = [
   "Draft",
@@ -1602,6 +1603,37 @@ const Reports = () => {
                 value={filters.date}
                 onChange={(e) => handleChange("date", e.target.value)}
               />
+            </div>
+
+            {/* Row 2: Year | Week */}
+            <div className="df-field">
+              <label className="df-label">Year</label>
+              <select
+                className="df-select"
+                disabled={filters.reportType === "1"}
+                value={filters.year}
+                onChange={(e) => handleYearChange(e.target.value)}
+              >
+                <option value="">Select Year</option>
+                {YEARS.map(y => (
+                  <option key={y} value={y}>{y}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="df-field">
+              <label className="df-label">Week</label>
+              <select
+                className="df-select"
+                disabled={filters.reportType === "1" || !filters.year}
+                value={filters.weekno}
+                onChange={(e) => handleChange("weekno", e.target.value)}
+              >
+                <option value="">Select Week</option>
+                {weeksList.map((wk, idx) => (
+                  <option key={idx} value={wk}>{wk}</option>
+                ))}
+              </select>
             </div>
 
             {/* Row 2: Year | Week */}

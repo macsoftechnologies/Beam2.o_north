@@ -155,7 +155,6 @@ const Rooms = () => {
     { header: "Floor / Level", accessor: "floorName" },
     { header: "Zone Name", accessor: "zoneName" },
     { header: "Room Name", accessor: "room_name" },
-    { header: "Actions", accessor: "actions" },
   ];
 
   const tableData = roomList.map((item, index) => {
@@ -164,33 +163,12 @@ const Rooms = () => {
     const buildingName = item.building_id ? (buildingMap[item.building_id] || "—") : (flObj ? (buildingMap[flObj.build_id] || "—") : "—");
     const zoneName = zoneMap[item.zone_id] || "—";
 
-    const isAuthorized = ["superadmin", "admin"].includes(String(userRole).toLowerCase());
     return {
       ...item,
       serial: startIndex + index + 1,
       floorName,
       buildingName,
       zoneName,
-      actions: (
-        <div className="dept-action-btns">
-          <button
-            className="dept-action-btn dept-action-btn--edit"
-            title="Edit"
-            onClick={() => handleEdit(item, index)}
-          >
-            <FaEdit />
-          </button>
-          {isAuthorized && (
-            <button
-              className="dept-action-btn dept-action-btn--delete"
-              title="Delete"
-              onClick={() => handleDelete(item)}
-            >
-              <FaTrash />
-            </button>
-          )}
-        </div>
-      ),
     };
   });
 
@@ -210,13 +188,6 @@ const Rooms = () => {
           <span className="dept-count-badge">
             {totalCount || roomList.length} Total
           </span>
-          <button
-            className="dept-add-btn"
-            onClick={() => { setSelectedRoom(null); setOpen(true); }}
-          >
-            <span className="dept-add-btn__icon">＋</span>
-            Add Room
-          </button>
         </div>
       </div>
 
