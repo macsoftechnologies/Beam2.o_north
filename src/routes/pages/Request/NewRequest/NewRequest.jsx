@@ -790,7 +790,7 @@ function NewRequest() {
           getBuildings(1, 1000),
           getFloors(1, 1000),
           getZones(1, 1000),
-          getRooms(1, 1000),
+          getRooms(1, 20000),
           getPrecautions(1, 1000)
         ]);
 
@@ -1695,35 +1695,45 @@ function NewRequest() {
     }
 
     // Find Room IDs — multi-strategy matching
-    const selectedRoomsLower = selectedRooms.map(n => n.toLowerCase().trim());
-    let matchedRoomIds = [];
-    if (selectedRoomsLower.length > 0) {
-      matchedRoomIds = selectedRooms.map(roomName => {
-        const roomNameLower = roomName.toLowerCase().trim();
-        // 1. Try matching with building + floor
+    let Room_Nos = "";
+    if (selectedRooms.length > 0) {
+      const getRoomNameStr = (r) => String(r.room_name || r.room_nos || r.room_number || r.roomName || r.name || "").toLowerCase().trim();
+      const resolvedTokens = selectedRooms.map(roomItem => {
+        if (!roomItem) return null;
+        if (typeof roomItem === "object") {
+          const directId = roomItem.room_id ?? roomItem.id;
+          if (directId) return String(directId);
+          roomItem = roomItem.room_name || roomItem.name || roomItem.room_nos || "";
+        }
+        const roomStr = String(roomItem).trim();
+        if (/^\d+$/.test(roomStr)) {
+          return roomStr;
+        }
+        const roomNameLower = roomStr.toLowerCase();
         let matched = roomsList.find(r =>
-          (r.room_name || "").toLowerCase().trim() === roomNameLower &&
-          (Floor_Id ? String(r.fl_id) === String(Floor_Id) : true) &&
+          getRoomNameStr(r) === roomNameLower &&
+          (Floor_Id ? String(r.fl_id || r.floor_id) === String(Floor_Id) : true) &&
           (Building_Id ? String(r.building_id) === String(Building_Id) : true)
         );
-        // 2. Try matching with building
         if (!matched) {
           matched = roomsList.find(r =>
-            (r.room_name || "").toLowerCase().trim() === roomNameLower &&
+            getRoomNameStr(r) === roomNameLower &&
             (Building_Id ? String(r.building_id) === String(Building_Id) : true)
           );
         }
-        // 3. Match by name alone
         if (!matched) {
-          matched = roomsList.find(r =>
-            (r.room_name || "").toLowerCase().trim() === roomNameLower
-          );
+          matched = roomsList.find(r => getRoomNameStr(r) === roomNameLower);
         }
-        return matched ? (matched.room_id ?? matched.id) : null;
-      }).filter(id => id !== null && id !== undefined);
+        if (!matched) {
+          const cleanLower = roomNameLower.replace(/[^a-z0-9]/g, "");
+          matched = roomsList.find(r => getRoomNameStr(r).replace(/[^a-z0-9]/g, "") === cleanLower);
+        }
+        return matched ? String(matched.room_id ?? matched.id) : roomStr;
+      }).filter(Boolean);
+
+      Room_Nos = [...new Set(resolvedTokens)].join(",");
     }
 
-    let Room_Nos = [...new Set(matchedRoomIds)].join(",");
     if (!Room_Nos && isEditMode && editRequest?.Room_Nos) {
       Room_Nos = String(editRequest.Room_Nos);
     }
@@ -1830,13 +1840,11 @@ function NewRequest() {
       return;
     }
 
-    // Debug log — remove after confirming Room_Nos works correctly
     console.log("[Room_Nos Debug]", {
       selectedRooms,
       Floor_Id,
       matchedZoneIds,
       roomsList: roomsList.slice(0, 5),
-      matchedRoomIds,
       Room_Nos,
     });
 
