@@ -370,6 +370,21 @@ function Dashboard() {
     const textColor = computedStyle.getPropertyValue('--text-main').trim() || '#fff';
     const gridColor = computedStyle.getPropertyValue('--border-light').trim() || 'rgba(255,255,255,0.07)';
 
+    // Compute a clean round stepSize so Y-axis shows 0, 100, 200... or 0, 500, 1000... etc.
+    const allValues = [...approvedData, ...openData, ...closedData, ...rejectedData];
+    const maxVal = Math.max(...allValues, 1);
+    const niceStepSize = (() => {
+      const raw = maxVal / 5;  // target ~5 ticks
+      const magnitude = Math.pow(10, Math.floor(Math.log10(raw)));
+      const normalized = raw / magnitude;
+      let nice;
+      if (normalized <= 1) nice = 1;
+      else if (normalized <= 2) nice = 2;
+      else if (normalized <= 5) nice = 5;
+      else nice = 10;
+      return nice * magnitude;
+    })();
+
     barChartInst.current = new Chart(ctx, {
       type: 'bar',
       data: {
@@ -456,7 +471,7 @@ function Dashboard() {
             ticks: {
               color: textColor,
               precision: 0,
-              stepSize: 1,
+              stepSize: niceStepSize,
             },
             grid: { color: gridColor },
           },
