@@ -2,7 +2,7 @@ import axios from "axios";
 import { sendUserLog } from "./userLogService";
 import { navigateTo, isOnPath } from "../config/basePath";
 
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://187.127.171.51";
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const api = axios.create({
     baseURL: API_BASE_URL,
@@ -43,8 +43,12 @@ api.interceptors.response.use(
         return response;
     },
     (error) => {
-        // Handle 401 Unauthorized globally by logging out and redirecting
-        if (error?.response?.status === 401 && !isOnPath("/login")) {
+        const url = error?.config?.url || "";
+        const isAuthEndpoint = /\/auth\/(verify-otp|login|forgot-password|reset-password|change-password)/i.test(url);
+        const isAuthPage = isOnPath("/login") || isOnPath("/otp") || isOnPath("/forgot-password");
+
+        // Handle 401 Unauthorized globally by logging out and redirecting (except for auth/OTP operations)
+        if (error?.response?.status === 401 && !isAuthEndpoint && !isAuthPage) {
             localStorage.removeItem("user");
             localStorage.removeItem("UserType");
             localStorage.removeItem("token");

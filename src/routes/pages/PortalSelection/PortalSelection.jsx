@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { Navigate } from "react-router-dom";
 import "./PortalSelection.css";
 import { navigateTo } from "../../config/basePath";
-import { isTokenValid } from "../../../components/common/PublicRoute";
+import { isTokenValid } from "../../components/common/PublicRoute";
 
 function PortalSelection() {
+  if (isTokenValid()) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
   const [overlayActive, setOverlayActive] = useState(false);
 
   useEffect(() => {
@@ -11,6 +16,7 @@ function PortalSelection() {
       navigateTo("/dashboard", true);
       return;
     }
+
     const canvas = document.getElementById("particles");
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -98,7 +104,7 @@ function PortalSelection() {
               <path d="M15 22 L25 22" stroke="#C9A84C" strokeWidth="1.5"/>
             </svg>
           </div>
-          <span className="logo-text"><span>M3</span> Group</span>
+          <span className="logo-text"><span>Safesite</span> Works</span>
         </div>
       </header>
 

@@ -135,9 +135,9 @@ const formatCompanyLogoUrl = (logoVal) => {
   }
   const cleanPath = str.startsWith("/") ? str.slice(1) : str;
   if (cleanPath.startsWith("subcontractors/")) {
-    return `http://187.127.171.51/m3north/${cleanPath}`;
+    return `https://api.beam.safesiteworks.com/m3north/${cleanPath}`;
   }
-  return `http://187.127.171.51/m3north/subcontractors/${cleanPath}`;
+  return `https://api.beam.safesiteworks.com/m3north/subcontractors/${cleanPath}`;
 };
 
 const CompanyLogo = ({ logo, name, code, color, size = 22, style = {}, className = "mini-company-badge" }) => {

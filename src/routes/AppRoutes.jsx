@@ -11,6 +11,7 @@ import PortalSelection from "../pages/PortalSelection/PortalSelection";
 
 import Login from "../pages/Auth/Login/Login";
 import Otp from "../pages/Auth/OTP/OTP";
+import ForgotPassword from "../pages/Auth/ForgotPassword/ForgotPassword";
 
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Departments from "../pages/Departments/Departments";
@@ -45,6 +46,7 @@ function AppRoutes() {
         <Route path="/" element={<PublicRoute><PortalSelection /></PublicRoute>} />
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/otp" element={<PublicRoute><Otp /></PublicRoute>} />
+        <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
         <Route path='/polygons' element={<PolygonEditor />} />
 
         {/* Protected Layout */}

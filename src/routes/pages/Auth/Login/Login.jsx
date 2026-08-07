@@ -30,6 +30,7 @@ export default function Login() {
       window.removeEventListener("popstate", handleCheck);
     };
   }, []);
+
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -59,6 +60,7 @@ export default function Login() {
           username: response.username,
           userType: response.userType,
           phonenumber: response.phonenumber,
+          maskedPhone: response.maskedPhone || "",
           auth_token: response.auth_token
         };
         localStorage.setItem("tempUser", JSON.stringify(tempUser));
@@ -216,19 +218,15 @@ export default function Login() {
                 </div>
               </div>
 
-              <div className="form-meta">
-                {/* <label className="remember-wrap">
-                  <input
-                    type="checkbox"
-                    id="remember"
-                    checked={remember}
-                    onChange={(e) => setRemember(e.target.checked)}
-                  />
-                  <span className="remember-label">Remember me</span>
-                </label> */}
-                <a href="#" className="forgot-link">
+              <div className="form-meta" style={{ display: "flex", justifyContent: "flex-end", marginBottom: "16px" }}>
+                <button
+                  type="button"
+                  className="forgot-link"
+                  onClick={() => navigateTo("/forgot-password")}
+                  style={{ background: "none", border: "none", cursor: "pointer", padding: 0, font: "inherit", color: "#818cf8", fontSize: "13px" }}
+                >
                   Forgot password?
-                </a>
+                </button>
               </div>
 
               <button

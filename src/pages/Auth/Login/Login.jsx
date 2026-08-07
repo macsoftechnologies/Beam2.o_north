@@ -60,6 +60,7 @@ export default function Login() {
           username: response.username,
           userType: response.userType,
           phonenumber: response.phonenumber,
+          maskedPhone: response.maskedPhone || "",
           auth_token: response.auth_token
         };
         localStorage.setItem("tempUser", JSON.stringify(tempUser));
@@ -100,7 +101,7 @@ export default function Login() {
       </div>
 
       {/* Back Link */}
-      <a href="http://187.127.171.51/m3north_frontend/" className="back-link">
+      <a href="/" className="back-link">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M19 12H5M12 19l-7-7 7-7" />
         </svg>
@@ -155,7 +156,7 @@ export default function Login() {
             <form id="loginForm" onSubmit={handleSubmit} noValidate>
               <div className="field-group">
                 <label className="field-label" htmlFor="username">
-                  Username
+                  Username or Email
                 </label>
                 <div className="field-wrap">
                   <svg className="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -217,19 +218,15 @@ export default function Login() {
                 </div>
               </div>
 
-              <div className="form-meta">
-                {/* <label className="remember-wrap">
-                  <input
-                    type="checkbox"
-                    id="remember"
-                    checked={remember}
-                    onChange={(e) => setRemember(e.target.checked)}
-                  />
-                  <span className="remember-label">Remember me</span>
-                </label> 
-                <a href="#" className="forgot-link">
+              <div className="form-meta" style={{ display: "flex", justifyContent: "flex-end", marginBottom: "16px" }}>
+                <button
+                  type="button"
+                  className="forgot-link"
+                  onClick={() => navigateTo("/forgot-password")}
+                  style={{ background: "none", border: "none", cursor: "pointer", padding: 0, font: "inherit", color: "#818cf8", fontSize: "13px" }}
+                >
                   Forgot password?
-                </a>*/}
+                </button>
               </div>
 
               <button

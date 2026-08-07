@@ -104,7 +104,7 @@ function PortalSelection() {
               <path d="M15 22 L25 22" stroke="#C9A84C" strokeWidth="1.5"/>
             </svg>
           </div>
-          <span className="logo-text"><span>M3</span> Group</span>
+          <span className="logo-text"><span>Safesite</span> Works</span>
         </div>
       </header>
 

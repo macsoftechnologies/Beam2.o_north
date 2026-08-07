@@ -11,6 +11,26 @@ export const verifyOtp = async (payload) => {
     return response.data;
 };
 
+export const forgotPassword = async (data) => {
+    const response = await api.post("/auth/forgot-password", data);
+    return response.data;
+};
+
+export const resetPassword = async (data) => {
+    const response = await api.post("/auth/reset-password", data);
+    return response.data;
+};
+
+export const sendChangePasswordOtp = async () => {
+    const response = await api.post("/auth/send-change-password-otp");
+    return response.data;
+};
+
+export const verifyAndChangePassword = async (data) => {
+    const response = await api.post("/auth/change-password", data);
+    return response.data;
+};
+
 
 
 export const getLocalData = (userType, secretkey) => {

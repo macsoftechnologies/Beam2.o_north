@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useNavigate } from "react-router-dom";
 import "./Navbar.css";
-import { logout } from "../../../services/authService";
+import { logout, sendChangePasswordOtp, verifyAndChangePassword } from "../../../services/authService";
 import { navigateTo } from "../../../config/basePath";
 import {
   getNotifications,
@@ -82,80 +82,35 @@ const extractPermitNo = (n) => {
   return "";
 };
 
-const getNotificationStyleInfo = (n) => {
-  if (!n) return { typeClass: "notif-type-opened", badgeText: "OPENED" };
+const getNotificationStyleInfo = (title = "", message = "") => {
+  const t = (title + " " + message).toLowerCase();
 
-  let rawStatus = n.permitStatus || n.permit_status || n.status;
-
-  if (!rawStatus && n.metadata) {
-    try {
-      const meta = typeof n.metadata === "string" ? JSON.parse(n.metadata) : n.metadata;
-      if (meta && (meta.newStatus || meta.permitStatus || meta.status)) {
-        rawStatus = meta.newStatus || meta.permitStatus || meta.status;
-      }
-    } catch (e) {
-      // ignore
-    }
-  }
-
-  const titleMsg = `${n.title || ""} ${n.message || ""}`;
-  const statusToTest = (rawStatus ? String(rawStatus) : titleMsg).toLowerCase().trim();
-
-  if (statusToTest.includes("auto-cancelled") || statusToTest.includes("auto cancelled")) {
+  if (t.includes("auto-cancelled") || t.includes("auto cancelled")) {
     return { typeClass: "notif-type-autocancelled", badgeText: "AUTO-CANCELLED" };
   }
-  if (statusToTest.includes("pre-approved") || statusToTest.includes("pre approved") || statusToTest.includes("preok") || statusToTest.includes("pre-ok")) {
+  if (t.includes("pre-approved") || t.includes("pre approved") || t.includes("preok") || t.includes("pre-ok")) {
     return { typeClass: "notif-type-preapproved", badgeText: "PRE-APPROVED" };
   }
-  if (statusToTest.includes("approved")) {
+  if (t.includes("approved")) {
     return { typeClass: "notif-type-approved", badgeText: "APPROVED" };
   }
-  if (statusToTest.includes("reject") || statusToTest.includes("denied")) {
+  if (t.includes("reject") || t.includes("denied")) {
     return { typeClass: "notif-type-rejected", badgeText: "REJECTED" };
   }
-  if (statusToTest.includes("cancelled") || statusToTest.includes("cancel")) {
+  if (t.includes("cancelled") || t.includes("cancel")) {
     return { typeClass: "notif-type-cancelled", badgeText: "CANCELLED" };
   }
-  if (statusToTest.includes("closed") || statusToTest.includes("close")) {
+  if (t.includes("closed") || t.includes("close")) {
     return { typeClass: "notif-type-closed", badgeText: "CLOSED" };
   }
-  if (statusToTest.includes("hold")) {
+  if (t.includes("hold")) {
     return { typeClass: "notif-type-hold", badgeText: "HOLD" };
   }
-  if (statusToTest.includes("draft")) {
+  if (t.includes("draft")) {
     return { typeClass: "notif-type-draft", badgeText: "DRAFT" };
   }
-  if (statusToTest.includes("opened") || statusToTest.includes("open")) {
-    return { typeClass: "notif-type-opened", badgeText: "OPENED" };
-  }
-
-  const altText = titleMsg.toLowerCase();
-  if (altText.includes("auto-cancelled") || altText.includes("auto cancelled")) {
-    return { typeClass: "notif-type-autocancelled", badgeText: "AUTO-CANCELLED" };
-  }
-  if (altText.includes("pre-approved") || altText.includes("pre approved")) {
-    return { typeClass: "notif-type-preapproved", badgeText: "PRE-APPROVED" };
-  }
-  if (altText.includes("approved")) {
-    return { typeClass: "notif-type-approved", badgeText: "APPROVED" };
-  }
-  if (altText.includes("reject")) {
-    return { typeClass: "notif-type-rejected", badgeText: "REJECTED" };
-  }
-  if (altText.includes("cancelled")) {
-    return { typeClass: "notif-type-cancelled", badgeText: "CANCELLED" };
-  }
-  if (altText.includes("closed")) {
-    return { typeClass: "notif-type-closed", badgeText: "CLOSED" };
-  }
-  if (altText.includes("hold")) {
-    return { typeClass: "notif-type-hold", badgeText: "HOLD" };
-  }
-  if (altText.includes("draft")) {
-    return { typeClass: "notif-type-draft", badgeText: "DRAFT" };
-  }
-
-  return { typeClass: "notif-type-opened", badgeText: rawStatus ? String(rawStatus).toUpperCase() : "OPENED" };
+  // Default to Opened
+  return { typeClass: "notif-type-opened", badgeText: "OPENED" };
 };
 
 /* ── Live Clock ── */
@@ -249,6 +204,21 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const dropdownRef = useRef(null)
+
+  // ── Change Password Modal state ───────────────────
+  const [cpModalOpen, setCpModalOpen] = useState(false);
+  const [cpStep, setCpStep] = useState(1); // 1=sending OTP, 2=OTP+pass form
+  const [cpMaskedPhone, setCpMaskedPhone] = useState("");
+  const [cpDigits, setCpDigits] = useState(Array(6).fill(""));
+  const cpInputRefs = useRef([]);
+  const [cpNewPass, setCpNewPass] = useState("");
+  const [cpConfirmPass, setCpConfirmPass] = useState("");
+  const [cpShowNew, setCpShowNew] = useState(false);
+  const [cpShowConfirm, setCpShowConfirm] = useState(false);
+  const [cpLoading, setCpLoading] = useState(false);
+  const [cpSending, setCpSending] = useState(false);
+  const [cpError, setCpError] = useState("");
+  const [cpSuccess, setCpSuccess] = useState("");
 
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -446,17 +416,100 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
     navigateTo("/login");
   };
 
-  const getInitials = (name, role = "") => {
-    if (!name) return "SA";
+  // ── Change Password handlers ─────────────────────
+  const handleOpenChangePassword = async () => {
+    setDropdownOpen(false);
+    setCpModalOpen(true);
+    setCpStep(1);
+    setCpDigits(Array(6).fill(""));
+    setCpNewPass("");
+    setCpConfirmPass("");
+    setCpError("");
+    setCpSuccess("");
+    setCpSending(true);
+
+    try {
+      const res = await sendChangePasswordOtp();
+      if (res && (res.statusCode === 200 || res.status === true)) {
+        setCpMaskedPhone(res.maskedPhone || "");
+        setCpStep(2);
+        setCpSuccess(`OTP sent to your phone${res.maskedPhone ? ` ending in ${res.maskedPhone}` : ""}`);
+        setTimeout(() => setCpSuccess(""), 4000);
+        setTimeout(() => cpInputRefs.current[0]?.focus(), 200);
+      } else {
+        setCpError(res?.message || "Failed to send OTP. Please try again.");
+      }
+    } catch (err) {
+      setCpError(err?.response?.data?.message || err?.message || "Failed to send OTP.");
+    } finally {
+      setCpSending(false);
+    }
+  };
+
+  const handleCpDigitChange = (e, idx) => {
+    const val = e.target.value.replace(/\D/g, "").slice(-1);
+    const next = [...cpDigits]; next[idx] = val; setCpDigits(next);
+    setCpError("");
+    if (val && idx < 5) cpInputRefs.current[idx + 1]?.focus();
+  };
+
+  const handleCpDigitKeyDown = (e, idx) => {
+    if (e.key === "Backspace") {
+      if (cpDigits[idx]) { const next = [...cpDigits]; next[idx] = ""; setCpDigits(next); }
+      else if (idx > 0) cpInputRefs.current[idx - 1]?.focus();
+    }
+    if (e.key === "ArrowLeft" && idx > 0) cpInputRefs.current[idx - 1]?.focus();
+    if (e.key === "ArrowRight" && idx < 5) cpInputRefs.current[idx + 1]?.focus();
+  };
+
+  const handleCpPaste = (e) => {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+    if (!pasted) return;
+    const next = [...cpDigits];
+    pasted.split("").forEach((ch, i) => { next[i] = ch; });
+    setCpDigits(next);
+    cpInputRefs.current[Math.min(pasted.length, 5)]?.focus();
+  };
+
+  const handleCpSubmit = async (e) => {
+    e.preventDefault();
+    setCpError("");
+    const otp = cpDigits.join("");
+    if (otp.length < 6) { setCpError("Please enter the full 6-digit OTP."); return; }
+    if (!cpNewPass || cpNewPass.length < 6) { setCpError("Password must be at least 6 characters."); return; }
+    if (cpNewPass !== cpConfirmPass) { setCpError("Passwords do not match."); return; }
+
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    if (user?.id === undefined || user?.id === null) { setCpError("Session error. Please login again."); return; }
+
+    setCpLoading(true);
+    try {
+      const res = await verifyAndChangePassword({ id: user.id, otp, password: cpNewPass });
+      if (res && (res.statusCode === 200 || res.status === true)) {
+        setCpSuccess("Password changed successfully!");
+        setTimeout(() => {
+          setCpModalOpen(false);
+          setCpDigits(Array(6).fill(""));
+          setCpNewPass(""); setCpConfirmPass(""); setCpError(""); setCpSuccess("");
+        }, 2000);
+      } else {
+        setCpError(res?.message || "Failed to change password.");
+      }
+    } catch (err) {
+      setCpError(err?.response?.data?.message || err?.message || "An error occurred.");
+    } finally {
+      setCpLoading(false);
+    }
+  };
+
+  const getInitials = (name) => {
+    if (!name) return "US";
     const parts = name.trim().split(/\s+/);
     if (parts.length > 1) {
-      // Multi-word name: use first letter of each word
       return (parts[0][0] + parts[1][0]).toUpperCase();
     }
-    // Single-word name: use first letter of name + first letter of role
-    const nameLetter = name[0].toUpperCase();
-    const roleLetter = role ? role[0].toUpperCase() : name[1]?.toUpperCase() || "A";
-    return nameLetter + roleLetter;
+    return name.substring(0, 2).toUpperCase();
   };
 
   return (
@@ -513,7 +566,7 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
                   </div>
                 ) : (
                   notifications.map((n) => {
-                    const styleInfo = getNotificationStyleInfo(n);
+                    const styleInfo = getNotificationStyleInfo(n.title, n.message);
                     const permitNo = extractPermitNo(n);
                     return (
                       <button
@@ -561,7 +614,7 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
             aria-expanded={dropdownOpen}
             aria-haspopup="true"
           >
-            <div className="navbar-avatar-img">{getInitials(currentUser.name, currentUser.role)}</div>
+            <div className="navbar-avatar-img">{getInitials(currentUser.name)}</div>
             <div className="navbar-user-info">
               <span className="navbar-user-name">{currentUser.name}</span>
               <span className="navbar-user-role">{currentUser.role}</span>
@@ -573,7 +626,7 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
 
               {/* Header */}
               <div className="pd-head">
-                <div className="pd-avatar">{getInitials(currentUser.name, currentUser.role)}</div>
+                <div className="pd-avatar">{getInitials(currentUser.name)}</div>
                 <div>
                   <div className="pd-name">{currentUser.name}</div>
                   <div className="pd-role">{currentUser.role} · M3 North</div>
@@ -583,9 +636,13 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
               {/* Account */}
               <div className="pd-section">
                 <div className="pd-label">Account</div>
-                {/* <a className="pd-item" href="/profile">
-                  <i className="ti ti-user" /> My profile
-                </a> */}
+                <button
+                  className="pd-item"
+                  onClick={handleOpenChangePassword}
+                  style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer' }}
+                >
+                  <i className="ti ti-lock" /> Change Password
+                </button>
                 <button
                   className="pd-item"
                   onClick={handleOpenSettings}
@@ -645,6 +702,127 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
               <button className="ns-btn-primary" onClick={handleSaveSettings}>
                 Save Preferences
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Change Password Modal ── */}
+      {cpModalOpen && (
+        <div className="ns-modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) setCpModalOpen(false); }}>
+          <div className="ns-modal" style={{ maxWidth: 420, width: '100%' }}>
+            <div className="ns-modal-header">
+              <h3 style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <i className="ti ti-lock" style={{ color: '#818cf8' }} /> Change Password
+              </h3>
+              <button className="ns-close-btn" onClick={() => setCpModalOpen(false)}>
+                <i className="ti ti-x" />
+              </button>
+            </div>
+
+            <div className="ns-modal-body">
+              {/* Sending OTP step */}
+              {cpSending && (
+                <div style={{ textAlign: 'center', padding: '24px 0', color: 'rgba(226,232,240,0.6)', fontSize: 14 }}>
+                  <div style={{ width: 32, height: 32, border: '3px solid rgba(129,140,248,0.3)', borderTopColor: '#818cf8', borderRadius: '50%', animation: 'nspin 0.7s linear infinite', margin: '0 auto 12px' }} />
+                  Sending OTP to your phone...
+                </div>
+              )}
+
+              {/* Error */}
+              {cpError && (
+                <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#fca5a5', marginBottom: 14, display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 15, height: 15, flexShrink: 0, marginTop: 1 }}><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
+                  {cpError}
+                </div>
+              )}
+
+              {/* Success */}
+              {cpSuccess && (
+                <div style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.25)', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#6ee7b7', marginBottom: 14, display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 15, height: 15, flexShrink: 0, marginTop: 1 }}><path d="M22 11.08V12a10 10 0 11-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
+                  {cpSuccess}
+                </div>
+              )}
+
+              {/* OTP + password form (step 2) */}
+              {cpStep === 2 && !cpSending && (
+                <form onSubmit={handleCpSubmit} noValidate>
+                  <p style={{ fontSize: 13, marginBottom: 16, lineHeight: 1.5, color: 'var(--text-muted, #64748b)' }}>
+                    Enter the 6-digit code sent to your phone{cpMaskedPhone ? <> ending in <strong style={{ color: '#6366f1' }}>{cpMaskedPhone}</strong></> : ""} and your new password.
+                  </p>
+
+                  {/* OTP inputs */}
+                  <label className="cp-label">Verification Code</label>
+                  <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 18 }} onPaste={handleCpPaste}>
+                    {cpDigits.map((d, i) => (
+                      <input
+                        key={i}
+                        ref={el => (cpInputRefs.current[i] = el)}
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={1}
+                        value={d}
+                        onChange={e => handleCpDigitChange(e, i)}
+                        onKeyDown={e => handleCpDigitKeyDown(e, i)}
+                        autoComplete="one-time-code"
+                        className="cp-otp-digit"
+                      />
+                    ))}
+                  </div>
+
+                  {/* New password */}
+                  <div style={{ marginBottom: 12 }}>
+                    <label className="cp-label">New Password</label>
+                    <div style={{ position: 'relative' }}>
+                      <input
+                        type={cpShowNew ? 'text' : 'password'}
+                        placeholder="New password (min 6 chars)"
+                        value={cpNewPass}
+                        onChange={e => { setCpNewPass(e.target.value); setCpError(''); }}
+                        className="cp-input"
+                      />
+                      <button type="button" onClick={() => setCpShowNew(v => !v)} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted, #64748b)', padding: 0 }}>
+                        {cpShowNew
+                          ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 16, height: 16 }}><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94" /><line x1="1" y1="1" x2="23" y2="23" /></svg>
+                          : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 16, height: 16 }}><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
+                        }
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Confirm password */}
+                  <div style={{ marginBottom: 20 }}>
+                    <label className="cp-label">Confirm Password</label>
+                    <div style={{ position: 'relative' }}>
+                      <input
+                        type={cpShowConfirm ? 'text' : 'password'}
+                        placeholder="Confirm new password"
+                        value={cpConfirmPass}
+                        onChange={e => { setCpConfirmPass(e.target.value); setCpError(''); }}
+                        className="cp-input"
+                      />
+                      <button type="button" onClick={() => setCpShowConfirm(v => !v)} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted, #64748b)', padding: 0 }}>
+                        {cpShowConfirm
+                          ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 16, height: 16 }}><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94" /><line x1="1" y1="1" x2="23" y2="23" /></svg>
+                          : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 16, height: 16 }}><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
+                        }
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="ns-modal-footer" style={{ paddingTop: 0 }}>
+                    <button type="button" className="ns-btn-secondary" onClick={() => setCpModalOpen(false)}>Cancel</button>
+                    <button
+                      type="submit"
+                      className="ns-btn-primary"
+                      disabled={cpLoading || cpDigits.join('').length < 6}
+                    >
+                      {cpLoading ? 'Changing...' : 'Change Password'}
+                    </button>
+                  </div>
+                </form>
+              )}
             </div>
           </div>
         </div>
