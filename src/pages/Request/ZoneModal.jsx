@@ -8,6 +8,10 @@ import { showError } from "../../components/common/Toast/Toast";
 // when the app is deployed under a sub-path (e.g. /m3north_frontend/).
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
+const ZOOM_STEP = 0.25;
+const ZOOM_MIN  = 0.25;  // 25% – minimum allowed zoom
+const ZOOM_MAX  = 3.0;   // 300% – maximum allowed zoom
+
 function ZoneModal({
   zone,
   selectedRooms: globalSelectedRooms = [],
@@ -17,6 +21,7 @@ function ZoneModal({
 }) {
   const [selectedRooms, setSelectedRooms] = useState(globalSelectedRooms);
   const [viewerWidth, setViewerWidth] = useState(900);
+  const [zoomScale, setZoomScale] = useState(1.0);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("pdf");
   const containerRef = useRef(null);
@@ -87,6 +92,14 @@ function ZoneModal({
 
   }, [activeTab]);
 
+  // Zoom helpers
+  const zoomIn    = () => setZoomScale((prev) => Math.min(ZOOM_MAX, parseFloat((prev + ZOOM_STEP).toFixed(2))));
+  const zoomOut   = () => setZoomScale((prev) => Math.max(ZOOM_MIN, parseFloat((prev - ZOOM_STEP).toFixed(2))));
+  const zoomReset = () => setZoomScale(1.0);
+
+  const zoomedWidth = Math.round(viewerWidth * zoomScale);
+  const zoomPercent = Math.round(zoomScale * 100);
+
   return ReactDOM.createPortal(
     <div
       className="zone-modal"
@@ -137,7 +150,7 @@ function ZoneModal({
               display: none !important;
             }
             .zone-modal-pdf-container {
-              padding: 10px !important;
+              overflow: hidden !important;
             }
             .zone-modal-sidebar {
               height: 100% !important;
@@ -148,6 +161,53 @@ function ZoneModal({
               max-height: none !important;
               flex: 1 !important;
             }
+          }
+          .zm-zoom-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.06);
+            color: #e5e7eb;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            line-height: 1;
+            transition: background 0.15s, border-color 0.15s;
+            user-select: none;
+          }
+          .zm-zoom-btn:hover:not(:disabled) {
+            background: rgba(59,130,246,0.18);
+            border-color: rgba(59,130,246,0.5);
+            color: #93c5fd;
+          }
+          .zm-zoom-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+          }
+          .zm-zoom-reset-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 30px;
+            padding: 0 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.06);
+            color: #d1d5db;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+            min-width: 52px;
+          }
+          .zm-zoom-reset-btn:hover {
+            background: rgba(59,130,246,0.18);
+            border-color: rgba(59,130,246,0.5);
+            color: #93c5fd;
           }
         `}</style>
 
@@ -223,13 +283,13 @@ function ZoneModal({
               cursor: "pointer",
             }}
           >
-          {(() => {
-            const selectedRoomsInZoneCount = (zone?.rooms || []).filter((r) => {
-              const name = typeof r === "object" ? r.name : r;
-              return selectedRooms.includes(name);
-            }).length;
-            return `Rooms Checklist (${selectedRoomsInZoneCount})`;
-          })()}
+            {(() => {
+              const selectedRoomsInZoneCount = (zone?.rooms || []).filter((r) => {
+                const name = typeof r === "object" ? r.name : r;
+                return selectedRooms.includes(name);
+              }).length;
+              return `Rooms Checklist (${selectedRoomsInZoneCount})`;
+            })()}
           </button>
         </div>
 
@@ -244,27 +304,76 @@ function ZoneModal({
             background: "#151d30",
           }}
         >
-          {/* Left Panel: PDF Viewer */}
+          {/* Left Panel: PDF Viewer (with zoom toolbar) */}
           <div
             className="zone-modal-pdf-container"
-            ref={containerRef}
             style={{
-              flex: 1,
-              overflow: "auto",
               display: "flex",
-              justifyContent: containerRef.current && viewerWidth > containerRef.current.clientWidth ? "flex-start" : "center",
-              alignItems: "flex-start",
-              padding: 20,
+              flexDirection: "column",
+              overflow: "hidden",
               background: "#1b2436",
             }}
           >
-            <PdfPolygonViewer
-              pdf={zone.pdf}
-              rooms={zone.rooms}
-              width={viewerWidth}
-              selectedRooms={selectedRooms}
-              toggleRoom={toggleRoom}
-            />
+            {/* ── Zoom Toolbar ── */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "7px 16px",
+                borderBottom: "1px solid rgba(255,255,255,0.07)",
+                background: "rgba(0,0,0,0.25)",
+                flexShrink: 0,
+              }}
+            >
+              <span style={{ color: "#6b7280", fontSize: "11px", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", marginRight: 2 }}>
+                Zoom
+              </span>
+              <button
+                className="zm-zoom-btn"
+                onClick={zoomOut}
+                disabled={zoomScale <= ZOOM_MIN}
+                title="Zoom Out (−25%)"
+              >
+                −
+              </button>
+              <button
+                className="zm-zoom-reset-btn"
+                onClick={zoomReset}
+                title="Reset to 100%"
+              >
+                {zoomPercent}%
+              </button>
+              <button
+                className="zm-zoom-btn"
+                onClick={zoomIn}
+                disabled={zoomScale >= ZOOM_MAX}
+                title="Zoom In (+25%)"
+              >
+                +
+              </button>
+            </div>
+
+            {/* Scrollable PDF area */}
+            <div
+              ref={containerRef}
+              style={{
+                flex: 1,
+                overflow: "auto",
+                display: "flex",
+                justifyContent: zoomedWidth > (containerRef.current?.clientWidth ?? 0) ? "flex-start" : "center",
+                alignItems: "flex-start",
+                padding: 20,
+              }}
+            >
+              <PdfPolygonViewer
+                pdf={zone.pdf}
+                rooms={zone.rooms}
+                width={zoomedWidth}
+                selectedRooms={selectedRooms}
+                toggleRoom={toggleRoom}
+              />
+            </div>
           </div>
 
           {/* Right Panel: Rooms Directory Sidebar */}
