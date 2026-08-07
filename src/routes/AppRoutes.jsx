@@ -38,7 +38,7 @@ import PolygonEditor from "../pages/PolygonEditor/PolygonEditor";
 
 function AppRoutes() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/m3north">
       <Routes>
 
         {/* Public Routes - restricted if user has valid token */}
