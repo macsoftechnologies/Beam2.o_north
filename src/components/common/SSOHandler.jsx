@@ -14,18 +14,21 @@ export function SSOHandler({ children }) {
     }
 
     const performSsoLogin = async () => {
-      const baseUrls = [
-        import.meta.env.VITE_API_BASE_URL,
-        'http://api.beam.safesiteworks.com/m3north/auth/sso-login',
-        'http://api.beam.safesiteworks.com/m3north/api/auth/sso-login',
-      ].filter(Boolean);
+      const baseApiUrl = import.meta.env.VITE_API_BASE_URL || 'https://api.beam.safesiteworks.com/m3north';
+      const endpoints = Array.from(new Set([
+        baseApiUrl.endsWith('/') ? `${baseApiUrl}auth/sso-login` : `${baseApiUrl}/auth/sso-login`,
+        baseApiUrl.endsWith('/') ? `${baseApiUrl}api/auth/sso-login` : `${baseApiUrl}/api/auth/sso-login`,
+        'https://api.beam.safesiteworks.com/m3north/auth/sso-login',
+        'https://api.beam.safesiteworks.com/m3north/api/auth/sso-login',
+        'http://localhost:3200/auth/sso-login',
+        'http://localhost:3200/api/auth/sso-login',
+      ]));
 
       let success = false;
       let data = null;
 
-      for (const baseUrl of baseUrls) {
+      for (const endpoint of endpoints) {
         try {
-          const endpoint = baseUrl.endsWith('/') ? `${baseUrl}auth/sso-login` : `${baseUrl}/auth/sso-login`;
           const response = await fetch(endpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -40,28 +43,37 @@ export function SSOHandler({ children }) {
             }
           }
         } catch (err) {
-          console.warn(`SSO attempt failed for ${baseUrl}:`, err.message);
+          console.warn(`SSO attempt failed for ${endpoint}:`, err.message);
         }
       }
 
       if (success && data) {
         const validToken = data.token || data.access_token;
+        const userData = {
+          id: data.id || (data.user_info && data.user_info.adminId) || 1,
+          username: data.username || (data.user_info && data.user_info.name) || 'superadmin',
+          userType: 'SuperAdmin',
+          role: 'SuperAdmin',
+          empId: data.empId || 1,
+        };
+        const userDataStr = JSON.stringify(userData);
 
-        // Set all required portal localStorage keys BEFORE ProtectedRoute runs
-        localStorage.setItem('m3north_token', validToken);
-        localStorage.setItem('m3north_access_token', validToken);
-        localStorage.setItem('m3north_UserType', 'SuperAdmin');
-        localStorage.setItem('m3north_isLoggedIn', 'true');
-        localStorage.setItem(
-          'm3north_user',
-          JSON.stringify({
-            id: data.id || 1,
-            username: data.username || 'superadmin',
-            userType: 'SuperAdmin',
-            role: 'SuperAdmin',
-            empId: data.empId || 1,
-          })
-        );
+        // Standard keys (scopedStorage will dynamically attach m3north_ prefix)
+        localStorage.setItem('token', validToken);
+        localStorage.setItem('access_token', validToken);
+        localStorage.setItem('UserType', 'SuperAdmin');
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('user', userDataStr);
+
+        // Explicit raw keys for complete scope compatibility
+        const setDirect = window.localStorage.setItem.bind(window.localStorage);
+        ['m3north_'].forEach((p) => {
+          setDirect(`${p}token`, validToken);
+          setDirect(`${p}access_token`, validToken);
+          setDirect(`${p}UserType`, 'SuperAdmin');
+          setDirect(`${p}isLoggedIn`, 'true');
+          setDirect(`${p}user`, userDataStr);
+        });
 
         // Clean SSO token from URL query string
         const urlWithoutToken = new URL(window.location.href);
