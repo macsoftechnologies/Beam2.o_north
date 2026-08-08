@@ -1,6 +1,5 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import { BASE_PATH } from "../../config/basePath";
 
 export const isTokenValid = () => {
   const token = localStorage.getItem("token");
@@ -55,22 +54,6 @@ export const isTokenValid = () => {
 };
 
 const PublicRoute = ({ children }) => {
-  React.useEffect(() => {
-    const handleCheck = () => {
-      if (isTokenValid()) {
-        window.location.replace(BASE_PATH + "/dashboard");
-      }
-    };
-
-    window.addEventListener("pageshow", handleCheck);
-    window.addEventListener("popstate", handleCheck);
-
-    return () => {
-      window.removeEventListener("pageshow", handleCheck);
-      window.removeEventListener("popstate", handleCheck);
-    };
-  }, []);
-
   if (isTokenValid()) {
     return <Navigate to="/dashboard" replace />;
   }
