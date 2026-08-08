@@ -103,7 +103,7 @@ const Employees = () => {
   useEffect(() => {
     const fetchContractorsList = async () => {
       try {
-        const res = await getContractors(1, 1000, true);
+        const res = await getContractors(1, 100000, true);
         const rows = res?.data?.rows ?? res?.data ?? res ?? [];
         const sortedRows = [...rows].sort((a, b) => 
           (a.subContractorName || "").localeCompare(b.subContractorName || "", undefined, { sensitivity: 'base' })

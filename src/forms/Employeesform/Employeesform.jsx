@@ -50,9 +50,9 @@ function Employeesform({ onClose, initialData, isEdit, onSubmit }) {
     const fetchData = async () => {
       try {
         const [rolesRes, depsRes, subsRes] = await Promise.all([
-          getRoles(1, 100),
-          getDepartments(1, 100),
-          getContractors(1, 100),
+          getRoles(1, 1000, true),
+          getDepartments(1, 1000, true),
+          getContractors(1, 100000, true),
         ]);
 
         const roles = rolesRes?.data?.rows ?? rolesRes?.data ?? rolesRes ?? [];

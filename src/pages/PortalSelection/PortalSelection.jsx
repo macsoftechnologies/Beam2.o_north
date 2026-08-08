@@ -77,7 +77,11 @@ function PortalSelection() {
   const navigate = (url) => {
     setOverlayActive(true);
     setTimeout(() => {
-      navigateTo(url);
+      if (url.startsWith("http://") || url.startsWith("https://")) {
+        window.location.href = url;
+      } else {
+        navigateTo(url);
+      }
     }, 1200);
   };
 
@@ -131,7 +135,7 @@ function PortalSelection() {
 
             {/* North */}
             <div className="col-lg-4 col-md-6">
-              <div className="portal-card card-north">
+              <div className="portal-card card-north" onClick={() => navigate("https://beam.safesiteworks.com/m3north/login")} style={{ cursor: "pointer" }}>
                 <div className="card-inner">
                   <div className="card-badge">
                     <span className="badge-dot"></span>Division 01
@@ -148,7 +152,10 @@ function PortalSelection() {
                   <h2 className="card-title">M3 North</h2>
                   <button
                     className="portal-btn btn-north"
-                    onClick={() => navigate("/login")}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate("https://beam.safesiteworks.com/m3north/login");
+                    }}
                   >
                     <span>Enter Portal</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -162,7 +169,7 @@ function PortalSelection() {
 
             {/* South */}
             <div className="col-lg-4 col-md-6">
-              <div className="portal-card card-south featured">
+              <div className="portal-card card-south featured" onClick={() => navigate("https://beam.safesiteworks.com/m3south/login")} style={{ cursor: "pointer" }}>
                 <div className="featured-ring"></div>
                 <div className="card-inner">
                   <div className="card-badge">
@@ -180,7 +187,10 @@ function PortalSelection() {
                   <h2 className="card-title">M3 South</h2>
                   <button
                     className="portal-btn btn-south"
-                    onClick={() => navigate("/login")}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate("https://beam.safesiteworks.com/m3south/login");
+                    }}
                   >
                     <span>Enter Portal</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -194,7 +204,7 @@ function PortalSelection() {
 
             {/* Infrastructure */}
             <div className="col-lg-4 col-md-6">
-              <div className="portal-card card-infra">
+              <div className="portal-card card-infra" onClick={() => navigate("https://beam.safesiteworks.com/m3infrastructure/login")} style={{ cursor: "pointer" }}>
                 <div className="card-inner">
                   <div className="card-badge">
                     <span className="badge-dot"></span>Division 03
@@ -213,7 +223,10 @@ function PortalSelection() {
                   <h2 className="card-title">M3 Infrastructure</h2>
                   <button
                     className="portal-btn btn-infra"
-                    onClick={() => navigate("/login")}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate("https://beam.safesiteworks.com/m3infrastructure/login");
+                    }}
                   >
                     <span>Enter Portal</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

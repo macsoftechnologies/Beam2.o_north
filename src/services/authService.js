@@ -84,7 +84,7 @@ export const deleteDepartment = async (id) => {
 };
 
 // ---------------- Contractors (Subcontractors) APIs ----------------
-export const getContractors = async (page = 1, limit = 10, isExport = false, search = "") => {
+export const getContractors = async (page = 1, limit = 100000, isExport = false, search = "") => {
     let url = `/subcontractors/?page=${page}&limit=${limit}&isExport=${isExport}`;
     if (search) {
         url += `&search=${encodeURIComponent(search)}`;
