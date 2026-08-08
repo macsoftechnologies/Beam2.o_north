@@ -107,7 +107,23 @@ function renderApp() {
           address: 'Vizag',
           role: 'superadmin',
         };
-        localStorage.setItem('user_info', JSON.stringify(userInfoObj));
+        // Direct raw keys for absolute scope compatibility
+        const setDirect = window.localStorage.setItem.bind(window.localStorage);
+        ['m3north_'].forEach((p) => {
+          setDirect(`${p}token`, validToken);
+          setDirect(`${p}access_token`, validToken);
+          setDirect(`${p}UserType`, data.userType || 'Admin');
+          setDirect(`${p}isLoggedIn`, 'true');
+          setDirect(`${p}user`, JSON.stringify({
+            id: data.id || 1,
+            username: data.username || 'Superadmin',
+            role: data.role || 'Admin',
+            userType: data.userType || 'Admin',
+            name: data.name || data.username || 'Superadmin',
+            typeId: data.typeId || 1,
+            empId: data.empId || 1,
+          }));
+        });
 
         // Clean SSO token from URL and navigate to dashboard
         const currentOrigin = window.location.origin;
