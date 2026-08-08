@@ -37,18 +37,17 @@ function renderApp() {
       }
 
       // Try candidates both with /auth/sso-login and /api/auth/sso-login
+      const envBaseUrl = (import.meta.env.VITE_API_BASE_URL || 'https://api.beam.safesiteworks.com/m3north').replace(/\/$/, '');
       const candidateEndpoints = [
-        'http://localhost:3000/auth/sso-login',
-        'http://localhost:3000/api/auth/sso-login',
-        'http://187.127.171.51/m3north/auth/sso-login',
-        'http://187.127.171.51/api/auth/sso-login',
+        `${envBaseUrl}/auth/sso-login`,
+        `${envBaseUrl}/api/auth/sso-login`,
+        'https://api.beam.safesiteworks.com/m3north/auth/sso-login',
+        'https://api.beam.safesiteworks.com/m3north/api/auth/sso-login',
       ];
 
-      const envBaseUrl = import.meta.env.VITE_API_BASE_URL;
-      if (envBaseUrl) {
-        const cleanEnv = envBaseUrl.replace(/\/$/, '');
-        candidateEndpoints.unshift(`${cleanEnv}/auth/sso-login`);
-        candidateEndpoints.unshift(`${cleanEnv}/sso-login`);
+      if (envBaseUrl.includes('localhost')) {
+        candidateEndpoints.push('http://localhost:3200/auth/sso-login');
+        candidateEndpoints.push('http://localhost:3200/api/auth/sso-login');
       }
 
       let success = false;
