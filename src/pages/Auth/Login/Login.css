@@ -994,3 +994,1955 @@ main {
   }
 
 }
+
+
+/* =========================================================
+   SAFESITEWORKS PRODUCT LOGIN THEME V2
+   M3 NORTH
+   Append-only visual layer
+   ========================================================= */
+
+:root {
+  --ssw-accent: #1760db;
+  --ssw-accent-2: #4a86f8;
+  --ssw-accent-rgb: 23,96,219;
+  --ssw-red: #e31937;
+  --ssw-gold: #f3b822;
+}
+
+
+/* ---------------------------------------------------------
+   Bigger, richer overall composition
+   --------------------------------------------------------- */
+
+main {
+  padding-top: 28px !important;
+  padding-bottom: 46px !important;
+}
+
+.login-container {
+  width: min(1120px, calc(100vw - 70px)) !important;
+
+  grid-template-columns:
+    minmax(0, 1.08fr)
+    minmax(420px, .92fr) !important;
+
+  border:
+    1px solid rgba(255,255,255,.13) !important;
+
+  border-radius: 24px !important;
+
+  box-shadow:
+    0 38px 105px rgba(0,0,0,.48),
+    0 0 52px rgba(var(--ssw-accent-rgb),.08) !important;
+}
+
+
+/* ---------------------------------------------------------
+   Product branding in left panel
+   --------------------------------------------------------- */
+
+.panel-left {
+  min-height: 590px !important;
+
+  padding:
+    52px 48px !important;
+
+  background:
+    radial-gradient(
+      circle at 82% 17%,
+      rgba(255,255,255,.15),
+      transparent 29%
+    ),
+    radial-gradient(
+      circle at 20% 85%,
+      rgba(var(--ssw-accent-rgb),.28),
+      transparent 42%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(var(--ssw-accent-rgb),.92),
+      rgba(3,21,54,.98)
+    ) !important;
+}
+
+
+/*
+ SafeSiteWorks logo added without modifying JSX.
+ Uses the existing globally served landing asset.
+*/
+
+.panel-top::before {
+  content: "";
+
+  display: block;
+
+  width: 255px;
+  height: 65px;
+
+  margin-bottom: 28px;
+
+  background-image:
+    url("/beam-assets/safesiteworks-wordmark.png?v=20");
+
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: contain;
+}
+
+
+.panel-badge {
+  margin-bottom: 19px !important;
+
+  color: #ffe07e !important;
+}
+
+
+.panel-title {
+  max-width: 430px !important;
+
+  margin-bottom: 18px !important;
+
+  font-size:
+    clamp(40px, 3.5vw, 51px) !important;
+
+  line-height: 1.01 !important;
+}
+
+
+.panel-desc {
+  max-width: 430px !important;
+
+  font-size: 13px !important;
+
+  line-height: 1.72 !important;
+}
+
+
+/*
+ Additional product-selling points without changing JSX.
+*/
+
+.panel-desc::after {
+  content:
+    "✓ Secure permit access   •   ✓ Real-time operations   •   ✓ Safer connected teams";
+
+  display: block;
+
+  max-width: 430px;
+
+  margin-top: 27px;
+
+  padding:
+    14px 16px;
+
+  border:
+    1px solid rgba(255,255,255,.14);
+
+  border-radius: 11px;
+
+  background:
+    rgba(1,12,31,.22);
+
+  color:
+    rgba(255,255,255,.87);
+
+  font-size: 10px;
+  font-weight: 650;
+
+  line-height: 1.6;
+}
+
+
+/* ---------------------------------------------------------
+   Right sign-in panel
+   --------------------------------------------------------- */
+
+.panel-right {
+  min-height: 590px !important;
+
+  padding:
+    50px 48px !important;
+
+  background:
+    radial-gradient(
+      circle at 85% 9%,
+      rgba(var(--ssw-accent-rgb),.09),
+      transparent 28%
+    ),
+    linear-gradient(
+      160deg,
+      rgba(4,20,48,.995),
+      rgba(1,8,23,.995)
+    ) !important;
+}
+
+
+.form-eyebrow {
+  color: var(--ssw-gold) !important;
+
+  font-size: 10px !important;
+
+  letter-spacing: .16em !important;
+}
+
+
+.form-heading {
+  font-size: 39px !important;
+
+  margin-bottom: 10px !important;
+}
+
+
+.form-heading span {
+  color: var(--ssw-gold) !important;
+}
+
+
+.form-subtext {
+  max-width: 390px;
+
+  margin-bottom: 32px !important;
+
+  color: #a8b7ca !important;
+
+  font-size: 13px !important;
+}
+
+
+/* ---------------------------------------------------------
+   Inputs
+   --------------------------------------------------------- */
+
+.field-label {
+  color: #aeb9c9 !important;
+
+  font-size: 9px !important;
+}
+
+
+.form-input {
+  min-height: 54px !important;
+
+  border:
+    1px solid rgba(255,255,255,.15) !important;
+
+  background:
+    rgba(255,255,255,.065) !important;
+
+  color: #fff !important;
+
+  font-size: 13px !important;
+}
+
+
+.form-input:focus {
+  border-color:
+    rgba(var(--ssw-accent-rgb),.90) !important;
+
+  background:
+    rgba(var(--ssw-accent-rgb),.075) !important;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(var(--ssw-accent-rgb),.14) !important;
+}
+
+
+.forgot-link {
+  color: var(--ssw-accent-2) !important;
+}
+
+
+/* ---------------------------------------------------------
+   Primary sign-in button
+   --------------------------------------------------------- */
+
+.login-btn {
+  min-height: 54px !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--ssw-accent),
+      var(--ssw-accent-2)
+    ) !important;
+
+  border-radius: 11px !important;
+
+  font-size: 13px !important;
+
+  box-shadow:
+    0 15px 34px
+    rgba(var(--ssw-accent-rgb),.25) !important;
+}
+
+
+.login-btn:hover:not(:disabled) {
+  transform:
+    translateY(-2px) !important;
+
+  box-shadow:
+    0 19px 44px
+    rgba(var(--ssw-accent-rgb),.32) !important;
+}
+
+
+/* ---------------------------------------------------------
+   Back link — keep icon sane
+   --------------------------------------------------------- */
+
+.back-link {
+  width:
+    min(1120px, calc(100% - 46px)) !important;
+
+  margin-left: auto !important;
+  margin-right: auto !important;
+
+  padding-top: 23px !important;
+
+  color: #b4c0d0 !important;
+
+  font-size: 11px !important;
+}
+
+
+.back-link svg {
+  width: 15px !important;
+  height: 15px !important;
+
+  min-width: 15px !important;
+  max-width: 15px !important;
+
+  min-height: 15px !important;
+  max-height: 15px !important;
+}
+
+
+/* ---------------------------------------------------------
+   Tablet
+   --------------------------------------------------------- */
+
+@media (max-width: 900px) {
+
+  .login-container {
+    width:
+      min(650px, calc(100vw - 32px)) !important;
+
+    grid-template-columns:
+      1fr !important;
+  }
+
+  .panel-left {
+    min-height: auto !important;
+
+    padding:
+      34px 32px !important;
+  }
+
+  .panel-top::before {
+    width: 220px;
+    height: 55px;
+
+    margin-bottom: 22px;
+  }
+
+  .panel-title {
+    font-size: 36px !important;
+  }
+
+  .panel-desc::after {
+    margin-top: 18px;
+  }
+
+  .panel-right {
+    min-height: auto !important;
+
+    padding:
+      36px 32px 40px !important;
+  }
+
+}
+
+
+/* ---------------------------------------------------------
+   Mobile
+   --------------------------------------------------------- */
+
+@media (max-width: 520px) {
+
+  .login-container {
+    width:
+      calc(100vw - 24px) !important;
+
+    border-radius: 17px !important;
+  }
+
+  .panel-left {
+    padding:
+      25px 22px !important;
+  }
+
+  .panel-top::before {
+    width: 180px;
+    height: 46px;
+
+    margin-bottom: 16px;
+  }
+
+  .panel-title {
+    font-size: 29px !important;
+  }
+
+  .panel-desc {
+    font-size: 11.5px !important;
+  }
+
+  .panel-desc::after {
+    content:
+      "Secure access • Real-time operations • Safer teams";
+
+    margin-top: 15px;
+
+    padding:
+      11px 12px;
+
+    font-size: 9px;
+  }
+
+  .panel-right {
+    padding:
+      29px 22px 32px !important;
+  }
+
+  .form-heading {
+    font-size: 29px !important;
+  }
+
+  .form-subtext {
+    margin-bottom: 24px !important;
+
+    font-size: 12px !important;
+  }
+
+  .form-input {
+    min-height: 50px !important;
+  }
+
+  .login-btn {
+    min-height: 50px !important;
+  }
+
+}
+
+
+/* ---------------------------------------------------------
+   Short laptop optimisation
+   --------------------------------------------------------- */
+
+@media (min-width: 901px) and (max-height: 800px) {
+
+  main {
+    padding-top: 14px !important;
+  }
+
+  .login-container {
+    width:
+      min(1030px, calc(100vw - 60px)) !important;
+  }
+
+  .panel-left,
+  .panel-right {
+    min-height: 500px !important;
+  }
+
+  .panel-left,
+  .panel-right {
+    padding-top: 38px !important;
+    padding-bottom: 38px !important;
+  }
+
+  .panel-top::before {
+    width: 220px;
+    height: 52px;
+
+    margin-bottom: 18px;
+  }
+
+  .panel-title {
+    font-size: 41px !important;
+  }
+
+  .panel-desc::after {
+    margin-top: 18px;
+  }
+
+  .form-subtext {
+    margin-bottom: 23px !important;
+  }
+
+}
+
+
+
+
+
+/* =========================================================
+   SAFESITEWORKS FINAL LOGIN LOGO
+   ========================================================= */
+
+.panel-top::before {
+  content: "" !important;
+
+  display: block !important;
+
+  width: 250px !important;
+  height: 58px !important;
+
+  margin:
+    0 0 24px 0 !important;
+
+  background-image:
+    url("/beam-assets/safesiteworks-logo-final.png?v=100") !important;
+
+  background-repeat:
+    no-repeat !important;
+
+  background-position:
+    left center !important;
+
+  background-size:
+    contain !important;
+
+  transform:
+    none !important;
+
+  clip-path:
+    none !important;
+}
+
+
+/* Large desktop */
+
+@media (min-width: 1500px) {
+
+  .panel-top::before {
+    width: 275px !important;
+    height: 64px !important;
+  }
+
+}
+
+
+/* Tablet */
+
+@media (max-width: 900px) {
+
+  .panel-top::before {
+    width: 215px !important;
+    height: 50px !important;
+
+    margin-bottom: 19px !important;
+  }
+
+}
+
+
+/* Mobile */
+
+@media (max-width: 520px) {
+
+  .panel-top::before {
+    width: 175px !important;
+    height: 42px !important;
+
+    margin-bottom: 16px !important;
+  }
+
+}
+
+
+
+/* =========================================================
+   FINAL SAFESITEWORKS LOGIN MOCKUP
+   ========================================================= */
+
+:root {
+  --final-accent: #1760db;
+  --final-accent2: #4387f7;
+  --final-rgb: 23,96,219;
+
+  --final-gold: #f4be2b;
+  --final-red: #ef172f;
+}
+
+
+/* ---------------------------------------------------------
+   Page
+   --------------------------------------------------------- */
+
+body {
+  background:
+    radial-gradient(
+      circle at 50% 40%,
+      rgba(var(--final-rgb), .10),
+      transparent 35%
+    ),
+    #020d25 !important;
+}
+
+main {
+  min-height:
+    calc(100vh - 55px) !important;
+
+  padding:
+    24px 18px 44px !important;
+
+  display:
+    flex !important;
+
+  align-items:
+    center !important;
+
+  justify-content:
+    center !important;
+}
+
+
+/* ---------------------------------------------------------
+   Main login card
+   --------------------------------------------------------- */
+
+.login-container {
+  width:
+    min(1180px, calc(100vw - 54px)) !important;
+
+  max-width:
+    1180px !important;
+
+  display:
+    grid !important;
+
+  grid-template-columns:
+    minmax(0, 1.15fr)
+    minmax(410px, .85fr) !important;
+
+  overflow:
+    hidden !important;
+
+  border:
+    1px solid rgba(255,255,255,.12) !important;
+
+  border-radius:
+    23px !important;
+
+  background:
+    #020d25 !important;
+
+  box-shadow:
+    0 34px 95px rgba(0,0,0,.44) !important;
+}
+
+
+/* ---------------------------------------------------------
+   Left marketing panel
+   --------------------------------------------------------- */
+
+.panel-left {
+  position:
+    relative !important;
+
+  min-width:
+    0 !important;
+
+  min-height:
+    620px !important;
+
+  padding:
+    58px 48px !important;
+
+  display:
+    flex !important;
+
+  flex-direction:
+    column !important;
+
+  justify-content:
+    center !important;
+
+  overflow:
+    hidden !important;
+
+  background:
+    radial-gradient(
+      circle at 82% 18%,
+      rgba(255,255,255,.13),
+      transparent 31%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(var(--final-rgb), .98),
+      rgba(4,25,65,.98)
+    ) !important;
+}
+
+
+.panel-left::before {
+  content:
+    "" !important;
+
+  position:
+    absolute !important;
+
+  inset:
+    0 !important;
+
+  opacity:
+    .32 !important;
+
+  pointer-events:
+    none !important;
+
+  background-image:
+    linear-gradient(
+      rgba(255,255,255,.07) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.07) 1px,
+      transparent 1px
+    ) !important;
+
+  background-size:
+    38px 38px !important;
+}
+
+
+.panel-left::after {
+  content:
+    "" !important;
+
+  position:
+    absolute !important;
+
+  top:
+    0 !important;
+
+  left:
+    0 !important;
+
+  right:
+    0 !important;
+
+  height:
+    3px !important;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--final-accent),
+      var(--final-accent2),
+      var(--final-gold)
+    ) !important;
+}
+
+
+.panel-top,
+.panel-title,
+.panel-desc,
+.panel-badge {
+  position:
+    relative !important;
+
+  z-index:
+    2 !important;
+}
+
+
+/* ---------------------------------------------------------
+   Correct SafeSiteWorks branding
+   --------------------------------------------------------- */
+
+.ssw-login-brand {
+  position:
+    relative;
+
+  z-index:
+    3;
+
+  margin-bottom:
+    32px;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    17px;
+}
+
+
+.ssw-login-cap {
+  display:
+    block;
+
+  width:
+    94px;
+
+  height:
+    72px;
+
+  flex:
+    0 0 94px;
+
+  object-fit:
+    contain;
+
+  object-position:
+    center;
+}
+
+
+.ssw-login-wordmark {
+  display:
+    inline-flex;
+
+  align-items:
+    baseline;
+
+  white-space:
+    nowrap;
+
+  font-size:
+    42px;
+
+  font-weight:
+    850;
+
+  line-height:
+    1;
+
+  letter-spacing:
+    -.055em;
+}
+
+
+.ssw-safe {
+  color:
+    #ffffff;
+}
+
+
+.ssw-works {
+  color:
+    var(--final-red);
+}
+
+
+/*
+ Disable all old logo pseudo implementations.
+*/
+
+.panel-top::before {
+  display:
+    none !important;
+
+  content:
+    none !important;
+}
+
+
+/* ---------------------------------------------------------
+   Division information
+   --------------------------------------------------------- */
+
+.panel-badge {
+  margin-bottom:
+    25px !important;
+
+  padding:
+    8px 14px !important;
+
+  color:
+    var(--final-gold) !important;
+}
+
+
+.panel-title {
+  max-width:
+    500px !important;
+
+  margin:
+    0 0 22px !important;
+
+  font-size:
+    clamp(43px, 4vw, 58px) !important;
+
+  line-height:
+    .98 !important;
+
+  letter-spacing:
+    -.045em !important;
+}
+
+
+.panel-title span {
+  color:
+    var(--final-gold) !important;
+}
+
+
+.panel-desc {
+  max-width:
+    520px !important;
+
+  margin:
+    0 !important;
+
+  color:
+    rgba(255,255,255,.80) !important;
+
+  font-size:
+    14px !important;
+
+  line-height:
+    1.65 !important;
+}
+
+
+.panel-desc::after {
+  content:
+    "✓ Secure permit access  •  ✓ Real-time operations  •  ✓ Safer connected teams";
+
+  display:
+    block;
+
+  margin-top:
+    31px;
+
+  padding:
+    15px 18px;
+
+  border:
+    1px solid rgba(255,255,255,.18);
+
+  border-radius:
+    11px;
+
+  background:
+    rgba(1,12,32,.25);
+
+  color:
+    rgba(255,255,255,.93);
+
+  font-size:
+    11px;
+
+  font-weight:
+    700;
+
+  line-height:
+    1.55;
+}
+
+
+/* ---------------------------------------------------------
+   Watermark
+   --------------------------------------------------------- */
+
+.panel-compass {
+  position:
+    absolute !important;
+
+  right:
+    4px !important;
+
+  bottom:
+    -25px !important;
+
+  color:
+    rgba(255,255,255,.055) !important;
+
+  font-size:
+    220px !important;
+
+  font-weight:
+    900 !important;
+}
+
+
+/* ---------------------------------------------------------
+   Right form panel
+   --------------------------------------------------------- */
+
+.panel-right {
+  min-width:
+    0 !important;
+
+  min-height:
+    620px !important;
+
+  padding:
+    58px 54px !important;
+
+  display:
+    flex !important;
+
+  flex-direction:
+    column !important;
+
+  justify-content:
+    center !important;
+
+  overflow:
+    hidden !important;
+
+  background:
+    radial-gradient(
+      circle at 85% 5%,
+      rgba(var(--final-rgb), .08),
+      transparent 31%
+    ),
+    linear-gradient(
+      160deg,
+      #03142f,
+      #02091b
+    ) !important;
+}
+
+
+/* ---------------------------------------------------------
+   New heading
+   --------------------------------------------------------- */
+
+.form-eyebrow {
+  margin-bottom:
+    17px !important;
+
+  color:
+    var(--final-gold) !important;
+
+  font-size:
+    11px !important;
+
+  font-weight:
+    850 !important;
+
+  letter-spacing:
+    .13em !important;
+}
+
+
+.form-heading {
+  margin:
+    0 0 13px !important;
+
+  color:
+    #fff !important;
+
+  font-size:
+    clamp(37px, 3.3vw, 48px) !important;
+
+  font-weight:
+    850 !important;
+
+  line-height:
+    1.03 !important;
+
+  letter-spacing:
+    -.045em !important;
+}
+
+
+.ssw-heading-safe {
+  color:
+    #ffffff !important;
+}
+
+
+.ssw-heading-works {
+  color:
+    var(--final-red) !important;
+}
+
+
+.form-subtext {
+  max-width:
+    440px !important;
+
+  margin:
+    0 0 35px !important;
+
+  color:
+    #a9b6c8 !important;
+
+  font-size:
+    13px !important;
+
+  line-height:
+    1.55 !important;
+}
+
+
+/* ---------------------------------------------------------
+   Form
+   --------------------------------------------------------- */
+
+.field-group {
+  margin-bottom:
+    20px !important;
+}
+
+
+.field-label {
+  margin-bottom:
+    9px !important;
+
+  color:
+    #aab5c6 !important;
+
+  font-size:
+    10px !important;
+
+  font-weight:
+    750 !important;
+}
+
+
+.form-input {
+  width:
+    100% !important;
+
+  min-height:
+    57px !important;
+
+  border:
+    1px solid rgba(255,255,255,.14) !important;
+
+  border-radius:
+    11px !important;
+
+  background:
+    #eff5ff !important;
+
+  color:
+    #111827 !important;
+
+  font-size:
+    14px !important;
+}
+
+
+.form-input:focus {
+  border-color:
+    rgba(var(--final-rgb), .90) !important;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(var(--final-rgb), .14) !important;
+}
+
+
+.form-meta {
+  margin:
+    -3px 0 22px !important;
+}
+
+
+.forgot-link {
+  color:
+    var(--final-accent2) !important;
+
+  font-size:
+    12px !important;
+}
+
+
+/* ---------------------------------------------------------
+   Button
+   --------------------------------------------------------- */
+
+.login-btn {
+  min-height:
+    58px !important;
+
+  border-radius:
+    11px !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--final-accent),
+      var(--final-accent2)
+    ) !important;
+
+  color:
+    #fff !important;
+
+  font-size:
+    14px !important;
+
+  font-weight:
+    850 !important;
+
+  box-shadow:
+    0 16px 37px
+    rgba(var(--final-rgb), .24) !important;
+}
+
+
+.login-btn:hover:not(:disabled) {
+  transform:
+    translateY(-2px) !important;
+}
+
+
+/* ---------------------------------------------------------
+   Back link
+   --------------------------------------------------------- */
+
+.back-link {
+  width:
+    min(1180px, calc(100% - 54px)) !important;
+
+  margin-left:
+    auto !important;
+
+  margin-right:
+    auto !important;
+
+  padding-top:
+    21px !important;
+}
+
+
+.back-link svg {
+  width:
+    15px !important;
+
+  height:
+    15px !important;
+
+  max-width:
+    15px !important;
+
+  max-height:
+    15px !important;
+}
+
+
+/* ---------------------------------------------------------
+   Short laptop
+   --------------------------------------------------------- */
+
+@media (min-width: 901px) and (max-height: 800px) {
+
+  .login-container {
+    width:
+      min(1040px, calc(100vw - 52px)) !important;
+  }
+
+  .panel-left,
+  .panel-right {
+    min-height:
+      515px !important;
+
+    padding-top:
+      39px !important;
+
+    padding-bottom:
+      39px !important;
+  }
+
+  .ssw-login-brand {
+    margin-bottom:
+      20px;
+  }
+
+  .ssw-login-cap {
+    width:
+      72px;
+
+    height:
+      56px;
+
+    flex-basis:
+      72px;
+  }
+
+  .ssw-login-wordmark {
+    font-size:
+      33px;
+  }
+
+  .panel-title {
+    font-size:
+      42px !important;
+  }
+
+  .panel-desc::after {
+    margin-top:
+      18px;
+  }
+
+}
+
+
+/* ---------------------------------------------------------
+   Tablet
+   --------------------------------------------------------- */
+
+@media (max-width: 900px) {
+
+  .login-container {
+    width:
+      min(650px, calc(100vw - 30px)) !important;
+
+    grid-template-columns:
+      1fr !important;
+  }
+
+  .panel-left,
+  .panel-right {
+    min-height:
+      auto !important;
+  }
+
+  .panel-left {
+    padding:
+      34px 31px !important;
+  }
+
+  .panel-right {
+    padding:
+      37px 31px 41px !important;
+  }
+
+  .ssw-login-brand {
+    margin-bottom:
+      20px;
+  }
+
+  .ssw-login-cap {
+    width:
+      70px;
+
+    height:
+      54px;
+
+    flex-basis:
+      70px;
+  }
+
+  .ssw-login-wordmark {
+    font-size:
+      32px;
+  }
+
+  .panel-title {
+    font-size:
+      37px !important;
+  }
+
+}
+
+
+/* ---------------------------------------------------------
+   Mobile
+   --------------------------------------------------------- */
+
+@media (max-width: 520px) {
+
+  main {
+    padding:
+      13px 11px 28px !important;
+  }
+
+  .login-container {
+    width:
+      calc(100vw - 22px) !important;
+
+    border-radius:
+      17px !important;
+  }
+
+  .panel-left {
+    padding:
+      26px 21px !important;
+  }
+
+  .panel-right {
+    padding:
+      30px 21px 33px !important;
+  }
+
+  .ssw-login-brand {
+    gap:
+      10px;
+
+    margin-bottom:
+      17px;
+  }
+
+  .ssw-login-cap {
+    width:
+      52px;
+
+    height:
+      42px;
+
+    flex-basis:
+      52px;
+  }
+
+  .ssw-login-wordmark {
+    font-size:
+      24px;
+  }
+
+  .panel-title {
+    font-size:
+      30px !important;
+  }
+
+  .panel-desc {
+    font-size:
+      11.5px !important;
+  }
+
+  .panel-desc::after {
+    content:
+      "✓ Secure access  •  ✓ Real-time operations  •  ✓ Safer teams";
+
+    margin-top:
+      16px;
+
+    padding:
+      11px 12px;
+
+    font-size:
+      9px;
+  }
+
+  .form-heading {
+    font-size:
+      30px !important;
+  }
+
+  .form-subtext {
+    margin-bottom:
+      24px !important;
+  }
+
+  .form-input {
+    min-height:
+      51px !important;
+  }
+
+  .login-btn {
+    min-height:
+      52px !important;
+  }
+
+}
+
+
+
+/* =========================================================
+   FINAL LOGIN AMBIENT BACKGROUND
+   ========================================================= */
+
+body {
+  position: relative !important;
+
+  background:
+    radial-gradient(
+      circle at 50% 52%,
+      rgba(30,105,235, .13),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 12% 30%,
+      rgba(30,105,235, .08),
+      transparent 27%
+    ),
+    radial-gradient(
+      circle at 88% 74%,
+      rgba(244,190,43,.045),
+      transparent 24%
+    ),
+    linear-gradient(
+      145deg,
+      #031532 0%,
+      #020d25 47%,
+      #010817 100%
+    ) !important;
+
+  background-attachment:
+    fixed !important;
+}
+
+
+/*
+ Subtle full-screen grid.
+*/
+
+body::before {
+  content: "" !important;
+
+  position: fixed !important;
+  inset: 0 !important;
+
+  z-index: 0 !important;
+
+  pointer-events: none !important;
+
+  opacity: .23 !important;
+
+  background-image:
+    linear-gradient(
+      rgba(78,130,196,.10) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(78,130,196,.10) 1px,
+      transparent 1px
+    ) !important;
+
+  background-size:
+    54px 54px !important;
+
+  mask-image:
+    radial-gradient(
+      ellipse at center,
+      black 15%,
+      rgba(0,0,0,.80) 48%,
+      transparent 92%
+    ) !important;
+}
+
+
+/*
+ Small operational light nodes.
+ No JS or animation required.
+*/
+
+body::after {
+  content: "" !important;
+
+  position: fixed !important;
+  inset: 0 !important;
+
+  z-index: 0 !important;
+
+  pointer-events: none !important;
+
+  opacity: .46 !important;
+
+  background:
+    radial-gradient(
+      circle at 9% 22%,
+      rgba(30,105,235,.95) 0 1px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 18% 69%,
+      rgba(75,162,255,.75) 0 1px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 31% 18%,
+      rgba(244,190,43,.68) 0 1px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 73% 16%,
+      rgba(30,105,235,.72) 0 1px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 89% 34%,
+      rgba(70,162,255,.70) 0 1px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 82% 78%,
+      rgba(244,190,43,.58) 0 1px,
+      transparent 2px
+    ) !important;
+
+  background-size:
+    310px 230px,
+    390px 290px,
+    350px 270px,
+    420px 310px,
+    370px 260px,
+    430px 320px !important;
+}
+
+
+/*
+ Ensure application remains above ambient layers.
+*/
+
+#root {
+  position: relative !important;
+
+  z-index: 1 !important;
+
+  min-height: 100vh !important;
+}
+
+
+/*
+ Soft halo immediately behind the card.
+*/
+
+.login-container {
+  position: relative !important;
+
+  isolation: isolate !important;
+
+  box-shadow:
+    0 36px 105px rgba(0,0,0,.46),
+    0 0 85px rgba(30,105,235,.075) !important;
+}
+
+
+/*
+ Keep background restrained on mobile.
+*/
+
+@media (max-width: 600px) {
+
+  body::before {
+    opacity: .15 !important;
+
+    background-size:
+      42px 42px !important;
+  }
+
+  body::after {
+    opacity: .25 !important;
+  }
+
+}
+
+
+
+/* =========================================================
+   FINAL LOGIN INPUT VISIBILITY FIX
+   ========================================================= */
+
+/*
+ Keep entered text readable in every state.
+*/
+
+.form-input,
+.form-input:focus,
+.form-input:active {
+  color: #111827 !important;
+
+  -webkit-text-fill-color: #111827 !important;
+
+  caret-color: #111827 !important;
+
+  opacity: 1 !important;
+}
+
+
+/*
+ Placeholder stays softer than entered text.
+*/
+
+.form-input::placeholder {
+  color: #7a8798 !important;
+
+  -webkit-text-fill-color: #7a8798 !important;
+
+  opacity: 1 !important;
+}
+
+
+/*
+ Chrome / Edge saved credentials and autofill.
+ Prevent browser autofill from changing the text to
+ an unreadable colour.
+*/
+
+.form-input:-webkit-autofill,
+.form-input:-webkit-autofill:hover,
+.form-input:-webkit-autofill:focus,
+.form-input:-webkit-autofill:active {
+  -webkit-text-fill-color: #111827 !important;
+
+  caret-color: #111827 !important;
+
+  -webkit-box-shadow:
+    0 0 0 1000px #eff5ff inset !important;
+
+  box-shadow:
+    0 0 0 1000px #eff5ff inset !important;
+
+  transition:
+    background-color 9999s ease-out 0s !important;
+}
+
+
+/*
+ Firefox autofill.
+*/
+
+.form-input:autofill {
+  color: #111827 !important;
+
+  background: #eff5ff !important;
+
+  caret-color: #111827 !important;
+}
+
+
+/*
+ Password dots must also remain visible.
+*/
+
+input[type="password"].form-input {
+  color: #111827 !important;
+
+  -webkit-text-fill-color: #111827 !important;
+}
+
+
+/*
+ Focus should retain the light field, not turn navy.
+*/
+
+.form-input:focus {
+  background: #eff5ff !important;
+}
+
+
+/* =========================================================
+   BEAM 2.0 LOGIN BADGE
+   ========================================================= */
+
+.beam20-login-badge {
+  position: relative;
+  z-index: 3;
+
+  width: fit-content;
+
+  margin: -10px 0 18px;
+
+  padding: 7px 12px;
+
+  border: 1px solid rgba(243,184,34,.65);
+  border-radius: 999px;
+
+  background: rgba(243,184,34,.06);
+
+  color: #f3b822;
+
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: .07em;
+}
+
+@media (max-width: 520px) {
+  .beam20-login-badge {
+    margin-top: -5px;
+    margin-bottom: 14px;
+    padding: 6px 10px;
+    font-size: 9px;
+  }
+}
+
+
+
+/* =========================================================
+   FINAL PASSWORD VISIBILITY TOGGLE
+   ========================================================= */
+
+/*
+ Ensure password field reserves enough room for eye button.
+*/
+
+input[type="password"].form-input,
+input[type="text"].form-input {
+  padding-right: 52px !important;
+}
+
+
+/*
+ Eye button.
+*/
+
+.toggle-pass {
+  position: absolute !important;
+
+  top: 50% !important;
+  right: 13px !important;
+
+  z-index: 20 !important;
+
+  width: 34px !important;
+  height: 34px !important;
+
+  padding: 0 !important;
+
+  display: flex !important;
+
+  align-items: center !important;
+  justify-content: center !important;
+
+  transform:
+    translateY(-50%) !important;
+
+  border: 0 !important;
+
+  border-radius: 8px !important;
+
+  background:
+    transparent !important;
+
+  color:
+    #56647a !important;
+
+  opacity: 1 !important;
+
+  visibility: visible !important;
+
+  cursor: pointer !important;
+
+  pointer-events: auto !important;
+
+  transition:
+    color .16s ease,
+    background .16s ease,
+    transform .16s ease !important;
+}
+
+
+.toggle-pass:hover {
+  color:
+    #182235 !important;
+
+  background:
+    rgba(17,24,39,.06) !important;
+}
+
+
+.toggle-pass:focus-visible {
+  outline:
+    2px solid rgba(46,117,240,.60) !important;
+
+  outline-offset:
+    1px !important;
+}
+
+
+/*
+ SVG visibility.
+*/
+
+.toggle-pass svg {
+  display: block !important;
+
+  width: 19px !important;
+  height: 19px !important;
+
+  min-width: 19px !important;
+  min-height: 19px !important;
+
+  max-width: 19px !important;
+  max-height: 19px !important;
+
+  fill: none !important;
+
+  stroke: currentColor !important;
+
+  opacity: 1 !important;
+
+  visibility: visible !important;
+
+  pointer-events: none !important;
+}
+
+
+/*
+ Some icon libraries render paths separately.
+*/
+
+.toggle-pass svg path,
+.toggle-pass svg circle,
+.toggle-pass svg line,
+.toggle-pass svg polyline {
+  stroke: currentColor !important;
+
+  opacity: 1 !important;
+
+  visibility: visible !important;
+}
+
+
+/*
+ Prevent field styling from covering the button.
+*/
+
+.field-wrap {
+  position: relative !important;
+
+  overflow: visible !important;
+}
+
+
+.form-input {
+  position: relative !important;
+
+  z-index: 1 !important;
+}
+
+
+.toggle-pass {
+  z-index: 3 !important;
+}
+
+
+/*
+ Browser autofill should not cover the eye.
+*/
+
+.form-input:-webkit-autofill {
+  position: relative !important;
+
+  z-index: 1 !important;
+}
+
+
+/*
+ Mobile.
+*/
+
+@media (max-width: 520px) {
+
+  .toggle-pass {
+    right: 9px !important;
+
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .toggle-pass svg {
+    width: 18px !important;
+    height: 18px !important;
+
+    min-width: 18px !important;
+    min-height: 18px !important;
+  }
+
+}
+

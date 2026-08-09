@@ -1021,3 +1021,299 @@
   background: var(--bg-card, #ffffff);
   border-color: var(--accent-primary, #3b82f6);
 }
+/* =========================================================
+   BEAM 2.0 NAV BADGE
+   ========================================================= */
+
+.beam20-nav-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 25px;
+
+  margin-left: 10px;
+
+  padding: 0 10px;
+
+  border: 1px solid rgba(224,165,37,.55);
+  border-radius: 999px;
+
+  background: rgba(224,165,37,.08);
+
+  color: #d79b1e;
+
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .05em;
+
+  vertical-align: middle;
+}
+
+@media (max-width: 700px) {
+  .beam20-nav-badge {
+    min-height: 22px;
+    padding: 0 8px;
+    font-size: 8px;
+  }
+}
+
+
+
+/* =========================================================
+   FINAL BEAM20 DASHBOARD TITLE BADGE
+   ========================================================= */
+
+.beam20-title-row {
+  display: flex !important;
+
+  align-items: center !important;
+
+  flex-wrap: wrap !important;
+
+  gap: 10px !important;
+
+  width: fit-content !important;
+}
+
+
+/*
+ Keep the dashboard/site title and BEAM badge
+ visually on the same line.
+*/
+
+.beam20-title-row > h1,
+.beam20-title-row > h2,
+.beam20-title-row > h3,
+.beam20-title-row > h4,
+.beam20-title-row > h5,
+.beam20-title-row > h6,
+.beam20-title-row > div,
+.beam20-title-row > span:not(.beam20-nav-badge) {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+
+/* ---------------------------------------------------------
+   BEAM 2.0 pill
+   --------------------------------------------------------- */
+
+.beam20-nav-badge {
+  position: relative !important;
+
+  display: inline-flex !important;
+
+  align-items: center !important;
+  justify-content: center !important;
+
+  min-height: 25px !important;
+
+  margin: 0 !important;
+
+  padding:
+    0 11px !important;
+
+  border:
+    1px solid rgba(244,190,43,.70) !important;
+
+  border-radius:
+    999px !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(244,190,43,.10),
+      rgba(244,190,43,.035)
+    ) !important;
+
+  color:
+    #f4be2b !important;
+
+  font-size:
+    9px !important;
+
+  font-weight:
+    850 !important;
+
+  line-height:
+    1 !important;
+
+  letter-spacing:
+    .055em !important;
+
+  white-space:
+    nowrap !important;
+
+  box-shadow:
+    0 0 14px rgba(244,190,43,.07) !important;
+
+  vertical-align:
+    middle !important;
+
+  overflow:
+    visible !important;
+}
+
+
+/* ---------------------------------------------------------
+   Small sparkling star
+   --------------------------------------------------------- */
+
+.beam20-nav-badge::after {
+  content: "✦";
+
+  position: absolute;
+
+  top: -12px;
+  right: -13px;
+
+  width: 22px;
+  height: 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #ffd54a;
+
+  font-size: 20px;
+
+  line-height: 1;
+
+  text-shadow:
+    0 0 5px rgba(255,213,74,.95),
+    0 0 11px rgba(244,190,43,.72),
+    0 0 20px rgba(244,190,43,.38);
+
+  pointer-events: none;
+
+  transform-origin: center;
+
+  animation:
+    beam20Sparkle 2.4s ease-in-out infinite;
+}
+
+
+.beam20-nav-badge::before {
+  content: "";
+
+  position: absolute;
+
+  top: -5px;
+  right: -6px;
+
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #fff4ad;
+
+  box-shadow:
+    0 0 8px rgba(255,223,88,.9);
+
+  opacity: .7;
+
+  pointer-events: none;
+
+  animation:
+    beam20MiniSpark 2.4s ease-in-out infinite;
+}
+
+
+@keyframes beam20Sparkle {
+
+  0%,
+  100% {
+    opacity: .42;
+
+    transform:
+      scale(.65)
+      rotate(0deg);
+  }
+
+  45% {
+    opacity: 1;
+
+    transform:
+      scale(1.16)
+      rotate(18deg);
+  }
+
+  62% {
+    opacity: .78;
+
+    transform:
+      scale(.90)
+      rotate(25deg);
+  }
+
+}
+
+
+@keyframes beam20MiniSpark {
+
+  0%,
+  100% {
+    opacity: .15;
+
+    transform: scale(.5);
+  }
+
+  48% {
+    opacity: .95;
+
+    transform: scale(1.25);
+  }
+
+}
+
+
+/* ---------------------------------------------------------
+   Mobile
+   --------------------------------------------------------- */
+
+@media (max-width: 700px) {
+
+  .beam20-title-row {
+    gap: 7px !important;
+  }
+
+  .beam20-nav-badge {
+    min-height: 21px !important;
+
+    padding:
+      0 8px !important;
+
+    font-size:
+      7.5px !important;
+  }
+
+  .beam20-nav-badge::after {
+    top: -9px;
+    right: -10px;
+
+    font-size: 15px;
+  }
+
+}
+
+
+/*
+ Respect accessibility preference.
+*/
+
+@media (prefers-reduced-motion: reduce) {
+
+  .beam20-nav-badge::after,
+  .beam20-nav-badge::before {
+    animation: none !important;
+  }
+
+  .beam20-nav-badge::after {
+    opacity: .75 !important;
+  }
+
+}
+

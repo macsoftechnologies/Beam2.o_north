@@ -521,7 +521,10 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
           <i className="ti ti-menu-2" />
         </button>
         <div className="navbar-title">
-          <h4>M3 North Dashboard</h4>
+          <div className="beam20-title-row">
+<h4>M3 North Dashboard</h4>
+<span className="beam20-nav-badge">BEAM 2.0</span>
+</div>
           <p>Operational Overview &amp; System Analytics</p>
         </div>
       </div>

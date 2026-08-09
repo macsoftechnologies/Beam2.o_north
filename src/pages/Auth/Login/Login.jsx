@@ -118,7 +118,21 @@ export default function Login() {
             <div className="panel-compass">N</div>
 
             <div className="panel-top">
-              <div className="panel-badge">
+              <div className="ssw-login-brand">
+                  <img
+                    src="/beam-assets/safesite-cap-only.png?v=300"
+                    alt=""
+                    aria-hidden="true"
+                    className="ssw-login-cap"
+                  />
+                  <div className="ssw-login-wordmark">
+                    <span className="ssw-safe">SafeSite</span>
+                    <span className="ssw-works">Works</span>
+                  </div>
+                </div>
+                <div className="beam20-login-badge">BEAM 2.0</div>
+
+                <div className="panel-badge">
                 <span className="dot"></span>Division 01
               </div>
               <h2 className="panel-title">
@@ -135,9 +149,10 @@ export default function Login() {
           <div className="panel-right">
             <div className="form-eyebrow">Secure Access</div>
             <h1 className="form-heading">
-              Welcome
+              Welcome to
               <br />
-              <span>Back</span>
+              <span className="ssw-heading-safe">SafeSite</span>
+              <span className="ssw-heading-works">Works</span>
             </h1>
             <p className="form-subtext">Sign in to your M3 North account to continue</p>
 
