@@ -891,28 +891,43 @@ const ListRequest = () => {
     }
   }, [location.state, location.search]);
 
-  // ─── Component States ──────────────────────────────────────────────────────
-  const [requests, setRequests] = useState([]);
-  const [totalCount, setTotalCount] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [limit, setLimit] = useState(30);
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedIds, setSelectedIds] = useState([]);
-  const [loadingEditId, setLoadingEditId] = useState(null);
+const STORAGE_KEY_FILTERS = "beam_list_request_filters";
+const STORAGE_KEY_PAGE = "beam_list_request_page";
 
-  // Dropdown options (from dynamic databases)
-  const [contractors, setContractors] = useState([]);
-  const [activitiesList, setActivitiesList] = useState([]);
-  const [buildingsList, setBuildingsList] = useState([]);
-  const [floorsList, setFloorsList] = useState([]);
-  const [zonesList, setZonesList] = useState([]);
-  const [roomsList, setRoomsList] = useState([]);
-
-  // Collapsible filters card
-  const [filtersOpen, setFiltersOpen] = useState(true);
-
-  // Search Filter form state
-  const [searchFilters, setSearchFilters] = useState({
+const getInitialSearchFilters = () => {
+  const saved = sessionStorage.getItem(STORAGE_KEY_FILTERS);
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      if (parsed && typeof parsed === "object") {
+        return {
+          keyword: "",
+          permitNo: "",
+          contractors: [],
+          statuses: [],
+          buildings: [],
+          levels: [],
+          areas: [],
+          zones: [],
+          hras: [],
+          permitType: "",
+          permitUnder: "",
+          fromDate: "",
+          toDate: "",
+          startTime: "",
+          endTime: "",
+          nightShift: "",
+          newDate: "",
+          newEndTime: "",
+          typeOfActivityId: "",
+          ...parsed,
+        };
+      }
+    } catch (e) {
+      console.error("Failed to parse saved search filters", e);
+    }
+  }
+  return {
     keyword: "",
     permitNo: "",
     contractors: [],
@@ -932,7 +947,40 @@ const ListRequest = () => {
     newDate: "",
     newEndTime: "",
     typeOfActivityId: ""
-  });
+  };
+};
+
+const getInitialPage = () => {
+  const savedPage = sessionStorage.getItem(STORAGE_KEY_PAGE);
+  if (savedPage) {
+    const p = parseInt(savedPage, 10);
+    if (!isNaN(p) && p > 0) return p;
+  }
+  return 1;
+};
+
+  // ─── Component States ──────────────────────────────────────────────────────
+  const [requests, setRequests] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(getInitialPage);
+  const [limit, setLimit] = useState(30);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [loadingEditId, setLoadingEditId] = useState(null);
+
+  // Dropdown options (from dynamic databases)
+  const [contractors, setContractors] = useState([]);
+  const [activitiesList, setActivitiesList] = useState([]);
+  const [buildingsList, setBuildingsList] = useState([]);
+  const [floorsList, setFloorsList] = useState([]);
+  const [zonesList, setZonesList] = useState([]);
+  const [roomsList, setRoomsList] = useState([]);
+
+  // Collapsible filters card
+  const [filtersOpen, setFiltersOpen] = useState(true);
+
+  // Search Filter form state
+  const [searchFilters, setSearchFilters] = useState(getInitialSearchFilters);
 
   // Modal Control States
   const [activeModal, setActiveModal] = useState(null); // 'status', 'time', 'safety', 'notes', 'logs', 'copy'
@@ -954,9 +1002,9 @@ const ListRequest = () => {
   const [highRiskHotwork, setHighRiskHotwork] = useState(0);
   const [hotWorkChecklistFilled, setHotWorkChecklistFilled] = useState(0);
   const [fireGuardPresent, setFireGuardPresent] = useState(0);
-  const [hHeatSource, setHHeatSource] = useState(0);
-  const [hWorkplaceCheck, setHWorkplaceCheck] = useState(0);
-  const [hFireDetectors, setHFireDetectors] = useState(0);
+  const [hHeatSource, setHHeatSource] = useState("");
+  const [hWorkplaceCheck, setHWorkplaceCheck] = useState("");
+  const [hFireDetectors, setHFireDetectors] = useState("");
   const [hStartTime, setHStartTime] = useState("");
   const [hEndTime, setHEndTime] = useState("");
 
@@ -1149,19 +1197,49 @@ const ListRequest = () => {
     return result;
   }, [zonesList, floorsList, roomsList, searchFilters.buildings, searchFilters.levels]);
 
-  // Filter rooms based on selected levels/floors and group them by zone names
+  // Filter rooms based on selected levels/floors and zones, and group them by zone names
   const filteredRooms = useMemo(() => {
     let roomsToGroup = roomsList;
 
-    if (searchFilters.buildings.length > 0) {
+    if (searchFilters.buildings && searchFilters.buildings.length > 0) {
       roomsToGroup = roomsToGroup.filter(r => searchFilters.buildings.includes(String(r.building_id)));
     }
 
-    if (searchFilters.levels.length > 0) {
+    if (searchFilters.levels && searchFilters.levels.length > 0) {
+      const isLevelMatch = (filterLevel, targetName) => {
+        if (!filterLevel || !targetName) return false;
+        const fl = String(filterLevel).trim().toLowerCase();
+        const tn = String(targetName).trim().toLowerCase();
+        if (fl === tn || fl.endsWith(tn) || tn.endsWith(fl)) return true;
+        const baseFl = fl.replace(/^(?:[a-z0-9]+\s*[-:]?\s*)/i, '').trim();
+        const baseTn = tn.replace(/^(?:[a-z0-9]+\s*[-:]?\s*)/i, '').trim();
+        return baseFl.length > 0 && baseFl === baseTn;
+      };
+
       const matchedFloorIds = floorsList
-        .filter(f => searchFilters.levels.includes(f.floor_name))
+        .filter(f => searchFilters.levels.some(l => isLevelMatch(l, f.floor_name)))
         .map(f => f.fl_id);
       roomsToGroup = roomsToGroup.filter(r => matchedFloorIds.includes(r.fl_id));
+    }
+
+    if (searchFilters.zones && searchFilters.zones.length > 0) {
+      const selectedZoneNamesOrIds = searchFilters.zones.map(z => String(z).trim().toLowerCase());
+      const matchedZoneIds = zonesList
+        .filter(z =>
+          selectedZoneNamesOrIds.includes(String(z.id).trim().toLowerCase()) ||
+          selectedZoneNamesOrIds.includes(String(z.zone).trim().toLowerCase())
+        )
+        .map(z => String(z.id));
+
+      roomsToGroup = roomsToGroup.filter(r => {
+        const roomZoneId = String(r.zone_id || '').trim().toLowerCase();
+        const roomZoneName = String(r.zone_name || r.zone || '').trim().toLowerCase();
+        return (
+          (r.zone_id && matchedZoneIds.includes(String(r.zone_id))) ||
+          selectedZoneNamesOrIds.includes(roomZoneId) ||
+          (roomZoneName && selectedZoneNamesOrIds.includes(roomZoneName))
+        );
+      });
     }
 
     const groupMap = {};
@@ -1182,7 +1260,7 @@ const ListRequest = () => {
       floorName: zoneName,
       zones: groupMap[zoneName]
     }));
-  }, [roomsList, zonesList, floorsList, searchFilters.buildings, searchFilters.levels]);
+  }, [roomsList, zonesList, floorsList, searchFilters.buildings, searchFilters.levels, searchFilters.zones]);
 
   // ─── Fetch List Data ──────────────────────────────────────────────────────
   const fetchRequests = useCallback(async (page = 1) => {
@@ -1271,6 +1349,14 @@ const ListRequest = () => {
     }
   }, [searchFilters, limit]);
 
+  useEffect(() => {
+    sessionStorage.setItem(STORAGE_KEY_FILTERS, JSON.stringify(searchFilters));
+  }, [searchFilters]);
+
+  useEffect(() => {
+    sessionStorage.setItem(STORAGE_KEY_PAGE, String(currentPage));
+  }, [currentPage]);
+
   const isFirstFilterRender = useRef(true);
   useEffect(() => {
     if (isFirstFilterRender.current) {
@@ -1291,6 +1377,8 @@ const ListRequest = () => {
   };
 
   const handleResetFilters = () => {
+    sessionStorage.removeItem(STORAGE_KEY_FILTERS);
+    sessionStorage.removeItem(STORAGE_KEY_PAGE);
     setSearchFilters({
       keyword: "",
       permitNo: "",
@@ -1443,9 +1531,9 @@ const ListRequest = () => {
     setHighRiskHotwork(0);
     setHotWorkChecklistFilled(0);
     setFireGuardPresent(0);
-    setHHeatSource(0);
-    setHWorkplaceCheck(0);
-    setHFireDetectors(0);
+    setHHeatSource("");
+    setHWorkplaceCheck("");
+    setHFireDetectors("");
     setHStartTime("");
     setHEndTime("");
     setShowHStartPicker(false);
@@ -1642,13 +1730,13 @@ const ListRequest = () => {
       if (!closeNote.trim()) return showError("Please enter closing notes / remarks.");
       payload.close_note = closeNote.trim();
       if (modalTarget.Hot_work === 1) {
-        if (hHeatSource === null || hHeatSource === undefined) {
+        if (hHeatSource === "" || hHeatSource === null || hHeatSource === undefined) {
           return showError("Please inspect the work area for smoldering materials or residual heat.");
         }
-        if (hWorkplaceCheck === null || hWorkplaceCheck === undefined) {
+        if (hWorkplaceCheck === "" || hWorkplaceCheck === null || hWorkplaceCheck === undefined) {
           return showError("Please confirm if all tools and equipment have been removed.");
         }
-        if (hFireDetectors === null || hFireDetectors === undefined) {
+        if (hFireDetectors === "" || hFireDetectors === null || hFireDetectors === undefined) {
           return showError("Please confirm if the area has been cleaned and restored.");
         }
         if (!hStartTime || !hEndTime) {
@@ -2050,8 +2138,8 @@ const ListRequest = () => {
     { header: "Activity", accessor: "Activity" },
     { header: "Contractor", accessor: "contractorName" },
     { header: "Building", accessor: "buildingName" },
-    { header: "Zone", accessor: "zone" },
     { header: "Level", accessor: "Room_Type" },
+    { header: "Zone", accessor: "zone" },
     { header: "Rooms", accessor: "rooms" },
     { header: "Working Date", accessor: "Working_Date" },
     { header: "Time", accessor: "timeCell" },
@@ -2402,7 +2490,7 @@ const ListRequest = () => {
                   placeholder="Select Zones"
                   options={filteredZones.map(z => z.zone)}
                   selectedValues={searchFilters.zones || []}
-                  onChange={(vals) => setSearchFilters(prev => ({ ...prev, zones: vals }))}
+                  onChange={(vals) => setSearchFilters(prev => ({ ...prev, zones: vals, areas: [] }))}
                 />
               </div>
 
@@ -3235,12 +3323,13 @@ const ListRequest = () => {
                   <h4 style={{ color: "#00e5a0", fontSize: "13px", margin: "0 0 12px 0", textTransform: "uppercase", letterSpacing: "0.5px" }}>Hot Work Closing Workplace Check</h4>
 
                   <div className="df-field" style={{ marginBottom: "12px" }}>
-                    <label className="df-label">Has the work area been inspected for smoldering materials or residual heat?</label>
+                    <label className="df-label">Has the work area been inspected for smoldering materials or residual heat? <span className="req-star">*</span></label>
                     <select
                       className="df-select"
                       value={hHeatSource}
-                      onChange={(e) => setHHeatSource(Number(e.target.value))}
+                      onChange={(e) => setHHeatSource(e.target.value === "" ? "" : Number(e.target.value))}
                     >
+                      <option value="">-- Select --</option>
                       <option value={1}>Yes</option>
                       <option value={0}>No</option>
                       <option value={2}>N/A</option>
@@ -3248,12 +3337,13 @@ const ListRequest = () => {
                   </div>
 
                   <div className="df-field" style={{ marginBottom: "12px" }}>
-                    <label className="df-label">Have all tools and hot work equipment been safely removed from the work area?</label>
+                    <label className="df-label">Have all tools and hot work equipment been safely removed from the work area? <span className="req-star">*</span></label>
                     <select
                       className="df-select"
                       value={hWorkplaceCheck}
-                      onChange={(e) => setHWorkplaceCheck(Number(e.target.value))}
+                      onChange={(e) => setHWorkplaceCheck(e.target.value === "" ? "" : Number(e.target.value))}
                     >
+                      <option value="">-- Select --</option>
                       <option value={1}>Yes</option>
                       <option value={0}>No</option>
                       <option value={2}>N/A</option>
@@ -3261,12 +3351,13 @@ const ListRequest = () => {
                   </div>
 
                   <div className="df-field" style={{ marginBottom: "12px" }}>
-                    <label className="df-label">Has the area been cleaned and restored to its original safe condition?</label>
+                    <label className="df-label">Has the area been cleaned and restored to its original safe condition? <span className="req-star">*</span></label>
                     <select
                       className="df-select"
                       value={hFireDetectors}
-                      onChange={(e) => setHFireDetectors(Number(e.target.value))}
+                      onChange={(e) => setHFireDetectors(e.target.value === "" ? "" : Number(e.target.value))}
                     >
+                      <option value="">-- Select --</option>
                       <option value={1}>Yes</option>
                       <option value={0}>No</option>
                       <option value={2}>N/A</option>

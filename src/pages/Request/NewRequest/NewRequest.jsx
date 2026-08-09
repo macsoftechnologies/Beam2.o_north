@@ -376,7 +376,7 @@ import { FLOOR_PDFS } from "../../../data/pdfMapping";
 import { ZONE_MAPPING } from "../../../data/zones";
 import { BUILDINGS } from "../../../data/buildings";
 import { getContractors, getActivities, getElectricalWorks, getMechanicalWorks, getBuildings, getFloors, getZones, getRooms, getUser, getPrecautions } from "../../../services/authService";
-import { createRequest, updateRequest, addRamsFiles, deleteRamsFile, addListReqstNote } from "../../../services/requestService";
+import { createRequest, updateRequest, addRamsFiles, deleteRamsFile, addListReqstNote, deleteListReqstNote } from "../../../services/requestService";
 import { API_BASE_URL } from "../../../services/api";
 import { showSuccess, showError } from "../../../components/common/Toast/Toast";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -499,6 +499,7 @@ function NewRequest() {
     return [String(roleVal).trim().toLowerCase()];
   }, [currentUser]);
   const isSubcontractor = userRoles.includes("subcontractor");
+  const canDeleteNotes = userRoles.some(r => ["admin", "superadmin", "department", "department1"].includes(r));
   const [isnewrequestcreated, setIsnewrequestcreated] = useState(false);
   const [selectedRooms, setSelectedRooms] = useState([]);
   const [selectedZone, setSelectedZone] = useState(null);
@@ -1007,7 +1008,7 @@ function NewRequest() {
 
       // Load notes history
       if (editRequest.note) {
-        setNotesHistory(editRequest.note.map(n => ({ Note: n.note, Username: n.username })));
+        setNotesHistory(editRequest.note.map(n => ({ id: n.id, Note: n.note, Username: n.username })));
       } else if (editRequest.notes) {
         setNotesHistory(Array.isArray(editRequest.notes) ? editRequest.notes : []);
       }
@@ -4625,18 +4626,39 @@ function NewRequest() {
             {isEditMode && notesHistory.length > 0 && (
               <div className="notes-history-section" style={{ marginTop: "16px", background: "rgba(255,255,255,0.03)", padding: "16px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.05)" }}>
                 <h4 style={{ color: "#fff", marginBottom: "8px", fontSize: "14px" }}>Notes History</h4>
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxHeight: "150px", overflowY: "auto" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxHeight: "200px", overflowY: "auto" }}>
                   {notesHistory.map((n, idx) => (
-                    <div key={idx} style={{ padding: "8px", background: "rgba(255,255,255,0.02)", borderRadius: "4px" }}>
-                      <strong style={{ color: "#3b82f6", fontSize: "12px" }}>{n.Username}:</strong>
-                      <p style={{ color: "#d1d5db", fontSize: "13px", margin: "2px 0 0 0" }}>{n.Note}</p>
+                    <div key={idx} style={{ padding: "8px", background: "rgba(255,255,255,0.02)", borderRadius: "4px", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "8px" }}>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <strong style={{ color: "#3b82f6", fontSize: "12px" }}>{n.Username}:</strong>
+                        <p style={{ color: "#d1d5db", fontSize: "13px", margin: "2px 0 0 0", wordBreak: "break-word" }}>{n.Note}</p>
+                      </div>
+                      {canDeleteNotes && n.id && (
+                        <button
+                          type="button"
+                          title="Delete note"
+                          style={{ background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: "4px", color: "#ef4444", cursor: "pointer", padding: "2px 8px", fontSize: "13px", lineHeight: 1.5, flexShrink: 0, transition: "background 0.15s" }}
+                          onMouseOver={e => e.currentTarget.style.background = "rgba(239,68,68,0.25)"}
+                          onMouseOut={e => e.currentTarget.style.background = "rgba(239,68,68,0.12)"}
+                          onClick={async () => {
+                            try {
+                              await deleteListReqstNote(n.id);
+                              setNotesHistory(prev => prev.filter((_, i) => i !== idx));
+                            } catch (err) {
+                              console.error("Failed to delete note", err);
+                            }
+                          }}
+                        >
+                          🗑
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>
               </div>
             )}
 
-            {isEditMode && (
+            {isEditMode && String(editRequest?.Request_status || editRequest?.request_status || "").trim().toLowerCase() !== "draft" && (
               <div ref={precautionsDropdownRef} className="df-field" style={{ position: "relative", marginTop: "16px" }}>
                 <label className="df-label">Safety Precautions</label>
                 <div style={{ position: "relative" }}>

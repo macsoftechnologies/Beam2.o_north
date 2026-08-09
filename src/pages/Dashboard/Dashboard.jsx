@@ -268,6 +268,7 @@ function Dashboard() {
     rejectedCount: 0,
     openedCount: 0,
     cancelledCount: 0,
+    autoCancelledCount: 0,
     closedCount: 0
   });
   const [zoneCounts, setZoneCounts] = useState({ UC: 0, C: 0, HO: 0 });
@@ -608,6 +609,7 @@ function Dashboard() {
             rejectedCount: Number(target.rejectedCount || 0),
             openedCount: Number(target.openedCount || 0),
             cancelledCount: Number(target.cancelledCount || 0),
+            autoCancelledCount: Number(target.autoCancelledCount || 0),
             closedCount: Number(target.closedCount || 0)
           });
         }
@@ -849,7 +851,7 @@ function Dashboard() {
         <div className="white-card">
           <div className="section-heading">Request Distribution</div>
           <div className="donut-wrap">
-            <canvas ref={donutChartRef} style={{ maxHeight: '220px' }}></canvas>
+            <canvas ref={donutChartRef} style={{ maxHeight: '220px', margin: '0 auto' }}></canvas>
             <div className="donut-center">
               <h3 style={{ fontWeight: 700, fontSize: '1.4rem', margin: 0, color: 'var(--text-main)' }}>
                 {counts.total >= 1000 ? `${(counts.total / 1000).toFixed(0)}k` : counts.total}
@@ -893,6 +895,7 @@ function Dashboard() {
             { label: 'Closed', value: todaySummary.closedCount, color: '#10B981' },
             { label: 'Rejected', value: todaySummary.rejectedCount, color: '#EF4444' },
             { label: 'Cancelled', value: todaySummary.cancelledCount, color: '#F43F5E' },
+            { label: 'Auto-Cancelled', value: todaySummary.autoCancelledCount, color: '#E11D48' },
             { label: 'Working After Midnight', value: todaySummary.nightshiftCount, color: '#FCD34D' },
           ].map(({ label, value, color }) => {
             const handleRowClick = () => {
@@ -908,6 +911,7 @@ function Dashboard() {
               else if (label === 'Closed') status = 'Closed';
               else if (label === 'Rejected') status = 'Rejected';
               else if (label === 'Cancelled') status = 'Cancelled';
+              else if (label === 'Auto-Cancelled') status = 'Cancelled';
               else if (label === 'Working After Midnight' || label === 'Night Shift') {
                 nightShift = "1";
               }

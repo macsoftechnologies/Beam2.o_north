@@ -1,35 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
-import { getDepartments } from "../../services/authService";
 import { API_BASE_URL } from "../../services/api";
 import "../../forms/styles/forms.css";
 
 function Contractorform({ onClose, initialData, isEdit, onSubmit }) {
   const [name, setName] = useState("");
-  const [department, setDepartment] = useState(""); // Stores departId
   const [logo, setLogo] = useState(null); // Preview URL
   const [logoFile, setLogoFile] = useState(null); // File object
-  const [departmentsList, setDepartmentsList] = useState([]);
 
   const fileInputRef = useRef(null);
-
-  // Fetch departments dynamically
-  useEffect(() => {
-    const fetchDepts = async () => {
-      try {
-        const res = await getDepartments(1, 100);
-        const rows = res?.data?.rows ?? res?.data ?? res ?? [];
-        setDepartmentsList(rows);
-      } catch (err) {
-        console.error("Failed to load departments", err);
-      }
-    };
-    fetchDepts();
-  }, []);
 
   useEffect(() => {
     if (isEdit && initialData) {
       setName(initialData.subContractorName || initialData.name || "");
-      setDepartment(initialData.departId || "");
       
       if (initialData.logo) {
         if (initialData.logo.startsWith("data:") || initialData.logo.startsWith("http")) {
@@ -70,7 +52,6 @@ function Contractorform({ onClose, initialData, isEdit, onSubmit }) {
 
     const payload = {
       subContractorName: name,
-      departId: department,
       logoFile,
       logoCleared: logo === null,
     };
@@ -83,7 +64,7 @@ function Contractorform({ onClose, initialData, isEdit, onSubmit }) {
       <div className="df-grid">
 
         {/* Contractor Name */}
-        <div className="df-field">
+        <div className="df-field df-field--full">
           <label className="df-label">
             Contractor Name <span className="df-required">*</span>
           </label>
@@ -96,28 +77,6 @@ function Contractorform({ onClose, initialData, isEdit, onSubmit }) {
             required
           />
         </div>
-
-        {/* Department */}
-        <div className="df-field">
-          <label className="df-label">
-            Department <span className="df-required">*</span>
-          </label>
-          <select
-            className="df-select"
-            value={department}
-            onChange={(e) => setDepartment(e.target.value)}
-            required
-          >
-            <option value="">Select Department</option>
-            {departmentsList.map((dept) => (
-              <option key={dept.id} value={dept.id}>
-                {dept.departmentName}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Status field removed */}
 
         {/* Upload Logo */}
         <div className="df-field df-field--full">

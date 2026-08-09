@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Table from "../../components/common/Table/Table";
 import { searchRequests } from "../../services/requestService";
+import { getContractors, getUser } from "../../services/authService";
 import { API_BASE_URL } from "../../services/api";
 import "../styles/pages.css";
 import LogHistoryModal from "./LogHistoryModel";
@@ -44,6 +45,8 @@ const SearchIcon = () => (
 
 const LogHistory = () => {
   const [search, setSearch] = useState("");
+  const [selectedContractor, setSelectedContractor] = useState("");
+  const [contractorsList, setContractorsList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageLimit] = useState(PAGE_LIMIT_DEFAULT);
   const [requests, setRequests] = useState([]);
@@ -51,15 +54,52 @@ const LogHistory = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedPermit, setSelectedPermit] = useState(null);
 
-  const fetchLogHistory = useCallback(async (page = 1, searchQuery = "") => {
+  useEffect(() => {
+    const fetchContractors = async () => {
+      try {
+        const res = await getContractors(1, 1000);
+        const raw = res?.data?.rows ?? res?.data ?? res ?? [];
+        const list = Array.isArray(raw) ? raw : [];
+        const sorted = list
+          .slice()
+          .sort((a, b) =>
+            (a.subContractorName || a.Company_Name || "").localeCompare(
+              b.subContractorName || b.Company_Name || "",
+              undefined,
+              { sensitivity: "base" }
+            )
+          );
+        setContractorsList(sorted);
+
+        const currentUser = getUser();
+        const userRoles = currentUser?.roles || currentUser?.role || [];
+        const isSubcontractor = Array.isArray(userRoles)
+          ? userRoles.includes("subcontractor") || userRoles.includes("Subcontractor")
+          : String(userRoles).toLowerCase().includes("subcontractor");
+        const userContractorId = currentUser?.typeId || currentUser?.subContId || currentUser?.subContractorId;
+
+        if (isSubcontractor && userContractorId) {
+          setSelectedContractor(String(userContractorId));
+        }
+      } catch (err) {
+        console.error("Failed to fetch contractors for log history", err);
+      }
+    };
+    fetchContractors();
+  }, []);
+
+  const fetchLogHistory = useCallback(async (page = 1, searchQuery = "", contractorId = "") => {
     setIsLoading(true);
     try {
       const payload = {
         PermitNo: searchQuery.trim(),
         Page: page,
         End: pageLimit,
-        Site_Id: 5
+        Site_Id: 5,
       };
+      if (contractorId) {
+        payload.Sub_Contractor_Id = contractorId;
+      }
 
       const res = await searchRequests(payload);
 
@@ -80,8 +120,8 @@ const LogHistory = () => {
   }, [pageLimit]);
 
   useEffect(() => {
-    fetchLogHistory(currentPage, search);
-  }, [currentPage, search, fetchLogHistory]);
+    fetchLogHistory(currentPage, search, selectedContractor);
+  }, [currentPage, search, selectedContractor, fetchLogHistory]);
 
   const columns = [
     { header: "Permit number", accessor: "permitNumber" },
@@ -143,15 +183,15 @@ const LogHistory = () => {
 
       <div className="dept-table-card">
 
-        {/* Search */}
-        <div style={{ padding: "16px" }}>
-          <div style={{ position: "relative", maxWidth: "480px" }}>
+        {/* Search & Filter Header */}
+        <div style={{ padding: "16px", display: "flex", gap: "16px", flexWrap: "wrap", alignItems: "center" }}>
+          {/* Permit Search */}
+          <div style={{ position: "relative", flex: "1 1 300px", maxWidth: "480px" }}>
             <SearchIcon />
             <input
               type="text"
               className="df-input"
               style={{
-                maxWidth: "480px",
                 width: "100%",
                 paddingLeft: "42px",
                 paddingRight: search ? "36px" : "14px",
@@ -190,6 +230,37 @@ const LogHistory = () => {
                 ✕
               </button>
             )}
+          </div>
+
+          {/* Contractor Filter */}
+          <div style={{ width: "260px" }}>
+            <select
+              className="df-select"
+              style={{
+                width: "100%",
+                backgroundColor: "#1a2744",
+                border: "1px solid #2e3f66",
+                borderRadius: "8px",
+                color: "#ffffff",
+                fontSize: "14px",
+                height: "44px",
+                padding: "0 14px",
+                outline: "none",
+                cursor: "pointer",
+              }}
+              value={selectedContractor}
+              onChange={(e) => {
+                setSelectedContractor(e.target.value);
+                setCurrentPage(1);
+              }}
+            >
+              <option value="">All Contractors</option>
+              {contractorsList.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.subContractorName || c.Company_Name}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 

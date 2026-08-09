@@ -365,6 +365,219 @@ const SearchableSingleSelect = ({ options = [], value, onChange, placeholder, di
     </div>
   );
 };
+
+// ─── Searchable Multi-Select Dropdown Component ──────────────────────────────
+const SearchableMultiSelect = ({
+  options = [],
+  selectedValues = [],
+  onChange = () => { },
+  placeholder = "Select Contractors",
+  disabled = false,
+  valueKey = "id",
+  labelKey = "subContractorName"
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleToggle = () => !disabled && setIsOpen(!isOpen);
+
+  const handleCheckboxChange = (valStr, checked) => {
+    let nextValues = Array.isArray(selectedValues) ? [...selectedValues] : [];
+    if (checked) {
+      if (!nextValues.includes(valStr)) nextValues.push(valStr);
+    } else {
+      nextValues = nextValues.filter(v => v !== valStr);
+    }
+    onChange(nextValues);
+  };
+
+  const filteredOptions = useMemo(() => {
+    if (!search.trim()) return options;
+    const q = search.toLowerCase();
+    return options.filter(o => {
+      const label = o[labelKey] || o.label || o.name || "";
+      return String(label).toLowerCase().includes(q);
+    });
+  }, [options, search, labelKey]);
+
+  const handleSelectAll = () => {
+    const allIds = filteredOptions.map(o => String(o[valueKey] ?? o.value ?? o.id));
+    const merged = Array.from(new Set([...(Array.isArray(selectedValues) ? selectedValues : []), ...allIds]));
+    onChange(merged);
+  };
+
+  const handleClearAll = () => {
+    onChange([]);
+  };
+
+  let displayText = placeholder;
+  const currentSelected = Array.isArray(selectedValues) ? selectedValues : (selectedValues ? [String(selectedValues)] : []);
+  if (currentSelected.length > 0) {
+    const selectedLabels = [];
+    currentSelected.forEach(val => {
+      const opt = options.find(o => String(o[valueKey] ?? o.value ?? o.id) === String(val));
+      if (opt) {
+        selectedLabels.push(opt[labelKey] || opt.label || opt.name || val);
+      }
+    });
+    if (selectedLabels.length > 0) {
+      displayText = selectedLabels.join(", ");
+    }
+  }
+
+  return (
+    <div ref={containerRef} style={{ position: "relative", width: "100%" }}>
+      <div
+        className="df-input"
+        onClick={handleToggle}
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          cursor: disabled ? "not-allowed" : "pointer",
+          userSelect: "none",
+          paddingRight: "14px",
+          opacity: disabled ? 0.6 : 1,
+          color: displayText === placeholder ? "var(--text-muted, #9ca3af)" : "var(--text-main, #f9fafb)"
+        }}
+      >
+        <span style={{
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+          maxWidth: "calc(100% - 24px)"
+        }}>
+          {displayText}
+        </span>
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#9CA3AF"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{
+            transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+            transition: "transform 0.2s ease"
+          }}
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </div>
+
+      {isOpen && !disabled && (
+        <div
+          style={{
+            position: "absolute",
+            top: "calc(100% + 6px)",
+            left: 0,
+            width: "100%",
+            maxHeight: "300px",
+            backgroundColor: "var(--bg-card, #111827)",
+            border: "1.5px solid var(--border-color, #374151)",
+            borderRadius: "12px",
+            zIndex: 99999,
+            boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden"
+          }}
+        >
+          <div style={{ padding: "8px", borderBottom: "1px solid var(--border-color, #374151)", display: "flex", gap: "6px" }}>
+            <input
+              type="text"
+              placeholder="Search contractor..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onClick={(e) => e.stopPropagation()}
+              autoFocus
+              style={{
+                flex: 1,
+                padding: "6px 10px",
+                fontSize: "13px",
+                borderRadius: "6px",
+                border: "1px solid var(--border-color, #374151)",
+                backgroundColor: "rgba(255, 255, 255, 0.05)",
+                color: "var(--text-main, #f9fafb)",
+                outline: "none"
+              }}
+            />
+          </div>
+          <div style={{ padding: "4px 8px", borderBottom: "1px solid var(--border-color, #374151)", display: "flex", justifyContent: "space-between" }}>
+            <button
+              type="button"
+              onClick={handleSelectAll}
+              style={{ background: "none", border: "none", color: "var(--primary-color, #3b82f6)", fontSize: "12px", cursor: "pointer", padding: "2px 4px" }}
+            >
+              Select All
+            </button>
+            <button
+              type="button"
+              onClick={handleClearAll}
+              style={{ background: "none", border: "none", color: "#ef4444", fontSize: "12px", cursor: "pointer", padding: "2px 4px" }}
+            >
+              Clear All
+            </button>
+          </div>
+          <div style={{ overflowY: "auto", maxHeight: "200px", padding: "4px 0" }}>
+            {filteredOptions.length === 0 ? (
+              <div style={{ padding: "10px 16px", fontSize: "13px", color: "var(--text-muted, #9ca3af)", textAlign: "center" }}>
+                No options found
+              </div>
+            ) : (
+              filteredOptions.map((opt) => {
+                const optValue = String(opt[valueKey] ?? opt.value ?? opt.id);
+                const optLabel = opt[labelKey] || opt.label || opt.name || optValue;
+                const isChecked = currentSelected.map(String).includes(optValue);
+
+                return (
+                  <label
+                    key={optValue}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      padding: "8px 16px",
+                      cursor: "pointer",
+                      transition: "background-color 0.2s",
+                      color: "var(--text-main, #f9fafb)",
+                      backgroundColor: isChecked ? "rgba(255, 255, 255, 0.05)" : "transparent",
+                      fontSize: "13px",
+                      userSelect: "none"
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.08)"}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = isChecked ? "rgba(255, 255, 255, 0.05)" : "transparent"}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={(e) => handleCheckboxChange(optValue, e.target.checked)}
+                      style={{ width: "15px", height: "15px", cursor: "pointer", accentColor: "var(--accent, #00e5a0)" }}
+                    />
+                    <span>{optLabel}</span>
+                  </label>
+                );
+              })
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 import {
   getContractors,
   getBuildings,
@@ -427,7 +640,7 @@ const INITIAL_FILTERS = {
   date: "",
   year: "",
   weekno: "",
-  subContractor: "",
+  subContractor: [],
   building: [],
   workingDateFrom: "",
   workingDateTo: "",
@@ -846,7 +1059,7 @@ const Reports = () => {
     if (isSubcontractor && userContractorId) {
       setFilters(prev => ({
         ...prev,
-        subContractor: String(userContractorId)
+        subContractor: [String(userContractorId)]
       }));
     }
   }, [isSubcontractor, userContractorId]);
@@ -891,7 +1104,7 @@ const Reports = () => {
           if (defaultSubId) {
             setFilters(prev => ({
               ...prev,
-              subContractor: String(defaultSubId)
+              subContractor: [String(defaultSubId)]
             }));
           }
         }
@@ -973,15 +1186,45 @@ const Reports = () => {
   const filteredRooms = useMemo(() => {
     let roomsToGroup = roomsList;
 
-    if (filters.building.length > 0) {
+    if (filters.building && filters.building.length > 0) {
       roomsToGroup = roomsToGroup.filter(r => filters.building.includes(String(r.building_id)));
     }
 
-    if (filters.level.length > 0) {
+    if (filters.level && filters.level.length > 0) {
+      const isLevelMatch = (filterLevel, targetName) => {
+        if (!filterLevel || !targetName) return false;
+        const fl = String(filterLevel).trim().toLowerCase();
+        const tn = String(targetName).trim().toLowerCase();
+        if (fl === tn || fl.endsWith(tn) || tn.endsWith(fl)) return true;
+        const baseFl = fl.replace(/^(?:[a-z0-9]+\s*[-:]?\s*)/i, '').trim();
+        const baseTn = tn.replace(/^(?:[a-z0-9]+\s*[-:]?\s*)/i, '').trim();
+        return baseFl.length > 0 && baseFl === baseTn;
+      };
+
       const matchedFloorIds = floorsList
-        .filter(f => filters.level.includes(f.floor_name))
+        .filter(f => filters.level.some(l => isLevelMatch(l, f.floor_name)))
         .map(f => f.fl_id);
       roomsToGroup = roomsToGroup.filter(r => matchedFloorIds.includes(r.fl_id));
+    }
+
+    if (filters.zones && filters.zones.length > 0) {
+      const selectedZoneNamesOrIds = filters.zones.map(z => String(z).trim().toLowerCase());
+      const matchedZoneIds = zonesList
+        .filter(z =>
+          selectedZoneNamesOrIds.includes(String(z.id).trim().toLowerCase()) ||
+          selectedZoneNamesOrIds.includes(String(z.zone).trim().toLowerCase())
+        )
+        .map(z => String(z.id));
+
+      roomsToGroup = roomsToGroup.filter(r => {
+        const roomZoneId = String(r.zone_id || '').trim().toLowerCase();
+        const roomZoneName = String(r.zone_name || r.zone || '').trim().toLowerCase();
+        return (
+          (r.zone_id && matchedZoneIds.includes(String(r.zone_id))) ||
+          selectedZoneNamesOrIds.includes(roomZoneId) ||
+          (roomZoneName && selectedZoneNamesOrIds.includes(roomZoneName))
+        );
+      });
     }
 
     const groupMap = {};
@@ -1091,7 +1334,8 @@ const Reports = () => {
       if (isSubcontractor && userContractorId) {
         searchPayload.Sub_Contractor_Id = String(userContractorId);
       } else {
-        searchPayload.Sub_Contractor_Id = Array.isArray(filters.subContractor) && filters.subContractor.length > 0 ? filters.subContractor.join(",") : (filters.subContractor || null);
+        const selectedSubcon = Array.isArray(filters.subContractor) ? filters.subContractor : (filters.subContractor ? [filters.subContractor] : []);
+        searchPayload.Sub_Contractor_Id = selectedSubcon.length > 0 ? selectedSubcon.join(",") : null;
       }
       searchPayload.Room_Type = filters.level.length > 0 ? filters.level.join(",") : "";
       const selectedZoneIds = zonesList
@@ -1184,7 +1428,7 @@ const Reports = () => {
   const handleReset = () => {
     setFilters({
       ...INITIAL_FILTERS,
-      subContractor: isSubcontractor && currentUser?.typeId ? String(currentUser.typeId) : ""
+      subContractor: isSubcontractor && currentUser?.typeId ? [String(currentUser.typeId)] : []
     });
     setTableData([]);
     setHasSearched(false);
@@ -1691,7 +1935,7 @@ const Reports = () => {
                 placeholder="Select Zones"
                 options={filteredZones.map(z => z.zone)}
                 selectedValues={filters.zones || []}
-                onChange={(vals) => handleChange("zones", vals)}
+                onChange={(vals) => setFilters(prev => ({ ...prev, zones: vals, area: [] }))}
               />
             </div>
 
@@ -1712,16 +1956,18 @@ const Reports = () => {
                 <input
                   type="text"
                   className="df-input df-readonly"
-                  value={contractors.length > 0 ? (contractors.find(c => String(c.id) === String(userContractorId))?.subContractorName || contractors.find(c => String(c.id) === String(filters.subContractor))?.subContractorName || contractors[0]?.subContractorName) : "Loading..."}
+                  value={contractors.length > 0 ? (contractors.find(c => String(c.id) === String(userContractorId))?.subContractorName || contractors.find(c => String(c.id) === String(Array.isArray(filters.subContractor) ? filters.subContractor[0] : filters.subContractor))?.subContractorName || contractors[0]?.subContractorName) : "Loading..."}
                   readOnly
                 />
               ) : (
-                <SearchableSingleSelect
+                <SearchableMultiSelect
                   options={contractors}
-                  value={filters.subContractor}
-                  onChange={(e) => handleChange("subContractor", e.target.value)}
-                  placeholder="Select Contractor"
+                  selectedValues={Array.isArray(filters.subContractor) ? filters.subContractor : (filters.subContractor ? [String(filters.subContractor)] : [])}
+                  onChange={(vals) => handleChange("subContractor", vals)}
+                  placeholder="Select Contractors"
                   disabled={isSubcontractor}
+                  valueKey="id"
+                  labelKey="subContractorName"
                 />
               )}
             </div>

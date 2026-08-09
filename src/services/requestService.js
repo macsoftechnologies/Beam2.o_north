@@ -95,6 +95,12 @@ export const addListReqstNote = async (payload) => {
   return res.data;
 };
 
+// Delete a single note by ID
+export const deleteListReqstNote = async (noteId) => {
+  const res = await api.delete(`/requests/notes/${noteId}`);
+  return res.data;
+};
+
 // Get request counts (dashboard / list helper)
 export const getRequestCounts = async () => {
   const res = await api.get("/requests/counts");
