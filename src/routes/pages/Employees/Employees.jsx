@@ -284,19 +284,30 @@ const Employees = () => {
 
   const handleSubmit = async (formData) => {
     try {
+      let res;
       if (selectedEmployee && editOpen) {
-        await updateEmployee(formData);
+        res = await updateEmployee(formData);
+      } else {
+        res = await addEmployee(formData);
+      }
+
+      if (res?.statusCode === 409 || res?.statusCode === 400 || (res?.message && res.message.toLowerCase().includes("username"))) {
+        showError(res?.message || "Username already exists");
+        return;
+      }
+
+      if (selectedEmployee && editOpen) {
         showSuccess("Employee updated successfully");
         setEditOpen(false);
         setSelectedEmployee(null);
       } else {
-        await addEmployee(formData);
         showSuccess("Employee added successfully");
         setOpen(false);
       }
       fetchEmployees(currentPage);
-    } catch {
-      showError("Operation failed");
+    } catch (err) {
+      const errMsg = err?.response?.data?.message || err?.message || "Operation failed";
+      showError(errMsg);
     }
   };
 
