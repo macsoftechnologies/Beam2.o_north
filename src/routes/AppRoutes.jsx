@@ -43,7 +43,7 @@ function AppRoutes() {
       <Routes>
 
         {/* Public Routes - restricted if user has valid token */}
-        <Route path="/" element={<PublicRoute><PortalSelection /></PublicRoute>} />
+        <Route path="/" element={<PortalSelection />} />
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/otp" element={<PublicRoute><Otp /></PublicRoute>} />
         <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />

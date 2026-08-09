@@ -126,8 +126,7 @@ export default function Login() {
                 <br />Operations
               </h2>
               <p className="panel-desc">
-                Your secure gateway to the North regional operations platform —
-                project management, field coordination, and real-time reporting.
+                Your secure gateway to the M3 North operations platform — permit management, field coordination and real-time reporting.
               </p>
             </div>
           </div>

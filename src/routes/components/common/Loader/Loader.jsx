@@ -1,27 +1,30 @@
-import React from "react";
 import "./Loader.css";
 
 function Loader({
-  size = "md",
-  fullScreen = false,
   text = "Loading...",
+  size = "md",
+  className = "",
 }) {
+  const safeSize = ["sm", "md", "lg"].includes(size) ? size : "md";
+
   return (
     <div
-      className={`
-        beam-loader-wrapper
-        ${fullScreen ? "beam-loader-wrapper--fullscreen" : ""}
-      `}
+      className={`ssw-loader ssw-loader--${safeSize} ${className}`.trim()}
+      role="status"
+      aria-live="polite"
+      aria-label={text || "Loading"}
     >
-      {/* Spinner ring */}
-      <div className={`beam-loader beam-loader--${size}`}>
-        <span className="beam-loader-ring" aria-hidden="true" />
+      <img
+        className="ssw-loader__logo"
+        src="/m3north/safesiteworks-logo.png"
+        alt="SafeSiteWorks"
+      />
+
+      <div className="ssw-loader__progress" aria-hidden="true">
+        <span className="ssw-loader__progress-bar" />
       </div>
 
-      {/* Optional label */}
-      {text && (
-        <p className="beam-loader-text">{text}</p>
-      )}
+      {text && <div className="ssw-loader__text">{text}</div>}
     </div>
   );
 }

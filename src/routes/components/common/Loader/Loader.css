@@ -1,113 +1,91 @@
-/* ============================================================
-   Loader.css  —  Beam 2.0 Dark Control-System Theme
-   ============================================================ */
+.ssw-loader {
+  --ssw-width: 150px;
+  --ssw-logo: 120px;
 
-/* ── Wrapper ─────────────────────────────────────────────── */
-.beam-loader-wrapper {
+  width: 100%;
+  min-height: 110px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 14px;
+  gap: 10px;
+  padding: 20px;
+  box-sizing: border-box;
+  color: #64748b;
 }
 
-/* Fullscreen overlay */
-.beam-loader-wrapper--fullscreen {
-  position: fixed;
-  inset: 0;
-  background: rgba(8, 11, 18, 0.88);   /* matches --bg-dark */
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  z-index: 10000040;
+.ssw-loader--sm {
+  --ssw-width: 110px;
+  --ssw-logo: 85px;
+  min-height: 75px;
 }
 
-/* ── Spinner container ───────────────────────────────────── */
-.beam-loader {
+.ssw-loader--lg {
+  --ssw-width: 190px;
+  --ssw-logo: 150px;
+  min-height: 160px;
+}
+
+.ssw-loader__logo {
+  width: var(--ssw-logo);
+  height: auto;
+  object-fit: contain;
+  animation: sswLogoPulse 1.45s ease-in-out infinite;
+}
+
+.ssw-loader__progress {
   position: relative;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+  width: var(--ssw-width);
+  height: 3px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e2e8f0;
 }
 
-/* Sizes */
-.beam-loader--sm {
-  width: 36px;
-  height: 36px;
-}
-
-.beam-loader--md {
-  width: 56px;
-  height: 56px;
-}
-
-.beam-loader--lg {
-  width: 80px;
-  height: 80px;
-}
-
-/* ── Spinning ring ───────────────────────────────────────── */
-.beam-loader-ring {
+.ssw-loader__progress-bar {
   position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  animation: beamLoaderSpin 0.85s linear infinite;
-
-  /* sm default thickness — overridden per size below */
-  border-width: 3px;
-  border-style: solid;
-  border-color: transparent;
-
-  /* Beam 2.0 accent colours on each quadrant */
-  border-top-color:    #3B82F6;   /* blue   – accent primary  */
-  border-right-color:  #10B981;   /* green  – color-safe      */
-  border-bottom-color: #F59E0B;   /* amber  – color-caution   */
-  border-left-color:   #EF4444;   /* red    – color-risk      */
+  top: 0;
+  bottom: 0;
+  left: -45%;
+  width: 45%;
+  border-radius: inherit;
+  background: linear-gradient(90deg,#2563eb,#06b6d4,#10b981);
+  animation: sswProgressMove 1.05s ease-in-out infinite;
 }
 
-/* Thicker ring for larger sizes */
-.beam-loader--md .beam-loader-ring {
-  border-width: 4px;
+.ssw-loader__text {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #64748b;
 }
 
-.beam-loader--lg .beam-loader-ring {
-  border-width: 5px;
+@keyframes sswLogoPulse {
+  0%,100% {
+    opacity: .68;
+    transform: scale(.97);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
-/* Inner glow dot at center */
-.beam-loader::after {
-  content: "";
-  position: absolute;
-  width: 30%;
-  height: 30%;
-  background: radial-gradient(circle, #3B82F6 0%, transparent 70%);
-  border-radius: 50%;
-  animation: beamLoaderPulse 1.7s ease-in-out infinite;
+@keyframes sswProgressMove {
+  0%   { left: -45%; }
+  55%  { left: 55%; }
+  100% { left: 105%; }
 }
 
-/* ── Animations ──────────────────────────────────────────── */
-@keyframes beamLoaderSpin {
-  from { transform: rotate(0deg);   }
-  to   { transform: rotate(360deg); }
-}
+@media (prefers-reduced-motion: reduce) {
+  .ssw-loader__logo,
+  .ssw-loader__progress-bar {
+    animation: none;
+  }
 
-@keyframes beamLoaderPulse {
-  0%, 100% { opacity: 0.25; transform: scale(0.8);  }
-  50%       { opacity: 0.8;  transform: scale(1.15); }
-}
-
-/* ── Label ───────────────────────────────────────────────── */
-.beam-loader-text {
-  margin: 0;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #9CA3AF;           /* --text-muted */
-  letter-spacing: 0.3px;
-  animation: beamLoaderTextPulse 1.8s ease-in-out infinite;
-}
-
-@keyframes beamLoaderTextPulse {
-  0%, 100% { opacity: 0.5; }
-  50%       { opacity: 1;   }
+  .ssw-loader__progress-bar {
+    left: 0;
+    width: 100%;
+  }
 }
