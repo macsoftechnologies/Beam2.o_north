@@ -633,6 +633,15 @@ function NewRequest() {
     floatLabel16: "",
     // Hot Work Section
     Hot_work: "0",
+    low_risk_hotwork: "",
+    high_risk_hotwork: "",
+    hot_work_checklist_filled: "",
+    fire_guard_present: "",
+    h_heat_source: "",
+    h_workplace_check: "",
+    h_fire_detectors: "",
+    h_start_time: "",
+    h_end_time: "",
     floatLabel1: "",
     floatLabel3: "",
     floatLabel4: "",
@@ -1057,6 +1066,15 @@ function NewRequest() {
 
         // Hot Work
         Hot_work: formatDbValue(editRequest.Hot_work ?? "0"),
+        low_risk_hotwork: formatDbValue(editRequest.low_risk_hotwork ?? editRequest.lowRiskHotwork ?? editRequest.fireHotwork?.low_risk_hotwork ?? editRequest.fireHotwork?.lowRiskHotwork),
+        high_risk_hotwork: formatDbValue(editRequest.high_risk_hotwork ?? editRequest.highRiskHotwork ?? editRequest.fireHotwork?.high_risk_hotwork ?? editRequest.fireHotwork?.highRiskHotwork),
+        hot_work_checklist_filled: formatDbValue(editRequest.hot_work_checklist_filled ?? editRequest.hotWorkChecklistFilled ?? editRequest.fireHotwork?.hot_work_checklist_filled ?? editRequest.fireHotwork?.hotWorkChecklistFilled),
+        fire_guard_present: formatDbValue(editRequest.fire_guard_present ?? editRequest.fireGuardPresent ?? editRequest.fireHotwork?.fire_guard_present ?? editRequest.fireHotwork?.fireGuardPresent),
+        h_heat_source: formatDbValue(editRequest.h_heat_source ?? editRequest.hHeatSource ?? editRequest.fireHotwork?.h_heat_source ?? editRequest.fireHotwork?.hHeatSource),
+        h_workplace_check: formatDbValue(editRequest.h_workplace_check ?? editRequest.hWorkplaceCheck ?? editRequest.fireHotwork?.h_workplace_check ?? editRequest.fireHotwork?.hWorkplaceCheck),
+        h_fire_detectors: formatDbValue(editRequest.h_fire_detectors ?? editRequest.hFireDetectors ?? editRequest.fireHotwork?.h_fire_detectors ?? editRequest.fireHotwork?.hFireDetectors),
+        h_start_time: editRequest.h_start_time ?? editRequest.hStartTime ?? editRequest.fireHotwork?.h_start_time ?? editRequest.fireHotwork?.hStartTime ?? "",
+        h_end_time: editRequest.h_end_time ?? editRequest.hEndTime ?? editRequest.fireHotwork?.h_end_time ?? editRequest.fireHotwork?.hEndTime ?? "",
         floatLabel1: formatDbValue(editRequest.tasks_in_progress_in_the_area),
         floatLabel3: formatDbValue(editRequest.lighting_sufficiently),
         floatLabel4: formatDbValue(editRequest.specific_risks_based_on_task),
@@ -3121,6 +3139,96 @@ function NewRequest() {
                       </div>
                       {fieldErrors.NEWHOTWORK2 && <span className="field-error" style={{ marginTop: '4px', display: 'block' }}>Please Select</span>}
                     </div>
+                  </div>
+                )}
+
+                {/* Hot Work Opening Checklist Display (Visible when viewing opened or closed permit) */}
+                {(formData.low_risk_hotwork !== "" || formData.high_risk_hotwork !== "" || (isEditMode && editRequest && (editRequest.Request_status === "Opened" || editRequest.Request_status === "Closed" || editRequest.request_status === "Opened" || editRequest.request_status === "Closed"))) && (
+                  <div style={{ border: "1px solid rgba(0, 229, 160, 0.3)", borderRadius: "10px", padding: "16px", background: "rgba(0, 229, 160, 0.04)", marginTop: "20px", marginBottom: "16px" }}>
+                    <h3 style={{ color: "#00e5a0", fontSize: "13px", margin: "0 0 14px 0", textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: "600" }}>Hot Work Opening Checklist</h3>
+
+                    <div className="checklist-item" style={{ marginBottom: "12px" }}>
+                      <p className="checklist-question">Is it Low Risk Hot Work?</p>
+                      <div className="radio-group">
+                        <label><input type="radio" name="low_risk_hotwork" value="1" checked={String(formData.low_risk_hotwork) === "1"} disabled={isReadOnly} onChange={(e) => handleFieldChange("low_risk_hotwork", e.target.value)} /> Yes</label>
+                        <label><input type="radio" name="low_risk_hotwork" value="0" checked={String(formData.low_risk_hotwork) === "0"} disabled={isReadOnly} onChange={(e) => handleFieldChange("low_risk_hotwork", e.target.value)} /> No</label>
+                      </div>
+                    </div>
+
+                    <div className="checklist-item" style={{ marginBottom: "12px" }}>
+                      <p className="checklist-question">Is it High Risk Hot Work?</p>
+                      <div className="radio-group">
+                        <label><input type="radio" name="high_risk_hotwork" value="1" checked={String(formData.high_risk_hotwork) === "1"} disabled={isReadOnly} onChange={(e) => handleFieldChange("high_risk_hotwork", e.target.value)} /> Yes</label>
+                        <label><input type="radio" name="high_risk_hotwork" value="0" checked={String(formData.high_risk_hotwork) === "0"} disabled={isReadOnly} onChange={(e) => handleFieldChange("high_risk_hotwork", e.target.value)} /> No</label>
+                      </div>
+                    </div>
+
+                    {String(formData.high_risk_hotwork) === "1" && (
+                      <>
+                        <div className="checklist-item" style={{ marginBottom: "12px" }}>
+                          <p className="checklist-question">Hot Work Checklist Filled?</p>
+                          <div className="radio-group">
+                            <label><input type="radio" name="hot_work_checklist_filled" value="1" checked={String(formData.hot_work_checklist_filled) === "1"} disabled={isReadOnly} onChange={(e) => handleFieldChange("hot_work_checklist_filled", e.target.value)} /> Yes</label>
+                            <label><input type="radio" name="hot_work_checklist_filled" value="0" checked={String(formData.hot_work_checklist_filled) === "0"} disabled={isReadOnly} onChange={(e) => handleFieldChange("hot_work_checklist_filled", e.target.value)} /> No</label>
+                          </div>
+                        </div>
+
+                        <div className="checklist-item" style={{ marginBottom: "12px" }}>
+                          <p className="checklist-question">Fire Guard Present?</p>
+                          <div className="radio-group">
+                            <label><input type="radio" name="fire_guard_present" value="1" checked={String(formData.fire_guard_present) === "1"} disabled={isReadOnly} onChange={(e) => handleFieldChange("fire_guard_present", e.target.value)} /> Yes</label>
+                            <label><input type="radio" name="fire_guard_present" value="0" checked={String(formData.fire_guard_present) === "0"} disabled={isReadOnly} onChange={(e) => handleFieldChange("fire_guard_present", e.target.value)} /> No</label>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+
+                {/* Hot Work Closing Workplace Check Display (Visible when viewing closed permit or when closing fields exist) */}
+                {(formData.h_heat_source !== "" || formData.h_workplace_check !== "" || formData.h_fire_detectors !== "" || formData.h_start_time || formData.h_end_time || (isEditMode && editRequest && (editRequest.Request_status === "Closed" || editRequest.request_status === "Closed"))) && (
+                  <div style={{ border: "1px solid rgba(59, 130, 246, 0.3)", borderRadius: "10px", padding: "16px", background: "rgba(59, 130, 246, 0.04)", marginTop: "16px", marginBottom: "16px" }}>
+                    <h3 style={{ color: "#3b82f6", fontSize: "13px", margin: "0 0 14px 0", textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: "600" }}>Hot Work Closing Workplace Check</h3>
+
+                    <div className="checklist-item" style={{ marginBottom: "12px" }}>
+                      <p className="checklist-question">Has the work area been inspected for smoldering materials or residual heat?</p>
+                      <div className="radio-group">
+                        <label><input type="radio" name="h_heat_source" value="1" checked={String(formData.h_heat_source) === "1"} disabled={isReadOnly} onChange={(e) => handleFieldChange("h_heat_source", e.target.value)} /> Yes</label>
+                        <label><input type="radio" name="h_heat_source" value="0" checked={String(formData.h_heat_source) === "0"} disabled={isReadOnly} onChange={(e) => handleFieldChange("h_heat_source", e.target.value)} /> No</label>
+                        <label><input type="radio" name="h_heat_source" value="2" checked={String(formData.h_heat_source) === "2"} disabled={isReadOnly} onChange={(e) => handleFieldChange("h_heat_source", e.target.value)} /> N/A</label>
+                      </div>
+                    </div>
+
+                    <div className="checklist-item" style={{ marginBottom: "12px" }}>
+                      <p className="checklist-question">Have all tools and hot work equipment been safely removed from the work area?</p>
+                      <div className="radio-group">
+                        <label><input type="radio" name="h_workplace_check" value="1" checked={String(formData.h_workplace_check) === "1"} disabled={isReadOnly} onChange={(e) => handleFieldChange("h_workplace_check", e.target.value)} /> Yes</label>
+                        <label><input type="radio" name="h_workplace_check" value="0" checked={String(formData.h_workplace_check) === "0"} disabled={isReadOnly} onChange={(e) => handleFieldChange("h_workplace_check", e.target.value)} /> No</label>
+                        <label><input type="radio" name="h_workplace_check" value="2" checked={String(formData.h_workplace_check) === "2"} disabled={isReadOnly} onChange={(e) => handleFieldChange("h_workplace_check", e.target.value)} /> N/A</label>
+                      </div>
+                    </div>
+
+                    <div className="checklist-item" style={{ marginBottom: "12px" }}>
+                      <p className="checklist-question">Has the area been cleaned and restored to its original safe condition?</p>
+                      <div className="radio-group">
+                        <label><input type="radio" name="h_fire_detectors" value="1" checked={String(formData.h_fire_detectors) === "1"} disabled={isReadOnly} onChange={(e) => handleFieldChange("h_fire_detectors", e.target.value)} /> Yes</label>
+                        <label><input type="radio" name="h_fire_detectors" value="0" checked={String(formData.h_fire_detectors) === "0"} disabled={isReadOnly} onChange={(e) => handleFieldChange("h_fire_detectors", e.target.value)} /> No</label>
+                        <label><input type="radio" name="h_fire_detectors" value="2" checked={String(formData.h_fire_detectors) === "2"} disabled={isReadOnly} onChange={(e) => handleFieldChange("h_fire_detectors", e.target.value)} /> N/A</label>
+                      </div>
+                    </div>
+
+                    {(formData.h_start_time || formData.h_end_time) && (
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginTop: "12px" }}>
+                        <div>
+                          <label className="df-label" style={{ fontSize: "12px", color: "var(--text-muted, #9ca3af)" }}>1hr time check:</label>
+                          <input type="text" className="df-input df-readonly" value={formData.h_start_time || "—"} readOnly />
+                        </div>
+                        <div>
+                          <label className="df-label" style={{ fontSize: "12px", color: "var(--text-muted, #9ca3af)" }}>3hrs time check:</label>
+                          <input type="text" className="df-input df-readonly" value={formData.h_end_time || "—"} readOnly />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
