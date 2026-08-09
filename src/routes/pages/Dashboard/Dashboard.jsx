@@ -911,7 +911,7 @@ function Dashboard() {
               else if (label === 'Closed') status = 'Closed';
               else if (label === 'Rejected') status = 'Rejected';
               else if (label === 'Cancelled') status = 'Cancelled';
-              else if (label === 'Auto-Cancelled') status = 'Cancelled';
+              else if (label === 'Auto-Cancelled') status = 'Auto-Cancelled';
               else if (label === 'Working After Midnight' || label === 'Night Shift') {
                 nightShift = "1";
               }

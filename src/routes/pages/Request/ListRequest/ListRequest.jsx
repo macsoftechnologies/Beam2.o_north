@@ -210,6 +210,14 @@ import "../../../forms/styles/forms.css";
 import { ZONE_MAPPING } from "../../../data/zones";
 import { getDenmarkTimeISOString, formatToDenmarkDateTime } from "../../../utils/dateUtils";
 
+const getTodayDateString = () => {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 // Helper to convert yyyy-mm-dd date to dd-mm-yyyy format
 const formatDateToDDMMYYYY = (dateStr) => {
   if (!dateStr || dateStr === "—") return "—";
@@ -2213,6 +2221,12 @@ const getInitialPage = () => {
           !isSubcontractor;
 
         if (!isStatusAllowed) return false;
+        if (isSubcontractor) {
+          return row.Request_status === "Draft";
+        }
+        if (row.Request_status === "Opened") {
+          if (!isAdmin && !isDept && !isDept1 && !isMultiDept) return false;
+        }
         if (isAdmin || isMultiDept) return true;
 
         if (isDept) {
@@ -3793,7 +3807,7 @@ const getInitialPage = () => {
                     type="date"
                     required
                     className="df-input"
-                    min={new Date().toISOString().split("T")[0]}
+                    min={getTodayDateString()}
                     value={copyDates.from}
                     onChange={(e) => setCopyDates(p => ({ ...p, from: e.target.value }))}
                   />
@@ -3804,7 +3818,7 @@ const getInitialPage = () => {
                     type="date"
                     required
                     className="df-input"
-                    min={copyDates.from || new Date().toISOString().split("T")[0]}
+                    min={copyDates.from || getTodayDateString()}
                     value={copyDates.to}
                     onChange={(e) => setCopyDates(p => ({ ...p, to: e.target.value }))}
                   />

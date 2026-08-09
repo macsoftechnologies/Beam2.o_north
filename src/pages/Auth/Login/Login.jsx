@@ -170,7 +170,7 @@ export default function Login() {
             <form id="loginForm" onSubmit={handleSubmit} noValidate>
               <div className="field-group">
                 <label className="field-label" htmlFor="username">
-                  Username or Email
+                  Username
                 </label>
                 <div className="field-wrap">
                   <svg className="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

@@ -142,6 +142,16 @@
   box-shadow: 0 0 0 3px rgba(0, 229, 160, 0.15) !important;
 }
 
+.df-form .df-input:disabled,
+.df-form .df-select:disabled {
+  background-color: #1f2937 !important;
+  background: #1f2937 !important;
+  color: #6b7280 !important;
+  border-color: #374151 !important;
+  opacity: 0.55 !important;
+  cursor: not-allowed !important;
+}
+
 /* ─────────────────────────────────────────────
    7. SELECT
 ───────────────────────────────────────────── */

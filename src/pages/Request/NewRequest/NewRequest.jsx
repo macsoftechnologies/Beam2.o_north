@@ -418,6 +418,14 @@ const formatDbValue = (val) => {
   return String(val);
 };
 
+const getTodayDateString = () => {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 const getNextDate = (dateStr) => {
   if (!dateStr) return "";
   const parts = dateStr.split("-");
@@ -499,6 +507,13 @@ function NewRequest() {
     return [String(roleVal).trim().toLowerCase()];
   }, [currentUser]);
   const isSubcontractor = userRoles.includes("subcontractor");
+  const isAdmin = userRoles.some(r => ["admin", "superadmin"].includes(r));
+  const isDept = userRoles.includes("department");
+  const isDept1 = userRoles.includes("department1");
+  const isMultiDept = isDept && isDept1;
+  const isDepartmentAccess = isDept || isDept1 || isMultiDept;
+  const canEditOpenedPermit = isAdmin || isDepartmentAccess;
+  const isReadOnly = isEditMode && (editRequest?.Request_status === "Opened" || editRequest?.request_status === "Opened") && !canEditOpenedPermit;
   const canDeleteNotes = userRoles.some(r => ["admin", "superadmin", "department", "department1"].includes(r));
   const [isnewrequestcreated, setIsnewrequestcreated] = useState(false);
   const [selectedRooms, setSelectedRooms] = useState([]);
@@ -1361,6 +1376,19 @@ function NewRequest() {
       }
 
       if (field === "Working_Date") {
+        const todayStr = getTodayDateString();
+        if (value && value < todayStr) {
+          setFieldErrors((prevErr) => ({
+            ...prevErr,
+            Working_Date: "Working date cannot be in the past.",
+          }));
+        } else {
+          setFieldErrors((prevErr) => {
+            const nextErr = { ...prevErr };
+            delete nextErr.Working_Date;
+            return nextErr;
+          });
+        }
         const isNight = prev.night_shift === true || prev.night_shift === 1 || prev.night_shift === "1";
         if (isNight) {
           updated.new_date = getNextDate(value);
@@ -1431,12 +1459,19 @@ function NewRequest() {
     if (!formData.Type_Of_Activity_Id) errors.Type_Of_Activity_Id = "Please select Type of Activity.";
     if (!formData.rams_number?.trim()) errors.rams_number = "Please enter RAMS Number.";
     if (!formData.description_of_activity?.trim()) errors.description_of_activity = "Please enter Description of Activity.";
-    if (!formData.Working_Date) errors.Working_Date = "Please select a working Date.";
+    const todayStr = getTodayDateString();
+    if (!formData.Working_Date) {
+      errors.Working_Date = "Please select a working Date.";
+    } else if (formData.Working_Date < todayStr) {
+      errors.Working_Date = "Working date cannot be in the past.";
+    }
     if (!formData.Start_Time) errors.Start_Time = "Please enter Start Time.";
     if (!formData.End_Time) errors.End_Time = "Please enter End Time.";
     if (formData.night_shift) {
       if (!formData.new_date || formData.new_date === "none" || !formData.new_date.trim()) {
         errors.new_date = "Please select New Date.";
+      } else if (formData.new_date < todayStr) {
+        errors.new_date = "New date cannot be in the past.";
       }
       if (!formData.new_end_time || formData.new_end_time === "none" || !formData.new_end_time.trim()) {
         errors.new_end_time = "Please enter New End Time.";
@@ -1760,10 +1795,8 @@ function NewRequest() {
 
     // Frontend validations
     if (formData.Working_Date) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const selected = new Date(formData.Working_Date);
-      if (selected < today) {
+      const todayStr = getTodayDateString();
+      if (formData.Working_Date < todayStr) {
         showError("Working date cannot be a past date.");
         return;
       }
@@ -1897,9 +1930,9 @@ function NewRequest() {
       Room_Nos,
       // RoomNos: Room_Nos,
       Room_Type: level,
-      Request_status: status === "Hold" ? "Hold" : "Draft",
+      Request_status: status || (isEditMode && (editRequest?.Request_status || editRequest?.request_status) ? (editRequest?.Request_status || editRequest?.request_status) : "Draft"),
       userId: currentUserId,
-      Request_Date: isEditMode ? editRequest.Request_Date : new Date().toISOString().split("T")[0],
+      Request_Date: isEditMode ? editRequest.Request_Date : getTodayDateString(),
       Working_Date: formData.Working_Date,
       Start_Time: formData.Start_Time ? (formData.Start_Time.includes(":") && formData.Start_Time.split(":").length === 2 ? `${formData.Start_Time}:00` : formData.Start_Time) : "",
       End_Time: formData.End_Time ? (formData.End_Time.includes(":") && formData.End_Time.split(":").length === 2 ? `${formData.End_Time}:00` : formData.End_Time) : "",
@@ -2450,8 +2483,17 @@ function NewRequest() {
                   type="date"
                   className={`df-input${fieldErrors.Working_Date ? " field-input-error" : ""}`}
                   value={formData.Working_Date}
-                  min={new Date().toISOString().split("T")[0]}
-                  onChange={(e) => handleFieldChange("Working_Date", e.target.value)}
+                  min={getTodayDateString()}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    const todayStr = getTodayDateString();
+                    if (val && val < todayStr) {
+                      setFieldErrors((prev) => ({ ...prev, Working_Date: "Working date cannot be in the past." }));
+                      handleFieldChange("Working_Date", "");
+                      return;
+                    }
+                    handleFieldChange("Working_Date", val);
+                  }}
                   onClick={(e) => { try { e.target.showPicker(); } catch (err) { void err; } }}
                 />
                 {fieldErrors.Working_Date && <span className="field-error">{fieldErrors.Working_Date}</span>}
@@ -2540,8 +2582,18 @@ function NewRequest() {
                     type="date"
                     className={`df-input${fieldErrors.new_date ? " field-input-error" : ""}${formData.night_shift ? " df-readonly" : ""}`}
                     value={formData.new_date}
+                    min={formData.Working_Date || getTodayDateString()}
                     disabled={formData.night_shift}
-                    onChange={(e) => handleFieldChange("new_date", e.target.value)}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      const minDate = formData.Working_Date || getTodayDateString();
+                      if (val && val < minDate) {
+                        setFieldErrors((prev) => ({ ...prev, new_date: "New date cannot be in the past." }));
+                        handleFieldChange("new_date", "");
+                        return;
+                      }
+                      handleFieldChange("new_date", val);
+                    }}
                     style={{ cursor: formData.night_shift ? 'not-allowed' : 'default' }}
                   />
                   {fieldErrors.new_date && <span className="field-error">{fieldErrors.new_date}</span>}

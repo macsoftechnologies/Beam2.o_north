@@ -1842,7 +1842,7 @@ const Reports = () => {
               <label className="df-label">Date</label>
               <input
                 type="date"
-                className="df-input"
+                className={`df-input ${filters.reportType === "2" ? "df-readonly" : ""}`}
                 disabled={filters.reportType === "2"}
                 value={filters.date}
                 onChange={(e) => handleChange("date", e.target.value)}
@@ -1853,7 +1853,7 @@ const Reports = () => {
             <div className="df-field">
               <label className="df-label">Year</label>
               <select
-                className="df-select"
+                className={`df-select ${filters.reportType === "1" ? "df-readonly" : ""}`}
                 disabled={filters.reportType === "1"}
                 value={filters.year}
                 onChange={(e) => handleYearChange(e.target.value)}
@@ -1868,7 +1868,7 @@ const Reports = () => {
             <div className="df-field">
               <label className="df-label">Week</label>
               <select
-                className="df-select"
+                className={`df-select ${filters.reportType === "1" || !filters.year ? "df-readonly" : ""}`}
                 disabled={filters.reportType === "1" || !filters.year}
                 value={filters.weekno}
                 onChange={(e) => handleChange("weekno", e.target.value)}
@@ -1884,7 +1884,7 @@ const Reports = () => {
             <div className="df-field">
               <label className="df-label">Year</label>
               <select
-                className="df-select"
+                className={`df-select ${filters.reportType === "1" ? "df-readonly" : ""}`}
                 disabled={filters.reportType === "1"}
                 value={filters.year}
                 onChange={(e) => handleYearChange(e.target.value)}
@@ -1899,7 +1899,7 @@ const Reports = () => {
             <div className="df-field">
               <label className="df-label">Week</label>
               <select
-                className="df-select"
+                className={`df-select ${filters.reportType === "1" || !filters.year ? "df-readonly" : ""}`}
                 disabled={filters.reportType === "1" || !filters.year}
                 value={filters.weekno}
                 onChange={(e) => handleChange("weekno", e.target.value)}
@@ -1916,7 +1916,7 @@ const Reports = () => {
               <label className="df-label">Working Date range (From)</label>
               <input
                 type="date"
-                className="df-input"
+                className={`df-input ${filters.reportType === "2" ? "df-readonly" : ""}`}
                 disabled={filters.reportType === "2"}
                 value={filters.workingDateFrom}
                 onChange={(e) => handleChange("workingDateFrom", e.target.value)}
@@ -1927,7 +1927,7 @@ const Reports = () => {
               <label className="df-label">Working Date range (To)</label>
               <input
                 type="date"
-                className="df-input"
+                className={`df-input ${filters.reportType === "2" ? "df-readonly" : ""}`}
                 disabled={filters.reportType === "2"}
                 value={filters.workingDateTo}
                 onChange={(e) => handleChange("workingDateTo", e.target.value)}
