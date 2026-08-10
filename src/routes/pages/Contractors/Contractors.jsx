@@ -189,7 +189,6 @@ const Contractors = () => {
     try {
       const formDataObj = new FormData();
       formDataObj.append("subContractorName", formData.subContractorName);
-      formDataObj.append("departId", formData.departId);
       if (formData.logoFile) {
         formDataObj.append("logo", formData.logoFile);
       } else if (formData.logoCleared) {

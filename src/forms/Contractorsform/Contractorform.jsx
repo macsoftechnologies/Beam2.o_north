@@ -12,7 +12,7 @@ function Contractorform({ onClose, initialData, isEdit, onSubmit }) {
   useEffect(() => {
     if (isEdit && initialData) {
       setName(initialData.subContractorName || initialData.name || "");
-      
+
       if (initialData.logo) {
         if (initialData.logo.startsWith("data:") || initialData.logo.startsWith("http")) {
           setLogo(initialData.logo);
