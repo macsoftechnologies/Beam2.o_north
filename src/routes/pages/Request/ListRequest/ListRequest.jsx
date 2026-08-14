@@ -2216,9 +2216,14 @@ const getInitialPage = () => {
       showSuccess("Permits copied successfully");
       setActiveModal(null);
       fetchRequests(currentPage);
-    } catch {
-      showError("Copy operation failed");
-    }
+} catch (err) {
+  console.log("COPY ERR:", err, err?.response?.data);
+  const backendMsg = err?.response?.data?.message;
+  const errMsg = Array.isArray(backendMsg)
+    ? backendMsg.join(", ")
+    : (typeof backendMsg === "string" ? backendMsg : null) || err?.message || "Copy operation failed";
+  showError(errMsg);
+}
   };
 
   const selectableRequestsCount = useMemo(() => {
