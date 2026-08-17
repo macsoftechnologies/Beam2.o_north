@@ -296,105 +296,161 @@ const resolveZoneNameFromRooms = (row) => {
 const resolveZoneObjectsFromRequest = (row, zonesList = [], roomsList = []) => {
   if (!row) return [];
 
-  const roomStr = row.room_names || row.Room_Nos || row.Room_Name || "";
-  const roomsToMatch = String(roomStr)
-    .split(",")
-    .map(r => r.trim().toLowerCase())
-    .filter(Boolean);
-
   const matchedZoneMap = new Map();
 
-  // 1. Try matching room names in DB roomsList to find real database zone_id & zone name
-  if (roomsToMatch.length > 0 && roomsList.length > 0) {
-    roomsToMatch.forEach(rNameLower => {
-      const matchedRoom = roomsList.find(r => (r.room_name || "").toLowerCase().trim() === rNameLower);
-      if (matchedRoom && matchedRoom.zone_id) {
-        const zId = Number(matchedRoom.zone_id);
-        const dbZone = zonesList.find(z => String(z.id ?? z.zoneStatusId) === String(zId));
-        const zName = dbZone ? (dbZone.zone || dbZone.zone_name) : (matchedRoom.zone_name || "");
-        if (zName) {
-          matchedZoneMap.set(zName.toLowerCase().trim(), { Zone_Id: zId, zone: String(zName) });
+  // 1. PRIORITISE database Zone_Id / zone object / zone_name already on row
+  const rowZoneIds = [];
+  if (row.Zone_Id) {
+    String(row.Zone_Id).split(',').forEach(idStr => {
+      const num = Number(idStr.trim());
+      if (!isNaN(num) && num > 0) rowZoneIds.push(num);
+    });
+  } else if (Array.isArray(row.zone)) {
+    row.zone.forEach(zItem => {
+      const zId = Number(typeof zItem === 'object' ? (zItem.Zone_Id ?? zItem.zone_id ?? zItem.id) : zItem);
+      if (!isNaN(zId) && zId > 0) rowZoneIds.push(zId);
+    });
+  } else if (row.zone && typeof row.zone === 'object') {
+    const zId = Number(row.zone.id ?? row.zone.Zone_Id ?? row.zone.zone_id);
+    if (!isNaN(zId) && zId > 0) rowZoneIds.push(zId);
+  }
+
+  rowZoneIds.forEach(zId => {
+    const dbZone = zonesList.find(z => String(z.id ?? z.zoneStatusId) === String(zId));
+    const zName = dbZone ? (dbZone.zone || dbZone.zone_name) : null;
+    if (zName) {
+      matchedZoneMap.set(zName.toLowerCase().trim(), { Zone_Id: zId, zone: String(zName) });
+    }
+  });
+
+  const explicitZoneName = typeof row.zone_name === "string" && row.zone_name.trim().length > 0 && row.zone_name !== "—"
+    ? row.zone_name.trim()
+    : (typeof row.zone === "string" && row.zone.trim().length > 0 && row.zone !== "—" ? row.zone.trim() : "");
+
+  if (explicitZoneName) {
+    explicitZoneName.split(',').forEach(zStr => {
+      const nameClean = zStr.trim();
+      if (nameClean && !matchedZoneMap.has(nameClean.toLowerCase())) {
+        const dbZone = zonesList.find(z => (z.zone || z.zone_name || "").toLowerCase().trim() === nameClean.toLowerCase());
+        const zId = dbZone ? Number(dbZone.id ?? dbZone.zoneStatusId) : null;
+        if (zId) {
+          matchedZoneMap.set(nameClean.toLowerCase(), { Zone_Id: zId, zone: nameClean });
         }
       }
     });
   }
 
-  // 2. Resolve canonical zone names from ZONE_MAPPING using room names
-  const levelKey = row.Room_Type || "";
-  let zonesToSearch = [];
+  // 2. If no zone resolved yet from row.Zone_Id, match room IDs / names in DB roomsList (strictly filtered by Building & Floor)
+  if (matchedZoneMap.size === 0) {
+    const roomStr = row.room_names || row.Room_Nos || row.Room_Name || "";
+    const roomsToMatch = String(roomStr)
+      .split(",")
+      .map(r => r.trim().toLowerCase())
+      .filter(Boolean);
 
-  if (levelKey) {
-    const levelLower = String(levelKey).toLowerCase().trim();
-    const foundKey = Object.keys(ZONE_MAPPING).find(k =>
-      k.toLowerCase().trim().includes(levelLower) || levelLower.includes(k.toLowerCase().trim())
-    );
-    if (foundKey) {
-      zonesToSearch = ZONE_MAPPING[foundKey] || [];
+    const targetBuildingId = row.Building_Id || row.building_id;
+    const targetFloorId = row.Floor_Id || row.fl_id || row.floor_id;
+
+    if (roomsToMatch.length > 0 && roomsList.length > 0) {
+      roomsToMatch.forEach(rToken => {
+        // Try matching room_id first filtered by Building & Floor
+        let matchedRoom = roomsList.find(r =>
+          String(r.room_id ?? r.id) === rToken &&
+          (targetFloorId ? String(r.fl_id || r.floor_id) === String(targetFloorId) : true) &&
+          (targetBuildingId ? String(r.building_id) === String(targetBuildingId) : true)
+        );
+        // Try matching room_name filtered by Building & Floor
+        if (!matchedRoom) {
+          matchedRoom = roomsList.find(r =>
+            (r.room_name || "").toLowerCase().trim() === rToken &&
+            (targetFloorId ? String(r.fl_id || r.floor_id) === String(targetFloorId) : true) &&
+            (targetBuildingId ? String(r.building_id) === String(targetBuildingId) : true)
+          );
+        }
+        // Fallback with building filter only
+        if (!matchedRoom && targetBuildingId) {
+          matchedRoom = roomsList.find(r =>
+            ((r.room_name || "").toLowerCase().trim() === rToken || String(r.room_id ?? r.id) === rToken) &&
+            String(r.building_id) === String(targetBuildingId)
+          );
+        }
+        // General fallback
+        if (!matchedRoom) {
+          matchedRoom = roomsList.find(r =>
+            (r.room_name || "").toLowerCase().trim() === rToken || String(r.room_id ?? r.id) === rToken
+          );
+        }
+
+        if (matchedRoom && matchedRoom.zone_id) {
+          const zId = Number(matchedRoom.zone_id);
+          const dbZone = zonesList.find(z => String(z.id ?? z.zoneStatusId) === String(zId));
+          const zName = dbZone ? (dbZone.zone || dbZone.zone_name) : (matchedRoom.zone_name || "");
+          if (zName) {
+            matchedZoneMap.set(zName.toLowerCase().trim(), { Zone_Id: zId, zone: String(zName) });
+          }
+        }
+      });
     }
   }
 
-  if (zonesToSearch.length === 0) {
-    zonesToSearch = Object.values(ZONE_MAPPING).flat();
-  }
+  // 3. Resolve canonical zone names from ZONE_MAPPING using room names
+  if (matchedZoneMap.size === 0) {
+    const roomStr = row.room_names || row.Room_Nos || row.Room_Name || "";
+    const roomsToMatch = String(roomStr)
+      .split(",")
+      .map(r => r.trim().toLowerCase())
+      .filter(Boolean);
 
-  const mappingZoneNames = [];
-  if (roomsToMatch.length > 0) {
-    for (const zoneGroup of zonesToSearch) {
-      if (zoneGroup.rooms) {
-        for (const room of zoneGroup.rooms) {
-          const roomName = (typeof room === "object" ? room.name : room) || "";
-          const roomId = (typeof room === "object" ? room.id : "") || "";
-          if (
-            roomsToMatch.includes(roomName.toLowerCase().trim()) ||
-            (roomId && roomsToMatch.includes(String(roomId).toLowerCase().trim()))
-          ) {
-            if (zoneGroup.name && !mappingZoneNames.includes(zoneGroup.name)) {
-              mappingZoneNames.push(zoneGroup.name);
+    const levelKey = row.Room_Type || "";
+    let zonesToSearch = [];
+
+    if (levelKey) {
+      const levelLower = String(levelKey).toLowerCase().trim();
+      const foundKey = Object.keys(ZONE_MAPPING).find(k =>
+        k.toLowerCase().trim().includes(levelLower) || levelLower.includes(k.toLowerCase().trim())
+      );
+      if (foundKey) {
+        zonesToSearch = ZONE_MAPPING[foundKey] || [];
+      }
+    }
+
+    if (zonesToSearch.length === 0) {
+      zonesToSearch = Object.values(ZONE_MAPPING).flat();
+    }
+
+    const mappingZoneNames = [];
+    if (roomsToMatch.length > 0) {
+      for (const zoneGroup of zonesToSearch) {
+        if (zoneGroup.rooms) {
+          for (const room of zoneGroup.rooms) {
+            const roomName = (typeof room === "object" ? room.name : room) || "";
+            const roomId = (typeof room === "object" ? room.id : "") || "";
+            if (
+              roomsToMatch.includes(roomName.toLowerCase().trim()) ||
+              (roomId && roomsToMatch.includes(String(roomId).toLowerCase().trim()))
+            ) {
+              if (zoneGroup.name && !mappingZoneNames.includes(zoneGroup.name)) {
+                mappingZoneNames.push(zoneGroup.name);
+              }
             }
           }
         }
       }
     }
+
+    mappingZoneNames.forEach(mappingName => {
+      const key = mappingName.toLowerCase().trim();
+      if (!matchedZoneMap.has(key)) {
+        const dbZone = zonesList.find(z => (z.zone || z.zone_name || "").toLowerCase().trim() === key);
+        if (dbZone) {
+          const zId = Number(dbZone.id ?? dbZone.zoneStatusId);
+          matchedZoneMap.set(key, { Zone_Id: zId, zone: dbZone.zone || dbZone.zone_name || mappingName });
+        }
+      }
+    });
   }
 
-  // 3. For each zone name from ZONE_MAPPING, find database zone object in zonesList
-  mappingZoneNames.forEach(mappingName => {
-    const key = mappingName.toLowerCase().trim();
-    if (!matchedZoneMap.has(key)) {
-      const dbZone = zonesList.find(z => (z.zone || z.zone_name || "").toLowerCase().trim() === key);
-      if (dbZone) {
-        const zId = Number(dbZone.id ?? dbZone.zoneStatusId);
-        matchedZoneMap.set(key, { Zone_Id: zId, zone: dbZone.zone || dbZone.zone_name || mappingName });
-      }
-    }
-  });
-
-  // 4. Fallback if modalTarget already has database zone object or Zone_Id / zone_name
-  if (matchedZoneMap.size === 0) {
-    const dbZoneName = (row.zone && typeof row.zone === "object")
-      ? (row.zone.zone || row.zone.zone_name)
-      : (row.zone_name || row.zone || "");
-    const dbZoneId = row.Zone_Id
-      ? Number(row.Zone_Id)
-      : (row.zone?.id ? Number(row.zone.id) : null);
-
-    if (dbZoneName && dbZoneName !== "—") {
-      let finalId = dbZoneId;
-      if (!finalId) {
-        const found = zonesList.find(z => (z.zone || z.zone_name || "").toLowerCase().trim() === String(dbZoneName).toLowerCase().trim());
-        if (found) finalId = Number(found.id ?? found.zoneStatusId);
-      }
-      if (finalId) {
-        matchedZoneMap.set(String(dbZoneName).toLowerCase().trim(), { Zone_Id: finalId, zone: String(dbZoneName) });
-      }
-    } else if (dbZoneId) {
-      const found = zonesList.find(z => Number(z.id ?? z.zoneStatusId) === dbZoneId);
-      const name = found ? (found.zone || found.zone_name) : `Zone ${dbZoneId}`;
-      matchedZoneMap.set(name.toLowerCase().trim(), { Zone_Id: dbZoneId, zone: name });
-    }
-  }
-
-  // 5. Final fallback: match first zone in zonesList for this building / floor
+  // 4. Final fallback
   if (matchedZoneMap.size === 0 && zonesList.length > 0) {
     const bId = row.Building_Id ? Number(row.Building_Id) : null;
     const fId = row.Floor_Id ? Number(row.Floor_Id) : null;
