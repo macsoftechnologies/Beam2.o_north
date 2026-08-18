@@ -58716,7 +58716,7 @@ export const ZONE_MAPPING = {
       ]
     },
     {
-      id: 23, name: "FS3.0",
+      id: 23, name: "FS3.2",
       className: "GF_FS3_2",
       pdf: MAII_GF_FS3_2Pdf,
       "pdfWidth": 1351,

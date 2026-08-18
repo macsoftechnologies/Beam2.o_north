@@ -1253,6 +1253,11 @@ function NewRequest() {
     return building ? floorsList.filter(f => String(f.build_id) === String(building)).map(f => f.floor_name) : [];
   }, [building, floorsList]);
 
+  const selectedBuildingName = useMemo(() => {
+    const b = buildingsList.find((x) => String(x.build_id) === String(building));
+    return b ? b.building_name : "";
+  }, [building, buildingsList]);
+
   const selectedPdf = useMemo(() => {
     if (!building) return "";
     if (!building || !level) return "";
@@ -1286,19 +1291,58 @@ function NewRequest() {
 
   const selectedZones = useMemo(() => {
     if (!level) return [];
-    // 1. Try exact match
-    if (ZONE_MAPPING[level]) return ZONE_MAPPING[level];
 
-    // 2. Try case-insensitive substring match
-    const levelLower = level.toLowerCase().trim();
-    const foundKey = Object.keys(ZONE_MAPPING).find(key => {
+    const bName = (selectedBuildingName || "").trim();
+    const lName = (level || "").trim();
+    const lLower = lName.toLowerCase();
+    const bLower = bName.toLowerCase();
+
+    // 1. Try exact match
+    if (ZONE_MAPPING[lName]) return ZONE_MAPPING[lName];
+    if (bName && ZONE_MAPPING[`${bName} ${lName}`]) return ZONE_MAPPING[`${bName} ${lName}`];
+    if (bName && ZONE_MAPPING[`${bName}.${lName}`]) return ZONE_MAPPING[`${bName}.${lName}`];
+
+    const allKeys = Object.keys(ZONE_MAPPING);
+
+    // 2. Try building-scoped keys match
+    if (bName) {
+      const buildingKeys = allKeys.filter(k => {
+        const kLower = k.toLowerCase();
+        return kLower.startsWith(bLower) || kLower.includes(bLower);
+      });
+
+      if (buildingKeys.length > 0) {
+        // Try matching level within building keys
+        const levelMatch = buildingKeys.find(k => {
+          const rest = k.toLowerCase().replace(bLower, "").trim();
+          return rest === lLower || rest.includes(lLower) || lLower.includes(rest);
+        });
+        if (levelMatch) return ZONE_MAPPING[levelMatch];
+
+        // Try numeric level match (e.g. "0", "1", "2", "3", "r")
+        const lNum = lLower.replace(/[^0-9r]/g, "");
+        if (lNum) {
+          const numMatch = buildingKeys.find(k => {
+            const rest = k.toLowerCase().replace(bLower, "").trim();
+            const kNum = rest.replace(/[^0-9r]/g, "");
+            return kNum === lNum;
+          });
+          if (numMatch) return ZONE_MAPPING[numMatch];
+        }
+
+        return ZONE_MAPPING[buildingKeys[0]];
+      }
+    }
+
+    // 3. Fallback: match level across all keys
+    const foundKey = allKeys.find(key => {
       const keyLower = key.toLowerCase().trim();
-      return keyLower.includes(levelLower) || levelLower.includes(keyLower);
+      return keyLower === lLower || keyLower.includes(lLower) || lLower.includes(keyLower);
     });
     if (foundKey) return ZONE_MAPPING[foundKey];
 
     return [];
-  }, [level]);
+  }, [level, selectedBuildingName]);
 
   const zonesToDisplay = useMemo(() => {
     const active = selectedZones.filter(zone =>
@@ -1440,10 +1484,6 @@ function NewRequest() {
     }
   };
 
-  const selectedBuildingName = useMemo(() => {
-    const b = buildingsList.find((x) => String(x.build_id) === String(building));
-    return b ? b.building_name : "";
-  }, [building, buildingsList]);
 
   // Group dynamic electrical works list by module name
   const groupedElectrical = useMemo(() => {
@@ -1744,10 +1784,27 @@ function NewRequest() {
     // 1. Tally selected location items to resolve database IDs
     const Building_Id = building ? Number(building) : null;
 
-    const matchedFloor = floorsList.find(
-      (f) => String(f.build_id) === String(building) && (f.floor_name === level || f.floor_status === level)
-    );
-    const Floor_Id = matchedFloor ? matchedFloor.fl_id : null;
+    const levelClean = String(level || "").toLowerCase().trim();
+    const levelNum = levelClean.replace(/[^0-9r]/g, "");
+
+    const matchedFloor = floorsList.find((f) => {
+      const isBuildingMatch = String(f.build_id) === String(building) || String(f.building_id) === String(building);
+      if (!isBuildingMatch) return false;
+
+      const fName = String(f.floor_name || f.name || f.floor || "").toLowerCase().trim();
+
+      if (fName === levelClean) return true;
+
+      if (levelNum) {
+        const fNum = fName.replace(/[^0-9r]/g, "");
+        if (fNum && fNum === levelNum) return true;
+      }
+
+      if (fName.includes(levelClean) || levelClean.includes(fName)) return true;
+
+      return false;
+    });
+    const Floor_Id = matchedFloor ? (matchedFloor.fl_id ?? matchedFloor.id ?? matchedFloor.floor_id) : null;
 
     // Find zone IDs and zone names
     const selectedZoneObjects = selectedZones.filter((zone) =>
@@ -1764,9 +1821,31 @@ function NewRequest() {
       zoneVal = String(editRequest.zone_name);
     }
 
-    const matchedZoneIds = zonesList
-      .filter((z) => String(z.floor_id) === String(Floor_Id) && selectedZoneObjects.some((zo) => zo.name === z.zone))
+    const selectedZoneNamesLower = selectedZoneObjects.map((zo) => (zo.name || "").toLowerCase().trim());
+
+    let matchedZoneIds = zonesList
+      .filter((z) => {
+        const isFloorMatch = Floor_Id ? String(z.floor_id || z.fl_id) === String(Floor_Id) : true;
+        const zName = (z.zone || z.zone_name || "").toLowerCase().trim();
+        const isZoneMatch = selectedZoneNamesLower.length > 0 ? selectedZoneNamesLower.includes(zName) : true;
+        return isFloorMatch && isZoneMatch;
+      })
       .map((z) => z.id ?? z.zoneStatusId);
+
+    // Fallback: If matchedZoneIds is empty but user selected zones/rooms, match zones for Floor_Id
+    if (matchedZoneIds.length === 0 && (selectedZoneObjects.length > 0 || selectedRooms.length > 0)) {
+      if (Floor_Id) {
+        const floorZones = zonesList.filter((z) => String(z.floor_id || z.fl_id) === String(Floor_Id));
+        if (floorZones.length > 0) {
+          const matchedByPartial = floorZones.filter((z) => {
+            const zName = (z.zone || z.zone_name || "").toLowerCase().trim();
+            return selectedZoneNamesLower.some((sz) => sz.includes(zName) || zName.includes(sz));
+          });
+          matchedZoneIds = (matchedByPartial.length > 0 ? matchedByPartial : floorZones).map((z) => z.id ?? z.zoneStatusId);
+        }
+      }
+    }
+
     let Zone_Id = matchedZoneIds.join(",");
     if (!Zone_Id && isEditMode && editRequest?.Zone_Id) {
       Zone_Id = String(editRequest.Zone_Id);

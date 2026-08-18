@@ -257,13 +257,38 @@ const resolveZoneNameFromRooms = (row) => {
 
   const roomsToMatch = String(roomStr).split(",").map(r => r.trim().toLowerCase());
 
-  const levelKey = row.Room_Type || "";
+  const bName = String(row.building_name || row.Building_Name || row.building || "").trim();
+  const lName = String(row.Room_Type || row.level || "").trim();
+  const lLower = lName.toLowerCase();
+  const bLower = bName.toLowerCase();
   let zonesToSearch = [];
 
-  if (levelKey) {
-    const levelLower = levelKey.toLowerCase().trim();
+  if (lName && ZONE_MAPPING[lName]) {
+    zonesToSearch = ZONE_MAPPING[lName];
+  } else if (bName && lName && ZONE_MAPPING[`${bName} ${lName}`]) {
+    zonesToSearch = ZONE_MAPPING[`${bName} ${lName}`];
+  } else if (bName) {
+    const bKeys = Object.keys(ZONE_MAPPING).filter(k => k.toLowerCase().includes(bLower));
+    if (bKeys.length > 0) {
+      const match = bKeys.find(k => {
+        const rest = k.toLowerCase().replace(bLower, "").trim();
+        return rest === lLower || rest.includes(lLower) || lLower.includes(rest);
+      });
+      if (match) zonesToSearch = ZONE_MAPPING[match] || [];
+      else {
+        const lNum = lLower.replace(/[^0-9r]/g, "");
+        if (lNum) {
+          const numMatch = bKeys.find(k => k.toLowerCase().replace(bLower, "").replace(/[^0-9r]/g, "") === lNum);
+          if (numMatch) zonesToSearch = ZONE_MAPPING[numMatch] || [];
+        }
+      }
+      if (zonesToSearch.length === 0) zonesToSearch = ZONE_MAPPING[bKeys[0]] || [];
+    }
+  }
+
+  if (zonesToSearch.length === 0 && lName) {
     const foundKey = Object.keys(ZONE_MAPPING).find(k =>
-      k.toLowerCase().trim().includes(levelLower) || levelLower.includes(k.toLowerCase().trim())
+      k.toLowerCase().trim().includes(lLower) || lLower.includes(k.toLowerCase().trim())
     );
     if (foundKey) {
       zonesToSearch = ZONE_MAPPING[foundKey] || [];
@@ -402,13 +427,38 @@ const resolveZoneObjectsFromRequest = (row, zonesList = [], roomsList = []) => {
       .map(r => r.trim().toLowerCase())
       .filter(Boolean);
 
-    const levelKey = row.Room_Type || "";
+    const bName = String(row.building_name || row.Building_Name || row.building || "").trim();
+    const lName = String(row.Room_Type || row.level || "").trim();
+    const lLower = lName.toLowerCase();
+    const bLower = bName.toLowerCase();
     let zonesToSearch = [];
 
-    if (levelKey) {
-      const levelLower = String(levelKey).toLowerCase().trim();
+    if (lName && ZONE_MAPPING[lName]) {
+      zonesToSearch = ZONE_MAPPING[lName];
+    } else if (bName && lName && ZONE_MAPPING[`${bName} ${lName}`]) {
+      zonesToSearch = ZONE_MAPPING[`${bName} ${lName}`];
+    } else if (bName) {
+      const bKeys = Object.keys(ZONE_MAPPING).filter(k => k.toLowerCase().includes(bLower));
+      if (bKeys.length > 0) {
+        const match = bKeys.find(k => {
+          const rest = k.toLowerCase().replace(bLower, "").trim();
+          return rest === lLower || rest.includes(lLower) || lLower.includes(rest);
+        });
+        if (match) zonesToSearch = ZONE_MAPPING[match] || [];
+        else {
+          const lNum = lLower.replace(/[^0-9r]/g, "");
+          if (lNum) {
+            const numMatch = bKeys.find(k => k.toLowerCase().replace(bLower, "").replace(/[^0-9r]/g, "") === lNum);
+            if (numMatch) zonesToSearch = ZONE_MAPPING[numMatch] || [];
+          }
+        }
+        if (zonesToSearch.length === 0) zonesToSearch = ZONE_MAPPING[bKeys[0]] || [];
+      }
+    }
+
+    if (zonesToSearch.length === 0 && lName) {
       const foundKey = Object.keys(ZONE_MAPPING).find(k =>
-        k.toLowerCase().trim().includes(levelLower) || levelLower.includes(k.toLowerCase().trim())
+        k.toLowerCase().trim().includes(lLower) || lLower.includes(k.toLowerCase().trim())
       );
       if (foundKey) {
         zonesToSearch = ZONE_MAPPING[foundKey] || [];
