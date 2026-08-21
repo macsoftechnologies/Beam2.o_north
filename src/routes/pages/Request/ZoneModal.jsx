@@ -26,17 +26,35 @@ function ZoneModal({
     setSelectedRooms(globalSelectedRooms);
   }, [globalSelectedRooms]);
 
+  const getRoomStatusFromMap = (item) => {
+    if (!item) return null;
+    let rName = "";
+    if (typeof item === "object") {
+      rName = item.name || item.room_name || "";
+    } else {
+      const str = String(item);
+      const parts = str.split(":::");
+      rName = parts[parts.length - 1];
+    }
+    const cleanKey = rName.toLowerCase().trim();
+    if (roomStatusMap && roomStatusMap[cleanKey]) {
+      return roomStatusMap[cleanKey];
+    }
+    if (zone && zone.status) return zone.status;
+    return null;
+  };
+
   const toggleRoom = (roomName) => {
     if (selectedRooms.includes(roomName)) {
       setSelectedRooms((prev) => prev.filter((r) => r !== roomName));
       return;
     }
 
-    const newRoomStatus = roomStatusMap ? roomStatusMap[roomName.toLowerCase().trim()] : null;
+    const newRoomStatus = getRoomStatusFromMap(roomName) || (zone ? zone.status : null);
     if (newRoomStatus) {
-      const activeStatus = selectedRooms.reduce((status, name) => {
+      const activeStatus = selectedRooms.reduce((status, item) => {
         if (status) return status;
-        return roomStatusMap ? roomStatusMap[name.toLowerCase().trim()] : null;
+        return getRoomStatusFromMap(item);
       }, null);
 
       if (activeStatus && activeStatus !== newRoomStatus) {
