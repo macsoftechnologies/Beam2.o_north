@@ -1355,6 +1355,19 @@ function NewRequest() {
     return Object.values(pdfsForBuilding)[0] || "";
   }, [building, level, buildingsList]);
 
+  const normalizeFloorName = (name) => {
+    if (!name) return "";
+    let s = String(name).toLowerCase().trim();
+    s = s.replace(/\bground\b|\bgf\b/g, "0");
+    s = s.replace(/\bfirst\b|\b1st\b/g, "1");
+    s = s.replace(/\bsecond\b|\b2nd\b/g, "2");
+    s = s.replace(/\bthird\b|\b3rd\b/g, "3");
+    s = s.replace(/\bfourth\b|\b4th\b/g, "4");
+    s = s.replace(/\bfifth\b|\b5th\b/g, "5");
+    s = s.replace(/\broof\b|\brf\b/g, "roof");
+    return s.replace(/[^0-9roof]/g, "");
+  };
+
   const getZonesForLevel = (lName) => {
     if (!lName) return [];
     const bName = (selectedBuildingName || "").trim();
@@ -1380,16 +1393,14 @@ function NewRequest() {
         });
         if (levelMatch) return ZONE_MAPPING[levelMatch];
 
-        const lNum = lLower.replace(/[^0-9r]/g, "");
-        if (lNum) {
+        const targetNorm = normalizeFloorName(lLower);
+        if (targetNorm) {
           const numMatch = buildingKeys.find(k => {
             const rest = k.toLowerCase().replace(bLower, "").trim();
-            const kNum = rest.replace(/[^0-9r]/g, "");
-            return kNum === lNum;
+            return normalizeFloorName(rest) === targetNorm;
           });
           if (numMatch) return ZONE_MAPPING[numMatch];
         }
-        return ZONE_MAPPING[buildingKeys[0]];
       }
     }
 
@@ -2026,22 +2037,48 @@ function NewRequest() {
     const selectedLevelNames = Array.from(allSelectedLevelNames);
     const Room_Type = selectedLevelNames.join(", ");
 
-    // Resolve Floor IDs across selected levels
-    const matchedFloorIds = selectedLevelNames.map(lName => {
+    // Resolve Floor IDs across selected levels and selected rooms
+    const selectedFloorIds = new Set();
+
+    selectedRooms.forEach(token => {
+      const parsed = parseRoomToken(token, level);
+      const rName = (parsed.roomName || "").toLowerCase().trim();
+      const zName = (parsed.zone || "").toLowerCase().trim();
+
+      const foundRoom = roomsList.find(r => 
+        (r.room_name || r.name || r.room_nos || "").toLowerCase().trim() === rName &&
+        (!building || String(r.building_id) === String(building))
+      );
+
+      const foundZone = zonesList.find(z => 
+        (z.zone || z.zone_name || z.name || "").toLowerCase().trim() === zName &&
+        (!building || String(z.building_id || z.build_id || "") === String(building))
+      );
+
+      const fId = foundRoom?.fl_id || foundRoom?.floor_id || foundZone?.floor_id || foundZone?.fl_id;
+      if (fId) {
+        selectedFloorIds.add(String(fId));
+      }
+    });
+
+    // Also resolve from selectedLevelNames using floorsList
+    selectedLevelNames.forEach(lName => {
       const lClean = lName.toLowerCase().trim();
-      const lNum = lClean.replace(/[^0-9r]/g, "");
+      const lNum = lClean.replace(/[^0-9]/g, "");
       const f = floorsList.find(floor => {
-        const isBuildingMatch = String(floor.build_id) === String(building) || String(floor.building_id) === String(building);
+        const isBuildingMatch = !building || String(floor.build_id) === String(building) || String(floor.building_id) === String(building);
         if (!isBuildingMatch) return false;
         const fName = String(floor.floor_name || floor.name || floor.floor || "").toLowerCase().trim();
         if (fName === lClean) return true;
-        if (lNum && fName.replace(/[^0-9r]/g, "") === lNum) return true;
+        if (lNum && fName.replace(/[^0-9]/g, "") === lNum) return true;
         return fName.includes(lClean) || lClean.includes(fName);
       });
-      return f ? String(f.fl_id ?? f.id ?? f.floor_id) : null;
-    }).filter(Boolean);
+      if (f) {
+        selectedFloorIds.add(String(f.fl_id ?? f.id ?? f.floor_id));
+      }
+    });
 
-    const uniqueFloorIds = Array.from(new Set(matchedFloorIds));
+    const uniqueFloorIds = Array.from(selectedFloorIds);
     const Floor_Id = uniqueFloorIds.join(",");
 
     // Resolve Zone names & Zone IDs across selected levels
@@ -2061,19 +2098,38 @@ function NewRequest() {
     const zoneVal = uniqueZoneNames.join(",");
 
     const selectedZoneNamesLower = uniqueZoneNames.map(z => z.toLowerCase().trim());
-    let matchedZoneIds = zonesList
-      .filter(z => {
-        const isBuildingMatch = String(z.building_id || z.build_id || "") === String(building);
-        const zName = (z.zone || z.zone_name || "").toLowerCase().trim();
-        return selectedZoneNamesLower.length > 0 ? selectedZoneNamesLower.includes(zName) : true;
-      })
-      .map(z => String(z.id ?? z.zoneStatusId));
+    const selectedZoneIds = new Set();
 
-    if (matchedZoneIds.length === 0 && isEditMode && editRequest?.Zone_Id) {
-      matchedZoneIds = String(editRequest.Zone_Id).split(",").map(s => s.trim()).filter(Boolean);
+    selectedRooms.forEach(token => {
+      const parsed = parseRoomToken(token, level);
+      const zName = (parsed.zone || "").toLowerCase().trim();
+      const foundZone = zonesList.find(z => 
+        (z.zone || z.zone_name || z.name || "").toLowerCase().trim() === zName &&
+        (!building || String(z.building_id || z.build_id || "") === String(building))
+      );
+      const zId = foundZone?.id || foundZone?.zone_id || foundZone?.zoneStatusId;
+      if (zId) selectedZoneIds.add(String(zId));
+    });
+
+    if (selectedZoneNamesLower.length > 0) {
+      zonesList.forEach(z => {
+        const isBuildingMatch = !building || String(z.building_id || z.build_id || "") === String(building);
+        const isFloorMatch = selectedFloorIds.size > 0 ? selectedFloorIds.has(String(z.floor_id || z.fl_id || "")) : true;
+        const zName = (z.zone || z.zone_name || "").toLowerCase().trim();
+        if (isBuildingMatch && isFloorMatch && selectedZoneNamesLower.includes(zName)) {
+          const idVal = z.id ?? z.zoneStatusId ?? z.zone_id;
+          if (idVal) selectedZoneIds.add(String(idVal));
+        }
+      });
     }
 
-    const Zone_Id = Array.from(new Set(matchedZoneIds)).join(",");
+    if (selectedZoneIds.size === 0 && isEditMode && editRequest?.Zone_Id) {
+      String(editRequest.Zone_Id).split(",").forEach(s => {
+        if (s.trim()) selectedZoneIds.add(s.trim());
+      });
+    }
+
+    const Zone_Id = Array.from(selectedZoneIds).join(",");
 
     // Resolve Room IDs across selected levels
     let Room_Nos = "";
@@ -2239,7 +2295,7 @@ function NewRequest() {
     console.log("[Room_Nos Debug]", {
       selectedRooms,
       Floor_Id,
-      matchedZoneIds,
+      Zone_Id,
       roomsList: roomsList.slice(0, 5),
       Room_Nos,
     });

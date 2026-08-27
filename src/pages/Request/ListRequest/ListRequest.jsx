@@ -236,31 +236,28 @@ const trimLongValue = (value) => {
   return String(value);
 };
 
+const normalizeFloorName = (name) => {
+  if (!name) return "";
+  let s = String(name).toLowerCase().trim();
+  s = s.replace(/\bground\b|\bgf\b/g, "0");
+  s = s.replace(/\bfirst\b|\b1st\b/g, "1");
+  s = s.replace(/\bsecond\b|\b2nd\b/g, "2");
+  s = s.replace(/\bthird\b|\b3rd\b/g, "3");
+  s = s.replace(/\bfourth\b|\b4th\b/g, "4");
+  s = s.replace(/\bfifth\b|\b5th\b/g, "5");
+  s = s.replace(/\broof\b|\brf\b/g, "roof");
+  return s.replace(/[^0-9roof]/g, "");
+};
+
 // Helper to resolve zone name from building, floor/level, and rooms data
 const resolveZoneNameFromRooms = (row) => {
-  // 1. If the request already has a valid zone name from the database, use it
-  let dbZoneName = "";
-  if (typeof row.zone_name === "string" && row.zone_name.trim().length > 0 && row.zone_name !== "—") {
-    dbZoneName = row.zone_name.trim();
-  } else if (typeof row.zone === "string" && row.zone.trim().length > 0 && row.zone !== "—") {
-    dbZoneName = row.zone.trim();
-  } else if (row.zone && typeof row.zone === "object" && typeof row.zone.zone === "string") {
-    dbZoneName = row.zone.zone;
-  }
-  if (dbZoneName && dbZoneName !== "—") {
-    return dbZoneName;
-  }
-
-  // 2. Otherwise, look up from ZONE_MAPPING by matching room names or room IDs
-  const roomStr = row.room_names || row.Room_Nos;
-  if (!roomStr) return "—";
-
-  const roomsToMatch = String(roomStr).split(",").map(r => r.trim().toLowerCase());
+  if (!row) return "—";
 
   const bName = String(row.building_name || row.Building_Name || row.building || "").trim();
   const lName = String(row.Room_Type || row.level || "").trim();
   const lLower = lName.toLowerCase();
   const bLower = bName.toLowerCase();
+
   let zonesToSearch = [];
 
   if (lName && ZONE_MAPPING[lName]) {
@@ -274,45 +271,77 @@ const resolveZoneNameFromRooms = (row) => {
         const rest = k.toLowerCase().replace(bLower, "").trim();
         return rest === lLower || rest.includes(lLower) || lLower.includes(rest);
       });
-      if (match) zonesToSearch = ZONE_MAPPING[match] || [];
-      else {
-        const lNum = lLower.replace(/[^0-9r]/g, "");
-        if (lNum) {
-          const numMatch = bKeys.find(k => k.toLowerCase().replace(bLower, "").replace(/[^0-9r]/g, "") === lNum);
+      if (match) {
+        zonesToSearch = ZONE_MAPPING[match] || [];
+      } else {
+        const targetNorm = normalizeFloorName(lLower);
+        if (targetNorm) {
+          const numMatch = bKeys.find(k => {
+            const rest = k.toLowerCase().replace(bLower, "").trim();
+            return normalizeFloorName(rest) === targetNorm;
+          });
           if (numMatch) zonesToSearch = ZONE_MAPPING[numMatch] || [];
         }
       }
-      if (zonesToSearch.length === 0) zonesToSearch = ZONE_MAPPING[bKeys[0]] || [];
     }
   }
 
   if (zonesToSearch.length === 0 && lName) {
-    const foundKey = Object.keys(ZONE_MAPPING).find(k =>
-      k.toLowerCase().trim().includes(lLower) || lLower.includes(k.toLowerCase().trim())
-    );
+    const foundKey = Object.keys(ZONE_MAPPING).find(k => {
+      const kNorm = normalizeFloorName(k);
+      const lNorm = normalizeFloorName(lName);
+      return (kNorm && lNorm && kNorm === lNorm) || k.toLowerCase().trim().includes(lLower);
+    });
     if (foundKey) {
       zonesToSearch = ZONE_MAPPING[foundKey] || [];
     }
   }
 
-  if (zonesToSearch.length === 0) {
-    zonesToSearch = Object.values(ZONE_MAPPING).flat();
+  // Extract raw db zone name
+  let dbZoneName = "";
+  if (typeof row.zone_name === "string" && row.zone_name.trim().length > 0 && row.zone_name !== "—") {
+    dbZoneName = row.zone_name.trim();
+  } else if (typeof row.zone === "string" && row.zone.trim().length > 0 && row.zone !== "—") {
+    dbZoneName = row.zone.trim();
+  } else if (row.zone && typeof row.zone === "object" && typeof row.zone.zone === "string") {
+    dbZoneName = row.zone.zone;
   }
 
-  // Find a zoneGroup that contains a room with matching name or ID
-  for (const zoneGroup of zonesToSearch) {
-    if (zoneGroup.rooms) {
-      for (const room of zoneGroup.rooms) {
-        const roomName = (typeof room === "object" ? room.name : room) || "";
-        const roomId = (typeof room === "object" ? room.id : "") || "";
-        if (
-          roomsToMatch.includes(roomName.toLowerCase().trim()) ||
-          (roomId && roomsToMatch.includes(String(roomId).toLowerCase().trim()))
-        ) {
-          return zoneGroup.name || "—";
+  // If dbZoneName matches any zone in zonesToSearch for this level, use it!
+  if (dbZoneName && dbZoneName !== "—" && zonesToSearch.length > 0) {
+    const dbZoneTokens = dbZoneName.split(",").map(s => s.trim().toLowerCase());
+    const isValidForLevel = zonesToSearch.some(zg => {
+      const zgName = (zg.name || "").toLowerCase().trim();
+      return dbZoneTokens.some(t => t === zgName || zgName.includes(t) || t.includes(zgName));
+    });
+    if (isValidForLevel) {
+      return dbZoneName;
+    }
+  }
+
+  // If dbZoneName was empty or corrupted (belonged to a different floor), try matching rooms
+  const roomStr = row.room_names || row.Room_Nos;
+  if (roomStr && zonesToSearch.length > 0) {
+    const roomsToMatch = String(roomStr).split(",").map(r => r.trim().toLowerCase());
+    for (const zoneGroup of zonesToSearch) {
+      if (zoneGroup.rooms) {
+        for (const room of zoneGroup.rooms) {
+          const roomName = (typeof room === "object" ? room.name : room) || "";
+          const roomId = (typeof room === "object" ? room.id : "") || "";
+          if (
+            roomsToMatch.includes(roomName.toLowerCase().trim()) ||
+            (roomId && roomsToMatch.includes(String(roomId).toLowerCase().trim()))
+          ) {
+            return zoneGroup.name || "—";
+          }
         }
       }
     }
+  }
+
+  // If dbZoneName exists and no level conflict detected, return dbZoneName as fallback
+  if (dbZoneName && dbZoneName !== "—") {
+    return dbZoneName;
   }
 
   return "—";
@@ -444,22 +473,27 @@ const resolveZoneObjectsFromRequest = (row, zonesList = [], roomsList = []) => {
           const rest = k.toLowerCase().replace(bLower, "").trim();
           return rest === lLower || rest.includes(lLower) || lLower.includes(rest);
         });
-        if (match) zonesToSearch = ZONE_MAPPING[match] || [];
-        else {
-          const lNum = lLower.replace(/[^0-9r]/g, "");
-          if (lNum) {
-            const numMatch = bKeys.find(k => k.toLowerCase().replace(bLower, "").replace(/[^0-9r]/g, "") === lNum);
+        if (match) {
+          zonesToSearch = ZONE_MAPPING[match] || [];
+        } else {
+          const targetNorm = normalizeFloorName(lLower);
+          if (targetNorm) {
+            const numMatch = bKeys.find(k => {
+              const rest = k.toLowerCase().replace(bLower, "").trim();
+              return normalizeFloorName(rest) === targetNorm;
+            });
             if (numMatch) zonesToSearch = ZONE_MAPPING[numMatch] || [];
           }
         }
-        if (zonesToSearch.length === 0) zonesToSearch = ZONE_MAPPING[bKeys[0]] || [];
       }
     }
 
     if (zonesToSearch.length === 0 && lName) {
-      const foundKey = Object.keys(ZONE_MAPPING).find(k =>
-        k.toLowerCase().trim().includes(lLower) || lLower.includes(k.toLowerCase().trim())
-      );
+      const foundKey = Object.keys(ZONE_MAPPING).find(k => {
+        const kNorm = normalizeFloorName(k);
+        const lNorm = normalizeFloorName(lName);
+        return (kNorm && lNorm && kNorm === lNorm) || k.toLowerCase().trim().includes(lLower);
+      });
       if (foundKey) {
         zonesToSearch = ZONE_MAPPING[foundKey] || [];
       }
