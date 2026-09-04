@@ -25,45 +25,102 @@ export const initScopedStorage = (defaultPrefix = "m3north_") => {
   if (typeof window === "undefined" || window.__SCOPED_STORAGE_INITIALIZED__) return;
   window.__SCOPED_STORAGE_INITIALIZED__ = true;
 
-  const rawGet = localStorage.getItem.bind(localStorage);
-  const rawSet = localStorage.setItem.bind(localStorage);
-  const rawRemove = localStorage.removeItem.bind(localStorage);
+  if (typeof Storage === "undefined" || !Storage.prototype) return;
 
-  localStorage.getItem = function (key) {
+  const rawGet = Storage.prototype.getItem;
+  const rawSet = Storage.prototype.setItem;
+  const rawRemove = Storage.prototype.removeItem;
+  const rawClear = Storage.prototype.clear;
+
+  // Cleanup stray keys previously created on Safari/WebKit due to direct localStorage assignment
+  try {
+    const strayKeys = [
+      "getItem",
+      "setItem",
+      "removeItem",
+      "clear",
+      "token",
+      "access_token",
+      "user",
+      "UserType",
+      "tempUser",
+      "secretkey",
+      "isLoggedIn",
+      "app-theme",
+    ];
+    strayKeys.forEach((key) => {
+      rawRemove.call(window.localStorage, key);
+    });
+  } catch (e) {
+    // ignore
+  }
+
+  Storage.prototype.getItem = function (key) {
     if (!key) return null;
-    const prefix = getPrefix(defaultPrefix);
-    const prefixedKey = prefix + key;
-    const val = rawGet(prefixedKey);
-    if (val !== null) return val;
-    return rawGet(key);
-  };
-
-  localStorage.setItem = function (key, value) {
-    if (!key) return;
-    const prefix = getPrefix(defaultPrefix);
-    const prefixedKey = prefix + key;
-    rawSet(prefixedKey, value);
-  };
-
-  localStorage.removeItem = function (key) {
-    if (!key) return;
-    const prefix = getPrefix(defaultPrefix);
-    const prefixedKey = prefix + key;
-    rawRemove(prefixedKey);
-    rawRemove(key);
-  };
-
-  localStorage.clear = function () {
-    const prefix = getPrefix(defaultPrefix);
-    const keysToRemove = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const k = localStorage.key(i);
-      if (k && (k.startsWith(prefix) || k === "token" || k === "user" || k === "UserType" || k === "tempUser" || k === "secretkey")) {
-        keysToRemove.push(k);
-      }
+    if (this === window.localStorage) {
+      const prefix = getPrefix(defaultPrefix);
+      const prefixedKey = key.startsWith(prefix) ? key : prefix + key;
+      return rawGet.call(this, prefixedKey);
     }
-    keysToRemove.forEach((k) => rawRemove(k));
+    return rawGet.call(this, key);
+  };
+
+  Storage.prototype.setItem = function (key, value) {
+    if (!key) return;
+    if (this === window.localStorage) {
+      const prefix = getPrefix(defaultPrefix);
+      const prefixedKey = key.startsWith(prefix) ? key : prefix + key;
+      rawSet.call(this, prefixedKey, value);
+      return;
+    }
+    rawSet.call(this, key, value);
+  };
+
+  Storage.prototype.removeItem = function (key) {
+    if (!key) return;
+    if (this === window.localStorage) {
+      const prefix = getPrefix(defaultPrefix);
+      const prefixedKey = key.startsWith(prefix) ? key : prefix + key;
+      rawRemove.call(this, prefixedKey);
+      if (!key.startsWith(prefix)) {
+        rawRemove.call(this, key);
+      }
+      return;
+    }
+    rawRemove.call(this, key);
+  };
+
+  Storage.prototype.clear = function () {
+    if (this === window.localStorage) {
+      const prefix = getPrefix(defaultPrefix);
+      const keysToRemove = [];
+      for (let i = 0; i < this.length; i++) {
+        const k = this.key(i);
+        if (
+          k &&
+          (k.startsWith(prefix) ||
+            k === "token" ||
+            k === "user" ||
+            k === "UserType" ||
+            k === "tempUser" ||
+            k === "secretkey" ||
+            k === "access_token" ||
+            k === "isLoggedIn" ||
+            k === "app-theme" ||
+            k === "getItem" ||
+            k === "setItem" ||
+            k === "removeItem" ||
+            k === "clear")
+        ) {
+          keysToRemove.push(k);
+        }
+      }
+      keysToRemove.forEach((k) => rawRemove.call(this, k));
+      return;
+    }
+    rawClear.call(this);
   };
 };
 
 initScopedStorage("m3north_");
+
