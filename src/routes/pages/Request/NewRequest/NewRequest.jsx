@@ -2104,7 +2104,8 @@ function NewRequest() {
       const zName = (parsed.zone || "").toLowerCase().trim();
       const foundZone = zonesList.find(z => 
         (z.zone || z.zone_name || z.name || "").toLowerCase().trim() === zName &&
-        (!building || String(z.building_id || z.build_id || "") === String(building))
+        (!building || String(z.building_id || z.build_id || "") === String(building)) &&
+        (selectedFloorIds.size === 0 || selectedFloorIds.has(String(z.floor_id || z.fl_id || "")))
       );
       const zId = foundZone?.id || foundZone?.zone_id || foundZone?.zoneStatusId;
       if (zId) selectedZoneIds.add(String(zId));
