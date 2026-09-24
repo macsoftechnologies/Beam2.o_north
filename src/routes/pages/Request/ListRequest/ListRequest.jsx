@@ -186,7 +186,9 @@ import {
   getZones,
   getRooms,
   getUser,
-  getPrecautions
+  getPrecautions,
+  getElectricalWorks,
+  getMechanicalWorks
 } from "../../../services/authService";
 import {
   searchRequests,
@@ -1058,6 +1060,8 @@ const getInitialSearchFilters = () => {
           areas: [],
           zones: [],
           hras: [],
+          electrical_works: [],
+          mechanical_works: [],
           permitType: "",
           permitUnder: "",
           fromDate: "",
@@ -1085,6 +1089,8 @@ const getInitialSearchFilters = () => {
     areas: [],
     zones: [],
     hras: [],
+    electrical_works: [],
+    mechanical_works: [],
     permitType: "",
     permitUnder: "",
     fromDate: "",
@@ -1123,6 +1129,8 @@ const getInitialPage = () => {
   const [floorsList, setFloorsList] = useState([]);
   const [zonesList, setZonesList] = useState([]);
   const [roomsList, setRoomsList] = useState([]);
+  const [electricalWorksList, setElectricalWorksList] = useState([]);
+  const [mechanicalWorksList, setMechanicalWorksList] = useState([]);
 
   // Collapsible filters card
   const [filtersOpen, setFiltersOpen] = useState(true);
@@ -1222,14 +1230,16 @@ const getInitialPage = () => {
   useEffect(() => {
     const fetchSelectors = async () => {
       try {
-        const [subRes, actRes, buildRes, floorRes, zoneRes, roomRes, precautionsRes] = await Promise.all([
+        const [subRes, actRes, buildRes, floorRes, zoneRes, roomRes, precautionsRes, elecRes, mechRes] = await Promise.all([
           getContractors(1, 1000),
           getActivities(1, 1000),
           getBuildings(1, 1000),
           getFloors(1, 1000),
           getZones(1, 10000),
           getRooms(1, 10000),
-          getPrecautions(1, 1000)
+          getPrecautions(1, 1000),
+          getElectricalWorks(1, 1000),
+          getMechanicalWorks(1, 1000)
         ]);
         const rawContractors = subRes?.data?.rows ?? subRes?.data ?? subRes ?? [];
         const loadedContractors = rawContractors
@@ -1251,6 +1261,8 @@ const getInitialPage = () => {
         setZonesList(zoneRes?.data ?? []);
         setRoomsList(roomRes?.data?.rows ?? roomRes?.data ?? roomRes ?? []);
         setPrecautionsList(precautionsRes?.data?.rows ?? precautionsRes?.data ?? precautionsRes ?? []);
+        setElectricalWorksList(elecRes?.data?.rows ?? elecRes?.data ?? elecRes ?? []);
+        setMechanicalWorksList(mechRes?.data?.rows ?? mechRes?.data ?? mechRes ?? []);
       } catch (err) {
         console.error("Failed to load selectors lists", err);
       }
@@ -1420,6 +1432,20 @@ const getInitialPage = () => {
     }));
   }, [roomsList, zonesList, floorsList, searchFilters.buildings, searchFilters.levels, searchFilters.zones]);
 
+  const electricalWorksOptions = useMemo(() => {
+    return (electricalWorksList || []).map((item) => ({
+      value: String(item.id ?? item.electrical_works),
+      label: item.electrical_works || item.name || String(item.id)
+    }));
+  }, [electricalWorksList]);
+
+  const mechanicalWorksOptions = useMemo(() => {
+    return (mechanicalWorksList || []).map((item) => ({
+      value: String(item.id ?? item.mechanical_works),
+      label: item.mechanical_works || item.name || String(item.id)
+    }));
+  }, [mechanicalWorksList]);
+
   // ─── Fetch List Data ──────────────────────────────────────────────────────
   const fetchRequests = useCallback(async (page = 1) => {
     if (searchFilters.fromDate && searchFilters.toDate) {
@@ -1451,6 +1477,8 @@ const getInitialPage = () => {
           ? zonesList.filter(z => searchFilters.zones && searchFilters.zones.includes(z.zone)).map(z => z.id)
           : null,
         zone: searchFilters.zones && searchFilters.zones.length > 0 ? searchFilters.zones.join(",") : null,
+        electrical_works: searchFilters.electrical_works?.length > 0 ? searchFilters.electrical_works.join(",") : null,
+        mechanical_works: searchFilters.mechanical_works?.length > 0 ? searchFilters.mechanical_works.join(",") : null,
         permit_type: searchFilters.permitType || "",
         permit_under: searchFilters.permitUnder || "",
         night_shift: searchFilters.nightShift || "",
@@ -1547,6 +1575,8 @@ const getInitialPage = () => {
       areas: [],
       zones: [],
       hras: [],
+      electrical_works: [],
+      mechanical_works: [],
       permitType: "",
       permitUnder: "",
       fromDate: "",
@@ -3086,6 +3116,30 @@ const getInitialPage = () => {
                   isHra={true}
                 />
               </div>
+
+              {(isDept1 || isAdmin || isMultiDept) && (
+                <>
+                  <div className="df-field">
+                    <label className="df-label">Electrical Works</label>
+                    <MultiSelectDropdown
+                      placeholder="Select Electrical Works"
+                      options={electricalWorksOptions}
+                      selectedValues={searchFilters.electrical_works || []}
+                      onChange={(vals) => setSearchFilters(prev => ({ ...prev, electrical_works: vals }))}
+                    />
+                  </div>
+
+                  <div className="df-field">
+                    <label className="df-label">Mechanical Works</label>
+                    <MultiSelectDropdown
+                      placeholder="Select Mechanical Works"
+                      options={mechanicalWorksOptions}
+                      selectedValues={searchFilters.mechanical_works || []}
+                      onChange={(vals) => setSearchFilters(prev => ({ ...prev, mechanical_works: vals }))}
+                    />
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Action Buttons */}
