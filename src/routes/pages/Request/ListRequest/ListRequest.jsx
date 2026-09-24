@@ -778,13 +778,14 @@ const MultiSelectDropdown = ({
           height="16"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#9CA3AF"
+          stroke="currentColor"
           strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
           style={{
             transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-            transition: "transform 0.2s ease"
+            transition: "transform 0.2s ease",
+            opacity: 0.7
           }}
         >
           <polyline points="6 9 12 15 18 9" />
@@ -792,55 +793,20 @@ const MultiSelectDropdown = ({
       </div>
 
       {isOpen && (
-        <div
-          className="custom-multiselect-dropdown"
-          style={{
-            position: "absolute",
-            top: "calc(100% + 6px)",
-            left: 0,
-            width: "100%",
-            maxHeight: "260px",
-            overflowY: "auto",
-            backgroundColor: "var(--bg-card, #111827)",
-            border: "1.5px solid var(--border-color, #374151)",
-            borderRadius: "12px",
-            zIndex: 9999,
-            boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5)",
-            padding: "6px 0"
-          }}
-        >
+        <div className="custom-multiselect-dropdown">
           {/* Search bar inside dropdown */}
-          <div style={{
-            padding: "8px 12px",
-            borderBottom: "1px solid var(--border-color, #374151)",
-            position: "sticky",
-            top: 0,
-            backgroundColor: "var(--bg-card, #111827)",
-            zIndex: 10,
-            display: "flex",
-            gap: "6px",
-            alignItems: "center"
-          }}>
+          <div className="custom-multiselect-header">
             <input
               type="text"
+              className="custom-multiselect-search-input"
               placeholder={searchPlaceholder || (placeholder ? `Search ${placeholder.replace(/^Select\s*/i, "").toLowerCase()}...` : "Search...")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onClick={(e) => e.stopPropagation()}
-              style={{
-                flex: 1,
-                minWidth: "90px",
-                padding: "6px 10px",
-                fontSize: "13px",
-                borderRadius: "6px",
-                border: "1px solid var(--border-color, #374151)",
-                backgroundColor: "rgba(255, 255, 255, 0.05)",
-                color: "var(--text-main, #f9fafb)",
-                outline: "none"
-              }}
             />
             {hasCategoryFilter && resolvedCategories.length > 0 && (
               <select
+                className="custom-multiselect-cat-select"
                 value={selectedCategory}
                 onChange={(e) => {
                   e.stopPropagation();
@@ -848,26 +814,12 @@ const MultiSelectDropdown = ({
                 }}
                 onClick={(e) => e.stopPropagation()}
                 title="Filter by Category"
-                style={{
-                  padding: "6px 8px",
-                  fontSize: "12px",
-                  fontWeight: 500,
-                  borderRadius: "6px",
-                  border: "1px solid var(--border-color, #374151)",
-                  backgroundColor: "#1e293b",
-                  color: "var(--text-main, #f9fafb)",
-                  outline: "none",
-                  cursor: "pointer",
-                  maxWidth: "140px",
-                  height: "33px",
-                  flexShrink: 0
-                }}
               >
-                <option value="" style={{ background: "#111827", color: "#f9fafb" }}>
+                <option value="">
                   All ({options.length})
                 </option>
                 {resolvedCategories.map((cat) => (
-                  <option key={cat} value={cat} style={{ background: "#111827", color: "#f9fafb" }}>
+                  <option key={cat} value={cat}>
                     {cat} ({categoryCounts[cat] || 0})
                   </option>
                 ))}
@@ -875,47 +827,22 @@ const MultiSelectDropdown = ({
             )}
             <button
               type="button"
+              className="custom-multiselect-search-btn"
               onClick={(e) => e.stopPropagation()}
               title="Search"
-              style={{
-                padding: "6px 10px",
-                backgroundColor: "var(--primary-color, #3b82f6)",
-                border: "none",
-                borderRadius: "6px",
-                color: "#fff",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                height: "33px",
-                flexShrink: 0
-              }}
             >
               <FaSearch size={12} />
             </button>
           </div>
           {hasNone && (
             <label
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                padding: "10px 16px",
-                cursor: "pointer",
-                transition: "background-color 0.2s",
-                color: "var(--text-main, #f9fafb)",
-                backgroundColor: selectedValues.includes("none") ? "rgba(255, 255, 255, 0.05)" : "transparent",
-                fontSize: "14px",
-                userSelect: "none"
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.08)"}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = selectedValues.includes("none") ? "rgba(255, 255, 255, 0.05)" : "transparent"}
+              className={`custom-multiselect-option ${selectedValues.includes("none") ? "is-checked" : ""}`}
             >
               <input
                 type="checkbox"
                 checked={selectedValues.includes("none")}
                 onChange={(e) => handleCheckboxChange("none", e.target.checked)}
-                style={{ width: "16px", height: "16px", cursor: "pointer", accentColor: "var(--accent, #00e5a0)" }}
+                style={{ width: "16px", height: "16px", cursor: "pointer", accentColor: "var(--accent-primary, #3b82f6)" }}
               />
               <span>None</span>
             </label>
@@ -931,16 +858,10 @@ const MultiSelectDropdown = ({
               if (opt.zones) {
                 return (
                   <div key={idx}>
-                    <div style={{
-                      padding: "8px 16px 4px 16px",
-                      color: "var(--text-muted, #9ca3af)",
-                      fontSize: "11px",
-                      fontWeight: 700,
-                      textTransform: "uppercase",
-                      letterSpacing: "0.5px",
-                      backgroundColor: "rgba(255, 255, 255, 0.02)",
-                      borderTop: idx > 0 ? "1px solid var(--border-color, #374151)" : "none"
-                    }}>
+                    <div
+                      className="custom-multiselect-group-header"
+                      style={{ borderTop: idx > 0 ? "1px solid var(--border-color, #374151)" : "none" }}
+                    >
                       {opt.floorName}
                     </div>
                     {opt.zones.map((z, zIdx) => {
@@ -951,20 +872,8 @@ const MultiSelectDropdown = ({
                       return (
                         <label
                           key={zIdx}
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "12px",
-                            padding: "10px 24px",
-                            cursor: "pointer",
-                            transition: "background-color 0.2s",
-                            color: "var(--text-main, #f9fafb)",
-                            backgroundColor: isChecked ? "rgba(255, 255, 255, 0.05)" : "transparent",
-                            fontSize: "14px",
-                            userSelect: "none"
-                          }}
-                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.08)"}
-                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = isChecked ? "rgba(255, 255, 255, 0.05)" : "transparent"}
+                          className={`custom-multiselect-option ${isChecked ? "is-checked" : ""}`}
+                          style={{ paddingLeft: "24px" }}
                         >
                           <input
                             type="checkbox"
@@ -974,7 +883,7 @@ const MultiSelectDropdown = ({
                               width: "16px",
                               height: "16px",
                               cursor: "pointer",
-                              accentColor: "var(--accent, #00e5a0)",
+                              accentColor: "var(--accent-primary, #3b82f6)",
                               borderRadius: "4px"
                             }}
                           />
@@ -995,20 +904,7 @@ const MultiSelectDropdown = ({
               return (
                 <label
                   key={idx}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "10px",
-                    padding: "10px 16px",
-                    cursor: "pointer",
-                    transition: "background-color 0.2s",
-                    color: "var(--text-main, #f9fafb)",
-                    backgroundColor: isChecked ? "rgba(255, 255, 255, 0.05)" : "transparent",
-                    fontSize: "14px",
-                    userSelect: "none"
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.08)"}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = isChecked ? "rgba(255, 255, 255, 0.05)" : "transparent"}
+                  className={`custom-multiselect-option ${isChecked ? "is-checked" : ""}`}
                 >
                   <input
                     type="checkbox"
@@ -1018,7 +914,7 @@ const MultiSelectDropdown = ({
                       width: "16px",
                       height: "16px",
                       cursor: "pointer",
-                      accentColor: "var(--accent, #00e5a0)",
+                      accentColor: "var(--accent-primary, #3b82f6)",
                       borderRadius: "4px"
                     }}
                   />
@@ -1038,17 +934,11 @@ const MultiSelectDropdown = ({
                   <span style={{ flex: 1 }}>{displayLabel}</span>
                   {itemModule && (
                     <span
-                      style={{
-                        fontSize: "10px",
-                        padding: "2px 6px",
-                        borderRadius: "4px",
-                        backgroundColor: itemModule === "Panel Numbers" ? "rgba(59, 130, 246, 0.15)" : "rgba(16, 185, 129, 0.15)",
-                        color: itemModule === "Panel Numbers" ? "#60a5fa" : "#34d399",
-                        border: `1px solid ${itemModule === "Panel Numbers" ? "rgba(59, 130, 246, 0.3)" : "rgba(16, 185, 129, 0.3)"}`,
-                        fontWeight: 600,
-                        letterSpacing: "0.3px",
-                        textTransform: "uppercase"
-                      }}
+                      className={`multiselect-badge ${
+                        itemModule === "Panel Numbers"
+                          ? "multiselect-badge--panel"
+                          : "multiselect-badge--system"
+                      }`}
                     >
                       {itemModule}
                     </span>

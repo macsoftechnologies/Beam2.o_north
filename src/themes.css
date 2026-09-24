@@ -699,6 +699,54 @@ html[data-theme="light"] .premium-form-container {
   padding: 20px !important;
 }
 
+/* Custom multiselect dropdown in light mode */
+html[data-theme="light"] .custom-multiselect-dropdown {
+  background-color: #FFFFFF !important;
+  border-color: var(--border-color, #E5E7EB) !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.06) !important;
+}
+html[data-theme="light"] .custom-multiselect-header {
+  background-color: #FFFFFF !important;
+  border-bottom-color: var(--border-color, #E5E7EB) !important;
+}
+html[data-theme="light"] .custom-multiselect-search-input {
+  background-color: #F9FAFB !important;
+  border-color: var(--border-light, #D1D5DB) !important;
+  color: #111827 !important;
+}
+html[data-theme="light"] .custom-multiselect-cat-select {
+  background-color: #F3F4F6 !important;
+  border-color: var(--border-light, #D1D5DB) !important;
+  color: #111827 !important;
+}
+html[data-theme="light"] .custom-multiselect-cat-select option {
+  background-color: #FFFFFF !important;
+  color: #111827 !important;
+}
+html[data-theme="light"] .custom-multiselect-option {
+  color: #111827 !important;
+}
+html[data-theme="light"] .custom-multiselect-option:hover {
+  background-color: #F3F4F6 !important;
+}
+html[data-theme="light"] .custom-multiselect-option.is-checked {
+  background-color: rgba(37, 99, 235, 0.08) !important;
+}
+html[data-theme="light"] .custom-multiselect-group-header {
+  background-color: #F3F4F6 !important;
+  color: #6B7280 !important;
+}
+html[data-theme="light"] .multiselect-badge--panel {
+  background-color: rgba(37, 99, 235, 0.1) !important;
+  color: #1D4ED8 !important;
+  border-color: rgba(37, 99, 235, 0.25) !important;
+}
+html[data-theme="light"] .multiselect-badge--system {
+  background-color: rgba(5, 150, 105, 0.1) !important;
+  color: #047857 !important;
+  border-color: rgba(5, 150, 105, 0.25) !important;
+}
+
 /* Bulk actions toolbar */
 html[data-theme="light"] .bulk-actions-toolbar {
   background:   var(--bg-card)      !important;

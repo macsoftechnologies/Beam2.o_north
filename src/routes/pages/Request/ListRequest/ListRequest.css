@@ -8,6 +8,231 @@
   margin-bottom: 24px;
 }
 
+/* ─────────────────────────────────────────────
+   MultiSelect Dropdown & Category Filter
+───────────────────────────────────────────── */
+.custom-multiselect-container {
+  position: relative;
+  width: 100%;
+}
+
+.custom-multiselect-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 100%;
+  max-height: 270px;
+  overflow-y: auto;
+  background-color: var(--bg-card, #111827);
+  border: 1.5px solid var(--border-color, #374151);
+  border-radius: 12px;
+  z-index: 9999;
+  box-shadow: var(--shadow-lg, 0 10px 25px -5px rgba(0, 0, 0, 0.3));
+  padding: 6px 0;
+}
+
+.custom-multiselect-header {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-color, #374151);
+  position: sticky;
+  top: 0;
+  background-color: var(--bg-card, #111827);
+  z-index: 10;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.custom-multiselect-search-input {
+  flex: 1;
+  min-width: 90px;
+  padding: 7px 10px;
+  font-size: 13px;
+  border-radius: 6px;
+  border: 1px solid var(--border-light, var(--border-color, #374151));
+  background-color: var(--bg-dark, rgba(255, 255, 255, 0.05));
+  color: var(--text-main, #f9fafb);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.custom-multiselect-search-input:focus {
+  border-color: var(--accent-primary, #3b82f6);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.custom-multiselect-search-input::placeholder {
+  color: var(--text-muted, #9ca3af);
+}
+
+.custom-multiselect-cat-select {
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 6px;
+  border: 1px solid var(--border-light, var(--border-color, #374151));
+  background-color: var(--bg-card-hover, #1f2937);
+  color: var(--text-main, #f9fafb);
+  outline: none;
+  cursor: pointer;
+  max-width: 140px;
+  height: 33px;
+  flex-shrink: 0;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.custom-multiselect-cat-select:focus {
+  border-color: var(--accent-primary, #3b82f6);
+}
+
+.custom-multiselect-cat-select option {
+  background-color: var(--bg-card, #111827);
+  color: var(--text-main, #f9fafb);
+}
+
+.custom-multiselect-search-btn {
+  padding: 6px 11px;
+  background-color: var(--accent-primary, #3b82f6);
+  border: none;
+  border-radius: 6px;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 33px;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.custom-multiselect-search-btn:hover {
+  background-color: var(--accent-hover, #2563eb);
+}
+
+.custom-multiselect-search-btn:active {
+  transform: scale(0.96);
+}
+
+.custom-multiselect-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 16px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  color: var(--text-main, #f9fafb);
+  font-size: 14px;
+  user-select: none;
+  background-color: transparent;
+}
+
+.custom-multiselect-option:hover {
+  background-color: var(--bg-card-hover, rgba(255, 255, 255, 0.06));
+}
+
+.custom-multiselect-option.is-checked {
+  background-color: var(--sb-active-bg, rgba(59, 130, 246, 0.12));
+}
+
+.custom-multiselect-group-header {
+  padding: 8px 16px 4px 16px;
+  color: var(--text-muted, #9ca3af);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: var(--bg-dark, rgba(255, 255, 255, 0.02));
+}
+
+.multiselect-badge {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.multiselect-badge--panel {
+  background-color: rgba(59, 130, 246, 0.16);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.35);
+}
+
+.multiselect-badge--system {
+  background-color: rgba(16, 185, 129, 0.16);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+/* Light Theme Overrides */
+html[data-theme="light"] .custom-multiselect-dropdown {
+  background-color: #FFFFFF !important;
+  border-color: var(--border-color, #E5E7EB) !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.06) !important;
+}
+
+html[data-theme="light"] .custom-multiselect-header {
+  background-color: #FFFFFF !important;
+  border-bottom-color: var(--border-color, #E5E7EB) !important;
+}
+
+html[data-theme="light"] .custom-multiselect-search-input {
+  background-color: #F9FAFB !important;
+  border-color: var(--border-light, #D1D5DB) !important;
+  color: #111827 !important;
+}
+
+html[data-theme="light"] .custom-multiselect-search-input:focus {
+  background-color: #FFFFFF !important;
+  border-color: var(--accent-primary, #2563EB) !important;
+}
+
+html[data-theme="light"] .custom-multiselect-search-input::placeholder {
+  color: #6B7280 !important;
+}
+
+html[data-theme="light"] .custom-multiselect-cat-select {
+  background-color: #F3F4F6 !important;
+  border-color: var(--border-light, #D1D5DB) !important;
+  color: #111827 !important;
+}
+
+html[data-theme="light"] .custom-multiselect-cat-select option {
+  background-color: #FFFFFF !important;
+  color: #111827 !important;
+}
+
+html[data-theme="light"] .custom-multiselect-option {
+  color: #111827 !important;
+}
+
+html[data-theme="light"] .custom-multiselect-option:hover {
+  background-color: #F3F4F6 !important;
+}
+
+html[data-theme="light"] .custom-multiselect-option.is-checked {
+  background-color: rgba(37, 99, 235, 0.08) !important;
+}
+
+html[data-theme="light"] .custom-multiselect-group-header {
+  background-color: #F3F4F6 !important;
+  color: #6B7280 !important;
+}
+
+html[data-theme="light"] .multiselect-badge--panel {
+  background-color: rgba(37, 99, 235, 0.1) !important;
+  color: #1D4ED8 !important;
+  border-color: rgba(37, 99, 235, 0.25) !important;
+}
+
+html[data-theme="light"] .multiselect-badge--system {
+  background-color: rgba(5, 150, 105, 0.1) !important;
+  color: #047857 !important;
+  border-color: rgba(5, 150, 105, 0.25) !important;
+}
+
 /* HRA Icons styling */
 .hra-icons-group {
   display: flex;
