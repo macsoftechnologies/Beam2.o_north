@@ -594,9 +594,20 @@ const HRA_LIST = [
   { key: "pressurization", label: "Mechanical Works", icon: "mechanical1.png", image: LOGO_MAP["mechanical1.png"] }
 ];
 
-const MultiSelectDropdown = ({ options, selectedValues, onChange, placeholder, disabled, hasNone = false, searchPlaceholder = "Search contractor..." }) => {
+const MultiSelectDropdown = ({
+  options,
+  selectedValues,
+  onChange,
+  placeholder,
+  disabled,
+  hasNone = false,
+  searchPlaceholder = "",
+  hasCategoryFilter = false,
+  categories = []
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -630,10 +641,42 @@ const MultiSelectDropdown = ({ options, selectedValues, onChange, placeholder, d
     onChange(newSelected);
   };
 
+  const resolvedCategories = useMemo(() => {
+    if (categories && categories.length > 0) return categories;
+    const set = new Set();
+    (options || []).forEach(opt => {
+      const mod = opt.module || opt.category;
+      if (mod && typeof mod === "string" && mod.trim()) {
+        set.add(mod.trim());
+      }
+    });
+    return Array.from(set);
+  }, [categories, options]);
+
+  const categoryCounts = useMemo(() => {
+    const counts = {};
+    (options || []).forEach(opt => {
+      const mod = opt.module || opt.category;
+      if (mod) {
+        counts[mod] = (counts[mod] || 0) + 1;
+      }
+    });
+    return counts;
+  }, [options]);
+
   const filteredOptions = useMemo(() => {
-    if (!searchQuery.trim()) return options;
+    let result = options;
+
+    if (selectedCategory) {
+      result = result.filter(opt => {
+        const mod = opt.module || opt.category || "";
+        return String(mod).toLowerCase() === String(selectedCategory).toLowerCase();
+      });
+    }
+
+    if (!searchQuery.trim()) return result;
     const q = searchQuery.toLowerCase();
-    return options.filter(opt => {
+    return result.filter(opt => {
       if (opt.zones) {
         return opt.zones.some(z => {
           const l = typeof z === "object" ? (z.name ?? z.label ?? z) : z;
@@ -643,7 +686,7 @@ const MultiSelectDropdown = ({ options, selectedValues, onChange, placeholder, d
       const label = opt.subContractorName || opt.building_name || opt.floor_name || opt.zone || opt.label || opt.name || opt;
       return String(label).toLowerCase().includes(q);
     });
-  }, [options, searchQuery]);
+  }, [options, searchQuery, selectedCategory]);
 
   let displayText = placeholder;
   if (selectedValues.length > 0) {
@@ -767,15 +810,26 @@ const MultiSelectDropdown = ({ options, selectedValues, onChange, placeholder, d
           }}
         >
           {/* Search bar inside dropdown */}
-          <div style={{ padding: "8px 12px", borderBottom: "1px solid var(--border-color, #374151)", position: "sticky", top: 0, backgroundColor: "var(--bg-card, #111827)", zIndex: 10, display: "flex", gap: "6px" }}>
+          <div style={{
+            padding: "8px 12px",
+            borderBottom: "1px solid var(--border-color, #374151)",
+            position: "sticky",
+            top: 0,
+            backgroundColor: "var(--bg-card, #111827)",
+            zIndex: 10,
+            display: "flex",
+            gap: "6px",
+            alignItems: "center"
+          }}>
             <input
               type="text"
-              placeholder={searchPlaceholder}
+              placeholder={searchPlaceholder || (placeholder ? `Search ${placeholder.replace(/^Select\s*/i, "").toLowerCase()}...` : "Search...")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onClick={(e) => e.stopPropagation()}
               style={{
                 flex: 1,
+                minWidth: "90px",
                 padding: "6px 10px",
                 fontSize: "13px",
                 borderRadius: "6px",
@@ -785,9 +839,44 @@ const MultiSelectDropdown = ({ options, selectedValues, onChange, placeholder, d
                 outline: "none"
               }}
             />
+            {hasCategoryFilter && resolvedCategories.length > 0 && (
+              <select
+                value={selectedCategory}
+                onChange={(e) => {
+                  e.stopPropagation();
+                  setSelectedCategory(e.target.value);
+                }}
+                onClick={(e) => e.stopPropagation()}
+                title="Filter by Category"
+                style={{
+                  padding: "6px 8px",
+                  fontSize: "12px",
+                  fontWeight: 500,
+                  borderRadius: "6px",
+                  border: "1px solid var(--border-color, #374151)",
+                  backgroundColor: "#1e293b",
+                  color: "var(--text-main, #f9fafb)",
+                  outline: "none",
+                  cursor: "pointer",
+                  maxWidth: "140px",
+                  height: "33px",
+                  flexShrink: 0
+                }}
+              >
+                <option value="" style={{ background: "#111827", color: "#f9fafb" }}>
+                  All ({options.length})
+                </option>
+                {resolvedCategories.map((cat) => (
+                  <option key={cat} value={cat} style={{ background: "#111827", color: "#f9fafb" }}>
+                    {cat} ({categoryCounts[cat] || 0})
+                  </option>
+                ))}
+              </select>
+            )}
             <button
               type="button"
               onClick={(e) => e.stopPropagation()}
+              title="Search"
               style={{
                 padding: "6px 10px",
                 backgroundColor: "var(--primary-color, #3b82f6)",
@@ -797,7 +886,9 @@ const MultiSelectDropdown = ({ options, selectedValues, onChange, placeholder, d
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center"
+                justifyContent: "center",
+                height: "33px",
+                flexShrink: 0
               }}
             >
               <FaSearch size={12} />
@@ -830,118 +921,142 @@ const MultiSelectDropdown = ({ options, selectedValues, onChange, placeholder, d
             </label>
           )}
 
-          {filteredOptions.map((opt, idx) => {
-            // Support grouped zones/rooms
-            if (opt.zones) {
-              return (
-                <div key={idx}>
-                  <div style={{
-                    padding: "8px 16px 4px 16px",
-                    color: "var(--text-muted, #9ca3af)",
-                    fontSize: "11px",
-                    fontWeight: 700,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.5px",
-                    backgroundColor: "rgba(255, 255, 255, 0.02)",
-                    borderTop: idx > 0 ? "1px solid var(--border-color, #374151)" : "none"
-                  }}>
-                    {opt.floorName}
-                  </div>
-                  {opt.zones.map((z, zIdx) => {
-                    const zVal = String(typeof z === "object" ? (z.id ?? z.value ?? z) : z);
-                    const zLabel = typeof z === "object" ? (z.name ?? z.label ?? z) : z;
-                    const isChecked = selectedValues.includes(zVal);
+          {filteredOptions.length === 0 ? (
+            <div style={{ padding: "16px", textAlign: "center", color: "var(--text-muted, #9ca3af)", fontSize: "13px" }}>
+              No options found
+            </div>
+          ) : (
+            filteredOptions.map((opt, idx) => {
+              // Support grouped zones/rooms
+              if (opt.zones) {
+                return (
+                  <div key={idx}>
+                    <div style={{
+                      padding: "8px 16px 4px 16px",
+                      color: "var(--text-muted, #9ca3af)",
+                      fontSize: "11px",
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px",
+                      backgroundColor: "rgba(255, 255, 255, 0.02)",
+                      borderTop: idx > 0 ? "1px solid var(--border-color, #374151)" : "none"
+                    }}>
+                      {opt.floorName}
+                    </div>
+                    {opt.zones.map((z, zIdx) => {
+                      const zVal = String(typeof z === "object" ? (z.id ?? z.value ?? z) : z);
+                      const zLabel = typeof z === "object" ? (z.name ?? z.label ?? z) : z;
+                      const isChecked = selectedValues.includes(zVal);
 
-                    return (
-                      <label
-                        key={zIdx}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "12px",
-                          padding: "10px 24px",
-                          cursor: "pointer",
-                          transition: "background-color 0.2s",
-                          color: "var(--text-main, #f9fafb)",
-                          backgroundColor: isChecked ? "rgba(255, 255, 255, 0.05)" : "transparent",
-                          fontSize: "14px",
-                          userSelect: "none"
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.08)"}
-                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = isChecked ? "rgba(255, 255, 255, 0.05)" : "transparent"}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={isChecked}
-                          onChange={(e) => handleCheckboxChange(zVal, e.target.checked)}
+                      return (
+                        <label
+                          key={zIdx}
                           style={{
-                            width: "16px",
-                            height: "16px",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "12px",
+                            padding: "10px 24px",
                             cursor: "pointer",
-                            accentColor: "var(--accent, #00e5a0)",
-                            borderRadius: "4px"
+                            transition: "background-color 0.2s",
+                            color: "var(--text-main, #f9fafb)",
+                            backgroundColor: isChecked ? "rgba(255, 255, 255, 0.05)" : "transparent",
+                            fontSize: "14px",
+                            userSelect: "none"
                           }}
-                        />
-                        <span>{zLabel}</span>
-                      </label>
-                    );
-                  })}
-                </div>
-              );
-            }
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.08)"}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = isChecked ? "rgba(255, 255, 255, 0.05)" : "transparent"}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={(e) => handleCheckboxChange(zVal, e.target.checked)}
+                            style={{
+                              width: "16px",
+                              height: "16px",
+                              cursor: "pointer",
+                              accentColor: "var(--accent, #00e5a0)",
+                              borderRadius: "4px"
+                            }}
+                          />
+                          <span>{zLabel}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                );
+              }
 
-            const val = String(opt.value ?? opt.key ?? opt.id ?? opt.build_id ?? opt);
-            const displayLabel = opt.label || opt.building_name || opt.floor_name || opt.subContractorName || opt;
-            const isChecked = selectedValues.includes(val);
-            const imgUrl = opt.image || (opt.icon ? LOGO_MAP[opt.icon] : null);
+              const val = String(opt.value ?? opt.key ?? opt.id ?? opt.build_id ?? opt);
+              const displayLabel = opt.label || opt.building_name || opt.floor_name || opt.subContractorName || opt;
+              const isChecked = selectedValues.includes(val);
+              const imgUrl = opt.image || (opt.icon ? LOGO_MAP[opt.icon] : null);
+              const itemModule = opt.module || opt.category;
 
-            return (
-              <label
-                key={idx}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                  padding: "10px 16px",
-                  cursor: "pointer",
-                  transition: "background-color 0.2s",
-                  color: "var(--text-main, #f9fafb)",
-                  backgroundColor: isChecked ? "rgba(255, 255, 255, 0.05)" : "transparent",
-                  fontSize: "14px",
-                  userSelect: "none"
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.08)"}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = isChecked ? "rgba(255, 255, 255, 0.05)" : "transparent"}
-              >
-                <input
-                  type="checkbox"
-                  checked={isChecked}
-                  onChange={(e) => handleCheckboxChange(val, e.target.checked)}
+              return (
+                <label
+                  key={idx}
                   style={{
-                    width: "16px",
-                    height: "16px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                    padding: "10px 16px",
                     cursor: "pointer",
-                    accentColor: "var(--accent, #00e5a0)",
-                    borderRadius: "4px"
+                    transition: "background-color 0.2s",
+                    color: "var(--text-main, #f9fafb)",
+                    backgroundColor: isChecked ? "rgba(255, 255, 255, 0.05)" : "transparent",
+                    fontSize: "14px",
+                    userSelect: "none"
                   }}
-                />
-                {imgUrl && (
-                  <img
-                    src={imgUrl}
-                    alt={displayLabel}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.08)"}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = isChecked ? "rgba(255, 255, 255, 0.05)" : "transparent"}
+                >
+                  <input
+                    type="checkbox"
+                    checked={isChecked}
+                    onChange={(e) => handleCheckboxChange(val, e.target.checked)}
                     style={{
-                      width: "22px",
-                      height: "22px",
-                      objectFit: "contain",
-                      borderRadius: "4px",
-                      flexShrink: 0
+                      width: "16px",
+                      height: "16px",
+                      cursor: "pointer",
+                      accentColor: "var(--accent, #00e5a0)",
+                      borderRadius: "4px"
                     }}
                   />
-                )}
-                <span>{displayLabel}</span>
-              </label>
-            );
-          })}
+                  {imgUrl && (
+                    <img
+                      src={imgUrl}
+                      alt={displayLabel}
+                      style={{
+                        width: "22px",
+                        height: "22px",
+                        objectFit: "contain",
+                        borderRadius: "4px",
+                        flexShrink: 0
+                      }}
+                    />
+                  )}
+                  <span style={{ flex: 1 }}>{displayLabel}</span>
+                  {itemModule && (
+                    <span
+                      style={{
+                        fontSize: "10px",
+                        padding: "2px 6px",
+                        borderRadius: "4px",
+                        backgroundColor: itemModule === "Panel Numbers" ? "rgba(59, 130, 246, 0.15)" : "rgba(16, 185, 129, 0.15)",
+                        color: itemModule === "Panel Numbers" ? "#60a5fa" : "#34d399",
+                        border: `1px solid ${itemModule === "Panel Numbers" ? "rgba(59, 130, 246, 0.3)" : "rgba(16, 185, 129, 0.3)"}`,
+                        fontWeight: 600,
+                        letterSpacing: "0.3px",
+                        textTransform: "uppercase"
+                      }}
+                    >
+                      {itemModule}
+                    </span>
+                  )}
+                </label>
+              );
+            })
+          )}
         </div>
       )}
     </div>
@@ -1432,10 +1547,25 @@ const getInitialPage = () => {
     }));
   }, [roomsList, zonesList, floorsList, searchFilters.buildings, searchFilters.levels, searchFilters.zones]);
 
+  const electricalCategories = useMemo(() => {
+    const set = new Set();
+    (electricalWorksList || []).forEach(item => {
+      const mod = item.module || item.category;
+      if (mod && typeof mod === "string" && mod.trim()) {
+        set.add(mod.trim());
+      }
+    });
+    if (set.size === 0) {
+      return ["Panel Numbers", "System Numbers"];
+    }
+    return Array.from(set);
+  }, [electricalWorksList]);
+
   const electricalWorksOptions = useMemo(() => {
     return (electricalWorksList || []).map((item) => ({
       value: String(item.id ?? item.electrical_works),
-      label: item.electrical_works || item.name || String(item.id)
+      label: item.electrical_works || item.name || String(item.id),
+      module: item.module || item.category || ""
     }));
   }, [electricalWorksList]);
 
@@ -3123,9 +3253,12 @@ const getInitialPage = () => {
                     <label className="df-label">Electrical Works</label>
                     <MultiSelectDropdown
                       placeholder="Select Electrical Works"
+                      searchPlaceholder="Search electrical works..."
                       options={electricalWorksOptions}
                       selectedValues={searchFilters.electrical_works || []}
                       onChange={(vals) => setSearchFilters(prev => ({ ...prev, electrical_works: vals }))}
+                      hasCategoryFilter={true}
+                      categories={electricalCategories}
                     />
                   </div>
 
