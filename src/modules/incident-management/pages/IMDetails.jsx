@@ -679,7 +679,7 @@ export default function IMDetails() {
   const [roomStatusMap, setRoomStatusMap] = useState({});
 
   // Heads-Up Form Specific States
-  const [huProject, setHuProject] = useState("M3 South");
+  const [huProject, setHuProject] = useState("M3 North");
   const [huTitle, setHuTitle] = useState("");
   const [huDate, setHuDate] = useState("");
   const [huTime, setHuTime] = useState("");
@@ -1234,7 +1234,7 @@ export default function IMDetails() {
 
       // Hydrate Heads-Up specific states
       setHuTitle(hu.title || inc.title || "");
-      setHuProject(hu.projectName || inc.projectName || "M3 South");
+      setHuProject(hu.projectName || inc.projectName || "M3 North");
       setHuDate(inc.incidentDate || inc.date || "");
       setHuTime(inc.incidentTime || inc.time || "");
       setHuBuildingId(inc.buildingId || "");
@@ -4141,7 +4141,7 @@ export default function IMDetails() {
                   Project Details & Location
                 </div>
                 <div className="grid-2" style={{ rowGap: "14px" }}>
-                  <div className="mod-form-group"><label className="mod-form-label">Project Name</label><div className="readonly-box">{huProject || incident.projectName || "M3 South"}</div></div>
+                  <div className="mod-form-group"><label className="mod-form-label">Project Name</label><div className="readonly-box">{huProject || incident.projectName || "M3 North"}</div></div>
                   <div className="mod-form-group"><label className="mod-form-label">Incident Title</label><div className="readonly-box">{huTitle || incident.title || "—"}</div></div>
                   <div className="mod-form-group"><label className="mod-form-label">Date / Time</label><div className="readonly-box">{huDate || incident.incidentDate || "—"} {huTime || incident.incidentTime || ""}</div></div>
                   <div className="mod-form-group"><label className="mod-form-label">Location / Building</label><div className="readonly-box">{huBuildingName || incident.buildingName || incident.building || "—"}</div></div>
@@ -5338,13 +5338,13 @@ export default function IMDetails() {
                             if (!irDescription?.trim()) newErrors.irDescription = "Incident description is required";
                             if (!irInitialRootCause?.trim()) newErrors.irInitialRootCause = "Initial root cause is required";
                             if (!irCategories || irCategories.length === 0) newErrors.irCategories = "Incident category is required";
-                            
+
                             if (isInjuryIncident) {
                               if (!irAccidentCategories || irAccidentCategories.length === 0) newErrors.irAccidentCategories = "Type of accident category is required";
                               if (!irInjuryTypes || irInjuryTypes.length === 0) newErrors.irInjuryTypes = "Type of injury is required";
                               if (!bodyParts || bodyParts.length === 0) newErrors.bodyParts = "Injured body part is required";
                             }
-                            
+
                             if (photos.length < 2) newErrors.photos = "A minimum of 2 photos are required";
 
                             if (Object.keys(newErrors).length > 0) {
@@ -5383,7 +5383,7 @@ export default function IMDetails() {
                             // 2. Severities & Flags
                             const finalActSev = extractSevNum(irActualSeverity || huActualSeverity || incident?.actualSeverity || "1") || "1";
                             const finalPotSev = extractSevNum(irPotentialSeverity || huPotentialSeverity || incident?.potentialSeverity || "1") || "1";
-                            
+
                             formData.append("actualSeverity", finalActSev);
                             formData.append("potentialSeverity", finalPotSev);
 
@@ -5807,18 +5807,18 @@ export default function IMDetails() {
                           <span style={{ fontWeight: 700, fontSize: 13 }}>Member {i + 1}</span>
                           {(!investigationSubmitted || isEditingInvestigation) && (
                             <div style={{ display: "flex", gap: "6px" }}>
-                              <button 
+                              <button
                                 type="button"
-                                style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "32px", height: "32px", borderRadius: "6px", border: "1px solid #fca5a5", background: "#fee2e2", color: "#ef4444", cursor: "pointer", transition: "all 0.2s" }} 
+                                style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "32px", height: "32px", borderRadius: "6px", border: "1px solid #fca5a5", background: "#fee2e2", color: "#ef4444", cursor: "pointer", transition: "all 0.2s" }}
                                 onClick={() => removeInvTeamMember(i)}
                                 title="Remove Member"
                               >
                                 <i className="ti ti-x" style={{ fontSize: "16px", fontWeight: "bold" }}></i>
                               </button>
                               {i === invTeam.length - 1 && (
-                                <button 
+                                <button
                                   type="button"
-                                  style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "32px", height: "32px", borderRadius: "6px", border: "1px solid #86efac", background: "#dcfce7", color: "#16a34a", cursor: "pointer", transition: "all 0.2s" }} 
+                                  style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "32px", height: "32px", borderRadius: "6px", border: "1px solid #86efac", background: "#dcfce7", color: "#16a34a", cursor: "pointer", transition: "all 0.2s" }}
                                   onClick={() => addInvTeamMember()}
                                   title="Add Member"
                                 >
@@ -5839,10 +5839,10 @@ export default function IMDetails() {
                           </div>
                           <div className="mod-form-group">
                             <label className="mod-form-label">Company</label>
-                            <select 
-                              className={`mod-form-select ${m.company ? 'success-styled' : ''}`} 
-                              value={m.company} 
-                              onChange={e => updateInvTeamMember(i, 'company', e.target.value)} 
+                            <select
+                              className={`mod-form-select ${m.company ? 'success-styled' : ''}`}
+                              value={m.company}
+                              onChange={e => updateInvTeamMember(i, 'company', e.target.value)}
                             >
                               <option value="">Select Company / Contractor...</option>
                               {contractorsList && contractorsList.length > 0 && contractorsList.map(c => {
@@ -5886,18 +5886,18 @@ export default function IMDetails() {
                           <span style={{ fontWeight: 700, fontSize: 13 }}>Witness {i + 1}</span>
                           {(!investigationSubmitted || isEditingInvestigation) && (
                             <div style={{ display: "flex", gap: "6px" }}>
-                              <button 
+                              <button
                                 type="button"
-                                style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "32px", height: "32px", borderRadius: "6px", border: "1px solid #fca5a5", background: "#fee2e2", color: "#ef4444", cursor: "pointer", transition: "all 0.2s" }} 
+                                style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "32px", height: "32px", borderRadius: "6px", border: "1px solid #fca5a5", background: "#fee2e2", color: "#ef4444", cursor: "pointer", transition: "all 0.2s" }}
                                 onClick={() => removeInvWitness(i)}
                                 title="Remove Witness"
                               >
                                 <i className="ti ti-x" style={{ fontSize: "16px", fontWeight: "bold" }}></i>
                               </button>
                               {i === invWitnesses.length - 1 && (
-                                <button 
+                                <button
                                   type="button"
-                                  style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "32px", height: "32px", borderRadius: "6px", border: "1px solid #86efac", background: "#dcfce7", color: "#16a34a", cursor: "pointer", transition: "all 0.2s" }} 
+                                  style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "32px", height: "32px", borderRadius: "6px", border: "1px solid #86efac", background: "#dcfce7", color: "#16a34a", cursor: "pointer", transition: "all 0.2s" }}
                                   onClick={() => addInvWitness()}
                                   title="Add Witness"
                                 >
@@ -5910,47 +5910,47 @@ export default function IMDetails() {
                         <div className="grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
                           <div className="mod-form-group">
                             <label className="mod-form-label">Name</label>
-                            <input 
+                            <input
                               id={`invWitness-name-${i}`}
-                              className={`mod-form-input ${w.name.trim() ? 'success-styled' : ''}`} 
-                              value={w.name} 
-                              onChange={e => updateInvWitness(i, 'name', e.target.value)} 
+                              className={`mod-form-input ${w.name.trim() ? 'success-styled' : ''}`}
+                              value={w.name}
+                              onChange={e => updateInvWitness(i, 'name', e.target.value)}
                               onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addInvWitness(); } }}
                             />
                           </div>
                           <div className="mod-form-group">
                             <label className="mod-form-label">Badge No.</label>
-                            <input 
-                              className={`mod-form-input ${w.badge.trim() ? 'success-styled' : ''}`} 
-                              value={w.badge} 
-                              onChange={e => updateInvWitness(i, 'badge', e.target.value)} 
+                            <input
+                              className={`mod-form-input ${w.badge.trim() ? 'success-styled' : ''}`}
+                              value={w.badge}
+                              onChange={e => updateInvWitness(i, 'badge', e.target.value)}
                               onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addInvWitness(); } }}
                             />
                           </div>
                           <div className="mod-form-group">
                             <label className="mod-form-label">Employer</label>
-                            <input 
-                              className={`mod-form-input ${w.employer.trim() ? 'success-styled' : ''}`} 
-                              value={w.employer} 
-                              onChange={e => updateInvWitness(i, 'employer', e.target.value)} 
+                            <input
+                              className={`mod-form-input ${w.employer.trim() ? 'success-styled' : ''}`}
+                              value={w.employer}
+                              onChange={e => updateInvWitness(i, 'employer', e.target.value)}
                               onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addInvWitness(); } }}
                             />
                           </div>
                           <div className="mod-form-group">
                             <label className="mod-form-label">Occupation</label>
-                            <input 
-                              className={`mod-form-input ${w.occupation.trim() ? 'success-styled' : ''}`} 
-                              value={w.occupation} 
-                              onChange={e => updateInvWitness(i, 'occupation', e.target.value)} 
+                            <input
+                              className={`mod-form-input ${w.occupation.trim() ? 'success-styled' : ''}`}
+                              value={w.occupation}
+                              onChange={e => updateInvWitness(i, 'occupation', e.target.value)}
                               onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addInvWitness(); } }}
                             />
                           </div>
                         </div>
                         <div className="mod-form-group" style={{ marginTop: 12 }}>
                           <label className="mod-form-label">Brief description of the incident</label>
-                          <textarea 
-                            className={`mod-form-textarea ${w.desc.trim() ? 'success-styled' : ''}`} 
-                            value={w.desc} 
+                          <textarea
+                            className={`mod-form-textarea ${w.desc.trim() ? 'success-styled' : ''}`}
+                            value={w.desc}
                             onChange={e => updateInvWitness(i, 'desc', e.target.value)}
                             onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); addInvWitness(); } }}
                           ></textarea>
@@ -6098,12 +6098,12 @@ export default function IMDetails() {
                     {invRootCauses.length === 0 ? <div className="muted-empty" style={{ fontStyle: "italic", fontSize: 13, color: "var(--text-muted)", padding: "8px 0" }}>No root causes added yet.</div> : invRootCauses.map((rc, i) => (
                       <div key={i} style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "center" }}>
                         <span style={{ fontWeight: 700, color: "var(--accent-primary)", width: 24 }}>{String.fromCharCode(97 + i)}.</span>
-                        <input 
+                        <input
                           id={`invRootCause-${i}`}
-                          className={`mod-form-input ${rc.trim() ? 'success-styled' : ''}`} 
-                          style={{ flex: 1, borderColor: (invErrors.invRootCauses && !rc.trim()) ? "#DC2626" : undefined }} 
-                          value={rc} 
-                          onChange={e => { updateInvRootCause(i, e.target.value); if (invErrors.invRootCauses) setInvErrors({ ...invErrors, invRootCauses: null }); }} 
+                          className={`mod-form-input ${rc.trim() ? 'success-styled' : ''}`}
+                          style={{ flex: 1, borderColor: (invErrors.invRootCauses && !rc.trim()) ? "#DC2626" : undefined }}
+                          value={rc}
+                          onChange={e => { updateInvRootCause(i, e.target.value); if (invErrors.invRootCauses) setInvErrors({ ...invErrors, invRootCauses: null }); }}
                           onKeyDown={e => {
                             if (e.key === 'Enter') {
                               e.preventDefault();
@@ -6113,18 +6113,18 @@ export default function IMDetails() {
                         />
                         {(!investigationSubmitted || isEditingInvestigation) && (
                           <div style={{ display: "flex", gap: "6px" }}>
-                            <button 
+                            <button
                               type="button"
-                              style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "32px", height: "32px", borderRadius: "6px", border: "1px solid #fca5a5", background: "#fee2e2", color: "#ef4444", cursor: "pointer", transition: "all 0.2s" }} 
+                              style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "32px", height: "32px", borderRadius: "6px", border: "1px solid #fca5a5", background: "#fee2e2", color: "#ef4444", cursor: "pointer", transition: "all 0.2s" }}
                               onClick={() => removeInvRootCause(i)}
                               title="Remove"
                             >
                               <i className="ti ti-x" style={{ fontSize: "16px", fontWeight: "bold" }}></i>
                             </button>
                             {i === invRootCauses.length - 1 && (
-                              <button 
+                              <button
                                 type="button"
-                                style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "32px", height: "32px", borderRadius: "6px", border: "1px solid #86efac", background: "#dcfce7", color: "#16a34a", cursor: "pointer", transition: "all 0.2s" }} 
+                                style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "32px", height: "32px", borderRadius: "6px", border: "1px solid #86efac", background: "#dcfce7", color: "#16a34a", cursor: "pointer", transition: "all 0.2s" }}
                                 onClick={() => addInvRootCause()}
                                 title="Add Root Cause"
                               >
@@ -6148,12 +6148,12 @@ export default function IMDetails() {
                     {invFactors.length === 0 ? <div className="muted-empty" style={{ fontStyle: "italic", fontSize: 13, color: "var(--text-muted)", padding: "8px 0" }}>No contributing factors added yet.</div> : invFactors.map((f, i) => (
                       <div key={i} style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "center" }}>
                         <span style={{ fontWeight: 700, color: "var(--accent-primary)", width: 24 }}>{String.fromCharCode(97 + i)}.</span>
-                        <input 
+                        <input
                           id={`invFactor-${i}`}
-                          className={`mod-form-input ${f.trim() ? 'success-styled' : ''}`} 
-                          style={{ flex: 1 }} 
-                          value={f} 
-                          onChange={e => updateInvFactor(i, e.target.value)} 
+                          className={`mod-form-input ${f.trim() ? 'success-styled' : ''}`}
+                          style={{ flex: 1 }}
+                          value={f}
+                          onChange={e => updateInvFactor(i, e.target.value)}
                           onKeyDown={e => {
                             if (e.key === 'Enter') {
                               e.preventDefault();
@@ -6163,18 +6163,18 @@ export default function IMDetails() {
                         />
                         {(!investigationSubmitted || isEditingInvestigation) && (
                           <div style={{ display: "flex", gap: "6px" }}>
-                            <button 
+                            <button
                               type="button"
-                              style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "32px", height: "32px", borderRadius: "6px", border: "1px solid #fca5a5", background: "#fee2e2", color: "#ef4444", cursor: "pointer", transition: "all 0.2s" }} 
+                              style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "32px", height: "32px", borderRadius: "6px", border: "1px solid #fca5a5", background: "#fee2e2", color: "#ef4444", cursor: "pointer", transition: "all 0.2s" }}
                               onClick={() => removeInvFactor(i)}
                               title="Remove"
                             >
                               <i className="ti ti-x" style={{ fontSize: "16px", fontWeight: "bold" }}></i>
                             </button>
                             {i === invFactors.length - 1 && (
-                              <button 
+                              <button
                                 type="button"
-                                style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "32px", height: "32px", borderRadius: "6px", border: "1px solid #86efac", background: "#dcfce7", color: "#16a34a", cursor: "pointer", transition: "all 0.2s" }} 
+                                style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "32px", height: "32px", borderRadius: "6px", border: "1px solid #86efac", background: "#dcfce7", color: "#16a34a", cursor: "pointer", transition: "all 0.2s" }}
                                 onClick={() => addInvFactor()}
                                 title="Add Factor"
                               >
@@ -6198,18 +6198,18 @@ export default function IMDetails() {
                         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12, alignItems: "center" }}>
                           <span style={{ fontWeight: 700, fontSize: 13 }}>Action #{i + 1}</span>
                           <div style={{ display: "flex", gap: "6px" }}>
-                            <button 
+                            <button
                               type="button"
-                              style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "32px", height: "32px", borderRadius: "6px", border: "1px solid #fca5a5", background: "#fee2e2", color: "#ef4444", cursor: "pointer", transition: "all 0.2s" }} 
+                              style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "32px", height: "32px", borderRadius: "6px", border: "1px solid #fca5a5", background: "#fee2e2", color: "#ef4444", cursor: "pointer", transition: "all 0.2s" }}
                               onClick={() => removeInvCorrective(i)}
                               title="Remove Action"
                             >
                               <i className="ti ti-x" style={{ fontSize: "16px", fontWeight: "bold" }}></i>
                             </button>
                             {i === invCorrective.length - 1 && (
-                              <button 
+                              <button
                                 type="button"
-                                style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "32px", height: "32px", borderRadius: "6px", border: "1px solid #86efac", background: "#dcfce7", color: "#16a34a", cursor: "pointer", transition: "all 0.2s" }} 
+                                style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "32px", height: "32px", borderRadius: "6px", border: "1px solid #86efac", background: "#dcfce7", color: "#16a34a", cursor: "pointer", transition: "all 0.2s" }}
                                 onClick={() => addInvCorrective()}
                                 title="Add Action"
                               >
@@ -6220,11 +6220,11 @@ export default function IMDetails() {
                         </div>
                         <div className="mod-form-group">
                           <label className="mod-form-label">Description <span style={{ color: "#DC2626" }}>*</span></label>
-                          <textarea 
+                          <textarea
                             id={`invCorrective-desc-${i}`}
-                            className={`mod-form-textarea ${c.desc.trim() ? 'success-styled' : ''}`} 
-                            style={invErrors[`ca_${i}_desc`] ? { borderColor: "#DC2626" } : undefined} 
-                            value={c.desc} 
+                            className={`mod-form-textarea ${c.desc.trim() ? 'success-styled' : ''}`}
+                            style={invErrors[`ca_${i}_desc`] ? { borderColor: "#DC2626" } : undefined}
+                            value={c.desc}
                             onChange={e => { updateInvCorrective(i, 'desc', e.target.value); if (invErrors[`ca_${i}_desc`]) setInvErrors({ ...invErrors, [`ca_${i}_desc`]: null, correctiveActions: null }); }}
                             onKeyDown={e => {
                               if (e.key === 'Enter' && !e.shiftKey) {
@@ -6238,11 +6238,11 @@ export default function IMDetails() {
                         <div className="grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 12 }}>
                           <div className="mod-form-group">
                             <label className="mod-form-label">Responsible Person <span style={{ color: "#DC2626" }}>*</span></label>
-                            <input 
-                              className={`mod-form-input ${c.resp.trim() ? 'success-styled' : ''}`} 
-                              style={invErrors[`ca_${i}_resp`] ? { borderColor: "#DC2626" } : undefined} 
-                              value={c.resp} 
-                              onChange={e => { updateInvCorrective(i, 'resp', e.target.value); if (invErrors[`ca_${i}_resp`]) setInvErrors({ ...invErrors, [`ca_${i}_resp`]: null, correctiveActions: null }); }} 
+                            <input
+                              className={`mod-form-input ${c.resp.trim() ? 'success-styled' : ''}`}
+                              style={invErrors[`ca_${i}_resp`] ? { borderColor: "#DC2626" } : undefined}
+                              value={c.resp}
+                              onChange={e => { updateInvCorrective(i, 'resp', e.target.value); if (invErrors[`ca_${i}_resp`]) setInvErrors({ ...invErrors, [`ca_${i}_resp`]: null, correctiveActions: null }); }}
                               onKeyDown={e => {
                                 if (e.key === 'Enter') {
                                   e.preventDefault();
@@ -7266,7 +7266,7 @@ export default function IMDetails() {
                           }}
                           title="Open File in New Tab"
                         >
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
                           Open
                         </a>
                         <button
@@ -7288,7 +7288,7 @@ export default function IMDetails() {
                           }}
                           title="Download File"
                         >
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
                           Download
                         </button>
                         <label
@@ -7436,7 +7436,7 @@ export default function IMDetails() {
                                           }}
                                           title={actionAttachmentName}
                                         >
-                                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+                                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" /></svg>
                                           <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                                             {actionAttachmentName}
                                           </span>
@@ -7459,7 +7459,7 @@ export default function IMDetails() {
                                           }}
                                           title="Open File in New Tab"
                                         >
-                                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
                                           Open
                                         </a>
                                         <button
@@ -7480,7 +7480,7 @@ export default function IMDetails() {
                                           }}
                                           title="Download File"
                                         >
-                                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
                                           Download
                                         </button>
                                       </div>
@@ -7553,7 +7553,7 @@ export default function IMDetails() {
                                                   }}
                                                   title="Open File in New Tab"
                                                 >
-                                                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
                                                   Open File
                                                 </a>
                                                 <button
@@ -7575,7 +7575,7 @@ export default function IMDetails() {
                                                   }}
                                                   title="Download File to Computer"
                                                 >
-                                                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
                                                   Download File
                                                 </button>
                                               </div>

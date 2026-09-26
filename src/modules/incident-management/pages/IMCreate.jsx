@@ -281,7 +281,7 @@ const getLoggedInUser = () => {
 };
 
 const initialForm = {
-  project: "M3 South", title: "", date: "", time: "", location: "", floor: "", specificLocation: "", contractor: "",
+  project: "M3 North", title: "", date: "", time: "", location: "", floor: "", specificLocation: "", contractor: "",
   categories: [], actual: "", potential: "", description: "", consequence: "",
   envSpillType: [], envSpillOther: "", envSpilledWhat: "", envCause: "", envQuantity: "", envSpecify: [], envSpecifyOther: "",
   immActions: [],

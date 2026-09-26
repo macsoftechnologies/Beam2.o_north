@@ -194,11 +194,11 @@ export async function generateObservationStatsPdf({ agg, filters, contractorStat
   const severityList = (agg?.severity && agg.severity.length > 0)
     ? agg.severity
     : [
-        { level: 'Critical', count: 0, color: SEVERITY_COLORS['Critical'] },
-        { level: 'High', count: 0, color: SEVERITY_COLORS['High'] },
-        { level: 'Medium', count: 0, color: SEVERITY_COLORS['Medium'] },
-        { level: 'Low', count: 0, color: SEVERITY_COLORS['Low'] },
-      ];
+      { level: 'Critical', count: 0, color: SEVERITY_COLORS['Critical'] },
+      { level: 'High', count: 0, color: SEVERITY_COLORS['High'] },
+      { level: 'Medium', count: 0, color: SEVERITY_COLORS['Medium'] },
+      { level: 'Low', count: 0, color: SEVERITY_COLORS['Low'] },
+    ];
   const maxSevCount = Math.max(...severityList.map(s => s.count), 1);
   const totalSevObs = severityList.reduce((sum, s) => sum + s.count, 0) || totalObs || 1;
 
@@ -416,7 +416,7 @@ export async function generateObservationStatsPdf({ agg, filters, contractorStat
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(6.5);
     doc.setTextColor(200, 210, 230);
-    doc.text('M3 South - Safety Observations Analytics Report  |  Confidential', margin, pageH - 3.5);
+    doc.text('M3 North - Safety Observations Analytics Report  |  Confidential', margin, pageH - 3.5);
     doc.text('Page ' + p + ' of ' + totalPages, pageW - margin, pageH - 3.5, { align: 'right' });
   }
 

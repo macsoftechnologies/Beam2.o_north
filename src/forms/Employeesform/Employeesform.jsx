@@ -12,11 +12,11 @@ const EMPLOYEE_TYPE_OPTIONS = [
 ];
 
 const MODULE_OPTIONS = [
-  { id: "permit-to-work",      label: "Permit to Work" },
+  { id: "permit-to-work", label: "Permit to Work" },
   { id: "incident-management", label: "Incident Management" },
   { id: "safety-observations", label: "Safety Observations" },
-  { id: "safety-inspection",   label: "Safety Inspection" },
-  { id: "spot-checks",         label: "Spot Checks" },
+  { id: "safety-inspection", label: "Safety Inspection" },
+  { id: "spot-checks", label: "Spot Checks" },
 ];
 
 function Employeesform({ onClose, initialData, isEdit, onSubmit }) {
@@ -104,7 +104,7 @@ function Employeesform({ onClose, initialData, isEdit, onSubmit }) {
       setDepartId(initialData.departId !== undefined && initialData.departId !== null ? String(initialData.departId) : "");
       setObserId(initialData.obserId !== undefined && initialData.obserId !== null ? String(initialData.obserId) : "");
       setAccess(initialData.access !== undefined ? (initialData.access === 1 || initialData.access === "1" || initialData.access === true) : true);
-      
+
       const rawModules = initialData.moduleAccess || initialData.module_access;
       if (rawModules !== undefined && rawModules !== null && rawModules !== "") {
         const parsed = typeof rawModules === "string"
@@ -133,7 +133,7 @@ function Employeesform({ onClose, initialData, isEdit, onSubmit }) {
       // Automatically set company name if "Department" is selected but no Subcontractor is selected
       if (next.includes("Department") || next.includes("Department1")) {
         if (!companyName) {
-          setCompanyName("M3 South");
+          setCompanyName("M3 North");
         }
       }
 

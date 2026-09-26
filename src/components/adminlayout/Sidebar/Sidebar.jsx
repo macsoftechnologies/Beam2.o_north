@@ -70,9 +70,9 @@ function SubItem({ href, label, subChildren }) {
 ════════════════════════════════════════════════════ */
 function detectModule(pathname) {
   if (pathname.startsWith('/incident-management')) return 'im';
-  if (pathname.startsWith('/safety-observations'))  return 'so';
-  if (pathname.startsWith('/safety-inspection'))  return 'si';
-  if (pathname.startsWith('/spot-checks'))  return 'sc';
+  if (pathname.startsWith('/safety-observations')) return 'so';
+  if (pathname.startsWith('/safety-inspection')) return 'si';
+  if (pathname.startsWith('/spot-checks')) return 'sc';
   return 'ptw';
 }
 
@@ -135,7 +135,7 @@ function Sidebar({ sidebarOpen, toggleSidebar }) {
   }, [])
 
   const activeModule = detectModule(pathname);
-  const moduleConf   = MODULE_CONFIG[activeModule];  // null for PTW
+  const moduleConf = MODULE_CONFIG[activeModule];  // null for PTW
 
   // ── Helper: exact match or starts-with for parent routes
   const isActive = (path) => pathname === path || pathname.startsWith(path + '/')
@@ -145,44 +145,44 @@ function Sidebar({ sidebarOpen, toggleSidebar }) {
     if (!state) return "";
     const cleanState = state.replace(/^\//, "");
     const mapping = {
-      "user/dashboard":               "/dashboard",
-      "user/executive-dashboard":     "/executive-dashboard",
-      "admin/listdepartment":         "/departments",
-      "admin/subcontractors-list":    "/contractors",
-      "admin/listemployee":           "/employees",
-      "location/buildings":           "/location/buildings",
-      "location/floors":              "/location/floors",
-      "location/zones":               "/location/zones",
-      "location/rooms":               "/location/rooms",
-      "user/list-electricalworks":    "/electrical-works",
-      "admin/list-electricalworks":   "/electrical-works",
-      "user/list-mechanicalworks":    "/mechanical-works",
-      "admin/list-mechanicalworks":   "/mechanical-works",
-      "user/new-request":             "/new-request",
-      "user/list-request":            "/list-request",
-      "user/plans":                   "/reports",
-      "admin/activity-list":          "/settings/activity",
-      "admin/safety-precautions-list":"/settings/safety/precaution",
-      "user/log-history":             "/log-history",
-      "user/log-reports":             "/logs-reports",
+      "user/dashboard": "/dashboard",
+      "user/executive-dashboard": "/executive-dashboard",
+      "admin/listdepartment": "/departments",
+      "admin/subcontractors-list": "/contractors",
+      "admin/listemployee": "/employees",
+      "location/buildings": "/location/buildings",
+      "location/floors": "/location/floors",
+      "location/zones": "/location/zones",
+      "location/rooms": "/location/rooms",
+      "user/list-electricalworks": "/electrical-works",
+      "admin/list-electricalworks": "/electrical-works",
+      "user/list-mechanicalworks": "/mechanical-works",
+      "admin/list-mechanicalworks": "/mechanical-works",
+      "user/new-request": "/new-request",
+      "user/list-request": "/list-request",
+      "user/plans": "/reports",
+      "admin/activity-list": "/settings/activity",
+      "admin/safety-precautions-list": "/settings/safety/precaution",
+      "user/log-history": "/log-history",
+      "user/log-reports": "/logs-reports",
       // ── Incident Management ──
-      "incident-management/dashboard":          "/incident-management/dashboard",
-      "incident-management/list":               "/incident-management/list",
-      "incident-management/create":             "/incident-management/create",
-      "incident-management/reports":            "/incident-management/reports",
-      "incident-management/notification-groups":"/incident-management/notification-groups",
+      "incident-management/dashboard": "/incident-management/dashboard",
+      "incident-management/list": "/incident-management/list",
+      "incident-management/create": "/incident-management/create",
+      "incident-management/reports": "/incident-management/reports",
+      "incident-management/notification-groups": "/incident-management/notification-groups",
       // ── Safety Observations ──
-      "safety-observations/dashboard":          "/safety-observations/dashboard",
-      "safety-observations/list":               "/safety-observations/list",
-      "safety-observations/create":             "/safety-observations/create",
+      "safety-observations/dashboard": "/safety-observations/dashboard",
+      "safety-observations/list": "/safety-observations/list",
+      "safety-observations/create": "/safety-observations/create",
       "safety-observations/corrective-actions": "/safety-observations/corrective-actions",
-      "safety-observations/reports":            "/safety-observations/reports",
+      "safety-observations/reports": "/safety-observations/reports",
       // ── Safety Inspection ──
-      "safety-inspection/dashboard":            "/safety-inspection/dashboard",
-      "safety-inspection/list":                 "/safety-inspection/list",
+      "safety-inspection/dashboard": "/safety-inspection/dashboard",
+      "safety-inspection/list": "/safety-inspection/list",
       // ── Spot Checks ──
-      "spot-checks/dashboard":                  "/spot-checks/dashboard",
-      "spot-checks/list":                       "/spot-checks/list",
+      "spot-checks/dashboard": "/spot-checks/dashboard",
+      "spot-checks/list": "/spot-checks/list",
     };
     return mapping[cleanState] || `/${cleanState}`;
   };
@@ -193,29 +193,29 @@ function Sidebar({ sidebarOpen, toggleSidebar }) {
     const icon = item.icon || "";
     // If icon is already a ti-* class, use it directly
     if (icon.startsWith("ti-")) return icon;
-    if (name.includes("dashboard"))                  return "ti-layout-dashboard";
-    if (name.includes("department"))                 return "ti-sitemap";
-    if (name.includes("contractor"))                 return "ti-briefcase";
-    if (name.includes("employee"))                   return "ti-users-group";
+    if (name.includes("dashboard")) return "ti-layout-dashboard";
+    if (name.includes("department")) return "ti-sitemap";
+    if (name.includes("contractor")) return "ti-briefcase";
+    if (name.includes("employee")) return "ti-users-group";
     if (name.includes("location") || name.includes("zone")) return "ti-map-pin";
-    if (name.includes("electrical"))                 return "ti-bolt";
-    if (name.includes("mechanical"))                 return "ti-settings";
-    if (name.includes("request"))                    return "ti-file-description";
-    if (name.includes("corrective"))                 return "ti-checkbox";
-    if (name.includes("report"))                     return "ti-chart-line";
-    if (name.includes("settings"))                   return "ti-adjustments-horizontal";
-    if (name.includes("history"))                    return "ti-clock";
-    if (name.includes("logs"))                       return "ti-chart-bar";
-    if (name.includes("incident"))                   return "ti-alert-triangle";
-    if (name.includes("observation"))                return "ti-shield-check";
-    if (name.includes("add"))                        return "ti-plus";
+    if (name.includes("electrical")) return "ti-bolt";
+    if (name.includes("mechanical")) return "ti-settings";
+    if (name.includes("request")) return "ti-file-description";
+    if (name.includes("corrective")) return "ti-checkbox";
+    if (name.includes("report")) return "ti-chart-line";
+    if (name.includes("settings")) return "ti-adjustments-horizontal";
+    if (name.includes("history")) return "ti-clock";
+    if (name.includes("logs")) return "ti-chart-bar";
+    if (name.includes("incident")) return "ti-alert-triangle";
+    if (name.includes("observation")) return "ti-shield-check";
+    if (name.includes("add")) return "ti-plus";
     const iconMap = {
       dashboard: "ti-layout-dashboard",
-      event:     "ti-calendar",
-      person:    "ti-user",
-      settings:  "ti-settings",
-      history:   "ti-clock",
-      assignment:"ti-clipboard",
+      event: "ti-calendar",
+      person: "ti-user",
+      settings: "ti-settings",
+      history: "ti-clock",
+      assignment: "ti-clipboard",
     };
     return iconMap[icon] || "ti-circle";
   };
@@ -264,8 +264,8 @@ function Sidebar({ sidebarOpen, toggleSidebar }) {
   const userRoles = typeof userRole === "string"
     ? userRole.split(",").map(r => r.trim())
     : Array.isArray(userRole)
-    ? userRole
-    : userRole ? [userRole] : [];
+      ? userRole
+      : userRole ? [userRole] : [];
 
   // ── Decide which menu to render
   const rawMenuItems = moduleConf ? moduleConf.menu : getMenuByRole(userRole);
@@ -278,7 +278,7 @@ function Sidebar({ sidebarOpen, toggleSidebar }) {
 
   // PTW section-label trackers
   const reportsAndSettingsNames = ["reports", "settings", "activity", "safety precaution", "log-history", "logs-reports"];
-  let renderedMainLabel    = false;
+  let renderedMainLabel = false;
   let renderedReportsLabel = false;
 
   // ── Render a module-specific simple link item (IM / SO)
@@ -323,7 +323,7 @@ function Sidebar({ sidebarOpen, toggleSidebar }) {
           />
         </div>
         <div className="brand-text-wrap">
-          <span className="brand-name">M3 South</span>
+          <span className="brand-name">M3 North</span>
           <span className="brand-sub">
             {moduleConf ? moduleConf.label : 'MANAGEMENT'}
           </span>
@@ -332,8 +332,8 @@ function Sidebar({ sidebarOpen, toggleSidebar }) {
 
       {/* ── Modules Link ── */}
       <div className="sidebar-modules-container">
-        <Link 
-          to="/modules" 
+        <Link
+          to="/modules"
           className="sidebar-modules-btn"
           data-tooltip="All Modules"
           title="All Modules"

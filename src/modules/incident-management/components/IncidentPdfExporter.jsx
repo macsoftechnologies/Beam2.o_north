@@ -193,8 +193,8 @@ export function IncidentPdfExporter({ incident, onClose, targetForm = "all" }) {
     const caseName = incident.caseNumber || incident.id || "Incident";
     const suffix = activeFormTab === 'headsUp' || activeFormTab === '1' ? '_Form1_HeadsUp'
       : activeFormTab === 'initialReport' || activeFormTab === '2' ? '_Form2_InitialReport'
-      : activeFormTab === 'investigation' || activeFormTab === '3' ? '_Form3_Investigation'
-      : '_All_Forms_Report';
+        : activeFormTab === 'investigation' || activeFormTab === '3' ? '_Form3_Investigation'
+          : '_All_Forms_Report';
 
     // If we have the backend PDF blob URL, download it directly
     if (pdfBlobUrl) {
@@ -249,8 +249,8 @@ export function IncidentPdfExporter({ incident, onClose, targetForm = "all" }) {
 
       <h1 style={{ fontSize: 20, fontWeight: 800, color: "#0f172a", margin: "8px 0 4px", letterSpacing: "-0.5px" }}>{pageTitle}</h1>
       <div style={{ fontSize: 10, color: "#475569", marginBottom: 12 }}>
-        Project: <strong style={{ color: "#0f172a" }}>{incident.project || hu.project || "M3 South"}</strong> &nbsp;|&nbsp;
-        Project ID: <strong style={{ color: "#0f172a" }}>{incident.projectNo || "M3 South-001"}</strong> &nbsp;|&nbsp;
+        Project: <strong style={{ color: "#0f172a" }}>{incident.project || hu.project || "M3 North"}</strong> &nbsp;|&nbsp;
+        Project ID: <strong style={{ color: "#0f172a" }}>{incident.projectNo || "M3 North-001"}</strong> &nbsp;|&nbsp;
         System No: <strong style={{ color: "#0f172a" }}>{incident.caseNumber || (incident.id ? `INC-2026-${String(incident.id).padStart(4, '0')}` : "—")}</strong>
       </div>
     </div>
@@ -326,8 +326,8 @@ export function IncidentPdfExporter({ incident, onClose, targetForm = "all" }) {
             <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, display: "flex", alignItems: "center", gap: "8px" }}>
               {activeFormTab === 'headsUp' || activeFormTab === '1' ? 'Form 1: Heads-Up Notification'
                 : activeFormTab === 'initialReport' || activeFormTab === '2' ? 'Form 2: Initial Incident Report'
-                : activeFormTab === 'investigation' || activeFormTab === '3' ? 'Form 3: Incident Investigation Report'
-                : 'Official Incident Document Viewer'}
+                  : activeFormTab === 'investigation' || activeFormTab === '3' ? 'Form 3: Incident Investigation Report'
+                    : 'Official Incident Document Viewer'}
             </h3>
             <p style={{ margin: 0, fontSize: 11.5, color: "#94a3b8" }}>
               {incident.caseNumber || (incident.id ? `INC-2026-${String(incident.id).padStart(4, '0')}` : "Incident")} — {incident.title || hu.title || "Details"}
@@ -362,7 +362,7 @@ export function IncidentPdfExporter({ incident, onClose, targetForm = "all" }) {
             onClick={handleDownloadPdf}
             style={{ background: "#10b981", color: "#fff", border: "none", padding: "8px 16px", borderRadius: 6, fontWeight: 700, fontSize: 13, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}
           >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
             Download PDF
           </button>
           <button
@@ -517,7 +517,7 @@ export function IncidentPdfExporter({ incident, onClose, targetForm = "all" }) {
                     <tbody>
                       <tr>
                         <td style={{ width: "22%", background: "#0f172a", color: "#fff", fontWeight: 700, padding: 6, border: "1px solid #0f172a" }}>Project Name:</td>
-                        <td style={{ padding: 6, border: "1px solid #cbd5e1", fontWeight: 600 }}>{incident.project || hu.project || "M3 South"}</td>
+                        <td style={{ padding: 6, border: "1px solid #cbd5e1", fontWeight: 600 }}>{incident.project || hu.project || "M3 North"}</td>
                         <td style={{ width: "22%", background: "#0f172a", color: "#fff", fontWeight: 700, padding: 6, border: "1px solid #0f172a" }}>Case Number:</td>
                         <td style={{ padding: 6, border: "1px solid #cbd5e1", fontWeight: 700, color: "#0f172a" }}>{incident.caseNumber || (incident.id ? `INC-2026-${String(incident.id).padStart(4, '0')}` : "—")}</td>
                       </tr>
@@ -664,7 +664,7 @@ export function IncidentPdfExporter({ incident, onClose, targetForm = "all" }) {
                     <tbody>
                       <tr>
                         <td style={{ width: "22%", background: "#0f172a", color: "#fff", fontWeight: 700, padding: 6, border: "1px solid #0f172a" }}>Project Name:</td>
-                        <td style={{ padding: 6, border: "1px solid #cbd5e1", fontWeight: 600 }}>{incident.project || hu.project || "M3 South"}</td>
+                        <td style={{ padding: 6, border: "1px solid #cbd5e1", fontWeight: 600 }}>{incident.project || hu.project || "M3 North"}</td>
                         <td style={{ width: "22%", background: "#0f172a", color: "#fff", fontWeight: 700, padding: 6, border: "1px solid #0f172a" }}>Case Number:</td>
                         <td style={{ padding: 6, border: "1px solid #cbd5e1", fontWeight: 700, color: "#0f172a" }}>{incident.caseNumber || (incident.id ? `INC-2026-${String(incident.id).padStart(4, '0')}` : "—")}</td>
                       </tr>
@@ -803,7 +803,7 @@ export function IncidentPdfExporter({ incident, onClose, targetForm = "all" }) {
                     <tbody>
                       <tr>
                         <td style={{ width: "22%", background: "#0f172a", color: "#fff", fontWeight: 700, padding: 6, border: "1px solid #0f172a" }}>Project Name:</td>
-                        <td style={{ padding: 6, border: "1px solid #cbd5e1", fontWeight: 600 }}>{incident.project || hu.project || "M3 South"}</td>
+                        <td style={{ padding: 6, border: "1px solid #cbd5e1", fontWeight: 600 }}>{incident.project || hu.project || "M3 North"}</td>
                         <td style={{ width: "22%", background: "#0f172a", color: "#fff", fontWeight: 700, padding: 6, border: "1px solid #0f172a" }}>Case Number:</td>
                         <td style={{ padding: 6, border: "1px solid #cbd5e1", fontWeight: 700, color: "#0f172a" }}>{incident.caseNumber || (incident.id ? `INC-2026-${String(incident.id).padStart(4, '0')}` : "—")}</td>
                       </tr>
@@ -862,7 +862,7 @@ export function IncidentPdfExporter({ incident, onClose, targetForm = "all" }) {
                       {(Array.isArray(inv.chronologyOfEvents) && inv.chronologyOfEvents.length > 0) ? (
                         inv.chronologyOfEvents.map((ev, idx) => (
                           <tr key={idx}>
-                            <td style={{ padding: 6, border: "1px solid #cbd5e1", fontWeight: 600 }}>{ev.time || ev.date || `Step ${idx+1}`}</td>
+                            <td style={{ padding: 6, border: "1px solid #cbd5e1", fontWeight: 600 }}>{ev.time || ev.date || `Step ${idx + 1}`}</td>
                             <td style={{ padding: 6, border: "1px solid #cbd5e1" }}>{ev.description || ev.event || "—"}</td>
                           </tr>
                         ))

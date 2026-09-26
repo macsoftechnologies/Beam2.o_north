@@ -120,20 +120,20 @@ export default function Login() {
 
             <div className="panel-top">
               <div className="ssw-login-brand">
-                  <img
-                    src="/beam-assets/safesite-cap-only.png?v=300"
-                    alt=""
-                    aria-hidden="true"
-                    className="ssw-login-cap"
-                  />
-                  <div className="ssw-login-wordmark">
-                    <span className="ssw-safe">SafeSite</span>
-                    <span className="ssw-works">Works</span>
-                  </div>
+                <img
+                  src="/beam-assets/safesite-cap-only.png?v=300"
+                  alt=""
+                  aria-hidden="true"
+                  className="ssw-login-cap"
+                />
+                <div className="ssw-login-wordmark">
+                  <span className="ssw-safe">SafeSite</span>
+                  <span className="ssw-works">Works</span>
                 </div>
-                <div className="beam20-login-badge">BEAM 2.0</div>
+              </div>
+              <div className="beam20-login-badge">BEAM 2.0</div>
 
-                <div className="panel-badge">
+              <div className="panel-badge">
                 <span className="dot"></span>Division 02
               </div>
               <h2 className="panel-title">
@@ -141,7 +141,7 @@ export default function Login() {
                 <br />Operations
               </h2>
               <p className="panel-desc">
-                Your secure gateway to the M3 South operations platform — permit management, field coordination and real-time reporting.
+                Your secure gateway to the M3 North operations platform — permit management, field coordination and real-time reporting.
               </p>
             </div>
           </div>
@@ -150,12 +150,12 @@ export default function Login() {
           <div className="panel-right">
             <div className="form-eyebrow">Secure Access</div>
             <h1 className="form-heading">
-                  Welcome to
-                  <br />
-                  <span className="ssw-heading-safe">SafeSite</span>
-                  <span className="ssw-heading-works">Works</span>
+              Welcome to
+              <br />
+              <span className="ssw-heading-safe">SafeSite</span>
+              <span className="ssw-heading-works">Works</span>
             </h1>
-            <p className="form-subtext">Sign in to your M3 South account to continue</p>
+            <p className="form-subtext">Sign in to your M3 North account to continue</p>
 
             {error && (
               <div className="error-box show">
