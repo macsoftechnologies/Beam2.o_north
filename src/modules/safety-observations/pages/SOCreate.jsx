@@ -1,0 +1,1180 @@
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import { observationService } from "../../../services/observationService";
+import { getContractors, getBuildings, getRooms, getFloors } from "../../../services/authService";
+import { OBSERVATION_CATEGORIES_TREE, SAFETY_CATEGORIES } from "../data/observations";
+import FloorDrawing from "../../../pages/Request/FloorDrawing/FloorDrawing";
+import { FLOOR_PDFS } from "../../../data/pdfMapping";
+import { ZONE_MAPPING } from "../../../data/zones";
+import { BUILDINGS } from "../../../data/buildings";
+import { AnalogTimePicker } from "../../incident-management/pages/IMCreate";
+import "../../../styles/module-shared.css";
+
+const defaultProjectName = (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '').toLowerCase().includes('north')
+  ? 'M3NORTH'
+  : (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '').toLowerCase().includes('infra')
+    ? 'M3INFRASTRUCTURE'
+    : 'M3SOUTH';
+
+const initialForm = {
+  observationNumber: "",
+  observationType: "", // POSITIVE | NEEDS_ATTENTION
+  natureOfFinding: "", // GOOD_PRACTICE | UNSAFE_ACT | UNSAFE_CONDITION
+  date: "",
+  time: "",
+  subject: "",
+  safetyCategory: "",
+  subcategory: "",
+  customSubcategory: "",
+  riskLevel: "MEDIUM",
+  projectName: defaultProjectName,
+  assignedContractorId: "",
+  assignedContractorName: "",
+  description: "",
+  buildingId: "",
+  buildingName: "",
+  floorLevel: "",
+  specificLocation: "",
+  immediateActionTaken: "",
+};
+
+function SOCreate() {
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const isEditMode = Boolean(id);
+  const [isLoadingDetails, setIsLoadingDetails] = useState(isEditMode);
+  const [existingPhotos, setExistingPhotos] = useState([]);
+
+  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [tempTime, setTempTime] = useState("");
+  const [form, setForm] = useState(initialForm);
+
+  // Selector data
+  const [contractorsList, setContractorsList] = useState([]);
+  const [buildingsList, setBuildingsList] = useState([]);
+  const [floorsList, setFloorsList] = useState([]);
+  const [roomsList, setRoomsList] = useState([]);
+  const [isLoadingSelectors, setIsLoadingSelectors] = useState(true);
+
+  // Location drawing state matching Incident Management Heads-Up Form
+  const [building, setBuilding] = useState("");
+  const [level, setLevel] = useState("");
+  const [selectedRooms, setSelectedRooms] = useState([]);
+  const [selectedZone, setSelectedZone] = useState(null);
+
+  const [errors, setErrors] = useState({});
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [photoFiles, setPhotoFiles] = useState([]);
+  const [photoPreviews, setPhotoPreviews] = useState([]);
+
+  const [isCameraActive, setIsCameraActive] = useState(false);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const streamRef = useRef(null);
+  const fileInputRef = useRef(null);
+
+  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const rawRole = (localStorage.getItem("UserType") || currentUser?.role || currentUser?.userType || currentUser?.user_type || "").toLowerCase();
+  const isContractor = rawRole.includes("contractor") || rawRole.includes("subcontractor") || Boolean(currentUser?.subcontractor_id) || Boolean(currentUser?.contractorId) || Boolean(currentUser?.typeId && rawRole.includes("subcontractor"));
+  const isAdmin = rawRole.includes("admin") || rawRole.includes("superadmin") || Boolean(currentUser?.isSuperAdmin) || (Array.isArray(currentUser?.userTypes) && currentUser.userTypes.some(t => String(t).toLowerCase().includes("admin")));
+  const isDepartment = rawRole.includes("department") || rawRole.includes("operator") || rawRole.includes("site_hse") || rawRole.includes("safety") || rawRole.includes("hse");
+  const isDeptOrAdmin = (isAdmin || isDepartment || !isContractor) && !isContractor;
+  const userRole = localStorage.getItem("UserType") || "DEPARTMENT";
+
+  // If in edit mode, fetch observation details to prefill form
+  useEffect(() => {
+    if (!id) return;
+    async function loadObservationForEdit() {
+      try {
+        setIsLoadingDetails(true);
+        const res = await observationService.getObservationDetails(id);
+        const obs = res?.observation || res;
+        if (!obs) {
+          alert("Observation record not found.");
+          navigate("/safety-observations/list");
+          return;
+        }
+
+        const currentStatus = String(obs.status || "").toUpperCase();
+        if (currentStatus === "CLOSED" || currentStatus === "ESCALATED") {
+          alert(`Observation ${obs.observationNumber || id} is ${currentStatus} and cannot be edited.`);
+          navigate(`/safety-observations/details/${id}`);
+          return;
+        }
+
+        let parsedPhotos = [];
+        if (obs.photos) {
+          if (Array.isArray(obs.photos)) {
+            parsedPhotos = obs.photos;
+          } else if (typeof obs.photos === "string") {
+            try {
+              const p = JSON.parse(obs.photos);
+              parsedPhotos = Array.isArray(p) ? p : [p];
+            } catch {
+              parsedPhotos = [obs.photos];
+            }
+          }
+        }
+        setExistingPhotos(parsedPhotos);
+
+        setForm({
+          status: obs.status || "",
+          observationNumber: obs.observationNumber || "",
+          observationType: obs.observationType || "",
+          natureOfFinding: obs.natureOfFinding || "",
+          date: obs.observationDate ? obs.observationDate.split("T")[0] : "",
+          time: obs.observationTime || "",
+          subject: obs.subject || "",
+          safetyCategory: obs.safetyCategory || "",
+          subcategory: obs.subcategory || "",
+          customSubcategory: "",
+          riskLevel: obs.riskLevel || "MEDIUM",
+          projectName: obs.projectName || "M3SOUTH",
+          assignedContractorId: obs.assignedContractorId ? String(obs.assignedContractorId) : "",
+          assignedContractorName: obs.assignedContractorName || "",
+          description: obs.description || "",
+          buildingId: obs.buildingId ? String(obs.buildingId) : "",
+          buildingName: obs.buildingName || "",
+          floorLevel: obs.floorLevel || "",
+          specificLocation: obs.specificLocation || "",
+          immediateActionTaken: obs.immediateActionTaken || "",
+        });
+
+        if (obs.buildingId) setBuilding(String(obs.buildingId));
+        if (obs.floorLevel) setLevel(obs.floorLevel);
+      } catch (err) {
+        console.error("Failed to load observation details for editing:", err);
+        alert(err.response?.data?.message || "Failed to load observation details.");
+        navigate("/safety-observations/list");
+      } finally {
+        setIsLoadingDetails(false);
+      }
+    }
+    loadObservationForEdit();
+  }, [id, navigate]);
+
+  useEffect(() => {
+    const loadSelectors = async () => {
+      try {
+        const [contractorsRes, buildingsRes, floorsRes, roomsRes] = await Promise.all([
+          getContractors(1, 1000),
+          getBuildings(1, 1000),
+          getFloors(1, 1000),
+          getRooms(1, 20000),
+        ]);
+
+        const rawContractors = contractorsRes?.data?.rows || contractorsRes?.data || contractorsRes || [];
+        let cList = Array.isArray(rawContractors) ? [...rawContractors] : [];
+
+        // Ensure NNE is always available in the contractor dropdown for assignment
+        const hasNne = cList.some((c) => {
+          const cName = String(c.subContractorName || c.company_name || c.contractor_name || c.subcontractor_name || c.name || "").toUpperCase().trim();
+          return cName === "NNE" || cName.includes("NNE");
+        });
+
+        if (!hasNne) {
+          cList.push({
+            id: "NNE",
+            subContractorName: "NNE",
+            company_name: "NNE",
+            name: "NNE",
+          });
+        }
+
+        setContractorsList(cList);
+
+        // Auto-select NNE as default contractor only for contractor-role users
+        if (!id && isContractor) {
+          const nneEntry = cList.find((c) => {
+            const cName = String(c.subContractorName || c.company_name || c.contractor_name || c.subcontractor_name || c.name || "").toUpperCase().trim();
+            return cName === "NNE" || cName.includes("NNE");
+          });
+          if (nneEntry) {
+            const nneName = nneEntry.subContractorName || nneEntry.company_name || nneEntry.contractor_name || nneEntry.subcontractor_name || nneEntry.name || "NNE";
+            setForm((prev) => ({ ...prev, assignedContractorId: String(nneEntry.id), assignedContractorName: nneName }));
+          }
+        }
+
+        const rawBuildings = buildingsRes?.data?.rows || buildingsRes?.data || buildingsRes || [];
+        setBuildingsList(Array.isArray(rawBuildings) ? rawBuildings : []);
+
+        const rawFloors = floorsRes?.data?.rows || floorsRes?.data || floorsRes || [];
+        setFloorsList(Array.isArray(rawFloors) ? rawFloors : []);
+
+        const rawRooms = roomsRes?.data?.rows || roomsRes?.data || roomsRes || [];
+        setRoomsList(Array.isArray(rawRooms) ? rawRooms : []);
+      } catch (err) {
+        console.error("Failed to load selector data for observation creation", err);
+      } finally {
+        setIsLoadingSelectors(false);
+      }
+    };
+    loadSelectors();
+  }, []);
+
+  // Available Subcategories based on Safety Category
+  const availableSubcategories = useMemo(() => {
+    if (!form.safetyCategory) return [];
+    const cat = OBSERVATION_CATEGORIES_TREE.find(
+      (c) => c.name.toLowerCase().trim() === form.safetyCategory.toLowerCase().trim()
+    );
+    return cat ? cat.subcategories : [];
+  }, [form.safetyCategory]);
+
+  // Compute levels based on selected building matching Incident Management
+  const levels = building ? floorsList.filter((f) => String(f.build_id) === String(building)).map((f) => f.floor_name) : [];
+
+  // Compute selected PDF drawing matching Incident Management
+  const selectedPdf = useMemo(() => {
+    if (!building || !level) return "";
+    const dbBuilding = buildingsList.find((b) => String(b.build_id || b.id) === String(building));
+    const bName = dbBuilding ? dbBuilding.building_name : "";
+    if (!bName) return "";
+    const staticB = BUILDINGS.find((item) => item.name.toLowerCase().trim() === bName.toLowerCase().trim());
+    const staticBuildingId = staticB ? staticB.id : "";
+    if (!staticBuildingId) return "";
+    const pdfsForBuilding = FLOOR_PDFS[staticBuildingId];
+    if (!pdfsForBuilding) return "";
+    if (pdfsForBuilding[level]) return pdfsForBuilding[level];
+    const levelLower = level.toLowerCase().trim();
+    const foundKey = Object.keys(pdfsForBuilding).find(
+      (k) => k.toLowerCase().trim().includes(levelLower) || levelLower.includes(k.toLowerCase().trim())
+    );
+    return foundKey ? pdfsForBuilding[foundKey] : "";
+  }, [building, level, buildingsList]);
+
+  // Compute selected zones matching Incident Management
+  const selectedZones = useMemo(() => {
+    if (!level) return [];
+    let zonesForLevel = ZONE_MAPPING[level] || [];
+    if (zonesForLevel.length === 0) {
+      const levelLower = level.toLowerCase().trim();
+      const foundKey = Object.keys(ZONE_MAPPING).find(
+        (k) => k.toLowerCase().trim().includes(levelLower) || levelLower.includes(k.toLowerCase().trim())
+      );
+      if (foundKey) zonesForLevel = ZONE_MAPPING[foundKey];
+    }
+    return zonesForLevel;
+  }, [level]);
+
+  // Format rooms with their corresponding Zone names attached
+  const formatRoomsWithZones = (roomsArray) => {
+    if (!Array.isArray(roomsArray) || roomsArray.length === 0) return "";
+    return roomsArray
+      .map((rStr) => {
+        const roomClean = String(rStr).trim();
+        if (!roomClean) return "";
+
+        // 1. Try to find room in roomsList from database
+        const matchedDbRoom = roomsList.find(
+          (dbR) =>
+            String(dbR.room_name || dbR.room || dbR.name || dbR.id).toLowerCase().trim() === roomClean.toLowerCase() ||
+            roomClean.toLowerCase().includes(String(dbR.room_name || dbR.room || "").toLowerCase().trim())
+        );
+
+        let zoneName = matchedDbRoom?.zone_name || matchedDbRoom?.zone || "";
+
+        // 2. If not found in database roomsList, search in selectedZones (ZONE_MAPPING)
+        if (!zoneName && selectedZones && selectedZones.length > 0) {
+          const foundZoneObj = selectedZones.find((zObj) => {
+            const roomListInZone = zObj.rooms || zObj.roomList || [];
+            return roomListInZone.some(
+              (zr) => String(zr).toLowerCase().trim() === roomClean.toLowerCase()
+            );
+          });
+          if (foundZoneObj) {
+            zoneName = foundZoneObj.zone || foundZoneObj.zone_name || foundZoneObj.name || "";
+          }
+        }
+
+        // Format as "zoneName:roomName" e.g. "ZONE 2.A4:2.005"
+        if (zoneName) {
+          return `${zoneName}:${roomClean}`;
+        }
+        return roomClean;
+      })
+      .filter(Boolean)
+      .join(", ");
+  };
+
+  // Handle room selection on drawing
+  const handleRoomsSelected = (rooms) => {
+    setSelectedRooms(rooms);
+    const dbBuilding = buildingsList.find((b) => String(b.build_id || b.id) === String(building));
+    const bName = dbBuilding ? dbBuilding.building_name || dbBuilding.name : "";
+
+    const formattedLocation = formatRoomsWithZones(rooms);
+
+    setForm((prev) => ({
+      ...prev,
+      buildingId: building,
+      buildingName: bName,
+      floorLevel: level,
+      specificLocation: formattedLocation,
+    }));
+    if (errors.specificLocation) setErrors((prev) => ({ ...prev, specificLocation: null }));
+  };
+
+  useEffect(() => {
+    if (building && level) {
+      const dbBuilding = buildingsList.find((b) => String(b.build_id || b.id) === String(building));
+      const bName = dbBuilding ? dbBuilding.building_name || dbBuilding.name : "";
+      setForm((prev) => ({
+        ...prev,
+        buildingId: building,
+        buildingName: bName,
+        floorLevel: level,
+      }));
+    }
+  }, [building, level, buildingsList]);
+
+const dataURLtoBlob = (dataurl) => {
+  if (!dataurl || typeof dataurl !== 'string') return null;
+  const arr = dataurl.split(',');
+  if (arr.length < 2) return null;
+  const mimeMatch = arr[0].match(/:(.*?);/);
+  const mime = mimeMatch ? mimeMatch[1] : 'image/png';
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new Blob([u8arr], { type: mime });
+};
+
+  const startCamera = async () => {
+    setIsCameraActive(true);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (err) {
+      console.error("Error accessing camera:", err);
+      alert("Could not access camera.");
+      setIsCameraActive(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isCameraActive && videoRef.current && streamRef.current) {
+      videoRef.current.srcObject = streamRef.current;
+    }
+  }, [isCameraActive]);
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+    setIsCameraActive(false);
+  };
+
+  const capturePhoto = () => {
+    if (videoRef.current && canvasRef.current) {
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      const width = video.videoWidth || 640;
+      const height = video.videoHeight || 480;
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(video, 0, 0, width, height);
+
+      const dataUrl = canvas.toDataURL("image/png");
+      const blob = dataURLtoBlob(dataUrl);
+      if (blob) {
+        const file = new File([blob], `obs_photo_${Date.now()}.png`, { type: "image/png" });
+        setPhotoFiles((prev) => [...prev, file]);
+      }
+      setPhotoPreviews((prev) => [...prev, dataUrl]);
+    }
+  };
+
+  const handleFileSelect = (e) => {
+    const files = Array.from(e.target.files);
+    files.forEach((file) => {
+      setPhotoFiles((prev) => [...prev, file]);
+      setPhotoPreviews((prev) => [...prev, URL.createObjectURL(file)]);
+    });
+  };
+
+  const removePhoto = (idx) => {
+    setPhotoFiles((prev) => prev.filter((_, i) => i !== idx));
+    setPhotoPreviews((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  const validate = () => {
+    const errs = {};
+    if (!form.observationType) errs.observationType = "Observation Type is required";
+    if (!form.date) errs.date = "Date is required";
+    if (!form.time) errs.time = "Time is required";
+    if (!form.subject) errs.subject = "Required";
+    if (!form.safetyCategory) errs.safetyCategory = "Required";
+    if (form.observationType === "NEEDS_ATTENTION" && !form.subcategory) errs.subcategory = "Observation Subcategory is required";
+    if ((form.subcategory === "Please Fill" || form.safetyCategory === "Other") && !form.customSubcategory?.trim()) {
+      errs.customSubcategory = "Please specify details for other category";
+    }
+    if (!form.description) errs.description = "Required";
+    if (!building) errs.building = "Location/Building is required";
+    if (!form.specificLocation) errs.specificLocation = "Specific location detail is required";
+    return errs;
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    if (name === "assignedContractorId") {
+      const selected = contractorsList.find((c) => String(c.id) === String(value));
+      const contractorName = selected
+        ? selected.subContractorName || selected.company_name || selected.contractor_name || selected.subcontractor_name || selected.name || ""
+        : (value === "NNE" ? "NNE" : "");
+      setForm((prev) => ({
+        ...prev,
+        assignedContractorId: value,
+        assignedContractorName: contractorName,
+      }));
+    } else {
+      setForm((prev) => ({ ...prev, [name]: value }));
+    }
+
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: null }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const errs = validate();
+    if (Object.keys(errs).length) {
+      setErrors(errs);
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+
+      const dbBuilding = buildingsList.find((b) => String(b.build_id || b.id) === String(building));
+      const bName = dbBuilding ? dbBuilding.building_name || dbBuilding.name : "";
+
+      const formData = new FormData();
+      formData.append("observationType", form.observationType);
+      formData.append("natureOfFinding", form.natureOfFinding);
+      formData.append("date", form.date);
+      formData.append("observationDate", form.date);
+      formData.append("time", form.time);
+      formData.append("observationTime", form.time);
+      formData.append("subject", form.subject);
+      formData.append("safetyCategory", form.safetyCategory);
+      const finalSubcategory =
+        form.subcategory === "Please Fill"
+          ? (form.customSubcategory ? `Other: ${form.customSubcategory}` : "Other")
+          : form.subcategory;
+      if (finalSubcategory) {
+        formData.append("subcategory", finalSubcategory);
+      }
+      formData.append("riskLevel", form.riskLevel);
+      formData.append("description", form.description);
+      formData.append("projectName", defaultProjectName);
+      if (building) formData.append("buildingId", building);
+      if (bName) formData.append("buildingName", bName);
+      if (level) formData.append("floorLevel", level);
+      formData.append("specificLocation", form.specificLocation);
+      if (form.assignedContractorId && !isNaN(Number(form.assignedContractorId))) {
+        formData.append("assignedContractorId", form.assignedContractorId);
+      }
+      if (form.assignedContractorName) formData.append("assignedContractorName", form.assignedContractorName);
+      if (form.immediateActionTaken) formData.append("immediateActionTaken", form.immediateActionTaken);
+
+      // Append selected photo files to the multipart request
+      if (photoFiles && photoFiles.length > 0) {
+        photoFiles.forEach((file) => {
+          formData.append("photos", file);
+        });
+      }
+
+      if (isEditMode) {
+        formData.append("existingPhotos", JSON.stringify(existingPhotos));
+        formData.append("editedByUserId", currentUser.id || "");
+        formData.append("editedByUserName", currentUser.username || currentUser.name || "Department User");
+        formData.append("editedByUserRole", rawRole ? rawRole.toUpperCase() : "DEPARTMENT");
+        formData.append("editRemarks", "Observation details updated by department user.");
+
+        await observationService.updateObservation(id, formData);
+        setSubmitted(true);
+        setTimeout(() => navigate(`/safety-observations/details/${id}`), 1200);
+      } else {
+        formData.append("createdByUserId", currentUser.id || "");
+        formData.append("createdByUserName", currentUser.username || currentUser.name || "User");
+        formData.append("createdByRole", userRole);
+        const cId = currentUser?.typeId || currentUser?.subcontractor_id || currentUser?.subContId || currentUser?.contractorId;
+        if (cId) formData.append("createdByContractorId", cId);
+
+        await observationService.createObservation(formData);
+        setSubmitted(true);
+        setTimeout(() => navigate("/safety-observations/list"), 1500);
+      }
+    } catch (err) {
+      console.error("Error saving observation:", err);
+      alert(err.response?.data?.message || `Failed to ${isEditMode ? "update" : "create"} safety observation.`);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (isEditMode && isLoadingDetails) {
+    return (
+      <div className="mod-page" style={{ padding: "80px 20px", textAlign: "center" }}>
+        <i className="ti ti-loader ti-spin" style={{ fontSize: "32px", color: "var(--nne-brand-blue, #131E40)" }}></i>
+        <p style={{ marginTop: "12px", color: "var(--text-muted, #64748b)", fontSize: "14px" }}>Loading observation details for editing...</p>
+      </div>
+    );
+  }
+
+  if (isEditMode && !isDeptOrAdmin) {
+    return (
+      <div className="mod-page" style={{ padding: "80px 20px", textAlign: "center" }}>
+        <div style={{ color: "#E32B50", fontSize: "40px", marginBottom: "12px" }}>
+          <i className="ti ti-alert-triangle"></i>
+        </div>
+        <h2 style={{ margin: "0 0 8px", color: "var(--text-main)" }}>Access Restricted</h2>
+        <p style={{ color: "var(--text-muted)", marginBottom: "20px" }}>Only Department and Admin users have permission to edit observation details.</p>
+        <button className="mod-btn-primary" onClick={() => navigate(`/safety-observations/details/${id}`)}>
+          Return to Observation
+        </button>
+      </div>
+    );
+  }
+
+  const currentFormStatus = String(form.status || "").toUpperCase();
+  if (isEditMode && (currentFormStatus === "CLOSED" || currentFormStatus === "ESCALATED")) {
+    return (
+      <div className="mod-page" style={{ padding: "80px 20px", textAlign: "center" }}>
+        <div style={{ color: "#F59E0B", fontSize: "40px", marginBottom: "12px" }}>
+          <i className="ti ti-lock"></i>
+        </div>
+        <h2 style={{ margin: "0 0 8px", color: "var(--text-main)" }}>Observation Locked</h2>
+        <p style={{ color: "var(--text-muted)", marginBottom: "20px" }}>
+          This observation is currently {currentFormStatus} and cannot be edited.
+        </p>
+        <button className="mod-btn-primary" onClick={() => navigate(`/safety-observations/details/${id}`)}>
+          Return to Observation
+        </button>
+      </div>
+    );
+  }
+
+  if (submitted) {
+    return (
+      <div className="mod-page">
+        <div className="mod-card" style={{ maxWidth: 480, margin: "60px auto", textAlign: "center", padding: "48px 32px" }}>
+          <div
+            style={{
+              width: 64,
+              height: 64,
+              borderRadius: "50%",
+              background: "var(--color-safe-bg)",
+              color: "var(--color-safe)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "0 auto 24px",
+            }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" width="32" height="32">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </div>
+          <h2 style={{ margin: "0 0 12px", color: "var(--text-main)" }}>
+            {isEditMode ? "Observation Details Updated" : "Observation Submitted"}
+          </h2>
+          <p style={{ margin: 0, color: "var(--text-muted)" }}>
+            {isEditMode ? "Redirecting to observation record..." : "Redirecting to observations list..."}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const isNeedsAttention = form.observationType === "NEEDS_ATTENTION";
+
+  return (
+    <div className="mod-page">
+      <PageHeader
+        title={isEditMode ? `Edit Safety Observation - ${form.observationNumber || id}` : "New Safety Observation"}
+        breadcrumb={[
+          { label: "Safety Observations", link: "/safety-observations/list" },
+          ...(isEditMode
+            ? [
+                { label: form.observationNumber || `SO-${id}`, link: `/safety-observations/details/${id}` },
+                { label: "Edit Details" },
+              ]
+            : [{ label: "New Observation" }]),
+        ]}
+      />
+
+      <div className="mod-card">
+        <form onSubmit={handleSubmit} className="mod-card-body" style={{ padding: 32 }}>
+          {/* Observation Type Switcher */}
+          <div className="fsec">
+            <div className="fsec-title" style={{ fontSize: 13, borderBottom: "none", marginBottom: 12 }}>
+              Observation Type <span style={{ color: "#E32B50" }}>*</span>
+            </div>
+            {errors.observationType && <div style={{ color: "var(--color-risk)", fontSize: "12px", marginTop: "-8px", marginBottom: "8px" }}>{errors.observationType}</div>}
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
+            <button
+              type="button"
+              onClick={() => setForm({ ...form, observationType: "POSITIVE", natureOfFinding: "GOOD_PRACTICE" })}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+                padding: 16,
+                border: `2px solid ${form.observationType === "POSITIVE" ? "#7BBE97" : "var(--border-color)"}`,
+                borderRadius: 9,
+                background: form.observationType === "POSITIVE" ? "rgba(123,190,151,0.12)" : "var(--bg-card)",
+                color: form.observationType === "POSITIVE" ? "#2D7A4F" : "var(--text-main)",
+                cursor: "pointer",
+                fontSize: 14,
+                fontWeight: 600,
+              }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+                <path d="m9 12 2 2 4-4" />
+              </svg>
+              Positive Observation
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setForm({ ...form, observationType: "NEEDS_ATTENTION", natureOfFinding: "UNSAFE_CONDITION" })}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+                padding: 16,
+                border: `2px solid ${form.observationType === "NEEDS_ATTENTION" ? "#E32B50" : "var(--border-color)"}`,
+                borderRadius: 9,
+                background: form.observationType === "NEEDS_ATTENTION" ? "rgba(227,43,80,0.10)" : "var(--bg-card)",
+                color: form.observationType === "NEEDS_ATTENTION" ? "#E32B50" : "var(--text-main)",
+                cursor: "pointer",
+                fontSize: 14,
+                fontWeight: 600,
+              }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+                <path d="M12 9v4" />
+                <path d="M12 17h.01" />
+              </svg>
+              Needs Attention
+            </button>
+          </div>
+
+          {isNeedsAttention && (
+            <div className="mod-form-group" style={{ marginBottom: 24 }}>
+              <label className="mod-form-label">Nature of finding</label>
+              <select className="mod-form-select" name="natureOfFinding" value={form.natureOfFinding} onChange={handleChange}>
+                <option value="UNSAFE_ACT">Unsafe Act (behaviour)</option>
+                <option value="UNSAFE_CONDITION">Unsafe Condition (environment)</option>
+              </select>
+            </div>
+          )}
+
+          <div className="fsec">
+            <div className="fsec-title" style={{ fontSize: 13, borderBottom: "none", marginBottom: 12 }}>
+              General Information
+            </div>
+          </div>
+
+          {/* Date & Time of Observation */}
+          <div className="grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
+            <div className="mod-form-group">
+              <label className="mod-form-label">
+                Observation Date <span style={{ color: "#E32B50" }}>*</span>
+              </label>
+              <input
+                type="date"
+                className={`mod-form-input ${errors.date ? "error" : ""}`}
+                name="date"
+                value={form.date}
+                onChange={handleChange}
+              />
+              {errors.date && <div className="mod-form-error">{errors.date}</div>}
+            </div>
+
+            <div className="mod-form-group">
+              <label className="mod-form-label">
+                Observation Time <span style={{ color: "#E32B50" }}>*</span>
+              </label>
+              <input
+                type="text"
+                readOnly
+                className={`mod-form-input ${errors.time ? "error" : ""}`}
+                name="time"
+                value={form.time}
+                onClick={() => { setTempTime(form.time || "12:00"); setShowTimePicker(true); }}
+                placeholder="--:-- --"
+                style={{ cursor: "pointer" }}
+              />
+              {errors.time && <div className="mod-form-error">{errors.time}</div>}
+            </div>
+          </div>
+
+          {/* Subject */}
+          <div className="mod-form-group">
+            <label className="mod-form-label">
+              Subject <span style={{ color: "#E32B50" }}>*</span>
+            </label>
+            <input
+              className={`mod-form-input ${errors.subject ? "error" : ""}`}
+              name="subject"
+              value={form.subject}
+              onChange={handleChange}
+              placeholder="Brief title / subject of observation"
+            />
+            {errors.subject && <div className="mod-form-error">{errors.subject}</div>}
+          </div>
+
+          {/* Category & Cascading Subcategory */}
+          <div className="grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            <div className="mod-form-group">
+              <label className="mod-form-label">
+                Safety Category <span style={{ color: "#E32B50" }}>*</span>
+              </label>
+              <select
+                className={`mod-form-select ${errors.safetyCategory ? "error" : ""}`}
+                name="safetyCategory"
+                value={form.safetyCategory}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setForm((prev) => ({
+                    ...prev,
+                    safetyCategory: val,
+                    subcategory: "",
+                    customSubcategory: "",
+                  }));
+                  if (errors.safetyCategory || errors.subcategory || errors.customSubcategory) {
+                    setErrors((prev) => ({ ...prev, safetyCategory: null, subcategory: null, customSubcategory: null }));
+                  }
+                }}
+              >
+                <option value="">-- Select category --</option>
+                {SAFETY_CATEGORIES.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+              {errors.safetyCategory && <div className="mod-form-error">{errors.safetyCategory}</div>}
+            </div>
+
+            {isNeedsAttention && (
+              <div className="mod-form-group">
+                <label className="mod-form-label">
+                  Observation Subcategory <span style={{ color: "#E32B50" }}>*</span>
+                </label>
+                <select
+                  className={`mod-form-select ${errors.subcategory ? "error" : ""}`}
+                  name="subcategory"
+                  value={form.subcategory}
+                  disabled={!form.safetyCategory || availableSubcategories.length === 0}
+                  onChange={handleChange}
+                >
+                  <option value="">-- Select subcategory --</option>
+                  {availableSubcategories.map((sub) => (
+                    <option key={sub} value={sub}>
+                      {sub}
+                    </option>
+                  ))}
+                </select>
+                {errors.subcategory && <div className="mod-form-error">{errors.subcategory}</div>}
+              </div>
+            )}
+          </div>
+
+          {(form.subcategory === "Please Fill" || form.safetyCategory === "Other") && (
+            <div className="mod-form-group" style={{ marginTop: 8 }}>
+              <label className="mod-form-label">
+                Specify Other Detail <span style={{ color: "#E32B50" }}>*</span>
+              </label>
+              <input
+                className={`mod-form-input ${errors.customSubcategory ? "error" : ""}`}
+                name="customSubcategory"
+                value={form.customSubcategory}
+                onChange={handleChange}
+                placeholder="Please describe the other category / subcategory..."
+              />
+              {errors.customSubcategory && <div className="mod-form-error">{errors.customSubcategory}</div>}
+            </div>
+          )}
+
+          {/* Risk Level & Project Name */}
+          <div className="grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            <div className="mod-form-group">
+              <label className="mod-form-label">Risk level</label>
+              <select className="mod-form-select" name="riskLevel" value={form.riskLevel} onChange={handleChange}>
+                <option value="LOW">Low</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="HIGH">High</option>
+                <option value="CRITICAL">Critical</option>
+              </select>
+            </div>
+
+            <div className="mod-form-group">
+              <label className="mod-form-label">Project Name</label>
+              <input
+                className="mod-form-input"
+                name="projectName"
+                value={defaultProjectName}
+                readOnly
+                disabled
+                style={{ backgroundColor: "rgba(255,255,255,0.06)", cursor: "not-allowed", opacity: 0.7, fontWeight: 600 }}
+              />
+            </div>
+          </div>
+
+          {/* Contractor Selection */}
+          <div className="mod-form-group">
+            <label className="mod-form-label">Assign to Contractor</label>
+            <select
+              className="mod-form-select"
+              name="assignedContractorId"
+              value={form.assignedContractorId}
+              onChange={handleChange}
+              disabled={isContractor}
+              style={isContractor ? { backgroundColor: "rgba(255,255,255,0.06)", cursor: "not-allowed", opacity: 0.7, fontWeight: 600 } : {}}
+            >
+              <option value="">-- Select Contractor --</option>
+              {contractorsList.map((c) => {
+                const contractorName = c.subContractorName || c.company_name || c.contractor_name || c.subcontractor_name || c.name || `Contractor #${c.id}`;
+                return (
+                  <option key={c.id} value={c.id}>
+                    {contractorName}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+
+          {/* Description */}
+          <div className="mod-form-group">
+            <label className="mod-form-label">
+              Description <span style={{ color: "#E32B50" }}>*</span>
+            </label>
+            <textarea
+              className={`mod-form-textarea ${errors.description ? "error" : ""}`}
+              rows="4"
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+              placeholder="Detailed description of what was observed..."
+            ></textarea>
+            {errors.description && <div className="mod-form-error">{errors.description}</div>}
+          </div>
+
+          {/* ---------------- Exact Location Flow matching Incident Management Heads-Up Form ---------------- */}
+          <div className="fsec" style={{ marginTop: 24 }}>
+            <div className="fsec-title" style={{ fontSize: 13, borderBottom: "none", marginBottom: 12 }}>
+              Location Details (Incident Management Flow)
+            </div>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            {/* Location/Building Select */}
+            <div className="mod-form-group">
+              <label className="mod-form-label">
+                Location/Building <span style={{ color: "#DC2626" }}>*</span>
+              </label>
+              <select
+                className="mod-form-select"
+                value={building}
+                onChange={(e) => {
+                  setBuilding(e.target.value);
+                  setLevel("");
+                  setSelectedRooms([]);
+                  setSelectedZone(null);
+                  setForm((prev) => ({ ...prev, buildingId: e.target.value, floorLevel: "", specificLocation: "" }));
+                  if (errors.building) setErrors((prev) => ({ ...prev, building: null }));
+                }}
+              >
+                <option value="">Select Building</option>
+                {buildingsList.map((item) => (
+                  <option key={item.build_id || item.id} value={item.build_id || item.id}>
+                    {item.building_name || item.name}
+                  </option>
+                ))}
+              </select>
+              {errors.building && <span style={{ fontSize: "0.75rem", color: "#DC2626" }}>{errors.building}</span>}
+            </div>
+
+            {/* Floor/Level Select */}
+            <div className="mod-form-group">
+              <label className="mod-form-label">Floor/Level</label>
+              <select
+                className="mod-form-select"
+                value={level}
+                disabled={!building}
+                onChange={(e) => {
+                  setLevel(e.target.value);
+                  setSelectedRooms([]);
+                  setSelectedZone(null);
+                  setForm((prev) => ({ ...prev, floorLevel: e.target.value }));
+                }}
+              >
+                <option value="">Select Level</option>
+                {levels.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Interactive Floor PDF Drawing Canvas */}
+          <div className="mod-form-group full-width" style={{ marginTop: 12 }}>
+            {selectedPdf && (
+              <div style={{ position: "relative", marginTop: "16px", border: "1px solid var(--border-color)", borderRadius: "8px", overflow: "hidden", minHeight: "400px" }}>
+                <FloorDrawing
+                  pdf={selectedPdf}
+                  zones={selectedZones}
+                  level={level}
+                  selectedRooms={selectedRooms}
+                  onRoomsSelected={handleRoomsSelected}
+                  roomStatusMap={{}}
+                />
+              </div>
+            )}
+
+            <label className="mod-form-label" style={{ marginTop: "16px" }}>
+              Specific location / Rooms <span style={{ color: "#E32B50" }}>*</span>
+            </label>
+            <input
+              name="specificLocation"
+              type="text"
+              className={`mod-form-input ${errors.specificLocation ? "error" : ""}`}
+              value={form.specificLocation}
+              onChange={handleChange}
+              placeholder="e.g. Room 204, Grid B4 (Auto-filled from drawing or enter manually)"
+            />
+            {errors.specificLocation && <div className="mod-form-error">{errors.specificLocation}</div>}
+          </div>
+
+          {/* Attachments & Photo File Uploads via Multer */}
+          <div className="fsec" style={{ marginTop: 24 }}>
+            <div className="fsec-title" style={{ fontSize: 13, borderBottom: "none", marginBottom: 12 }}>
+              Attachments & Photos (Multer Upload)
+            </div>
+          </div>
+
+          <div className="mod-form-group">
+            <div style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                style={{
+                  flex: 1,
+                  padding: 16,
+                  border: "1.5px dashed var(--border-color)",
+                  borderRadius: 9,
+                  background: "var(--bg-card)",
+                  cursor: "pointer",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
+                }}
+              >
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="17 8 12 3 7 8" />
+                  <line x1="12" x2="12" y1="3" y2="15" />
+                </svg>
+                <div style={{ fontSize: 13 }}>Click to select photo files</div>
+                <div style={{ fontSize: 11, color: "var(--text-muted)" }}>JPG, PNG, WEBP, PDF up to 20MB</div>
+              </div>
+
+              <button
+                type="button"
+                onClick={startCamera}
+                style={{
+                  flex: "0 0 auto",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 6,
+                  padding: "0 22px",
+                  border: "1.5px dashed var(--border-color)",
+                  borderRadius: 9,
+                  background: "var(--bg-card)",
+                  cursor: "pointer",
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: "var(--nne-brand-blue)",
+                }}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+                  <circle cx="12" cy="13" r="3" />
+                </svg>
+                Take Photo
+              </button>
+            </div>
+
+            <input type="file" ref={fileInputRef} multiple accept="image/*,.pdf" style={{ display: "none" }} onChange={handleFileSelect} />
+
+            {isCameraActive && (
+              <div style={{ marginTop: 12 }}>
+                <div style={{ width: "100%", maxWidth: 480, height: 280, background: "#000", borderRadius: 8, overflow: "hidden", position: "relative" }}>
+                  <video ref={videoRef} autoPlay playsInline style={{ width: "100%", height: "100%", objectFit: "cover" }}></video>
+                </div>
+                <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                  <button type="button" className="mod-btn-primary" style={{ padding: "4px 12px", fontSize: 13 }} onClick={capturePhoto}>
+                    Capture
+                  </button>
+                  <button type="button" className="mod-btn-outline" style={{ padding: "4px 12px", fontSize: 13 }} onClick={stopCamera}>
+                    Stop Camera
+                  </button>
+                </div>
+              </div>
+            )}
+            <canvas ref={canvasRef} style={{ display: "none" }}></canvas>
+
+            {/* Existing Photos (in Edit Mode) */}
+            {isEditMode && existingPhotos.length > 0 && (
+              <div style={{ marginTop: 14 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-main)", marginBottom: 6 }}>
+                  Current Observation Photos ({existingPhotos.length}):
+                </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {existingPhotos.map((photo, idx) => {
+                    const filename = String(photo).split("/").pop().split("\\").pop();
+                    const src = photo.startsWith("http") || photo.startsWith("data:")
+                      ? photo
+                      : `https://api.beam.safesiteworks.com/development/m3south/observations/${filename}`;
+                    return (
+                      <div key={idx} style={{ position: "relative", width: 72, height: 72, borderRadius: 7, overflow: "hidden", border: "1px solid var(--border-color)" }}>
+                        <img src={src} alt="Existing Observation" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        <button
+                          type="button"
+                          onClick={() => setExistingPhotos((prev) => prev.filter((_, i) => i !== idx))}
+                          title="Remove this photo"
+                          style={{
+                            position: "absolute",
+                            top: 2,
+                            right: 2,
+                            width: 18,
+                            height: 18,
+                            borderRadius: "50%",
+                            border: "none",
+                            background: "rgba(227, 43, 80, 0.9)",
+                            color: "#fff",
+                            fontSize: 12,
+                            lineHeight: 1,
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          &times;
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* New Photos Selected */}
+            {photoPreviews.length > 0 && (
+              <div style={{ marginTop: 14 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-main)", marginBottom: 6 }}>
+                  {isEditMode ? `New Photos To Add (${photoPreviews.length}):` : `Selected Photos (${photoPreviews.length}):`}
+                </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {photoPreviews.map((src, idx) => (
+                    <div key={idx} style={{ position: "relative", width: 72, height: 72, borderRadius: 7, overflow: "hidden", border: "1px solid var(--border-color)" }}>
+                      <img src={src} alt="New upload" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                      <button
+                        type="button"
+                        onClick={() => removePhoto(idx)}
+                        title="Remove photo"
+                        style={{
+                          position: "absolute",
+                          top: 2,
+                          right: 2,
+                          width: 18,
+                          height: 18,
+                          borderRadius: "50%",
+                          border: "none",
+                          background: "rgba(0,0,0,0.6)",
+                          color: "#fff",
+                          fontSize: 12,
+                          lineHeight: 1,
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        &times;
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Form Actions */}
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: 12, marginTop: 32, paddingTop: 24, borderTop: "1px solid var(--border-color)" }}>
+            <button
+              type="button"
+              className="mod-btn-outline"
+              onClick={() => navigate(isEditMode ? `/safety-observations/details/${id}` : "/safety-observations/list")}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="mod-btn-primary"
+              disabled={submitting}
+              style={{ background: "#131E40", borderColor: "#131E40", color: "#fff" }}
+            >
+              {submitting
+                ? isEditMode
+                  ? "Saving Changes..."
+                  : "Submitting..."
+                : isEditMode
+                ? "Save Changes"
+                : "Submit Observation"}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {showTimePicker && (
+        <AnalogTimePicker
+          initialTime={tempTime}
+          onSave={(timeVal) => {
+            setForm(prev => ({ ...prev, time: timeVal }));
+            setShowTimePicker(false);
+          }}
+          onCancel={() => setShowTimePicker(false)}
+        />
+      )}
+    </div>
+  );
+}
+
+export default SOCreate;

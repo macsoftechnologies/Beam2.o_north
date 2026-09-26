@@ -1,0 +1,872 @@
+import React, { useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import { observationService } from "../../../services/observationService";
+import { getContractors, getBuildings } from "../../../services/authService";
+import { SAFETY_CATEGORIES } from "../data/observations";
+import "../../../styles/module-shared.css";
+
+const BarChartIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary, #3B82F6)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="12" x2="12" y1="20" y2="10" />
+    <line x1="18" x2="18" y1="20" y2="4" />
+    <line x1="6" x2="6" y1="20" y2="16" />
+  </svg>
+);
+const ShieldIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2D7A4F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+    <path d="m9 12 2 2 4-4" />
+  </svg>
+);
+const AlertIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E32B50" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+    <path d="M12 9v4" />
+    <path d="M12 17h.01" />
+  </svg>
+);
+const CalIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C07D10" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect width="18" height="18" x="3" y="4" rx="2" />
+    <path d="M16 2v4M8 2v4M3 10h18" />
+  </svg>
+);
+
+const getLogoUrl = (logoVal) => {
+  if (!logoVal) return null;
+  if (logoVal.startsWith("data:") || logoVal.startsWith("http://") || logoVal.startsWith("https://")) return logoVal;
+  const baseUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/+$/, "");
+  return `${baseUrl}/subcontractors/${logoVal}`;
+};
+
+const findContractorLogo = (contractorName, contractorsList = []) => {
+  if (!contractorName || contractorName === 'Unassigned' || contractorName === '—') return null;
+  const match = (contractorsList || []).find(c => {
+    const cName = c.company_name || c.companyName || c.subContractorName || c.subcontractor_name || c.name || '';
+    return cName.toLowerCase().trim() === String(contractorName).toLowerCase().trim() ||
+           cName.toLowerCase().includes(String(contractorName).toLowerCase().trim()) ||
+           String(contractorName).toLowerCase().includes(cName.toLowerCase().trim());
+  });
+  return match?.logo || match?.logo_url || match?.company_logo || match?.logoFile || null;
+};
+
+const ContractorLogo = ({ logoVal, name, size = 24 }) => {
+  const [hasError, setHasError] = useState(false);
+
+  const getInitials = (n) => {
+    if (!n) return "??";
+    let cleanName = String(n).replace(/&\w+;/g, "").replace(/#\s*\w+;/g, "");
+    cleanName = cleanName.replace(/[^a-zA-Z0-9\s]/g, "").trim();
+    const words = cleanName.split(/\s+/).filter(w => w.length > 0);
+    if (words.length === 0) return "??";
+    if (words.length === 1) return words[0].substring(0, 2).toUpperCase();
+    return (words[0][0] + (words[1] ? words[1][0] : "")).toUpperCase();
+  };
+
+  const getColor = (n) => {
+    if (!n) return "#3B82F6";
+    const colors = ["#3B82F6", "#10B981", "#F59E0B", "#8B5CF6", "#EC4899", "#6366F1", "#06B6D4", "#14B8A6"];
+    let hash = 0;
+    for (let i = 0; i < n.length; i++) {
+      hash = n.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return colors[Math.abs(hash) % colors.length];
+  };
+
+  const logoUrl = getLogoUrl(logoVal);
+
+  if (logoUrl && !hasError) {
+    return (
+      <img
+        src={logoUrl}
+        alt={`${name} logo`}
+        style={{
+          width: `${size}px`,
+          height: `${size}px`,
+          objectFit: "contain",
+          borderRadius: "50%",
+          flexShrink: 0,
+          background: "#ffffff",
+          border: "1px solid var(--border-color, #E5E7EB)",
+          padding: "1px"
+        }}
+        onError={() => setHasError(true)}
+      />
+    );
+  }
+
+  const bgCol = getColor(name);
+  return (
+    <div
+      style={{
+        width: `${size}px`,
+        height: `${size}px`,
+        borderRadius: "50%",
+        backgroundColor: bgCol,
+        color: "#FFFFFF",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontWeight: "700",
+        fontSize: `${Math.max(9, Math.floor(size * 0.42))}px`,
+        flexShrink: 0,
+        letterSpacing: "0.5px"
+      }}
+      title={name}
+    >
+      {getInitials(name)}
+    </div>
+  );
+};
+
+function SOList() {
+  const navigate = useNavigate();
+  const [observations, setObservations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState("");
+  const [filterCategory, setFilterCategory] = useState("");
+  const [filterContractor, setFilterContractor] = useState("");
+  const [filterLocation, setFilterLocation] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
+
+  const [buildingsList, setBuildingsList] = useState([]);
+  const [contractorsList, setContractorsList] = useState([]);
+
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const rawRole = (localStorage.getItem("UserType") || user?.role || user?.userType || user?.user_type || "").toUpperCase();
+  const userRolesArr = Array.isArray(user?.userTypes) ? user.userTypes.map((t) => String(t).toUpperCase()) : [];
+  const allRoles = [rawRole, ...userRolesArr].join(" ");
+  const isContractor = allRoles.includes("CONTRACTOR") || allRoles.includes("SUBCONTRACTOR") || Boolean(user?.subcontractor_id) || Boolean(user?.typeId && allRoles.includes("SUBCONTRACTOR"));
+  const isObserver = allRoles.includes("OBSERVER");
+  const isAdmin = allRoles.includes("ADMIN") || allRoles.includes("SUPERADMIN") || Boolean(user?.isSuperAdmin) || (Array.isArray(user?.userTypes) && user.userTypes.some(t => String(t).toUpperCase().includes("ADMIN")));
+  const isDepartment = allRoles.includes("DEPARTMENT") || allRoles.includes("OPERATOR") || allRoles.includes("SITE_HSE") || allRoles.includes("SAFETY") || allRoles.includes("HSE");
+  const isDeptOrAdmin = (isAdmin || isDepartment) && !isContractor && !isObserver;
+  const isReadOnly = isObserver;
+  const contractorId = user?.typeId || user?.subcontractor_id || user?.subContId || user?.contractorId;
+
+  const [deletingObs, setDeletingObs] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [downloadingObsId, setDownloadingObsId] = useState(null);
+
+  const handleDownloadPdf = async (e, obsItem) => {
+    e.stopPropagation();
+    try {
+      setDownloadingObsId(obsItem.id);
+      const fileName = `${obsItem.observationNumber || `SO-${obsItem.id}`}_Safety_Observation.pdf`;
+      await observationService.downloadObservationPdf(obsItem.id, fileName, obsItem);
+    } catch (err) {
+      console.error("Failed to download observation PDF:", err);
+      alert("Failed to download Observation PDF.");
+    } finally {
+      setDownloadingObsId(null);
+    }
+  };
+
+  const handleDeleteObservation = async () => {
+    if (!deletingObs) return;
+    try {
+      setIsDeleting(true);
+      await observationService.deleteObservation(deletingObs.id, {
+        userId: user?.id,
+        userRole: rawRole,
+      });
+      setObservations((prev) => prev.filter((o) => o.id !== deletingObs.id));
+      setTotalCount((prev) => Math.max(0, prev - 1));
+      setOverallStats((prev) => {
+        const newTotal = Math.max(0, prev.total - 1);
+        const newPos = deletingObs.observationType === "POSITIVE" ? Math.max(0, prev.positive - 1) : prev.positive;
+        const newNeeds = deletingObs.observationType === "NEEDS_ATTENTION" ? Math.max(0, prev.needsAttention - 1) : prev.needsAttention;
+        const newActive = (deletingObs.status === "ASSIGNED" || deletingObs.status === "ACCEPTED") ? Math.max(0, prev.activeAssigned - 1) : prev.activeAssigned;
+        return {
+          total: newTotal,
+          positive: newPos,
+          needsAttention: newNeeds,
+          activeAssigned: newActive,
+          positiveRatio: (newPos + newNeeds) > 0 ? Math.round((newPos / (newPos + newNeeds)) * 100) : 0,
+        };
+      });
+      setDeletingObs(null);
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to delete observation.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const myContractor = useMemo(() => {
+    if (!isContractor) return null;
+    return (
+      contractorsList.find(c => 
+        String(c.id) === String(contractorId) || 
+        String(c.subcontractor_id) === String(contractorId) ||
+        (user?.username && c.username === user.username) ||
+        (user?.company_name && (c.subContractorName === user.company_name || c.company_name === user.company_name)) ||
+        (user?.companyName && (c.subContractorName === user.companyName || c.company_name === user.companyName))
+      ) || (contractorsList.length === 1 ? contractorsList[0] : null)
+    );
+  }, [isContractor, contractorsList, contractorId, user?.company_name, user?.companyName, user?.username]);
+
+  const myContractorName = user?.company_name || user?.companyName || user?.subContractorName || user?.contractorName || myContractor?.subContractorName || myContractor?.company_name || myContractor?.companyName || myContractor?.subcontractor_name || myContractor?.name || "";
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+
+  // Overall Statistics State (across the entire dataset, not just the paginated slice)
+  const [overallStats, setOverallStats] = useState({
+    total: 0,
+    positive: 0,
+    needsAttention: 0,
+    positiveRatio: 0,
+    activeAssigned: 0,
+  });
+
+  const fetchOverallStats = async () => {
+    try {
+      const statsParams = {};
+      if (isContractor) {
+        statsParams.userRole = "CONTRACTOR";
+        if (contractorId) statsParams.contractorId = contractorId;
+        if (myContractorName) statsParams.contractor = myContractorName;
+      }
+      if (filterContractor) statsParams.contractor = filterContractor;
+      if (filterLocation) statsParams.building = filterLocation;
+      const s = await observationService.getObservationStats(statsParams);
+      if (s) {
+        const total = s.total || 0;
+        const positive = s.safe || 0;
+        const needsAttention = s.unsafe || 0;
+        const positiveRatio = s.positiveRatio !== undefined ? s.positiveRatio : ((positive + needsAttention) > 0 ? Math.round((positive / (positive + needsAttention)) * 100) : 0);
+        const activeAssigned = s.activeAssigned !== undefined ? s.activeAssigned : 0;
+        setOverallStats({
+          total,
+          positive,
+          needsAttention,
+          positiveRatio,
+          activeAssigned,
+        });
+      }
+    } catch (e) {
+      console.warn("Could not load overall stats:", e);
+    }
+  };
+
+  // Fetch Master Selector Data (Buildings & Contractors API)
+  useEffect(() => {
+    const fetchMasterData = async () => {
+      try {
+        const [bRes, cRes] = await Promise.all([
+          getBuildings(1, 1000),
+          getContractors(1, 1000),
+        ]);
+        const rawB = bRes?.data?.rows || bRes?.data || bRes || [];
+        setBuildingsList(Array.isArray(rawB) ? rawB : []);
+
+        const rawC = cRes?.data?.rows || cRes?.data || cRes?.subContractors || cRes || [];
+        setContractorsList(Array.isArray(rawC) ? rawC : []);
+      } catch (err) {
+        console.error("Failed to load buildings & contractors master data in SOList:", err);
+      }
+    };
+    fetchMasterData();
+  }, []);
+
+  const fetchObservations = async () => {
+    try {
+      setLoading(true);
+      const params = {
+        page: currentPage,
+        limit: pageSize,
+      };
+      if (isContractor) {
+        params.userRole = "CONTRACTOR";
+        if (contractorId) params.contractorId = contractorId;
+        if (myContractorName) params.contractor = myContractorName;
+      }
+      if (filterStatus) params.status = filterStatus;
+      if (filterType) params.type = filterType;
+      if (filterCategory) params.category = filterCategory;
+      if (filterContractor) params.contractor = filterContractor;
+      if (filterLocation) params.building = filterLocation;
+      if (searchTerm) params.search = searchTerm;
+
+      const res = await observationService.getObservations(params);
+      if (res && res.data && Array.isArray(res.data)) {
+        setObservations(res.data);
+        setTotalCount(res.total || res.data.length);
+        setTotalPages(res.totalPages || 1);
+        if (res.stats) {
+          setOverallStats(res.stats);
+        } else {
+          fetchOverallStats();
+        }
+      } else if (Array.isArray(res)) {
+        setObservations(res);
+        setTotalCount(res.length);
+        setTotalPages(1);
+        const pos = res.filter((o) => o.observationType === "POSITIVE").length;
+        const needs = res.filter((o) => o.observationType === "NEEDS_ATTENTION").length;
+        const ratio = (pos + needs) > 0 ? Math.round((pos / (pos + needs)) * 100) : 0;
+        const active = res.filter((o) => o.status === "ASSIGNED" || o.status === "ACCEPTED").length;
+        setOverallStats({
+          total: res.length,
+          positive: pos,
+          needsAttention: needs,
+          positiveRatio: ratio,
+          activeAssigned: active,
+        });
+      } else {
+        setObservations([]);
+        setTotalCount(0);
+        setTotalPages(1);
+        setOverallStats({ total: 0, positive: 0, needsAttention: 0, positiveRatio: 0, activeAssigned: 0 });
+      }
+    } catch (err) {
+      console.error("Failed to load observations:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchObservations();
+  }, [currentPage, pageSize, filterStatus, filterType, filterCategory, filterContractor, filterLocation, searchTerm, isContractor, contractorId, myContractorName]);
+
+  const displayedObservations = observations;
+
+  const uniqueContractors = useMemo(() => {
+    if (isContractor && myContractorName) return [myContractorName];
+    const apiNames = contractorsList
+      .map((c) => c.company_name || c.companyName || c.subContractorName || c.subcontractor_name || c.name || (typeof c === "string" ? c : ""))
+      .filter(Boolean);
+    const obsNames = observations.map((o) => o.assignedContractorName).filter(Boolean);
+    return Array.from(new Set([...apiNames, ...obsNames])).sort();
+  }, [contractorsList, observations, isContractor, myContractorName]);
+
+  const uniqueLocations = useMemo(() => {
+    const apiNames = buildingsList
+      .map((b) => b.name || b.buildingName || b.building_name || (typeof b === "string" ? b : ""))
+      .filter(Boolean);
+    const obsNames = observations.map((o) => o.buildingName).filter(Boolean);
+    return Array.from(new Set([...apiNames, ...obsNames])).sort();
+  }, [buildingsList, observations]);
+
+
+  return (
+    <div className="mod-page">
+      {/* ── Breadcrumbs ── */}
+      <div style={{ marginBottom: "12px", color: "var(--text-muted)", fontSize: "0.75rem", fontWeight: 600, display: 'flex', gap: '6px', alignItems: 'center' }}>
+         <span style={{ cursor: 'pointer' }} onClick={() => navigate("/")}>Home</span> &rsaquo; 
+         <span style={{ cursor: 'pointer' }} onClick={() => navigate("/safety-observations/dashboard")}>Safety Observations</span> &rsaquo; 
+         <span style={{ color: 'var(--text-main)' }}>List</span>
+      </div>
+
+      {/* ── Hero ── */}
+      <div style={{ 
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        background: 'var(--bg-card)', borderRadius: '8px', padding: '12px 16px',
+        border: '1px solid var(--border-color)', boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
+        marginBottom: '20px'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ 
+            width: '36px', height: '36px', borderRadius: '8px', background: 'rgba(59, 130, 246, 0.1)',
+            color: '#3B82F6', display: 'flex', alignItems: 'center', justifyContent: 'center' 
+          }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+              <path d="M12 11h4" />
+              <path d="M12 16h4" />
+              <path d="M8 11h.01" />
+              <path d="M8 16h.01" />
+            </svg>
+          </div>
+          <div>
+            <h1 style={{ margin: '0 0 2px 0', fontSize: '1rem', fontWeight: 700, color: 'var(--text-main)' }}>Safety Observations</h1>
+            <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-muted)' }}>Track and manage safety observations across the site</p>
+          </div>
+        </div>
+        <div>
+          {!isReadOnly && (
+            <button type="button" className="mod-btn-primary" onClick={() => navigate("/safety-observations/create")}>
+              + New Observation
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Live Summary KPIs */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 14, marginBottom: 20 }}>
+        <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-color)", borderRadius: 10, padding: "15px 16px", position: "relative" }}>
+          <div style={{ position: "absolute", top: 14, right: 14, opacity: 0.85 }}>
+            <BarChartIcon />
+          </div>
+          <div style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", color: "var(--text-muted)" }}>Total</div>
+          <div style={{ fontSize: 27, fontWeight: 700, marginTop: 6, color: "var(--accent-primary, #3B82F6)" }}>
+            {overallStats.total !== undefined ? overallStats.total : totalCount}
+          </div>
+        </div>
+
+        <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-color)", borderRadius: 10, padding: "15px 16px", position: "relative" }}>
+          <div style={{ position: "absolute", top: 14, right: 14, opacity: 0.85 }}>
+            <ShieldIcon />
+          </div>
+          <div style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", color: "var(--text-muted)" }}>Positive</div>
+          <div style={{ fontSize: 27, fontWeight: 700, marginTop: 6, color: "#2D7A4F" }}>{overallStats.positive}</div>
+        </div>
+
+        <div style={{ background: "var(--bg-card)", border: "1px solid #E32B50", boxShadow: "0 0 0 1px rgba(227,43,80,0.35)", borderRadius: 10, padding: "15px 16px", position: "relative" }}>
+          <div style={{ position: "absolute", top: 14, right: 14, opacity: 0.85 }}>
+            <AlertIcon />
+          </div>
+          <div style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", color: "var(--text-muted)" }}>Needs Attention</div>
+          <div style={{ fontSize: 27, fontWeight: 700, marginTop: 6, color: "#E32B50" }}>{overallStats.needsAttention}</div>
+        </div>
+
+        <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-color)", borderRadius: 10, padding: "15px 16px", position: "relative" }}>
+          <div style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", color: "var(--text-muted)" }}>Positive Ratio</div>
+          <div style={{ fontSize: 27, fontWeight: 700, marginTop: 6, color: "#C07D10" }}>{overallStats.positiveRatio}%</div>
+          <div style={{ height: 7, background: "#eef0f3", borderRadius: 5, marginTop: 9 }}>
+            <div style={{ height: "100%", background: "#C07D10", borderRadius: 5, width: `${overallStats.positiveRatio}%` }}></div>
+          </div>
+        </div>
+
+        <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-color)", borderRadius: 10, padding: "15px 16px", position: "relative" }}>
+          <div style={{ position: "absolute", top: 14, right: 14, opacity: 0.85 }}>
+            <CalIcon />
+          </div>
+          <div style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", color: "var(--text-muted)" }}>Active Assigned</div>
+          <div style={{ fontSize: 27, fontWeight: 700, marginTop: 6, color: "#C07D10" }}>
+            {overallStats.activeAssigned}
+          </div>
+        </div>
+      </div>
+
+      {/* Filter Controls */}
+      <div style={{ display: "flex", gap: 10, marginBottom: 14, flexWrap: "wrap" }}>
+        <input
+          type="text"
+          className="mod-form-input"
+          placeholder="Search number, subject, category..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{ flex: 1, minWidth: 200 }}
+        />
+
+        <select className="mod-form-select" value={filterType} onChange={(e) => setFilterType(e.target.value)} style={{ flex: "1 1 140px" }}>
+          <option value="">All Types</option>
+          <option value="POSITIVE">Positive</option>
+          <option value="NEEDS_ATTENTION">Needs Attention</option>
+        </select>
+
+        <select className="mod-form-select" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} style={{ flex: "1 1 140px" }}>
+          <option value="">All Statuses</option>
+          <option value="OPEN">Open</option>
+          <option value="ASSIGNED">Assigned</option>
+          <option value="ACCEPTED">Accepted</option>
+          <option value="REJECTED">Rejected</option>
+          <option value="RESOLVED">Resolved</option>
+          <option value="CLOSED">Closed</option>
+          <option value="ESCALATED">Escalated</option>
+        </select>
+
+        <select className="mod-form-select" value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)} style={{ flex: "1 1 160px" }}>
+          <option value="">All Categories</option>
+          {SAFETY_CATEGORIES.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+
+        {!isContractor && (
+          <select className="mod-form-select" value={filterContractor} onChange={(e) => setFilterContractor(e.target.value)} style={{ flex: "1 1 140px" }}>
+            <option value="">All Contractors</option>
+            {uniqueContractors.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        )}
+
+        <select className="mod-form-select" value={filterLocation} onChange={(e) => setFilterLocation(e.target.value)} style={{ flex: "1 1 140px" }}>
+          <option value="">All Locations</option>
+          {uniqueLocations.map((l) => (
+            <option key={l} value={l}>
+              {l}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Observations Table */}
+      <div className="mod-card">
+        <div className="mod-table-wrap">
+          {loading ? (
+            <div style={{ padding: 40, textAlign: "center", color: "var(--text-muted)" }}>
+              <i className="ti ti-loader ti-spin" style={{ marginRight: 8, color: "var(--accent-primary, #3b82f6)", fontSize: "20px", verticalAlign: "middle" }}></i> Loading safety observations...
+            </div>
+          ) : displayedObservations.length === 0 ? (
+            <div style={{ padding: 40, textAlign: "center", color: "var(--text-muted)" }}>No observations found.</div>
+          ) : (
+            <table className="mod-table">
+              <thead>
+                <tr>
+                  <th>Ref #</th>
+                  <th>Date</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Contractor</th>
+                  <th>Category</th>
+                  <th>Risk</th>
+                  <th>Location</th>
+                  <th>Subject</th>
+                  <th>Reporter</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {displayedObservations.map((o) => (
+                  <tr key={o.id} onClick={() => navigate(`/safety-observations/details/${o.id}`)} style={{ cursor: "pointer" }}>
+                    <td style={{ fontWeight: 700, fontFamily: "monospace" }}>{o.observationNumber}</td>
+                    <td style={{ whiteSpace: "nowrap" }}>
+                      {o.observationDate || (o.createdTime ? new Date(o.createdTime).toISOString().split("T")[0] : "-")}
+                      {o.observationTime && (
+                        <span style={{ display: "block", fontSize: "11px", color: "var(--text-muted)", marginTop: "2px" }}>
+                          {o.observationTime}
+                        </span>
+                      )}
+                    </td>
+                    <td>
+                      {String(o.observationType || o.type || "").toUpperCase() === "POSITIVE" ? (
+                        <span className="badge badge-green">Positive</span>
+                      ) : (
+                        <span className="badge badge-red">Needs Attention</span>
+                      )}
+                    </td>
+                    <td>
+                      <span
+                        className={`badge ${
+                          (o.status || "").toUpperCase() === "CLOSED"
+                            ? "badge-green"
+                            : (o.status || "").toUpperCase() === "REJECTED" || (o.status || "").toUpperCase() === "ESCALATED"
+                            ? "badge-red"
+                            : (o.status || "").toUpperCase() === "ASSIGNED"
+                            ? "badge-purple"
+                            : (o.status || "").toUpperCase() === "ACCEPTED" || (o.status || "").toUpperCase() === "RESOLVED" || (o.status || "").toUpperCase() === "IN_PROGRESS"
+                            ? "badge-orange"
+                            : "badge-blue"
+                        }`}
+                      >
+                        {o.status || "OPEN"}
+                      </span>
+                    </td>
+                    <td>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <ContractorLogo
+                          logoVal={findContractorLogo(o.assignedContractorName || o.contractor, contractorsList)}
+                          name={o.assignedContractorName || o.contractor || "Unassigned"}
+                          size={24}
+                        />
+                        <span>{o.assignedContractorName || o.contractor || "-"}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div style={{ fontWeight: 500 }}>{o.safetyCategory || "-"}</div>
+                      {o.subcategory && (
+                        <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "2px" }}>
+                          {o.subcategory}
+                        </div>
+                      )}
+                    </td>
+                    <td>
+                      <span
+                        style={{
+                          fontWeight: 700,
+                          color:
+                            o.riskLevel === "HIGH" || o.riskLevel === "CRITICAL"
+                              ? "#E32B50"
+                              : o.riskLevel === "MEDIUM"
+                              ? "#C07D10"
+                              : "#2D7A4F",
+                        }}
+                      >
+                        {o.riskLevel}
+                      </span>
+                    </td>
+                    <td>{o.buildingName || o.specificLocation || "-"}</td>
+                    <td style={{ maxWidth: 200, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={o.description}>
+                      {o.subject}
+                    </td>
+                    <td style={{ whiteSpace: "nowrap" }}>{o.createdByUserName || o.createdByRole}</td>
+                    <td>
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                        <button
+                          className="mod-btn-outline"
+                          style={{
+                            width: "30px",
+                            height: "30px",
+                            padding: 0,
+                            borderRadius: "6px",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            cursor: "pointer",
+                          }}
+                          title="View Observation"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/safety-observations/details/${o.id}`);
+                          }}
+                        >
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                            <circle cx="12" cy="12" r="3" />
+                          </svg>
+                        </button>
+
+                        {/* Edit Observation Record Details (Department & Admin only, not CLOSED or ESCALATED) */}
+                        {isDeptOrAdmin && !isReadOnly && String(o.status || "").toUpperCase() !== "CLOSED" && String(o.status || "").toUpperCase() !== "ESCALATED" && (
+                          <button
+                            className="mod-btn-outline"
+                            style={{
+                              width: "30px",
+                              height: "30px",
+                              padding: 0,
+                              borderRadius: "6px",
+                              display: "inline-flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              cursor: "pointer",
+                              color: "var(--nne-brand-blue, #131E40)",
+                            }}
+                            title="Edit Observation Details"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/safety-observations/edit/${o.id}`);
+                            }}
+                          >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                          </button>
+                        )}
+
+                        {/* Download Observation PDF Option (when status is CLOSED) */}
+                        {o.status === "CLOSED" && (
+                          <button
+                            className="mod-btn-outline"
+                            style={{
+                              width: "30px",
+                              height: "30px",
+                              padding: 0,
+                              borderRadius: "6px",
+                              display: "inline-flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              cursor: "pointer",
+                              color: "#0284c7",
+                              borderColor: "rgba(2, 132, 199, 0.3)",
+                              background: "rgba(2, 132, 199, 0.06)",
+                            }}
+                            title="Download Closed Observation PDF"
+                            onClick={(e) => handleDownloadPdf(e, o)}
+                            disabled={downloadingObsId === o.id}
+                          >
+                            {downloadingObsId === o.id ? (
+                              <i className="ti ti-loader ti-spin" style={{ fontSize: "14px" }}></i>
+                            ) : (
+                              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="7 10 12 15 17 10" />
+                                <line x1="12" y1="15" x2="12" y2="3" />
+                              </svg>
+                            )}
+                          </button>
+                        )}
+
+                        {isAdmin && !isReadOnly && (
+                          <button
+                            className="mod-btn-outline"
+                            style={{
+                              width: "30px",
+                              height: "30px",
+                              padding: 0,
+                              borderRadius: "6px",
+                              display: "inline-flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              cursor: "pointer",
+                              color: "#E32B50",
+                              borderColor: "rgba(227,43,80,0.3)",
+                              background: "rgba(227,43,80,0.06)",
+                            }}
+                            title="Delete Observation (Admin only)"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDeletingObs(o);
+                            }}
+                          >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="3 6 5 6 21 6" />
+                              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                              <line x1="10" y1="11" x2="10" y2="17" />
+                              <line x1="14" y1="11" x2="14" y2="17" />
+                            </svg>
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+
+        {/* Pagination Footer Controls */}
+        <div className="mod-pagination">
+          <div>
+            Showing {observations.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{" "}
+            {Math.min(currentPage * pageSize, totalCount)} of {totalCount} observations
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span>Per page:</span>
+              <select
+                className="mod-filter-select"
+                style={{ padding: "4px 8px", fontSize: 13 }}
+                value={pageSize}
+                onChange={(e) => {
+                  setPageSize(parseInt(e.target.value, 10));
+                  setCurrentPage(1);
+                }}
+              >
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={25}>25</option>
+                <option value={50}>50</option>
+              </select>
+            </div>
+
+            <div className="mod-pagination-btns">
+              <button
+                className="mod-page-btn"
+                disabled={currentPage <= 1}
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              >
+                &lt;
+              </button>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                <button
+                  key={p}
+                  className={`mod-page-btn ${p === currentPage ? "active" : ""}`}
+                  onClick={() => setCurrentPage(p)}
+                >
+                  {p}
+                </button>
+              ))}
+
+              <button
+                className="mod-page-btn"
+                disabled={currentPage >= totalPages}
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              >
+                &gt;
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Delete Confirmation Modal */}
+      {deletingObs && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+            padding: "20px",
+          }}
+          onClick={() => !isDeleting && setDeletingObs(null)}
+        >
+          <div
+            className="mod-card"
+            style={{ maxWidth: 460, width: "100%", padding: 24, boxShadow: "0 20px 25px -5px rgba(0,0,0,0.2)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+              <div
+                style={{
+                  width: 42,
+                  height: 42,
+                  borderRadius: "50%",
+                  background: "rgba(227,43,80,0.12)",
+                  color: "#E32B50",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                  <line x1="10" y1="11" x2="10" y2="17" />
+                  <line x1="14" y1="11" x2="14" y2="17" />
+                </svg>
+              </div>
+              <div>
+                <h3 style={{ margin: 0, fontSize: 17, color: "var(--text-main)" }}>Delete Safety Observation</h3>
+                <p style={{ margin: "4px 0 0", fontSize: 13, color: "var(--text-muted)" }}>
+                  Ref: <strong style={{ fontFamily: "monospace" }}>{deletingObs.observationNumber}</strong>
+                </p>
+              </div>
+            </div>
+
+            <p style={{ fontSize: 14, lineHeight: 1.5, color: "var(--text-main)", marginBottom: 20 }}>
+              Are you sure you want to permanently delete this observation record? This will remove all associated timeline history and photos. This action cannot be undone.
+            </p>
+
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
+              <button
+                type="button"
+                className="mod-btn-outline"
+                disabled={isDeleting}
+                onClick={() => setDeletingObs(null)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="mod-btn-primary"
+                disabled={isDeleting}
+                style={{ background: "#E32B50", borderColor: "#E32B50", color: "#fff" }}
+                onClick={handleDeleteObservation}
+              >
+                {isDeleting ? "Deleting..." : "Confirm Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default SOList;

@@ -25,6 +25,7 @@ html, body, #root {
 a          { text-decoration: none; color: inherit; }
 button     { font-family: var(--font-body); cursor: pointer; }
 ul, ol     { list-style: none; margin: 0; padding: 0; }
+select option { background-color: var(--bg-card); color: var(--text-main); }
 
 
 /* ════════════════════════════════════════════════════════
@@ -46,7 +47,8 @@ html[data-theme] .page-content {
         --sb-surface now #1F2937 (matches --bg-card-hover)
 ════════════════════════════════════════════════════════ */
 :root,
-html[data-theme="default-dark"] {
+html[data-theme="default-dark"],
+html[data-theme="dark"] {
 
   --main-bg:          #080B12;
   --navbar-bg:        #111827;
@@ -120,8 +122,8 @@ html[data-theme="light"] {
   --text-muted:       #6B7280;
   --text-dark:        #9CA3AF;
 
-  --accent-primary:   #2563EB;
-  --accent-hover:     #1D4ED8;
+  --accent-primary:   #111827;
+  --accent-hover:     #1F2937;
 
   --color-safe:       #059669;
   --color-safe-bg:    rgba(5, 150, 105, 0.10);
@@ -723,54 +725,6 @@ html[data-theme="light"] .premium-form-container {
   padding: 20px !important;
 }
 
-/* Custom multiselect dropdown in light mode */
-html[data-theme="light"] .custom-multiselect-dropdown {
-  background-color: #FFFFFF !important;
-  border-color: var(--border-color, #E5E7EB) !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.06) !important;
-}
-html[data-theme="light"] .custom-multiselect-header {
-  background-color: #FFFFFF !important;
-  border-bottom-color: var(--border-color, #E5E7EB) !important;
-}
-html[data-theme="light"] .custom-multiselect-search-input {
-  background-color: #F9FAFB !important;
-  border-color: var(--border-light, #D1D5DB) !important;
-  color: #111827 !important;
-}
-html[data-theme="light"] .custom-multiselect-cat-select {
-  background-color: #F3F4F6 !important;
-  border-color: var(--border-light, #D1D5DB) !important;
-  color: #111827 !important;
-}
-html[data-theme="light"] .custom-multiselect-cat-select option {
-  background-color: #FFFFFF !important;
-  color: #111827 !important;
-}
-html[data-theme="light"] .custom-multiselect-option {
-  color: #111827 !important;
-}
-html[data-theme="light"] .custom-multiselect-option:hover {
-  background-color: #F3F4F6 !important;
-}
-html[data-theme="light"] .custom-multiselect-option.is-checked {
-  background-color: rgba(37, 99, 235, 0.08) !important;
-}
-html[data-theme="light"] .custom-multiselect-group-header {
-  background-color: #F3F4F6 !important;
-  color: #6B7280 !important;
-}
-html[data-theme="light"] .multiselect-badge--panel {
-  background-color: rgba(37, 99, 235, 0.1) !important;
-  color: #1D4ED8 !important;
-  border-color: rgba(37, 99, 235, 0.25) !important;
-}
-html[data-theme="light"] .multiselect-badge--system {
-  background-color: rgba(5, 150, 105, 0.1) !important;
-  color: #047857 !important;
-  border-color: rgba(5, 150, 105, 0.25) !important;
-}
-
 /* Bulk actions toolbar */
 html[data-theme="light"] .bulk-actions-toolbar {
   background:   var(--bg-card)      !important;
@@ -1351,3 +1305,42 @@ html[data-theme="light"] .df-select.df-readonly {
   opacity: 0.7 !important;
   cursor: not-allowed !important;
 }
+
+/* Invert signatures on dark themes */
+html[data-theme="dark"] .signature-img,
+html[data-theme="default-dark"] .signature-img,
+html[data-theme="midnight-blue"] .signature-img,
+html[data-theme="steel-gray"] .signature-img {
+  filter: invert(1) brightness(1.5);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Universal Spin Animations & Loader Utilities
+═══════════════════════════════════════════════════════════════ */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+.ti-spin,
+.spin,
+.spinning,
+.animate-spin,
+.fa-spin,
+i.ti-loader,
+i[class*="ti-loader"],
+i[class*="ti-refresh"].spinning,
+.sc-spinner,
+.si-spinner,
+.mod-spinner,
+.loading-spinner i {
+  display: inline-block !important;
+  animation: spin 1s linear infinite !important;
+  -webkit-animation: spin 1s linear infinite !important;
+  transform-origin: center center !important;
+}

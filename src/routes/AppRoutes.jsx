@@ -8,6 +8,7 @@ import {
 import Layout from "../components/adminlayout/Layout";
 
 import PortalSelection from "../pages/PortalSelection/PortalSelection";
+import ModuleSelection from "../pages/ModuleSelection/ModuleSelection";
 
 import Login from "../pages/Auth/Login/Login";
 import Otp from "../pages/Auth/OTP/OTP";
@@ -27,9 +28,39 @@ import NewRequest from "../pages/Request/NewRequest/NewRequest";
 import Reports from "../pages/Reports/Reports";
 import Activity from "../pages/Settings/Activity/Activity";
 import SafetyPrecaution from "../pages/Settings/SafetyPrecaution/SafetyPrecaution";
+import ZoneRoomSeeder from "../pages/Settings/ZoneRoomSeeder";
 import LogsReports from "../pages/LogsReports/LogsReports";
 import LogHistory from "../pages/LogHistroy/LogHistroy";
 import ExecutiveDashboard from "../pages/ExecutiveDashboard/ExecutiveDashboard";
+
+// ── Incident Management module ──
+import IMDashboard from "../modules/incident-management/pages/IMDashboard";
+import IMList from "../modules/incident-management/pages/IMList";
+import IMCreate from "../modules/incident-management/pages/IMCreate";
+import IMDetails from "../modules/incident-management/pages/IMDetails";
+import IMInvestigation from "../modules/incident-management/pages/IMInvestigation";
+import IMReports from "../modules/incident-management/pages/IMReports";
+import IMNotificationGroups from "../modules/incident-management/pages/IMNotificationGroups";
+
+// ── Safety Observations module ──
+import SODashboard from "../modules/safety-observations/pages/SODashboard";
+import SOList from "../modules/safety-observations/pages/SOList";
+import SOCreate from "../modules/safety-observations/pages/SOCreate";
+import SODetails from "../modules/safety-observations/pages/SODetails";
+import SOCorrectiveActions from "../modules/safety-observations/pages/SOCorrectiveActions";
+import SOReports from "../modules/safety-observations/pages/SOReports";
+
+// ── Safety Inspection module ──
+import SIDashboard from "../modules/safety-inspection/pages/SIDashboard";
+import SIList from "../modules/safety-inspection/pages/SIList";
+import SICreate from "../modules/safety-inspection/pages/SICreate";
+import SIView from "../modules/safety-inspection/pages/SIView";
+
+// ── Spot Checks module ──
+import SCDashboard from "../modules/spot-checks/pages/SCDashboard";
+import SCList from "../modules/spot-checks/pages/SCList";
+import SCCreate from "../modules/spot-checks/pages/SCCreate";
+import SCView from "../modules/spot-checks/pages/SCView";
 
 
 import ProtectedRoute from "../components/common/ProtectedRoute";
@@ -39,11 +70,12 @@ import PolygonEditor from "../pages/PolygonEditor/PolygonEditor";
 
 function AppRoutes() {
   return (
-    <BrowserRouter basename="/m3north">
+    <BrowserRouter basename="/development/m3south">
       <Routes>
 
         {/* Public Routes - restricted if user has valid token */}
         <Route path="/" element={<PortalSelection />} />
+        <Route path="/modules" element={<ProtectedRoute><ModuleSelection /></ProtectedRoute>} />
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/otp" element={<PublicRoute><Otp /></PublicRoute>} />
         <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
@@ -180,6 +212,14 @@ function AppRoutes() {
             }
           />
           <Route
+            path="/settings/seed-zones-rooms"
+            element={
+              <ProtectedRoute allowedRoles={["Admin"]}>
+                <ZoneRoomSeeder />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/logs-reports"
             element={
               <ProtectedRoute allowedRoles={["Admin"]}>
@@ -195,6 +235,136 @@ function AppRoutes() {
               </ProtectedRoute>
             }
           />
+
+          {/* ── Incident Management Routes ── */}
+          <Route path="/incident-management/dashboard" element={<IMDashboard />} />
+          <Route path="/incident-management/list" element={<IMList />} />
+          <Route
+            path="/incident-management/create"
+            element={
+              <ProtectedRoute allowedRoles={["Admin", "admin", "SuperAdmin", "superadmin", "Department", "department", "Department1", "department1", "Operator", "operator", "Site_HSE", "site_hse", "HSE", "hse", "Safety", "safety", "Contractor", "contractor", "Subcontractor", "subcontractor"]}>
+                <IMCreate />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/incident-management/details/:id" element={<IMDetails />} />
+          <Route path="/incident-management/investigation/:id" element={<IMInvestigation />} />
+          <Route
+            path="/incident-management/notification-groups"
+            element={
+              <ProtectedRoute allowedRoles={["Admin"]}>
+                <IMNotificationGroups />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ── Safety Observations Routes ── */}
+          <Route path="/safety-observations/dashboard" element={<SODashboard />} />
+          <Route path="/safety-observations/list" element={<SOList />} />
+          <Route
+            path="/safety-observations/create"
+            element={
+              <ProtectedRoute allowedRoles={["Admin", "admin", "SuperAdmin", "superadmin", "Department", "department", "Department1", "department1", "Operator", "operator", "Site_HSE", "site_hse", "HSE", "hse", "Safety", "safety", "Contractor", "contractor", "Subcontractor", "subcontractor"]}>
+                <SOCreate />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/safety-observations/edit/:id"
+            element={
+              <ProtectedRoute allowedRoles={["Admin", "admin", "SuperAdmin", "superadmin", "Department", "department", "Department1", "department1", "Operator", "operator", "Site_HSE", "site_hse", "HSE", "hse", "Safety", "safety", "Contractor", "contractor", "Subcontractor", "subcontractor"]}>
+                <SOCreate />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/safety-observations/details/:id" element={<SODetails />} />
+          <Route path="/safety-observations/corrective-actions" element={<SOCorrectiveActions />} />
+          <Route path="/safety-observations/reports" element={<SOReports />} />
+
+          {/* ── Safety Inspection Routes ── */}
+          <Route
+            path="/safety-inspection/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["Admin", "admin", "SuperAdmin", "superadmin", "Department", "department", "Department1", "department1", "Operator", "operator", "Site_HSE", "site_hse", "HSE", "hse", "Safety", "safety", "Contractor", "contractor", "Subcontractor", "subcontractor", "Observer", "observer"]}>
+                <SIDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/safety-inspection/list"
+            element={
+              <ProtectedRoute allowedRoles={["Admin", "admin", "SuperAdmin", "superadmin", "Department", "department", "Department1", "department1", "Operator", "operator", "Site_HSE", "site_hse", "HSE", "hse", "Safety", "safety", "Contractor", "contractor", "Subcontractor", "subcontractor", "Observer", "observer"]}>
+                <SIList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/safety-inspection/create"
+            element={
+              <ProtectedRoute allowedRoles={["Admin", "admin", "SuperAdmin", "superadmin", "Department", "department", "Department1", "department1", "Operator", "operator", "Site_HSE", "site_hse", "HSE", "hse", "Safety", "safety"]}>
+                <SICreate />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/safety-inspection/edit/:id"
+            element={
+              <ProtectedRoute allowedRoles={["Admin", "admin", "SuperAdmin", "superadmin", "Department", "department", "Department1", "department1", "Operator", "operator", "Site_HSE", "site_hse", "HSE", "hse", "Safety", "safety"]}>
+                <SICreate />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/safety-inspection/:id"
+            element={
+              <ProtectedRoute allowedRoles={["Admin", "admin", "SuperAdmin", "superadmin", "Department", "department", "Department1", "department1", "Operator", "operator", "Site_HSE", "site_hse", "HSE", "hse", "Safety", "safety", "Contractor", "contractor", "Subcontractor", "subcontractor", "Observer", "observer"]}>
+                <SIView />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ── Spot Checks Routes ── */}
+          <Route
+            path="/spot-checks/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["Admin", "admin", "SuperAdmin", "superadmin", "Department", "department", "Department1", "department1", "Operator", "operator", "Site_HSE", "site_hse", "HSE", "hse", "Safety", "safety", "Contractor", "contractor", "Subcontractor", "subcontractor", "Observer", "observer"]}>
+                <SCDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/spot-checks/list"
+            element={
+              <ProtectedRoute allowedRoles={["Admin", "admin", "SuperAdmin", "superadmin", "Department", "department", "Department1", "department1", "Operator", "operator", "Site_HSE", "site_hse", "HSE", "hse", "Safety", "safety", "Contractor", "contractor", "Subcontractor", "subcontractor", "Observer", "observer"]}>
+                <SCList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/spot-checks/create"
+            element={
+              <ProtectedRoute allowedRoles={["Admin", "admin", "SuperAdmin", "superadmin", "Department", "department", "Department1", "department1", "Operator", "operator", "Site_HSE", "site_hse", "HSE", "hse", "Safety", "safety"]}>
+                <SCCreate />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/spot-checks/:id"
+            element={
+              <ProtectedRoute allowedRoles={["Admin", "admin", "SuperAdmin", "superadmin", "Department", "department", "Department1", "department1", "Operator", "operator", "Site_HSE", "site_hse", "HSE", "hse", "Safety", "safety", "Contractor", "contractor", "Subcontractor", "subcontractor", "Observer", "observer"]}>
+                <SCView />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/spot-checks/details/:id"
+            element={
+              <ProtectedRoute allowedRoles={["Admin", "admin", "SuperAdmin", "superadmin", "Department", "department", "Department1", "department1", "Operator", "operator", "Site_HSE", "site_hse", "HSE", "hse", "Safety", "safety", "Contractor", "contractor", "Subcontractor", "subcontractor", "Observer", "observer"]}>
+                <SCView />
+              </ProtectedRoute>
+            }
+          />
+
         </Route>
 
         {/* <Route
@@ -213,3 +383,4 @@ function AppRoutes() {
 }
 
 export default AppRoutes;
+// cache bust

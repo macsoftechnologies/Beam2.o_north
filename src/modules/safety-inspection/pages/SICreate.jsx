@@ -1,0 +1,1089 @@
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import SafetyIssueModal from "../../../components/common/SafetyIssueModal/SafetyIssueModal";
+import FloorDrawing from "../../../pages/Request/FloorDrawing/FloorDrawing";
+import { FLOOR_PDFS } from "../../../data/pdfMapping";
+import { ZONE_MAPPING } from "../../../data/zones";
+import { BUILDINGS } from "../../../data/buildings";
+import { getBuildings, getRooms, getFloors, getEmployees } from "../../../services/authService";
+import { safetyInspectionService } from "../../../services/safetyInspectionService";
+import { showSuccess, showError } from "../../../components/common/Toast/Toast";
+import "./SICreate.css";
+
+// The 20 standard safety inspection items
+const CHECKLIST_ITEMS = [
+  "1. Access / Exit",
+  "2. Barriers / Signage / Shielding",
+  "3. Housekeeping / Waste",
+  "4. Noise / Dust / Fumes / Health Hazards",
+  "5. Storage & Handling",
+  "6. Electrical Hazards",
+  "7. Working at Heights",
+  "8. Lifting / Rigging",
+  "9. Hot Works",
+  "10. Mobile Elevating Work Equipment",
+  "11. Lighting",
+  "12. Documentation & Procedures",
+  "13. Scaffold / Alloy Towers",
+  "14. Slip / Trip Hazards",
+  "15. PPE",
+  "16. Tools & Machinery",
+  "17. Environmental Hazards",
+  "18. Emergency Equipment",
+  "19. Excavation / Trenches",
+  "20. Other"
+];
+
+export default function SICreate() {
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const isEditMode = Boolean(id);
+  const [isLoadingInspection, setIsLoadingInspection] = useState(isEditMode);
+  const [originalStatus, setOriginalStatus] = useState(null);
+
+  const [selections, setSelections] = useState({});
+  const [completed, setCompleted] = useState(false);
+  const [openInfoIdx, setOpenInfoIdx] = useState(null);
+  const [openWrenchIdx, setOpenWrenchIdx] = useState(null);
+  const [openPaperclipIdx, setOpenPaperclipIdx] = useState(null);
+  const [activeComments, setActiveComments] = useState({});
+  const [comments, setComments] = useState({});
+  const [itemPhotos, setItemPhotos] = useState({});
+  const [itemIssues, setItemIssues] = useState({});
+  const [otherCustomTexts, setOtherCustomTexts] = useState({});
+  const [activeUploadIdx, setActiveUploadIdx] = useState(null);
+  const [safetyIssueModalData, setSafetyIssueModalData] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const fileInputRef = useRef(null);
+
+  const [building, setBuilding] = useState("");
+  const [level, setLevel] = useState("");
+  const [selectedRooms, setSelectedRooms] = useState([]);
+  const [selectedZone, setSelectedZone] = useState(null);
+  const [inspectionDate, setInspectionDate] = useState(() => new Date().toISOString().split('T')[0]);
+  const [performedBy, setPerformedBy] = useState([]);
+  const [participants, setParticipants] = useState([]);
+  const [isParticipantsOpen, setIsParticipantsOpen] = useState(false);
+  const [participantSearch, setParticipantSearch] = useState("");
+  const participantsRef = useRef(null);
+
+  const [buildingsList, setBuildingsList] = useState([]);
+  const [floorsList, setFloorsList] = useState([]);
+  const [roomsList, setRoomsList] = useState([]);
+  const [employeesList, setEmployeesList] = useState([]);
+  const [isLoadingSelectors, setIsLoadingSelectors] = useState(true);
+  const [roomStatusMap, setRoomStatusMap] = useState({});
+  const [specificLocation, setSpecificLocation] = useState("");
+
+  const currentUser = React.useMemo(() => {
+    try {
+      return JSON.parse(localStorage.getItem('user')) || {};
+    } catch {
+      return {};
+    }
+  }, []);
+
+  const loggedInUserName = React.useMemo(() => {
+    const name = currentUser.name || `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || currentUser.username || "Superadmin";
+    const deptOrComp = currentUser.department || currentUser.company || currentUser.role || "";
+    return deptOrComp ? `${name} (${deptOrComp})` : name;
+  }, [currentUser]);
+
+  const formattedParticipantsList = React.useMemo(() => {
+    if (employeesList.length > 0) {
+      return employeesList.map((emp, i) => {
+        const empName = emp.name || `${emp.first_name || ''} ${emp.last_name || ''}`.trim() || emp.username || `User ${emp.id || i}`;
+        const label = emp.company || emp.department ? `${empName} (${emp.company || emp.department})` : empName;
+        return label;
+      });
+    }
+    return [
+      "Oliver O'Neill (STS)",
+      "Albert Glowniak (Multi-Tech)",
+      "Tor Busch Nielsen (Zeta)",
+      "Charles Luedtke (NNE A/S)",
+      "Ramiro Sancheira Borges (NNE A/S)",
+      "Kenneth Weigand (SKEL.DK LANDINSPEKTØRER P/S)"
+    ];
+  }, [employeesList]);
+
+  const filteredParticipants = React.useMemo(() => {
+    if (!participantSearch) return formattedParticipantsList;
+    return formattedParticipantsList.filter(p => p.toLowerCase().includes(participantSearch.toLowerCase()));
+  }, [formattedParticipantsList, participantSearch]);
+
+  const toggleParticipant = (person) => {
+    if (participants.includes(person)) {
+      setParticipants(participants.filter(p => p !== person));
+    } else {
+      setParticipants([...participants, person]);
+    }
+  };
+
+  const removeParticipant = (e, person) => {
+    e.stopPropagation();
+    setParticipants(participants.filter(p => p !== person));
+  };
+
+  useEffect(() => {
+    const loadSelectors = async () => {
+      try {
+        const [buildingsRes, floorsRes, roomsRes, empRes] = await Promise.all([
+          getBuildings(1, 1000),
+          getFloors(1, 1000),
+          getRooms(1, 20000),
+          getEmployees(1, 1000).catch(() => ({ data: [] }))
+        ]);
+        setBuildingsList(buildingsRes?.data ?? []);
+        setFloorsList(floorsRes?.data ?? []);
+        setRoomsList(roomsRes?.data?.rows ?? roomsRes?.data ?? roomsRes ?? []);
+        const rawEmps = empRes?.data?.rows ?? empRes?.data ?? empRes ?? [];
+        setEmployeesList(Array.isArray(rawEmps) ? rawEmps : []);
+      } catch (err) {
+        console.error("Failed to load request form selector data", err);
+      } finally {
+        setIsLoadingSelectors(false);
+      }
+    };
+    loadSelectors();
+  }, []);
+
+  useEffect(() => {
+    if (!id) {
+      setIsLoadingInspection(false);
+      return;
+    }
+    let isMounted = true;
+    const fetchInspection = async () => {
+      setIsLoadingInspection(true);
+      try {
+        const data = await safetyInspectionService.getInspectionDetails(id);
+        if (!isMounted || !data) return;
+        setOriginalStatus(data.status);
+
+        if (data.buildingId) {
+          setBuilding(String(data.buildingId));
+        } else if (data.buildingName && buildingsList.length > 0) {
+          const matchedB = buildingsList.find(b => b.building_name?.toLowerCase() === data.buildingName?.toLowerCase());
+          if (matchedB) setBuilding(String(matchedB.build_id || matchedB.id));
+        }
+
+        if (data.floorLevel) setLevel(data.floorLevel);
+        if (data.specificLocation) setSpecificLocation(data.specificLocation);
+        if (data.inspectionDate) setInspectionDate(data.inspectionDate.split('T')[0]);
+
+        const parseArr = (f) => {
+          if (Array.isArray(f)) return f;
+          if (typeof f === 'string') {
+            try { return JSON.parse(f) || []; } catch { return []; }
+          }
+          return [];
+        };
+
+        const rooms = parseArr(data.selectedRooms);
+        setSelectedRooms(rooms);
+
+        const parts = parseArr(data.participants);
+        setParticipants(parts);
+
+        if (data.performedBy) {
+          const pb = parseArr(data.performedBy);
+          if (pb.length > 0) setPerformedBy(pb);
+        }
+
+        if (Array.isArray(data.items) && data.items.length > 0) {
+          const newSelections = {};
+          const newComments = {};
+          const newPhotos = {};
+          const newIssues = {};
+          const newOtherTexts = {};
+
+          data.items.forEach(itm => {
+            const idx = (itm.itemIndex || 1) - 1;
+            if (itm.status && itm.status !== 'na') {
+              newSelections[idx] = itm.status;
+            }
+            if (itm.comment) {
+              newComments[idx] = itm.comment;
+            }
+            const itmPhotos = parseArr(itm.photos);
+            if (itmPhotos.length > 0) {
+              newPhotos[idx] = itmPhotos.map(p => typeof p === 'string' ? { serverUrl: p } : p);
+            }
+            const itmIssues = parseArr(itm.issues);
+            if (itmIssues.length > 0) {
+              newIssues[idx] = itmIssues;
+            }
+            if (itm.itemIndex === 20 && itm.categoryName) {
+              const custom = itm.categoryName.replace(/^20\.\s*Other(\s*-\s*)?/i, '').trim();
+              if (custom) newOtherTexts[idx] = custom;
+            }
+          });
+
+          setSelections(newSelections);
+          setComments(newComments);
+          setItemPhotos(newPhotos);
+          setItemIssues(newIssues);
+          setOtherCustomTexts(newOtherTexts);
+        }
+      } catch (err) {
+        console.error("Failed to load safety inspection for edit:", err);
+        showError("Failed to load inspection data.");
+        navigate("/safety-inspection/list");
+      } finally {
+        if (isMounted) setIsLoadingInspection(false);
+      }
+    };
+
+    fetchInspection();
+    return () => { isMounted = false; };
+  }, [id, buildingsList]);
+
+  const levels = building ? floorsList.filter(f => String(f.build_id) === String(building)).map(f => f.floor_name) : [];
+
+  const selectedPdf = React.useMemo(() => {
+    if (!building || !level) return "";
+    const dbBuilding = buildingsList.find(b => String(b.build_id || b.id) === String(building));
+    const bName = dbBuilding ? dbBuilding.building_name : "";
+    if (!bName) return "";
+    const staticB = BUILDINGS.find(item => item.name.toLowerCase().trim() === bName.toLowerCase().trim());
+    const staticBuildingId = staticB ? staticB.id : "";
+    if (!staticBuildingId) return "";
+    const pdfsForBuilding = FLOOR_PDFS[staticBuildingId];
+    if (!pdfsForBuilding) return "";
+    if (pdfsForBuilding[level]) return pdfsForBuilding[level];
+    const levelLower = level.toLowerCase().trim();
+    const foundKey = Object.keys(pdfsForBuilding).find(k =>
+      k.toLowerCase().trim().includes(levelLower) || levelLower.includes(k.toLowerCase().trim())
+    );
+    return foundKey ? pdfsForBuilding[foundKey] : "";
+  }, [building, level, buildingsList]);
+
+  const selectedZones = React.useMemo(() => {
+    if (!level) return [];
+    let zonesForLevel = ZONE_MAPPING[level] || [];
+    if (zonesForLevel.length === 0) {
+      const levelLower = level.toLowerCase().trim();
+      const foundKey = Object.keys(ZONE_MAPPING).find(k =>
+        k.toLowerCase().trim().includes(levelLower) || levelLower.includes(k.toLowerCase().trim())
+      );
+      if (foundKey) zonesForLevel = ZONE_MAPPING[foundKey];
+    }
+    return zonesForLevel;
+  }, [level]);
+
+  const handleRoomsSelected = (rooms) => {
+    setSelectedRooms(rooms);
+    const formattedRooms = (rooms || []).map((rStr) => {
+      const roomClean = String(rStr).trim();
+      if (!roomClean) return "";
+      const matchedDbRoom = roomsList.find(
+        (dbR) =>
+          String(dbR.room_name || dbR.room || dbR.name || dbR.id).toLowerCase().trim() === roomClean.toLowerCase() ||
+          roomClean.toLowerCase().includes(String(dbR.room_name || dbR.room || "").toLowerCase().trim())
+      );
+      let zoneName = matchedDbRoom?.zone_name || matchedDbRoom?.zone || "";
+      if (!zoneName && selectedZones && selectedZones.length > 0) {
+        const foundZoneObj = selectedZones.find((zObj) => {
+          const roomListInZone = zObj.rooms || zObj.roomList || [];
+          return roomListInZone.some(
+            (zr) => String(zr).toLowerCase().trim() === roomClean.toLowerCase()
+          );
+        });
+        if (foundZoneObj) {
+          zoneName = foundZoneObj.zone || foundZoneObj.zone_name || foundZoneObj.name || "";
+        }
+      }
+      return zoneName ? `${zoneName}:${roomClean}` : roomClean;
+    }).filter(Boolean).join(", ");
+    setSpecificLocation(formattedRooms);
+  };
+
+  const handleFileUploadClick = (idx) => {
+    setActiveUploadIdx(idx);
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+    setOpenPaperclipIdx(null);
+  };
+
+  const handleFileChange = async (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0 || activeUploadIdx === null) return;
+    
+    const localFiles = Array.from(files).map(file => ({
+      file,
+      previewUrl: URL.createObjectURL(file),
+      serverUrl: null
+    }));
+
+    setItemPhotos(prev => ({
+      ...prev,
+      [activeUploadIdx]: [...(prev[activeUploadIdx] || []), ...localFiles]
+    }));
+
+    try {
+      const res = await safetyInspectionService.uploadPhotos(Array.from(files));
+      if (res?.urls && res.urls.length > 0) {
+        setItemPhotos(prev => {
+          const current = [...(prev[activeUploadIdx] || [])];
+          // Update the last N items with their server URLs
+          const startIndex = current.length - localFiles.length;
+          res.urls.forEach((url, i) => {
+            if (current[startIndex + i]) {
+              current[startIndex + i].serverUrl = url;
+            }
+          });
+          return { ...prev, [activeUploadIdx]: current };
+        });
+      }
+    } catch (err) {
+      console.error("Failed to upload photos", err);
+      alert("Failed to upload attachment photo");
+      setItemPhotos(prev => {
+        const current = [...(prev[activeUploadIdx] || [])];
+        current.splice(-localFiles.length, localFiles.length);
+        return { ...prev, [activeUploadIdx]: current };
+      });
+    } finally {
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (!e.target.closest('.si-check-icons') && !e.target.closest('.beam-modal-dialog')) {
+        setOpenInfoIdx(null);
+        setOpenWrenchIdx(null);
+        setOpenPaperclipIdx(null);
+      }
+      if (participantsRef.current && !participantsRef.current.contains(e.target)) {
+        setIsParticipantsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, []);
+
+  const handleSelect = (idx, color) => {
+    setSelections(prev => ({ ...prev, [idx]: color }));
+    if (color === 'yellow' || color === 'red') {
+      const isOther = CHECKLIST_ITEMS[idx].toLowerCase().includes('other');
+      const effectiveSubject = isOther && otherCustomTexts[idx]?.trim()
+        ? `20. Other - ${otherCustomTexts[idx].trim()}`
+        : CHECKLIST_ITEMS[idx];
+      setSafetyIssueModalData({ subject: effectiveSubject, color, itemIndex: idx });
+    }
+  };
+
+  const handleGoodPracticeClick = (idx) => {
+    const isOther = CHECKLIST_ITEMS[idx].toLowerCase().includes('other');
+    const effectiveSubject = isOther && otherCustomTexts[idx]?.trim()
+      ? `20. Other - ${otherCustomTexts[idx].trim()}`
+      : CHECKLIST_ITEMS[idx];
+    setSelections(prev => ({ ...prev, [idx]: 'green' }));
+    setSafetyIssueModalData({
+      subject: effectiveSubject,
+      color: 'green',
+      observationType: 'POSITIVE',
+      itemIndex: idx
+    });
+    setOpenInfoIdx(null);
+    setOpenWrenchIdx(null);
+    setOpenPaperclipIdx(null);
+  };
+
+  const handleObservationCreated = (createdObs, itemIdx) => {
+    if (itemIdx === undefined || itemIdx === null) return;
+    const obsNum = createdObs?.observationNumber || (createdObs?.id ? `SO${createdObs.id}` : 'SO');
+    const isPositive = safetyIssueModalData?.color === 'green' || createdObs?.observationType === 'POSITIVE';
+    const subcatText = createdObs?.subcategory || createdObs?.subject || (isPositive ? 'Good Practice' : 'Safety Observation');
+    const issueTag = {
+      id: obsNum,
+      type: isPositive ? 'green' : (safetyIssueModalData?.color === 'red' ? 'red' : 'orange'),
+      text: `${obsNum}: ${subcatText}`,
+      observationId: createdObs?.id,
+      observationNumber: obsNum,
+      observationType: isPositive ? 'POSITIVE' : (createdObs?.observationType || 'NEEDS_ATTENTION'),
+      isGoodPractice: isPositive
+    };
+    setItemIssues(prev => ({
+      ...prev,
+      [itemIdx]: [...(prev[itemIdx] || []), issueTag]
+    }));
+    setSelections(prev => ({
+      ...prev,
+      [itemIdx]: safetyIssueModalData?.color || (isPositive ? 'green' : 'yellow')
+    }));
+  };
+
+  const toggleComment = (idx) => {
+    setActiveComments(prev => ({ ...prev, [idx]: !prev[idx] }));
+  };
+
+  const handleSave = async () => {
+    if (!building) {
+      alert("Please select a Location/Building.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const selectedBuildingObj = buildingsList.find(b => String(b.build_id || b.id) === String(building));
+      const bName = selectedBuildingObj?.building_name || "";
+
+      let totalAttachedSOs = 0;
+
+      const checklistItems = CHECKLIST_ITEMS.map((item, idx) => {
+        const isOther = item.toLowerCase().includes('other');
+        const effectiveName = isOther && otherCustomTexts[idx]?.trim()
+          ? `20. Other - ${otherCustomTexts[idx].trim()}`
+          : item;
+        const issuesForIdx = itemIssues[idx] || [];
+        const hasGoodPractice = issuesForIdx.some(iss => iss.isGoodPractice || iss.type === 'green' || iss.observationType === 'POSITIVE');
+
+        const validSOs = issuesForIdx.filter(iss => iss && (iss.observationId || iss.observationNumber || iss.id));
+        totalAttachedSOs += validSOs.length;
+
+        return {
+          itemIndex: idx + 1,
+          categoryName: effectiveName,
+          status: selections[idx] || 'na',
+          comment: comments[idx] || '',
+          commentAuthor: currentUser?.name || currentUser?.username || 'Safety Inspector',
+          photos: (itemPhotos[idx] || []).map(p => p.serverUrl || p.previewUrl).filter(Boolean),
+          issues: issuesForIdx,
+          isGoodPractice: hasGoodPractice
+        };
+      });
+
+      // Requirement:
+      // If there is no SO attached to the inspection then status needs to be CLOSED.
+      // If there is SO attached then keep status as IN_PROGRESS.
+      const hasSO = totalAttachedSOs > 0;
+      const targetStatus = hasSO ? 'IN_PROGRESS' : 'CLOSED';
+      const targetIsCompleted = !hasSO;
+
+      const payload = {
+        projectName: (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '').toLowerCase().includes('north') ? 'M3NORTH' : (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '').toLowerCase().includes('infra') ? 'M3INFRASTRUCTURE' : 'M3SOUTH',
+        projectNo: '063205-010',
+        buildingId: building ? Number(building) : undefined,
+        buildingName: bName,
+        floorLevel: level,
+        specificLocation,
+        selectedRooms,
+        selectedZones,
+        inspectionDate,
+        performedBy: performedBy.length > 0 ? performedBy : [loggedInUserName],
+        participants,
+        status: targetStatus,
+        isCompleted: targetIsCompleted,
+        createdByUserId: currentUser?.id,
+        createdByUserName: currentUser?.name || currentUser?.username || 'Safety Inspector',
+        createdByRole: currentUser?.role || 'DEPARTMENT',
+        checklistItems
+      };
+
+      if (isEditMode) {
+        const wasClosed = originalStatus === 'CLOSED';
+        payload.actionType = targetStatus === 'CLOSED'
+          ? 'CLOSED'
+          : (wasClosed ? 'REOPENED' : 'UPDATED');
+        payload.remarks = targetStatus === 'CLOSED'
+          ? 'Inspection marked as closed'
+          : (wasClosed ? 'Inspection reopened and updated via edit form' : 'Inspection updated via edit form');
+        payload.modifiedByUserId = currentUser?.id;
+        payload.modifiedByUserName = currentUser?.name || currentUser?.username || 'Safety Inspector';
+        payload.modifiedByUserRole = currentUser?.role || 'DEPARTMENT';
+        await safetyInspectionService.updateInspection(id, payload);
+        showSuccess("Safety inspection updated successfully.");
+        navigate(`/safety-inspection/${id}`);
+      } else {
+        await safetyInspectionService.createInspection(payload);
+        showSuccess("Safety inspection created successfully.");
+        navigate("/safety-inspection/list");
+      }
+    } catch (err) {
+      console.error("Failed to save safety inspection:", err);
+      showError(err?.response?.data?.message || "Failed to save safety inspection.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (isLoadingInspection) {
+    return (
+      <div className="si-create-container" style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
+        <div style={{ textAlign: "center", color: "#64748b" }}>
+          <i className="ti ti-loader ti-spin" style={{ fontSize: "32px", color: "#0284c7" }}></i>
+          <p style={{ marginTop: "12px", fontSize: "14px", fontWeight: 500 }}>Loading inspection details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="si-create-container">
+      <div className="si-create-header">
+        <h1>{isEditMode ? "Edit Safety Inspection" : "Safety inspection"}</h1>
+        <button className="si-btn-back" onClick={() => navigate(isEditMode ? `/safety-inspection/${id}` : "/safety-inspection/list")}>
+          <i className="ti ti-arrow-left"></i> Back
+        </button>
+      </div>
+
+      <div className="si-form-card">
+        <div className="si-form-grid-2">
+          {/* Location/Building */}
+          <div className="si-form-group">
+            <label className="si-form-label">Location/Building <span className="si-req">*</span></label>
+            <div className="si-input-wrap">
+              <select
+                className="si-form-select"
+                value={building}
+                onChange={(e) => {
+                  setBuilding(e.target.value);
+                  setLevel("");
+                  setSelectedRooms([]);
+                  setSelectedZone(null);
+                }}
+              >
+                <option value="">Select Building</option>
+                {buildingsList.map((item) => (
+                  <option key={item.build_id} value={item.build_id}>
+                    {item.building_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Floor/Level */}
+          <div className="si-form-group">
+            <label className="si-form-label">Floor/Level</label>
+            <div className="si-input-wrap">
+              <select
+                className="si-form-select"
+                value={level}
+                disabled={!building}
+                onChange={(e) => {
+                  setLevel(e.target.value);
+                  setSelectedRooms([]);
+                  setSelectedZone(null);
+                }}
+              >
+                <option value="">Select Level</option>
+                {levels.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Specific Location */}
+          <div className="si-form-group" style={{ gridColumn: "1 / -1" }}>
+            {selectedPdf && (
+              <div style={{ position: "relative", marginBottom: "16px", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: "8px", overflow: "hidden", minHeight: "400px" }}>
+                <FloorDrawing
+                  pdf={selectedPdf}
+                  zones={selectedZones}
+                  level={level}
+                  selectedRooms={selectedRooms}
+                  onRoomsSelected={handleRoomsSelected}
+                  roomStatusMap={roomStatusMap}
+                />
+              </div>
+            )}
+            <label className="si-form-label">Specific location / Rooms (Auto-filled from drawing)</label>
+            <div className="si-input-wrap">
+              <input className="si-form-input" type="text" value={specificLocation} readOnly style={{ backgroundColor: "rgba(0,0,0,0.02)", cursor: "not-allowed" }} />
+            </div>
+          </div>
+
+          {/* Date */}
+          <div className="si-form-group">
+            <label className="si-form-label">Date</label>
+            <div className="si-input-wrap">
+              <input
+                type="date"
+                className="si-form-input"
+                value={inspectionDate}
+                onChange={(e) => setInspectionDate(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Performed by */}
+          <div className="si-form-group">
+            <label className="si-form-label">Performed by <span className="si-req">*</span></label>
+            <div className="si-input-wrap">
+              <input
+                type="text"
+                className="si-form-input"
+                value={loggedInUserName}
+                readOnly
+                disabled
+                style={{
+                  backgroundColor: "rgba(0,0,0,0.04)",
+                  cursor: "not-allowed",
+                  color: "var(--text-main, #1e293b)",
+                  fontWeight: 500
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Participants (Multi-Select) */}
+          <div className="si-form-group">
+            <label className="si-form-label">Participants <span className="si-req">*</span></label>
+            <div className="si-multiselect-wrap" ref={participantsRef}>
+              <div
+                className={`si-multiselect-trigger ${isParticipantsOpen ? 'active' : ''}`}
+                onClick={() => setIsParticipantsOpen(!isParticipantsOpen)}
+              >
+                {participants.length === 0 ? (
+                  <span className="si-multiselect-placeholder">Choose participants...</span>
+                ) : (
+                  <div className="si-multiselect-pills">
+                    {participants.map((person, i) => (
+                      <span key={i} className="si-pill">
+                        {person}
+                        <span className="si-pill-remove" onClick={(e) => removeParticipant(e, person)}>&times;</span>
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <i className={`ti ti-chevron-${isParticipantsOpen ? 'up' : 'down'}`} style={{ color: 'var(--text-muted, #64748b)', fontSize: '14px', flexShrink: 0 }}></i>
+              </div>
+
+              {isParticipantsOpen && (
+                <div className="si-multiselect-dropdown">
+                  <div className="si-multiselect-search">
+                    <input
+                      type="text"
+                      placeholder="Search participant name, department..."
+                      value={participantSearch}
+                      onChange={(e) => setParticipantSearch(e.target.value)}
+                      onClick={(e) => e.stopPropagation()}
+                      autoFocus
+                    />
+                  </div>
+                  <div className="si-multiselect-options">
+                    {filteredParticipants.length === 0 ? (
+                      <div style={{ padding: '12px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>
+                        No participants found
+                      </div>
+                    ) : (
+                      filteredParticipants.map((person, i) => {
+                        const isSelected = participants.includes(person);
+                        return (
+                          <div
+                            key={i}
+                            className={`si-multiselect-option ${isSelected ? 'selected' : ''}`}
+                            onClick={() => toggleParticipant(person)}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={() => { }}
+                            />
+                            <span>{person}</span>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Checklist */}
+        <div className="si-checklist">
+          {CHECKLIST_ITEMS.map((item, idx) => {
+            const selectedColor = selections[idx];
+            const photosCount = itemPhotos[idx]?.length || 0;
+
+            return (
+              <React.Fragment key={idx}>
+                <div className="si-check-item">
+                  <div className="si-check-left">
+                    {item.toLowerCase().includes('other') ? (
+                      <div className="si-other-wrap">
+                        <p className="si-check-label" style={{ margin: 0 }}>{item}:</p>
+                        <input
+                          type="text"
+                          className="si-form-input"
+                          placeholder="Please fill / specify custom topic..."
+                          value={otherCustomTexts[idx] || ""}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setOtherCustomTexts(prev => ({ ...prev, [idx]: val }));
+                          }}
+                          style={{ maxWidth: '300px', height: '32px', fontSize: '13px', padding: '4px 10px' }}
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      </div>
+                    ) : (
+                      <p className="si-check-label">{item}</p>
+                    )}
+
+                    {itemIssues[idx] && itemIssues[idx].length > 0 && (
+                      <div className="si-issues-list">
+                        {itemIssues[idx].map((iss, issIdx) => {
+                          const isGreen = iss.type === 'green';
+                          const isRed = iss.type === 'red';
+                          return (
+                            <span
+                              key={issIdx}
+                              style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                backgroundColor: isGreen ? 'rgba(34, 197, 94, 0.12)' : (isRed ? 'rgba(239, 68, 68, 0.12)' : 'rgba(245, 158, 11, 0.12)'),
+                                color: isGreen ? '#16a34a' : (isRed ? '#dc2626' : '#d97706'),
+                                border: `1px solid ${isGreen ? 'rgba(34, 197, 94, 0.3)' : (isRed ? 'rgba(239, 68, 68, 0.3)' : 'rgba(245, 158, 11, 0.3)')}`,
+                                borderRadius: '4px',
+                                padding: '2px 8px',
+                                fontSize: '12px',
+                                fontWeight: 600
+                              }}
+                            >
+                              <i className={isGreen ? 'ti ti-shield-check' : 'ti ti-alert-triangle'} style={{ fontSize: '13px' }}></i>
+                              {iss.text || iss.id}
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  const updated = [...(itemIssues[idx] || [])];
+                                  updated.splice(issIdx, 1);
+                                  setItemIssues(prev => ({ ...prev, [idx]: updated }));
+                                }}
+                                style={{
+                                  background: "none",
+                                  border: "none",
+                                  padding: "0 2px",
+                                  marginLeft: "2px",
+                                  cursor: "pointer",
+                                  color: "inherit",
+                                  fontSize: "14px",
+                                  lineHeight: 1,
+                                  opacity: 0.7
+                                }}
+                                title="Remove attached observation"
+                              >
+                                &times;
+                              </button>
+                            </span>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="si-check-right">
+                    <div className="si-check-icons">
+                      <div
+                        className="si-info-trigger"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenInfoIdx(openInfoIdx === idx ? null : idx);
+                        }}
+                      >
+                        <span className={`si-icon-btn ${openInfoIdx === idx || comments[idx] || photosCount > 0 ? 'active-icon' : ''}`}>
+                          <i className="ti ti-info-circle"></i>
+                          {(photosCount > 0 || comments[idx]) && <span className="si-badge-dot"></span>}
+                        </span>
+                      </div>
+
+                      <div className={`si-hidden-icons ${openInfoIdx === idx ? 'open' : ''}`}>
+                        <div className="si-tooltip-wrap">
+                          <span
+                            className={`si-icon-btn ${comments[idx] ? 'active-icon' : ''}`}
+                            onClick={(e) => { e.stopPropagation(); toggleComment(idx); }}
+                            title="Comment"
+                          >
+                            <i className="ti ti-message-2"></i>
+                          </span>
+                          <div className="si-tooltip">{comments[idx] ? 'Edit comment' : 'Comment'}</div>
+                        </div>
+
+                        <div className="si-tooltip-wrap">
+                          <span
+                            className={`si-icon-btn ${selections[idx] === 'green' && itemIssues[idx]?.some(iss => iss.type === 'green') ? 'active-icon' : ''}`}
+                            title="Good Practice"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleGoodPracticeClick(idx);
+                            }}
+                          >
+                            <i className="ti ti-medal"></i>
+                          </span>
+                          <div className="si-tooltip">Good practice</div>
+                        </div>
+
+                        <div className="si-tooltip-wrap">
+                          <span
+                            className={`si-icon-btn ${openWrenchIdx === idx ? 'active-icon' : ''}`}
+                            title="Safety Issue"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setOpenWrenchIdx(openWrenchIdx === idx ? null : idx);
+                              setOpenPaperclipIdx(null);
+                            }}
+                          >
+                            <i className="ti ti-tool"></i>
+                          </span>
+                          <div className="si-tooltip">Safety Observation</div>
+                          {openWrenchIdx === idx && (
+                            <div className="si-popover-menu" style={{ minWidth: '180px' }} onClick={(e) => e.stopPropagation()}>
+                              <div className="si-dropdown-item" onClick={() => {
+                                const isOther = CHECKLIST_ITEMS[idx].toLowerCase().includes('other');
+                                const effectiveSubject = isOther && otherCustomTexts[idx]?.trim()
+                                  ? `20. Other - ${otherCustomTexts[idx].trim()}`
+                                  : CHECKLIST_ITEMS[idx];
+                                setSafetyIssueModalData({ subject: effectiveSubject, color: 'red', itemIndex: idx });
+                                setOpenWrenchIdx(null);
+                                setOpenInfoIdx(null);
+                              }}>
+                                <i className="ti ti-alert-triangle"></i> Safety Observation
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="si-tooltip-wrap">
+                          <span
+                            className={`si-icon-btn ${photosCount > 0 || openPaperclipIdx === idx ? 'active-icon' : ''}`}
+                            title="Attachments"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setOpenPaperclipIdx(openPaperclipIdx === idx ? null : idx);
+                              setOpenWrenchIdx(null);
+                            }}
+                          >
+                            <i className="ti ti-paperclip"></i>
+                            {photosCount > 0 && <span className="si-badge-count">{photosCount}</span>}
+                          </span>
+                          <div className="si-tooltip">Attachments</div>
+                          {openPaperclipIdx === idx && (
+                            <div className="si-popover-menu si-paperclip-menu" style={{ minWidth: '190px' }} onClick={(e) => e.stopPropagation()}>
+                              <div className="si-dropdown-item" onClick={() => { handleFileUploadClick(idx); setOpenInfoIdx(null); }}><i className="ti ti-upload"></i> Upload from computer</div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="si-radio-group">
+                      <button
+                        className={`si-radio-btn ${selectedColor === 'red' ? 'active red-btn' : ''}`}
+                        onClick={() => handleSelect(idx, 'red')}
+                        type="button"
+                        title="Needs Attention / Unsafe"
+                      >
+                        <span className="si-dot red"></span>
+                      </button>
+                      <button
+                        className={`si-radio-btn ${selectedColor === 'yellow' ? 'active yellow-btn' : ''}`}
+                        onClick={() => handleSelect(idx, 'yellow')}
+                        type="button"
+                        title="Warning / Observation"
+                      >
+                        <span className="si-dot yellow"></span>
+                      </button>
+                      <button
+                        className={`si-radio-btn ${selectedColor === 'green' ? 'active green-btn' : ''}`}
+                        onClick={() => handleSelect(idx, 'green')}
+                        type="button"
+                        title="Good / Safe"
+                      >
+                        <span className="si-dot green"></span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                {activeComments[idx] && (
+                  <div style={{ display: "flex", alignItems: "flex-start", gap: "8px", marginTop: "8px" }}>
+                    <textarea
+                      className="si-comment-box"
+                      placeholder="Write a comment or observation notes..."
+                      value={comments[idx] || ""}
+                      onChange={(e) => setComments({ ...comments, [idx]: e.target.value })}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                          e.preventDefault();
+                          if (!comments[idx]?.trim()) {
+                            const newComments = { ...comments };
+                            delete newComments[idx];
+                            setComments(newComments);
+                          }
+                          toggleComment(idx);
+                        }
+                      }}
+                      autoFocus
+                      style={{ flex: 1, margin: 0 }}
+                    ></textarea>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!comments[idx]?.trim()) {
+                            const newComments = { ...comments };
+                            delete newComments[idx];
+                            setComments(newComments);
+                          }
+                          toggleComment(idx);
+                        }}
+                        style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "28px", height: "28px", borderRadius: "4px", backgroundColor: "#fee2e2", color: "#ef4444", border: "1px solid #fca5a5", cursor: "pointer" }}
+                        title="Close editor"
+                      >
+                        <i className="ti ti-x" style={{ fontSize: "16px" }}></i>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!comments[idx]?.trim()) {
+                            const newComments = { ...comments };
+                            delete newComments[idx];
+                            setComments(newComments);
+                          }
+                          toggleComment(idx);
+                        }}
+                        style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "28px", height: "28px", borderRadius: "4px", backgroundColor: "#dcfce7", color: "#22c55e", border: "1px solid #86efac", cursor: "pointer" }}
+                        title="Save comment"
+                      >
+                        <i className="ti ti-check" style={{ fontSize: "16px", fontWeight: "bold" }}></i>
+                      </button>
+                    </div>
+                  </div>
+                )}
+                {comments[idx] && comments[idx].trim() && !activeComments[idx] && (
+                  <div className="si-added-comment-card">
+                    <div className="si-added-comment-main">
+                      <i className="ti ti-message-2 si-added-comment-icon"></i>
+                      <div className="si-added-comment-body">
+                        <div className="si-added-comment-label">Comment</div>
+                        <div className="si-added-comment-content">{comments[idx]}</div>
+                      </div>
+                    </div>
+                    <div className="si-added-comment-actions">
+                      <button
+                        type="button"
+                        className="si-comment-btn-edit"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleComment(idx);
+                        }}
+                        title="Edit comment"
+                      >
+                        <i className="ti ti-pencil"></i>
+                      </button>
+                      <button
+                        type="button"
+                        className="si-comment-btn-delete"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const newComments = { ...comments };
+                          delete newComments[idx];
+                          setComments(newComments);
+                        }}
+                        title="Delete comment"
+                      >
+                        <i className="ti ti-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+                )}
+                {itemPhotos[idx] && itemPhotos[idx].length > 0 && (
+                  <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "12px", padding: "10px", backgroundColor: "#f8fafc", borderRadius: "6px", border: "1px dashed #cbd5e1" }}>
+                    {itemPhotos[idx].map((photoObj, pIdx) => {
+                      const urlToRender = typeof photoObj === 'string' ? photoObj : (photoObj.previewUrl || photoObj.serverUrl);
+                      const isPdf = urlToRender.toLowerCase().endsWith('.pdf') || (photoObj.file && photoObj.file.type === 'application/pdf');
+                      
+                      const getFullImageUrl = (u) => {
+                        if (!u) return '';
+                        if (u.startsWith('http://') || u.startsWith('https://') || u.startsWith('blob:') || u.startsWith('data:')) return u;
+                        const base = (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'https://api.beam.safesiteworks.com/development/m3south').replace(/\/+$/, '');
+                        const filename = u.split('/').pop()?.split('\\').pop()?.split('?')[0] || u;
+                        return `${base}/safety-inspections/photo-preview?file=${encodeURIComponent(filename)}`;
+                      };
+                      
+                      const fullUrl = getFullImageUrl(urlToRender);
+                      
+                      return (
+                        <div key={pIdx} style={{ position: "relative", width: "64px", height: "64px", borderRadius: "6px", overflow: "hidden", border: "1px solid #e2e8f0", backgroundColor: "#fff" }}>
+                          {isPdf ? (
+                            <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#f1f5f9" }}>
+                              <i className="ti ti-file-text" style={{ fontSize: "28px", color: "#64748b" }}></i>
+                            </div>
+                          ) : (
+                            <img
+                              src={fullUrl}
+                              alt="attachment"
+                              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                              onError={(e) => {
+                                const current = e.currentTarget.src || '';
+                                const base = (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'https://api.beam.safesiteworks.com/development/m3south').replace(/\/+$/, '');
+                                const fname = current.split('/').pop()?.split('\\').pop()?.split('?')[0] || '';
+                                if (current.includes('/photo-preview')) {
+                                  e.currentTarget.src = `${base}/observations/${fname}`;
+                                } else if (!current.includes('placeholder')) {
+                                  e.currentTarget.onerror = null;
+                                  e.currentTarget.src = 'https://placehold.co/100x100?text=NA';
+                                }
+                              }}
+                            />
+                          )}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const newPhotos = [...itemPhotos[idx]];
+                              newPhotos.splice(pIdx, 1);
+                              setItemPhotos(prev => ({ ...prev, [idx]: newPhotos }));
+                            }}
+                            style={{ position: "absolute", top: "4px", right: "4px", width: "20px", height: "20px", borderRadius: "50%", backgroundColor: "rgba(255,255,255,0.9)", border: "1px solid #ef4444", color: "#ef4444", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "0 1px 3px rgba(0,0,0,0.2)" }}
+                            title="Remove attachment"
+                          >
+                            <i className="ti ti-x" style={{ fontSize: "12px", fontWeight: "bold" }}></i>
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
+
+        {/* Footer */}
+        <div className="si-footer">
+
+          <div className="si-footer-right">
+            <button className="si-btn-cancel" disabled={isSubmitting} onClick={() => navigate(isEditMode ? `/safety-inspection/${id}` : "/safety-inspection/list")}>Cancel</button>
+            <button className="si-btn-save" disabled={isSubmitting} onClick={handleSave}>
+              {isSubmitting ? "Saving..." : isEditMode ? "Update Inspection" : "Save"}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <input type="file" ref={fileInputRef} onChange={handleFileChange} multiple accept="image/*,.pdf" style={{ display: 'none' }} />
+
+      <SafetyIssueModal
+        open={!!safetyIssueModalData}
+        subject={safetyIssueModalData?.subject}
+        color={safetyIssueModalData?.color}
+        itemIndex={safetyIssueModalData?.itemIndex}
+        initialObservationType={safetyIssueModalData?.observationType || (safetyIssueModalData?.color === 'green' ? 'POSITIVE' : '')}
+        initialLocation={{ building, level, specificLocation, selectedRooms, selectedZone }}
+        onObservationCreated={handleObservationCreated}
+        onClose={() => setSafetyIssueModalData(null)}
+      />
+    </div>
+  );
+}

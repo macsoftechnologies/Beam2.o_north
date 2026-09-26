@@ -8,18 +8,18 @@ import "./Login.css";
 
 export default function Login() {
   if (isTokenValid()) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/modules" replace />;
   }
 
   useEffect(() => {
     const handleCheck = () => {
       if (isTokenValid()) {
-        navigateTo("/dashboard", true);
+        navigateTo("/modules", true);
       }
     };
 
     if (isTokenValid()) {
-      navigateTo("/dashboard", true);
+      navigateTo("/modules", true);
     }
 
     window.addEventListener("pageshow", handleCheck);
@@ -61,6 +61,7 @@ export default function Login() {
           userType: response.userType,
           phonenumber: response.phonenumber,
           maskedPhone: response.maskedPhone || "",
+          moduleAccess: response.moduleAccess || "",
           auth_token: response.auth_token
         };
         localStorage.setItem("tempUser", JSON.stringify(tempUser));
@@ -115,7 +116,7 @@ export default function Login() {
           <div className="panel-left">
             <div className="panel-glow"></div>
             <div className="panel-glow-2"></div>
-            <div className="panel-compass">N</div>
+            <div className="panel-compass">S</div>
 
             <div className="panel-top">
               <div className="ssw-login-brand">
@@ -133,14 +134,14 @@ export default function Login() {
                 <div className="beam20-login-badge">BEAM 2.0</div>
 
                 <div className="panel-badge">
-                <span className="dot"></span>Division 01
+                <span className="dot"></span>Division 02
               </div>
               <h2 className="panel-title">
-                M3 <span>North</span>
+                M3 <span>South</span>
                 <br />Operations
               </h2>
               <p className="panel-desc">
-                Your secure gateway to the M3 North operations platform — permit management, field coordination and real-time reporting.
+                Your secure gateway to the M3 South operations platform — permit management, field coordination and real-time reporting.
               </p>
             </div>
           </div>
@@ -149,12 +150,12 @@ export default function Login() {
           <div className="panel-right">
             <div className="form-eyebrow">Secure Access</div>
             <h1 className="form-heading">
-              Welcome to
-              <br />
-              <span className="ssw-heading-safe">SafeSite</span>
-              <span className="ssw-heading-works">Works</span>
+                  Welcome to
+                  <br />
+                  <span className="ssw-heading-safe">SafeSite</span>
+                  <span className="ssw-heading-works">Works</span>
             </h1>
-            <p className="form-subtext">Sign in to your M3 North account to continue</p>
+            <p className="form-subtext">Sign in to your M3 South account to continue</p>
 
             {error && (
               <div className="error-box show">

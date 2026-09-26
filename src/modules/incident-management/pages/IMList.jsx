@@ -1,0 +1,1015 @@
+import React, { useState, useMemo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import Loader from "../../../components/common/Loader/Loader";
+import { getIncidents, getIncidentStats, deleteIncident } from "../../../services/incidentService";
+import { getBuildings, getContractors } from "../../../services/authService";
+import { formatToDenmark24Hour } from "../../../utils/dateUtils";
+import "../../../styles/module-shared.css";
+import "./IMList.css";
+
+const ListIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+    <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+  </svg>
+);
+
+const severityMeta = (level) => {
+  const meta = {
+    1: { level: 1, label: "Insignificant", color: "#2D9E5A" },
+    2: { level: 2, label: "Minor", color: "#C07D10" },
+    3: { level: 3, label: "Moderate", color: "#D97706" },
+    4: { level: 4, label: "Critical", color: "#E32B50" },
+    5: { level: 5, label: "Catastrophic", color: "#8F1B32" }
+  };
+  return meta[level] || { level: level || 1, label: "", color: "#A1A5B3" };
+};
+
+const SevPill = ({ level }) => {
+  const m = severityMeta(level);
+  return (
+    <span className="badge" style={{ background: `${m.color}22`, color: m.color, fontWeight: 700 }}>
+      {m.level} {m.label}
+    </span>
+  );
+};
+
+const getLogoUrl = (logoVal) => {
+  if (!logoVal) return null;
+  if (logoVal.startsWith("data:") || logoVal.startsWith("http://") || logoVal.startsWith("https://")) return logoVal;
+  const baseUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/+$/, "");
+  return `${baseUrl}/subcontractors/${logoVal}`;
+};
+
+const findContractorLogo = (contractorName, contractorsList = []) => {
+  if (!contractorName || contractorName === 'Unassigned' || contractorName === '—') return null;
+  const match = (contractorsList || []).find(c => {
+    const cName = c.company_name || c.companyName || c.subContractorName || c.subcontractor_name || c.name || '';
+    return cName.toLowerCase().trim() === String(contractorName).toLowerCase().trim() ||
+           cName.toLowerCase().includes(String(contractorName).toLowerCase().trim()) ||
+           String(contractorName).toLowerCase().includes(cName.toLowerCase().trim());
+  });
+  return match?.logo || match?.logo_url || match?.company_logo || match?.logoFile || null;
+};
+
+const ContractorLogo = ({ logoVal, name, size = 24 }) => {
+  const [hasError, setHasError] = useState(false);
+
+  const getInitials = (n) => {
+    if (!n) return "??";
+    let cleanName = String(n).replace(/&\w+;/g, "").replace(/#\s*\w+;/g, "");
+    cleanName = cleanName.replace(/[^a-zA-Z0-9\s]/g, "").trim();
+    const words = cleanName.split(/\s+/).filter(w => w.length > 0);
+    if (words.length === 0) return "??";
+    if (words.length === 1) return words[0].substring(0, 2).toUpperCase();
+    return (words[0][0] + (words[1] ? words[1][0] : "")).toUpperCase();
+  };
+
+  const getColor = (n) => {
+    if (!n) return "#3B82F6";
+    const colors = ["#3B82F6", "#10B981", "#F59E0B", "#8B5CF6", "#EC4899", "#6366F1", "#06B6D4", "#14B8A6"];
+    let hash = 0;
+    for (let i = 0; i < n.length; i++) {
+      hash = n.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return colors[Math.abs(hash) % colors.length];
+  };
+
+  const logoUrl = getLogoUrl(logoVal);
+
+  if (logoUrl && !hasError) {
+    return (
+      <img
+        src={logoUrl}
+        alt={`${name} logo`}
+        style={{
+          width: `${size}px`,
+          height: `${size}px`,
+          objectFit: "contain",
+          borderRadius: "50%",
+          flexShrink: 0,
+          background: "#ffffff",
+          border: "1px solid var(--border-color, #E5E7EB)",
+          padding: "1px"
+        }}
+        onError={() => setHasError(true)}
+      />
+    );
+  }
+
+  const bgCol = getColor(name);
+  return (
+    <div
+      style={{
+        width: `${size}px`,
+        height: `${size}px`,
+        borderRadius: "50%",
+        backgroundColor: bgCol,
+        color: "#FFFFFF",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontWeight: "700",
+        fontSize: `${Math.max(9, Math.floor(size * 0.42))}px`,
+        flexShrink: 0,
+        letterSpacing: "0.5px"
+      }}
+      title={name}
+    >
+      {getInitials(name)}
+    </div>
+  );
+};
+
+const StatusTracker = ({ inc, pipeline, isPendingClosure: initialIsPendingClosure }) => {
+  const [realStage, setRealStage] = React.useState(String(pipeline).toUpperCase());
+  const [realIsPendingClosure, setRealIsPendingClosure] = React.useState(initialIsPendingClosure);
+
+  const initialIsWaived = Boolean(
+    inc?.noFurtherInvestigation ||
+    inc?.incident?.noFurtherInvestigation ||
+    inc?.headsUp?.noFurtherInvestigation ||
+    inc?.initialReport?.noFurtherInvestigation
+  );
+  const [realIsWaived, setRealIsWaived] = React.useState(initialIsWaived);
+
+  const initialHasInitialReport = Boolean(
+    inc?.initialReport && (
+      (inc.initialReport.submittedBy && inc.initialReport.submittedBy !== "User") ||
+      inc.initialReport.signature ||
+      inc.initialReport.submittedTime ||
+      inc.initialReport.injuredPersonName ||
+      inc.initialReport.approvedBy
+    )
+  );
+  const [realHasInitialReport, setRealHasInitialReport] = React.useState(initialHasInitialReport);
+
+  const initialHasInvestigation = Boolean(
+    inc?.investigation && (
+      (Array.isArray(inc.investigation.signatures) && inc.investigation.signatures.length > 0) ||
+      (inc.investigation.problemStatement && inc.investigation.problemStatement.trim().length > 0) ||
+      (inc.investigation.investigationDetails && inc.investigation.investigationDetails.trim().length > 0) ||
+      inc.investigation.reviewedBy ||
+      inc.investigation.approvedBy
+    )
+  );
+  const [realHasInvestigation, setRealHasInvestigation] = React.useState(initialHasInvestigation);
+
+  React.useEffect(() => {
+    let isMounted = true;
+    const checkRealStatus = async () => {
+      try {
+        const { getIncidentById } = await import("../../../services/incidentService");
+        const res = await getIncidentById(inc.id);
+        if (!isMounted) return;
+        const data = res?.data || res;
+        if (!data) return;
+        
+        let latestStage = data.stage ? String(data.stage).toUpperCase() : realStage;
+        
+        // Backend doesn't reliably update the stage property, so we infer from nested approval signatures
+        if (data.initialReport?.approvedBy) {
+           latestStage = "INVESTIGATION";
+        } else if (data.headsUp?.approvedBy) {
+           if (latestStage === "HEADS_UP" || latestStage === "HEADS-UP") {
+               latestStage = "INITIAL_REPORT";
+           }
+        }
+        
+        const isPending = typeof data.investigation === 'object' && !!(data.investigation?.reviewedBy || data.investigation?.approvedBy);
+        if (isPending !== realIsPendingClosure) {
+            setRealIsPendingClosure(isPending);
+        }
+        
+        if (latestStage !== realStage) {
+          setRealStage(latestStage);
+        }
+
+        const latestWaived = Boolean(
+          data.noFurtherInvestigation ||
+          data.incident?.noFurtherInvestigation ||
+          data.headsUp?.noFurtherInvestigation ||
+          data.initialReport?.noFurtherInvestigation
+        );
+        if (latestWaived !== realIsWaived) {
+          setRealIsWaived(latestWaived);
+        }
+
+        const hasIr = Boolean(
+          data.initialReport && (
+            (data.initialReport.submittedBy && data.initialReport.submittedBy !== "User") ||
+            data.initialReport.signature ||
+            data.initialReport.submittedTime ||
+            data.initialReport.injuredPersonName ||
+            data.initialReport.approvedBy
+          )
+        );
+        if (hasIr !== realHasInitialReport) {
+          setRealHasInitialReport(hasIr);
+        }
+
+        const hasInv = Boolean(
+          data.investigation && (
+            (Array.isArray(data.investigation.signatures) && data.investigation.signatures.length > 0) ||
+            (data.investigation.problemStatement && data.investigation.problemStatement.trim().length > 0) ||
+            (data.investigation.investigationDetails && data.investigation.investigationDetails.trim().length > 0) ||
+            data.investigation.reviewedBy ||
+            data.investigation.approvedBy
+          )
+        );
+        if (hasInv !== realHasInvestigation) {
+          setRealHasInvestigation(hasInv);
+        }
+      } catch (err) {
+        console.error("StatusTracker fetch failed", err);
+      }
+    };
+    
+    // Fetch if the list says it's in an early stage or if waived to ensure accurate stage dots
+    if (
+      realStage === "HEADS_UP" || 
+      realStage === "INITIAL_REPORT" || 
+      realStage === "INITIAL" || 
+      realStage === "INVESTIGATION" ||
+      initialIsWaived
+    ) {
+      checkRealStatus();
+    }
+    
+    return () => { isMounted = false; };
+  }, [inc.id, pipeline, realIsPendingClosure, realStage, initialIsWaived]);
+
+  let normalizedPipeline = realStage;
+  if (normalizedPipeline === "INITIAL") normalizedPipeline = "INITIAL_REPORT";
+  
+  // In case the list API gave us clear signals, we still use them
+  if (typeof inc?.investigation === 'object' && Object.keys(inc.investigation).length > 0) {
+      if (normalizedPipeline === "INITIAL_REPORT" || normalizedPipeline === "HEADS_UP") {
+          normalizedPipeline = "INVESTIGATION";
+      }
+  }
+
+  const steps = [
+    { key: "Heads-Up", title: "Heads-Up Notification" },
+    { key: "Initial", title: "Initial Incident Report" },
+    { key: "Investigation", title: "Investigation Report" }
+  ];
+  const order = { 
+    "HEADS_UP": 0, "Heads-Up": 0, 
+    "INITIAL_REPORT": 1, "Initial": 1, 
+    "INVESTIGATION": 2, "Investigation": 2, 
+    "CLOSED": 3, "Closed": 3 
+  };
+  let curIdx = 0;
+  if (order.hasOwnProperty(normalizedPipeline)) curIdx = order[normalizedPipeline];
+  else if (order.hasOwnProperty(pipeline)) curIdx = order[pipeline];
+
+  const closed = normalizedPipeline === "CLOSED" || pipeline === "Closed";
+  const isOpenedState = !closed && curIdx === 2 && realIsPendingClosure;
+  
+  const label = closed 
+    ? (realIsWaived ? "Closed (Waived)" : "Closed") 
+    : isOpenedState 
+      ? (realIsWaived ? "Pending Closure (Waived)" : "Pending Closure") 
+      : (steps[curIdx] ? steps[curIdx].title : pipeline);
+
+  const getStageColor = () => {
+    if (closed && realIsWaived) return "#475569"; // Slate for waived
+    if (closed) return "#059669"; // Green
+    if (isOpenedState) return "#ea580c"; // Orange
+    if (curIdx === 0) return "#dc2626"; // Red
+    if (curIdx === 1) return "#2563eb"; // Blue
+    if (curIdx === 2) return "#7c3aed"; // Purple
+    return "#dc2626";
+  };
+  const activeColor = getStageColor();
+
+  const checkS = (
+    <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="#fff" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m5 13 4 4L19 7" />
+    </svg>
+  );
+
+  const waivedS = (
+    <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" />
+      <line x1="5.7" y1="5.7" x2="18.3" y2="18.3" />
+    </svg>
+  );
+
+  return (
+    <div className="st-track" title={realIsWaived && closed ? "Investigation Waived - Closed after stage sign-off" : label}>
+      {steps.map((step, i) => {
+        let state = "pending";
+        if (i === 0) {
+          if (closed || curIdx > 0) state = "done";
+          else if (curIdx === 0) state = "current";
+        } else if (i === 1) {
+          if (realIsWaived && !realHasInitialReport) {
+            state = "waived";
+          } else if (closed || curIdx > 1) {
+            state = "done";
+          } else if (curIdx === 1) {
+            state = "current";
+          }
+        } else if (i === 2) {
+          if (realIsWaived && !realHasInvestigation) {
+            state = "waived";
+          } else if (closed) {
+            state = "done";
+          } else if (isOpenedState) {
+            state = "opened";
+          } else if (curIdx === 2) {
+            state = "current";
+          }
+        }
+
+        const isWaivedStep = state === "waived";
+        const dotStyle = (state === "current" || state === "opened") 
+          ? { background: activeColor, boxShadow: `0 0 0 3px ${activeColor}33` } 
+          : isWaivedStep
+            ? { background: "#64748b", color: "#fff", border: "1.5px solid #475569" }
+            : {};
+
+        const lineClass = isWaivedStep 
+          ? "st-line on-waived"
+          : (i <= curIdx || closed)
+            ? "st-line on"
+            : "st-line";
+
+        return (
+          <React.Fragment key={step.key}>
+            <span className={lineClass} style={i === 0 ? { visibility: "hidden" } : {}}></span>
+            <span 
+              className={`st-dot st-${state}`} 
+              title={isWaivedStep ? `${step.title} (Waived)` : step.title} 
+              style={dotStyle}
+            >
+              {state === "done" ? checkS : isWaivedStep ? waivedS : (i + 1)}
+            </span>
+          </React.Fragment>
+        );
+      })}
+      <span className="st-label" style={{ 
+        color: activeColor, 
+        background: (closed && realIsWaived) ? "rgba(100, 116, 139, 0.12)" : `${activeColor}1A`, 
+        border: (closed && realIsWaived) ? "1px solid rgba(100, 116, 139, 0.28)" : "none",
+        padding: "4px 10px", 
+        borderRadius: "12px", 
+        fontWeight: 700, 
+        fontSize: "12px", 
+        display: "inline-block",
+        lineHeight: 1
+      }}>
+        {label}
+      </span>
+    </div>
+  );
+};
+
+function IMList() {
+  const navigate = useNavigate();
+  const [incidents, setIncidents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+
+  // Column Filters + top chip filter
+  const [filters, setFilters] = useState({
+    statusChip: "all", // "all", "open", "closed"
+    category: "",
+    building: "",
+    actualSeverity: "",
+    potentialSeverity: "",
+    investigationLevel: "",
+    contractor: "",
+    stage: "",
+    origin: ""
+  });
+
+  const [buildings, setBuildings] = useState([]);
+  const [contractors, setContractors] = useState([]);
+  const [stats, setStats] = useState(null);
+
+  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const rawRole = (localStorage.getItem("UserType") || currentUser?.role || currentUser?.userType || currentUser?.user_type || "").toUpperCase();
+  const userRolesArr = Array.isArray(currentUser?.userTypes) ? currentUser.userTypes.map((t) => String(t).toUpperCase()) : [];
+  const allRoles = [rawRole, ...userRolesArr].join(" ");
+  const isObserver = allRoles.includes("OBSERVER");
+  const isAdmin = (allRoles.includes("ADMIN") || allRoles.includes("SUPERADMIN") || Boolean(currentUser?.isSuperAdmin)) && !isObserver;
+  const isContractor = allRoles.includes("CONTRACTOR") || allRoles.includes("SUBCONTRACTOR") || Boolean(currentUser?.subcontractor_id) || Boolean(currentUser?.typeId && allRoles.includes("SUBCONTRACTOR"));
+  const contractorId = currentUser?.typeId || currentUser?.subcontractor_id || currentUser?.subContId || currentUser?.contractorId;
+
+  const [deletingIncident, setDeletingIncident] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDeleteIncident = async () => {
+    if (!deletingIncident) return;
+    try {
+      setIsDeleting(true);
+      await deleteIncident(deletingIncident.id, {
+        userId: currentUser?.id,
+        userRole: rawRole,
+      });
+      setIncidents((prev) => prev.filter((i) => i.id !== deletingIncident.id));
+      setTotalItems((prev) => Math.max(0, prev - 1));
+      setDeletingIncident(null);
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to delete incident.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const myContractor = useMemo(() => {
+    if (!isContractor) return null;
+    return (
+      contractors.find(c => 
+        String(c.id) === String(contractorId) || 
+        String(c.subcontractor_id) === String(contractorId) ||
+        (currentUser?.username && c.username === currentUser.username) ||
+        (currentUser?.company_name && (c.subContractorName === currentUser.company_name || c.company_name === currentUser.company_name)) ||
+        (currentUser?.companyName && (c.subContractorName === currentUser.companyName || c.company_name === currentUser.companyName))
+      ) || (contractors.length === 1 ? contractors[0] : null)
+    );
+  }, [isContractor, contractors, contractorId, currentUser?.company_name, currentUser?.companyName, currentUser?.username]);
+
+  const myContractorName = currentUser?.company_name || currentUser?.companyName || currentUser?.subContractorName || currentUser?.contractorName || myContractor?.subContractorName || myContractor?.company_name || myContractor?.companyName || myContractor?.subcontractor_name || myContractor?.name || "";
+
+  const fetchIncidents = async () => {
+    setLoading(true);
+    try {
+      const apiFilters = {
+        page: currentPage,
+        limit: itemsPerPage === "all" ? "all" : itemsPerPage,
+      };
+
+      if (isContractor) {
+        apiFilters.userRole = "CONTRACTOR";
+        if (contractorId) apiFilters.contractorId = contractorId;
+        if (myContractorName) apiFilters.contractor = myContractorName;
+      } else if (filters.contractor) {
+        apiFilters.contractor = filters.contractor;
+      }
+
+      if (filters.category) apiFilters.category = filters.category;
+      if (filters.building) apiFilters.building = filters.building;
+      if (filters.actualSeverity) apiFilters.actualSeverity = filters.actualSeverity;
+      if (filters.potentialSeverity) apiFilters.potentialSeverity = filters.potentialSeverity;
+      
+      if (filters.statusChip && filters.statusChip !== "all") apiFilters.statusChip = filters.statusChip;
+      
+      if (filters.investigationLevel) apiFilters.investigationLevel = filters.investigationLevel;
+      if (filters.stage) apiFilters.stage = filters.stage;
+      if (filters.origin) apiFilters.origin = filters.origin;
+
+      const response = await getIncidents(apiFilters);
+      
+      if (response && response.data && Array.isArray(response.data)) {
+        setIncidents(response.data);
+        const tot = response.total !== undefined ? response.total : response.data.length;
+        setTotalItems(tot);
+        const limitVal = itemsPerPage === "all" ? tot : Number(itemsPerPage);
+        setTotalPages(response.totalPages !== undefined ? response.totalPages : Math.ceil(tot / (limitVal || 1)));
+      } else if (Array.isArray(response)) {
+        setIncidents(response);
+        setTotalItems(response.length);
+        const limitVal = itemsPerPage === "all" ? response.length : Number(itemsPerPage);
+        setTotalPages(Math.ceil(response.length / (limitVal || 1)));
+      }
+    } catch (err) {
+      console.error("Failed to load incidents", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchStats = async () => {
+    try {
+      const statsParams = { dateRange: "all" };
+      if (isContractor) {
+        statsParams.userRole = "CONTRACTOR";
+        if (contractorId) statsParams.contractorId = contractorId;
+        if (myContractorName) statsParams.contractor = myContractorName;
+      } else if (filters.contractor) {
+        statsParams.contractor = filters.contractor;
+      }
+      if (filters.building) statsParams.building = filters.building;
+      const res = await getIncidentStats(statsParams);
+      if (res) setStats(res);
+    } catch (err) {
+      console.error("Failed to load incident stats", err);
+    }
+  };
+
+  useEffect(() => {
+    const fetchDropdowns = async () => {
+      try {
+        const [bRes, cRes] = await Promise.all([
+          getBuildings(1), // Assuming project 1
+          getContractors(1, 1000)
+        ]);
+        setBuildings(Array.isArray(bRes) ? bRes : (bRes.data || []));
+        setContractors(Array.isArray(cRes) ? cRes : (cRes.data || cRes.subContractors || []));
+      } catch (err) {
+        console.error("Failed to fetch dropdown data", err);
+      }
+    };
+    fetchDropdowns();
+  }, []);
+
+  useEffect(() => {
+    fetchIncidents();
+  }, [currentPage, itemsPerPage, filters, isContractor, contractorId, myContractorName]);
+
+  useEffect(() => {
+    fetchStats();
+  }, [filters.building, filters.contractor, isContractor, contractorId, myContractorName]);
+
+  const handleFilterChange = (key, value) => {
+    setCurrentPage(1);
+    setFilters(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const filteredIncidents = incidents;
+
+  const currentIncidents = filteredIncidents;
+  const total = stats?.kpis?.total !== undefined ? stats.kpis.total : (isContractor ? filteredIncidents.length : totalItems);
+  const openCount = stats?.kpis?.active !== undefined ? stats.kpis.active : filteredIncidents.filter(i => i.stage !== "CLOSED" && i.status !== "Closed").length;
+  const invCount = stats?.pipeline
+    ? (stats.pipeline.find(p => p.label === "Initial")?.count || 0) + (stats.pipeline.find(p => p.label === "Investigation")?.count || 0)
+    : filteredIncidents.filter(i => i.stage === "INITIAL_REPORT" || i.stage === "INVESTIGATION" || i.pipeline === "Initial" || i.pipeline === "Investigation").length;
+
+  // Pipeline Stages
+  const pipelineStages = [
+    { key: "HEADS_UP", statLabel: "Heads-Up", match: ["Heads-Up", "HEADS_UP"], label: "Heads-Up (2h)", color: "var(--text-main)", bg: "var(--color-gray-bg)" },
+    { key: "INITIAL_REPORT", statLabel: "Initial", match: ["Initial", "INITIAL_REPORT"], label: "Initial Report (24h)", color: "var(--color-caution)", bg: "var(--color-caution-bg)" },
+    { key: "INVESTIGATION", statLabel: "Investigation", match: ["Investigation", "INVESTIGATION"], label: "Investigation (7d)", color: "var(--text-muted)", bg: "var(--color-gray-bg)" },
+    { key: "CLOSED", statLabel: "Closed", match: ["Closed", "CLOSED"], label: "Closed", color: "var(--color-safe)", bg: "var(--color-safe-bg)" }
+  ];
+
+  // Classification 
+  const orderClass = ["Near Miss", "First Aid Injury", "Medical Treatment Injury", "Restricted Work Injury", "Lost Time Injury", "Property Damage", "Environmental Incident", "Personal Injury"];
+  const palClass = { "Near Miss": "var(--nne-brand-blue, #131E40)", "First Aid Injury": "#C07D10", "Medical Treatment Injury": "#E8663A", "Restricted Work Injury": "#8F1B32", "Lost Time Injury": "var(--nne-brand-red, #E32B50)", "Property Damage": "var(--nne-concrete, #c8c8c8)", "Environmental Incident": "var(--nne-copper, #c46d32)" };
+  
+  const classRows = orderClass.map(c => {
+    let n = 0;
+    if (stats?.types) {
+      const found = stats.types.find(t => t.type === c);
+      n = found ? found.count : 0;
+    } else {
+      n = filteredIncidents.filter(i => i.category === c || i.classification === c || (i.categories && i.categories.includes(c))).length;
+    }
+    return n > 0 ? { label: c, n, color: palClass[c] || "#A1A5B3" } : null;
+  }).filter(Boolean);
+  if (!classRows.length) classRows.push({ label: "No incidents", n: 0, color: "#A1A5B3" });
+  const maxClass = Math.max(...classRows.map(r => r.n), 1);
+
+  // Potential Severity
+  const potRows = [];
+  for (let lvl = 5; lvl >= 1; lvl--) {
+    const meta = severityMeta(lvl);
+    let n = 0;
+    if (stats?.potentialSeverity && stats.potentialSeverity[lvl] !== undefined) {
+      n = stats.potentialSeverity[lvl];
+    } else {
+      n = filteredIncidents.filter(i => String(i.potentialSeverity) === String(lvl)).length;
+    }
+    potRows.push({ label: `${lvl} · ${meta.label}`, n, color: meta.color });
+  }
+  const maxPot = Math.max(...potRows.map(r => r.n), 1);
+
+  return (
+    <div className="mod-page">
+      {/* ── Breadcrumbs ── */}
+      <div style={{ marginBottom: "12px", color: "var(--text-muted)", fontSize: "0.75rem", fontWeight: 600, display: 'flex', gap: '6px', alignItems: 'center' }}>
+         <span style={{ cursor: 'pointer' }} onClick={() => navigate("/")}>Home</span> &rsaquo; 
+         <span style={{ cursor: 'pointer' }} onClick={() => navigate("/incident-management/dashboard")}>Incident Management</span> &rsaquo; 
+         <span style={{ color: 'var(--text-main)' }}>Incidents</span>
+      </div>
+
+      {/* ── Hero ── */}
+      <div style={{ 
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        background: 'var(--bg-card)', borderRadius: '8px', padding: '12px 16px',
+        border: '1px solid var(--border-color)', boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
+        marginBottom: '20px'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ 
+            width: '36px', height: '36px', borderRadius: '8px', background: 'rgba(59, 130, 246, 0.1)',
+            color: '#3B82F6', display: 'flex', alignItems: 'center', justifyContent: 'center' 
+          }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div>
+            <h1 style={{ margin: '0 0 2px 0', fontSize: '1rem', fontWeight: 700, color: 'var(--text-main)' }}>Incidents</h1>
+            <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-muted)' }}>{total} total incidents</p>
+          </div>
+        </div>
+        <div>
+          {!isObserver && (
+            <button type="button" className="mod-btn-primary" onClick={() => navigate("/incident-management/create")}>
+              + Report Incident
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* KPI Row */}
+      <div className="im-kpis">
+        {[
+          { label: "Total Incidents", value: total, sub: "this period", accent: "var(--accent-primary)" },
+          { label: "Open", value: openCount, sub: "awaiting close-out", accent: "var(--color-caution)", valColor: "var(--color-caution)" },
+          { label: "Under Investigation", value: invCount, sub: "initial / investigation", accent: "var(--text-muted)", valColor: "var(--text-muted)" }
+        ].map(k => (
+          <div key={k.label} className="im-stat" style={{ "--a": k.accent }}>
+            <div className="im-stat-top"><span className="im-stat-label">{k.label}</span></div>
+            <div className="im-stat-val" style={{ color: k.valColor || "var(--text, #334155)" }}>{k.value}</div>
+            <div className="im-stat-sub">{k.sub}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Pipeline Overview */}
+      <div className="mod-card mb-6">
+        <div className="mod-card-header"><span className="mod-card-title">Investigation Pipeline</span></div>
+        <div className="mod-card-body">
+          <div style={{ display: "flex", gap: "12px", overflowX: "auto" }}>
+            {pipelineStages.map(s => {
+              let n = 0;
+              if (stats?.pipeline) {
+                const found = stats.pipeline.find(p => p.label === s.statLabel || s.match.includes(p.label));
+                n = found ? found.count : 0;
+              } else {
+                n = filteredIncidents.filter(i => s.match.includes(i.stage) || s.match.includes(i.pipeline)).length;
+              }
+              const pct = Math.round(n / Math.max(total, 1) * 100);
+              return (
+                <div key={s.key} style={{ flex: 1, minWidth: 150, textAlign: "center", padding: "16px", borderRadius: "8px", background: s.bg }}>
+                  <div style={{ fontSize: "28px", fontWeight: 700, color: s.color }}>{n}</div>
+                  <div style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600 }}>{s.label}</div>
+                  <div className="progress-bar" style={{ marginTop: 16 }}>
+                    <div className="progress-fill" style={{ width: `${pct}%`, background: s.color }}></div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Classifications & Severity */}
+      <div className="grid-2 mb-6">
+        <div className="mod-card">
+          <div className="mod-card-header"><span className="mod-card-title">By Classification</span></div>
+          <div className="mod-card-body">
+            {classRows.map(r => (
+              <div key={r.label} className="stat-bar">
+                <span className="stat-bar-label">{r.label}</span>
+                <div className="stat-bar-track">
+                  <div className="stat-bar-fill" style={{ width: `${r.n / maxClass * 100}%`, background: r.color }}></div>
+                </div>
+                <span className="stat-bar-value">{r.n}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="mod-card">
+          <div className="mod-card-header"><span className="mod-card-title">By Potential Severity</span></div>
+          <div className="mod-card-body">
+            {potRows.map(r => (
+              <div key={r.label} className="stat-bar">
+                <span className="stat-bar-label">{r.label}</span>
+                <div className="stat-bar-track">
+                  <div className="stat-bar-fill" style={{ width: `${r.n / maxPot * 100}%`, background: r.color }}></div>
+                </div>
+                <span className="stat-bar-value">{r.n}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Filter Bar */}
+      <div className="filter-bar">
+        {["all", "open", "closed"].map(f => (
+          <span key={f} className={`filter-chip ${filters.statusChip === f ? "active" : ""}`} onClick={() => handleFilterChange('statusChip', f)}>
+            {f === "all" ? "All" : f === "open" ? "Open" : "Closed"}
+          </span>
+        ))}
+      </div>
+
+      {/* Table */}
+      <div className="mod-card">
+        <div className="mod-table-wrap">
+          <table className="mod-table">
+            <thead>
+              <tr>
+                <th className="ith">TITLE</th>
+                <th className="ith">OCCURRED</th>
+                <th className="ith">DATE CREATED</th>
+                <th className="ith">LAST EDITED</th>
+                <th className="ith">CLASSIFICATION</th>
+                <th className="ith">BUILDING</th>
+                <th className="ith">ACTUAL</th>
+                <th className="ith">POTENTIAL</th>
+                <th className="ith">INV.</th>
+                <th className="ith">CONTRACTOR</th>
+                <th className="ith">ORIGIN</th>
+                <th className="ith" style={{ minWidth: 205, position: "sticky", right: isAdmin ? 60 : 0, zIndex: 3, background: "var(--bg-card, #fff)" }}>STATUS</th>
+                {isAdmin && (
+                  <th className="ith" style={{ minWidth: 60, width: 60, textAlign: "center", position: "sticky", right: 0, zIndex: 3, background: "var(--bg-card, #fff)" }}>ACTION</th>
+                )}
+              </tr>
+              <tr style={{ background: "var(--bg-card)" }}>
+                <th colSpan="4"></th>
+                <th>
+                  <select className="mod-form-select" style={{ padding: "4px 24px 4px 8px", fontSize: "11px", height: "auto" }} value={filters.category} onChange={e => handleFilterChange('category', e.target.value)}>
+                    <option value="">All</option>
+                    {orderClass.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </th>
+                <th>
+                  <select className="mod-form-select" style={{ padding: "4px 24px 4px 8px", fontSize: "11px", height: "auto" }} value={filters.building} onChange={e => handleFilterChange('building', e.target.value)}>
+                    <option value="">All</option>
+                    {buildings.map((b, i) => {
+                      const bName = b.building_name || b.buildingName || b.name || (typeof b === 'string' ? b : String(b.build_id || i));
+                      return <option key={i} value={bName}>{bName}</option>;
+                    })}
+                  </select>
+                </th>
+                <th>
+                  <select className="mod-form-select" style={{ padding: "4px 24px 4px 8px", fontSize: "11px", height: "auto" }} value={filters.actualSeverity} onChange={e => handleFilterChange('actualSeverity', e.target.value)}>
+                    <option value="">All</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
+                </th>
+                <th>
+                  <select className="mod-form-select" style={{ padding: "4px 24px 4px 8px", fontSize: "11px", height: "auto" }} value={filters.potentialSeverity} onChange={e => handleFilterChange('potentialSeverity', e.target.value)}>
+                    <option value="">All</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
+                </th>
+                <th>
+                  <select className="mod-form-select" style={{ padding: "4px 24px 4px 8px", fontSize: "11px", height: "auto" }} value={filters.investigationLevel} onChange={e => handleFilterChange('investigationLevel', e.target.value)}>
+                    <option value="">All</option>
+                    <option value="L1">L1</option>
+                    <option value="L2">L2</option>
+                    <option value="L3">L3</option>
+                  </select>
+                </th>
+                <th>
+                  {isContractor ? (
+                    <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--text-muted)" }}>{myContractorName || "Contractor"}</span>
+                  ) : (
+                    <select className="mod-form-select" style={{ padding: "4px 24px 4px 8px", fontSize: "11px", height: "auto" }} value={filters.contractor} onChange={e => handleFilterChange('contractor', e.target.value)}>
+                      <option value="">All</option>
+                      {contractors.map((c, i) => {
+                        const cName = c.subContractorName || c.name || (typeof c === 'string' ? c : String(c.id || i));
+                        return <option key={i} value={cName}>{cName}</option>;
+                      })}
+                    </select>
+                  )}
+                </th>
+                <th>
+                  <select className="mod-form-select" style={{ padding: "4px 24px 4px 8px", fontSize: "11px", height: "auto" }} value={filters.origin} onChange={e => handleFilterChange('origin', e.target.value)}>
+                    <option value="">All</option>
+                    <option value="Direct">Direct</option>
+                    <option value="Observation">Observation</option>
+                  </select>
+                </th>
+                <th style={{ position: "sticky", right: isAdmin ? 60 : 0, zIndex: 3, background: "var(--bg-card, #fff)" }}></th>
+                {isAdmin && (
+                  <th style={{ position: "sticky", right: 0, zIndex: 3, background: "var(--bg-card, #fff)" }}></th>
+                )}
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr><td colSpan={isAdmin ? 14 : 13} style={{ textAlign: "center", padding: "48px 0" }}><Loader size="md" text="Loading Incidents..." /></td></tr>
+              ) : currentIncidents.length === 0 ? (
+                <tr><td colSpan={isAdmin ? 14 : 13} style={{ textAlign: "center", padding: "48px 0", color: "var(--text-muted)" }}>No incidents found</td></tr>
+              ) : currentIncidents.map(inc => (
+                <tr key={inc.id} onClick={() => navigate(`/incident-management/details/${inc.id}`)} style={{ cursor: "pointer" }}>
+                  <td style={{ maxWidth: "180px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontWeight: 600 }}>{inc.caseNumber || inc.title || "—"}</td>
+                  <td style={{ whiteSpace: "nowrap" }}>{inc.incidentDate || inc.date || "—"}</td>
+                  <td style={{ whiteSpace: "nowrap", fontSize: "12px" }}>{inc.createdTime || inc.createdAt ? formatToDenmark24Hour(inc.createdTime || inc.createdAt) : "—"}</td>
+                  <td style={{ whiteSpace: "nowrap", fontSize: "12px" }}>{inc.updatedTime || inc.editedAt ? formatToDenmark24Hour(inc.updatedTime || inc.editedAt) : "—"}</td>
+                  <td style={{ whiteSpace: "nowrap" }}>{inc.categories?.[0] || inc.category || "—"}</td>
+                  <td>{inc.buildingName || inc.building || "—"}</td>
+                  <td><SevPill level={inc.actualSeverity} /></td>
+                  <td><SevPill level={inc.potentialSeverity} /></td>
+                  <td>
+                    {(inc.investigationLevel || inc.investigation) ? (
+                      <span className={`badge ${(inc.investigationLevel || inc.investigation) === "L3" ? "badge-red" : (inc.investigationLevel || inc.investigation) === "L2" ? "badge-orange" : "badge-gray"}`}>
+                        {inc.investigationLevel || inc.investigation}
+                      </span>
+                    ) : <span style={{ color: "var(--text-muted)" }}>—</span>}
+                  </td>
+                  <td>
+                    {inc.contractorsInvolved || inc.contractor ? (
+                       <div style={{ display: "flex", alignItems: "center", gap: 8, whiteSpace: "nowrap" }}>
+                         <ContractorLogo
+                           logoVal={findContractorLogo(inc.contractorsInvolved || inc.contractor, contractors)}
+                           name={inc.contractorsInvolved || inc.contractor}
+                           size={24}
+                         />
+                         <span>{inc.contractorsInvolved || inc.contractor}</span>
+                       </div>
+                    ) : (
+                       <span style={{ color: "var(--text-muted)" }}>—</span>
+                    )}
+                  </td>
+                  <td><span style={{ whiteSpace: "nowrap" }}>{inc.origin || "Direct"}</span></td>
+                  <td style={{ position: "sticky", right: isAdmin ? 60 : 0, zIndex: 1, background: "var(--bg-card, #fff)", borderLeft: "1px solid var(--border-color)", boxShadow: "-4px 0 12px rgba(0,0,0,0.02)" }}><StatusTracker inc={inc} pipeline={inc.stage || inc.pipeline || "Closed"} isPendingClosure={typeof inc.investigation === 'object' && !!(inc.investigation?.reviewedBy || inc.investigation?.approvedBy)} /></td>
+                  {isAdmin && (
+                    <td style={{ position: "sticky", right: 0, zIndex: 1, background: "var(--bg-card, #fff)", textAlign: "center", borderLeft: "1px solid var(--border-color)" }} onClick={(e) => e.stopPropagation()}>
+                      <button
+                        className="mod-btn-outline"
+                        style={{
+                          width: "30px",
+                          height: "30px",
+                          padding: 0,
+                          borderRadius: "6px",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                          color: "#E32B50",
+                          borderColor: "rgba(227,43,80,0.3)",
+                          background: "rgba(227,43,80,0.06)",
+                        }}
+                        title="Delete Incident (Admin only)"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setDeletingIncident(inc);
+                        }}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="3 6 5 6 21 6" />
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                          <line x1="10" y1="11" x2="10" y2="17" />
+                          <line x1="14" y1="11" x2="14" y2="17" />
+                        </svg>
+                      </button>
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        
+        {/* ── Pagination ── */}
+        {!loading && totalItems > 0 && (
+          <div className="beam-pagination" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px", borderTop: "1px solid var(--border-color)", flexWrap: "wrap", gap: "12px" }}>
+            <div style={{ fontSize: "12px", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "12px" }}>
+              <span>
+                Showing {totalItems === 0 ? 0 : (currentPage - 1) * (itemsPerPage === "all" ? totalItems : itemsPerPage) + 1} to {itemsPerPage === "all" ? totalItems : Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} incidents
+              </span>
+              <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <span>Per page:</span>
+                <select
+                  value={itemsPerPage}
+                  onChange={(e) => {
+                    const val = e.target.value === "all" ? "all" : Number(e.target.value);
+                    setItemsPerPage(val);
+                    setCurrentPage(1);
+                  }}
+                  style={{ padding: "4px 8px", fontSize: "12px", borderRadius: "4px", border: "1px solid var(--border-color)", background: "var(--bg-card)", color: "var(--text-main)" }}
+                >
+                  <option value={10}>10</option>
+                  <option value={25}>25</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
+                  <option value="all">All</option>
+                </select>
+              </div>
+            </div>
+
+            {totalPages > 1 && itemsPerPage !== "all" && (
+              <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
+                <button className="beam-page-btn" disabled={currentPage === 1} onClick={() => handlePageChange(currentPage - 1)}>←</button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .filter(page => page === 1 || page === totalPages || Math.abs(page - currentPage) <= 2)
+                  .reduce((acc, page, i, arr) => {
+                    if (i > 0 && page - arr[i - 1] > 1) {
+                      acc.push('ellipsis-' + page);
+                    }
+                    acc.push(page);
+                    return acc;
+                  }, [])
+                  .map(item => typeof item === 'string' ? (
+                    <span key={item} style={{ padding: "0 6px", color: "var(--text-muted)", fontSize: "12px" }}>...</span>
+                  ) : (
+                    <button key={item} className={`beam-page-number ${currentPage === item ? "beam-page-number--active" : ""}`} onClick={() => handlePageChange(item)}>
+                      {item}
+                    </button>
+                  ))}
+                <button className="beam-page-btn" disabled={currentPage === totalPages} onClick={() => handlePageChange(currentPage + 1)}>→</button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Delete Confirmation Modal */}
+      {deletingIncident && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+            padding: "20px",
+          }}
+          onClick={() => !isDeleting && setDeletingIncident(null)}
+        >
+          <div
+            className="mod-card"
+            style={{ maxWidth: 460, width: "100%", padding: 24, boxShadow: "0 20px 25px -5px rgba(0,0,0,0.2)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+              <div
+                style={{
+                  width: 42,
+                  height: 42,
+                  borderRadius: "50%",
+                  background: "rgba(227,43,80,0.12)",
+                  color: "#E32B50",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                  <line x1="10" y1="11" x2="10" y2="17" />
+                  <line x1="14" y1="11" x2="14" y2="17" />
+                </svg>
+              </div>
+              <div>
+                <h3 style={{ margin: 0, fontSize: 17, color: "var(--text-main)" }}>Delete Incident</h3>
+                <p style={{ margin: "4px 0 0", fontSize: 13, color: "var(--text-muted)" }}>
+                  Case: <strong style={{ fontFamily: "monospace" }}>{deletingIncident.caseNumber || deletingIncident.title || `#${deletingIncident.id}`}</strong>
+                </p>
+              </div>
+            </div>
+
+            <p style={{ fontSize: 14, lineHeight: 1.5, color: "var(--text-main)", marginBottom: 20 }}>
+              Are you sure you want to permanently delete this incident record? This will delete all 3 stages (Heads-Up, Initial Report, Investigation) and all associated action items and photos. This action cannot be undone.
+            </p>
+
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
+              <button
+                type="button"
+                className="mod-btn-outline"
+                disabled={isDeleting}
+                onClick={() => setDeletingIncident(null)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="mod-btn-primary"
+                disabled={isDeleting}
+                style={{ background: "#E32B50", borderColor: "#E32B50", color: "#fff" }}
+                onClick={handleDeleteIncident}
+              >
+                {isDeleting ? "Deleting..." : "Confirm Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default IMList;
