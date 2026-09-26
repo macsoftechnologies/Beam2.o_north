@@ -70,7 +70,7 @@ import PolygonEditor from "../pages/PolygonEditor/PolygonEditor";
 
 function AppRoutes() {
   return (
-    <BrowserRouter basename="/development/m3south">
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
 
         {/* Public Routes - restricted if user has valid token */}
