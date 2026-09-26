@@ -116,7 +116,7 @@ export default function Login() {
           <div className="panel-left">
             <div className="panel-glow"></div>
             <div className="panel-glow-2"></div>
-            <div className="panel-compass">S</div>
+            <div className="panel-compass">N</div>
 
             <div className="panel-top">
               <div className="ssw-login-brand">
@@ -134,10 +134,10 @@ export default function Login() {
               <div className="beam20-login-badge">BEAM 2.0</div>
 
               <div className="panel-badge">
-                <span className="dot"></span>Division 02
+                <span className="dot"></span>Division 01
               </div>
               <h2 className="panel-title">
-                M3 <span>South</span>
+                M3 <span>North</span>
                 <br />Operations
               </h2>
               <p className="panel-desc">

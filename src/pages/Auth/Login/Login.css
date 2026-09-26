@@ -3,9 +3,9 @@
   --login-surface: rgba(4, 14, 38, .95);
   --login-surface-soft: rgba(8, 24, 54, .90);
 
-  --accent: #078a68;
-  --accent-light: #28b98d;
-  --accent-rgb: 7,138,104;
+  --accent: #2563eb;
+  --accent-light: #4b86f7;
+  --accent-rgb: 37,99,235;
 
   --gold: #e7b735;
   --white: #ffffff;
@@ -998,14 +998,14 @@ main {
 
 /* =========================================================
    SAFESITEWORKS PRODUCT LOGIN THEME V2
-   M3 SOUTH
+   M3 NORTH
    Append-only visual layer
    ========================================================= */
 
 :root {
-  --ssw-accent: #078d69;
-  --ssw-accent-2: #31bd91;
-  --ssw-accent-rgb: 7,141,105;
+  --ssw-accent: #1760db;
+  --ssw-accent-2: #4a86f8;
+  --ssw-accent-rgb: 23,96,219;
   --ssw-red: #e31937;
   --ssw-gold: #f3b822;
 }
@@ -1568,9 +1568,9 @@ main {
    ========================================================= */
 
 :root {
-  --final-accent: #078f69;
-  --final-accent2: #31c394;
-  --final-rgb: 7,143,105;
+  --final-accent: #1760db;
+  --final-accent2: #4387f7;
+  --final-rgb: 23,96,219;
 
   --final-gold: #f4be2b;
   --final-red: #ef172f;
@@ -2461,12 +2461,12 @@ body {
   background:
     radial-gradient(
       circle at 50% 52%,
-      rgba(24,174,128, .13),
+      rgba(30,105,235, .13),
       transparent 34%
     ),
     radial-gradient(
       circle at 12% 30%,
-      rgba(24,174,128, .08),
+      rgba(30,105,235, .08),
       transparent 27%
     ),
     radial-gradient(
@@ -2546,7 +2546,7 @@ body::after {
   background:
     radial-gradient(
       circle at 9% 22%,
-      rgba(24,174,128,.95) 0 1px,
+      rgba(30,105,235,.95) 0 1px,
       transparent 2px
     ),
     radial-gradient(
@@ -2561,7 +2561,7 @@ body::after {
     ),
     radial-gradient(
       circle at 73% 16%,
-      rgba(24,174,128,.72) 0 1px,
+      rgba(30,105,235,.72) 0 1px,
       transparent 2px
     ),
     radial-gradient(
@@ -2609,7 +2609,7 @@ body::after {
 
   box-shadow:
     0 36px 105px rgba(0,0,0,.46),
-    0 0 85px rgba(24,174,128,.075) !important;
+    0 0 85px rgba(30,105,235,.075) !important;
 }
 
 
