@@ -290,7 +290,7 @@ export default function SCView() {
                 </span>
               </div>
               <div className="sc-meta-item">
-                <span className="sc-meta-label">Safety Issue Created:</span>
+                <span className="sc-meta-label">Safety Observation Created:</span>
                 <span className="sc-meta-value">
                   {spotCheck.safetyIssueCreated === 'Yes' ? (
                     <span className="sc-badge sc-badge-danger">Yes ({spotCheck.safetyIssueRef || "Logged"})</span>
@@ -497,7 +497,7 @@ export default function SCView() {
                 </span>
                 <div className="grid-2-col">
                   <div className="sc-meta-item" style={{ gridColumn: "span 2" }}>
-                    <span className="sc-meta-label">Safety issue / SPOT ref:</span>
+                    <span className="sc-meta-label">Safety Observation / SPOT ref:</span>
                     <span className="sc-meta-value">
                       {spotCheck.safetyIssueRef ? (
                         <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
