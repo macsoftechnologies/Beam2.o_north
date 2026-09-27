@@ -11,9 +11,21 @@ import { BUILDINGS } from "../../../data/buildings";
 import { AnalogTimePicker } from "../../incident-management/pages/IMCreate";
 import "../../../styles/module-shared.css";
 
-const defaultProjectName = (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '').toLowerCase().includes('north')
+const defaultProjectName = (
+  (import.meta.env.VITE_API_BASE_URL || '') +
+  ' ' +
+  (import.meta.env.VITE_API_URL || '') +
+  ' ' +
+  (typeof window !== 'undefined' ? window.location.pathname + ' ' + window.location.href : '')
+).toLowerCase().includes('north')
   ? 'M3NORTH'
-  : (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '').toLowerCase().includes('infra')
+  : (
+    (import.meta.env.VITE_API_BASE_URL || '') +
+    ' ' +
+    (import.meta.env.VITE_API_URL || '') +
+    ' ' +
+    (typeof window !== 'undefined' ? window.location.pathname + ' ' + window.location.href : '')
+  ).toLowerCase().includes('infra')
     ? 'M3INFRASTRUCTURE'
     : 'M3SOUTH';
 
@@ -131,7 +143,7 @@ function SOCreate() {
           subcategory: obs.subcategory || "",
           customSubcategory: "",
           riskLevel: obs.riskLevel || "MEDIUM",
-          projectName: obs.projectName || "M3SOUTH",
+          projectName: obs.projectName || defaultProjectName,
           assignedContractorId: obs.assignedContractorId ? String(obs.assignedContractorId) : "",
           assignedContractorName: obs.assignedContractorName || "",
           description: obs.description || "",
@@ -477,7 +489,7 @@ const dataURLtoBlob = (dataurl) => {
       }
       formData.append("riskLevel", form.riskLevel);
       formData.append("description", form.description);
-      formData.append("projectName", defaultProjectName);
+      formData.append("projectName", form.projectName || defaultProjectName);
       if (building) formData.append("buildingId", building);
       if (bName) formData.append("buildingName", bName);
       if (level) formData.append("floorLevel", level);

@@ -134,7 +134,7 @@ export async function generateObservationClientPdf(data, fileName = "Safety_Obse
         <td style="width: 50%; padding-right: 6px;">
           <div style="border: 1px solid #cbd5e1; background: #f8fafc; padding: 7px 10px; border-radius: 4px;">
             <b>Observation Ref:</b> <span style="font-family: monospace; font-size: 12px; font-weight: 700; color: #0284c7;">${obsRef}</span><br />
-            <b>Project Name:</b> ${obs.projectName || ((import.meta.env?.VITE_API_BASE_URL || '').toLowerCase().includes('north') ? 'M3NORTH' : (import.meta.env?.VITE_API_BASE_URL || '').toLowerCase().includes('infra') ? 'M3INFRASTRUCTURE' : 'M3SOUTH')}<br />
+            <b>Project Name:</b> ${(obs.projectName && obs.projectName !== '-') ? obs.projectName : (obs.project && obs.project !== '-') ? obs.project : (obs.project_name && obs.project_name !== '-') ? obs.project_name : ((import.meta.env?.VITE_API_BASE_URL || '').toLowerCase().includes('north') ? 'M3NORTH' : (import.meta.env?.VITE_API_BASE_URL || '').toLowerCase().includes('infra') ? 'M3INFRASTRUCTURE' : 'M3SOUTH')}<br />
             <b>Date of Observation:</b> ${formatDate(obs.observationDate || obs.createdTime)} ${obs.observationTime ? `(${obs.observationTime})` : ""}
           </div>
         </td>

@@ -7,6 +7,24 @@ import { API_BASE_URL } from "../../../services/api";
 import { formatToDenmark24Hour } from "../../../utils/dateUtils";
 import "../../../styles/module-shared.css";
 
+const defaultProjectName = (
+  (import.meta.env.VITE_API_BASE_URL || '') +
+  ' ' +
+  (import.meta.env.VITE_API_URL || '') +
+  ' ' +
+  (typeof window !== 'undefined' ? window.location.pathname + ' ' + window.location.href : '')
+).toLowerCase().includes('north')
+  ? 'M3NORTH'
+  : (
+    (import.meta.env.VITE_API_BASE_URL || '') +
+    ' ' +
+    (import.meta.env.VITE_API_URL || '') +
+    ' ' +
+    (typeof window !== 'undefined' ? window.location.pathname + ' ' + window.location.href : '')
+  ).toLowerCase().includes('infra')
+    ? 'M3INFRASTRUCTURE'
+    : 'M3SOUTH';
+
 function SODetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -491,7 +509,15 @@ function SODetails() {
             </div>
             <div className="mod-card-body obs-detail-grid">
               <div style={{ color: "var(--text-muted)", fontWeight: 600 }}>Project</div>
-              <div>{obs.projectName || "-"}</div>
+              <div>
+                {(obs.projectName && obs.projectName !== "-")
+                  ? obs.projectName
+                  : (obs.project && obs.project !== "-")
+                    ? obs.project
+                    : (obs.project_name && obs.project_name !== "-")
+                      ? obs.project_name
+                      : defaultProjectName}
+              </div>
               <div style={{ color: "var(--text-muted)", fontWeight: 600 }}>Building</div>
               <div>{obs.buildingName || "-"}</div>
               <div style={{ color: "var(--text-muted)", fontWeight: 600 }}>Location Detail</div>

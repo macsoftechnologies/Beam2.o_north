@@ -8,6 +8,24 @@ import { getBuildings, getRooms, getFloors, getContractors } from "../../../serv
 import { observationService } from "../../../services/observationService";
 import "./SafetyIssueModal.css";
 
+const defaultProjectName = (
+  (import.meta.env.VITE_API_BASE_URL || '') +
+  ' ' +
+  (import.meta.env.VITE_API_URL || '') +
+  ' ' +
+  (typeof window !== 'undefined' ? window.location.pathname + ' ' + window.location.href : '')
+).toLowerCase().includes('north')
+  ? 'M3NORTH'
+  : (
+    (import.meta.env.VITE_API_BASE_URL || '') +
+    ' ' +
+    (import.meta.env.VITE_API_URL || '') +
+    ' ' +
+    (typeof window !== 'undefined' ? window.location.pathname + ' ' + window.location.href : '')
+  ).toLowerCase().includes('infra')
+    ? 'M3INFRASTRUCTURE'
+    : 'M3SOUTH';
+
 export const SAFETY_SUBCATEGORIES = {
   "1. Access / Exit": [
     "1.1 Blocked access – pedestrian",
@@ -512,6 +530,7 @@ export default function SafetyIssueModal({ open, onClose, subject, color, itemIn
       if (currentUser?.id) formData.append("createdByUserId", currentUser.id);
       formData.append("createdByUserName", currentUser?.name || currentUser?.username || "Safety Inspector");
       formData.append("createdByRole", currentUser?.role || "DEPARTMENT");
+      formData.append("projectName", defaultProjectName);
 
       photoFiles.forEach(file => {
         formData.append("photos", file);
