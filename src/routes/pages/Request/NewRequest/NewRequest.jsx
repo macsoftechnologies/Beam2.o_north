@@ -2091,48 +2091,16 @@ function NewRequest() {
     const selectedZoneIds = new Set();
     const resolvedZoneNames = new Set();
 
-    // 1. Resolve directly from selected rooms (using room.zone_id and floor matching)
+    // 1. Resolve directly from selected rooms
     selectedRooms.forEach(token => {
       const parsed = parseRoomToken(token, level);
       const rName = (parsed.roomName || "").toLowerCase().trim();
       const zName = (parsed.zone || "").toLowerCase().trim();
 
-      // 1a. Room match with floor + building
-      let foundRoom = roomsList.find(r =>
-        ((r.room_name || r.name || "").toLowerCase().trim() === rName || String(r.room_id ?? r.id) === rName) &&
-        (!building || String(r.building_id) === String(building)) &&
-        (uniqueFloorIds.length === 0 || uniqueFloorIds.includes(String(r.fl_id || r.floor_id || "")))
-      );
-
-      // 1b. Room match with building only
-      if (!foundRoom) {
-        foundRoom = roomsList.find(r =>
-          ((r.room_name || r.name || "").toLowerCase().trim() === rName || String(r.room_id ?? r.id) === rName) &&
-          (!building || String(r.building_id) === String(building))
-        );
-      }
-
-      // 1c. Room match across all rooms
-      if (!foundRoom) {
-        foundRoom = roomsList.find(r =>
-          (r.room_name || r.name || "").toLowerCase().trim() === rName || String(r.room_id ?? r.id) === rName
-        );
-      }
-
-      if (foundRoom && foundRoom.zone_id) {
-        selectedZoneIds.add(String(foundRoom.zone_id));
-        const foundZ = zonesList.find(z => String(z.id ?? z.zoneStatusId) === String(foundRoom.zone_id));
-        if (foundZ && (foundZ.zone || foundZ.zone_name)) {
-          resolvedZoneNames.add(foundZ.zone || foundZ.zone_name);
-        }
-        if (foundRoom.fl_id && !uniqueFloorIds.includes(String(foundRoom.fl_id))) {
-          uniqueFloorIds.push(String(foundRoom.fl_id));
-        }
-      }
-
-      // 2. Zone match by name
+      // 1. Zone match by name (from explicit token zone, e.g. "MU90.1C2")
+      let foundZone = null;
       if (zName) {
-        let foundZone = zonesList.find(z =>
+        foundZone = zonesList.find(z =>
           (z.zone || z.zone_name || z.name || "").toLowerCase().trim() === zName &&
           (!building || String(z.building_id || z.build_id || "") === String(building)) &&
           (uniqueFloorIds.length === 0 || uniqueFloorIds.includes(String(z.floor_id || z.fl_id || "")))
@@ -2151,7 +2119,7 @@ function NewRequest() {
           );
         }
 
-        // 2d. Loose zone name match (ignoring separators like '.', '_', ' ', '-')
+        // Loose zone name match (ignoring separators like '.', '_', ' ', '-')
         if (!foundZone) {
           const zNameNorm = zName.replace(/[\s._-]+/g, "");
           foundZone = zonesList.find(z => {
@@ -2168,6 +2136,52 @@ function NewRequest() {
             uniqueFloorIds.push(String(foundZone.floor_id));
           }
         }
+      }
+
+      // 2. Room lookup
+      const targetZoneId = foundZone ? String(foundZone.id ?? foundZone.zone_id ?? foundZone.zoneStatusId) : null;
+      let foundRoom = null;
+      if (targetZoneId) {
+        foundRoom = roomsList.find(r =>
+          ((r.room_name || r.name || "").toLowerCase().trim() === rName || String(r.room_id ?? r.id) === rName) &&
+          String(r.zone_id) === targetZoneId &&
+          (!building || String(r.building_id) === String(building)) &&
+          (uniqueFloorIds.length === 0 || uniqueFloorIds.includes(String(r.fl_id || r.floor_id || "")))
+        );
+      }
+
+      if (!foundRoom) {
+        foundRoom = roomsList.find(r =>
+          ((r.room_name || r.name || "").toLowerCase().trim() === rName || String(r.room_id ?? r.id) === rName) &&
+          (!building || String(r.building_id) === String(building)) &&
+          (uniqueFloorIds.length === 0 || uniqueFloorIds.includes(String(r.fl_id || r.floor_id || "")))
+        );
+      }
+
+      if (!foundRoom) {
+        foundRoom = roomsList.find(r =>
+          ((r.room_name || r.name || "").toLowerCase().trim() === rName || String(r.room_id ?? r.id) === rName) &&
+          (!building || String(r.building_id) === String(building))
+        );
+      }
+
+      if (!foundRoom) {
+        foundRoom = roomsList.find(r =>
+          (r.room_name || r.name || "").toLowerCase().trim() === rName || String(r.room_id ?? r.id) === rName
+        );
+      }
+
+      // 3. Fallback: If NO zone was found from zName, fallback to room's zone_id
+      if (!foundZone && foundRoom && foundRoom.zone_id) {
+        selectedZoneIds.add(String(foundRoom.zone_id));
+        const foundZ = zonesList.find(z => String(z.id ?? z.zoneStatusId) === String(foundRoom.zone_id));
+        if (foundZ && (foundZ.zone || foundZ.zone_name)) {
+          resolvedZoneNames.add(foundZ.zone || foundZ.zone_name);
+        }
+      }
+
+      if (foundRoom && foundRoom.fl_id && !uniqueFloorIds.includes(String(foundRoom.fl_id))) {
+        uniqueFloorIds.push(String(foundRoom.fl_id));
       }
     });
 
