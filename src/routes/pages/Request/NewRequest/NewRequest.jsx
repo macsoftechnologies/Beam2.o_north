@@ -635,7 +635,7 @@ function NewRequest() {
 
   const [formData, setFormData] = useState({
     Request_Date: new Date().toLocaleDateString("en-GB"),
-    Company_Name: "M3 South",
+    Company_Name: "M3 North",
     Sub_Contractor_Id: "",
     new_sub_contractor: "",
     Foreman: "",
@@ -1114,7 +1114,7 @@ function NewRequest() {
       // Bind all fields into formData
       setFormData({
         Request_Date: editRequest.Request_Date || new Date().toLocaleDateString("en-GB"),
-        Company_Name: editRequest.Company_Name || "M3 South",
+        Company_Name: editRequest.Company_Name || "M3 North",
         Sub_Contractor_Id: editRequest.Sub_Contractor_Id || "",
         new_sub_contractor: editRequest.new_sub_contractor || "",
         Foreman: editRequest.Foreman || "",
@@ -1986,17 +1986,17 @@ function NewRequest() {
         const zName = (parts.length === 2 ? parts[0] : "").toLowerCase().trim();
         const rName = (parts.length === 2 ? parts[1] : str).toLowerCase().trim();
 
-        let foundZone = zonesList.find(z => 
+        let foundZone = zonesList.find(z =>
           (z.zone || z.zone_name || z.name || "").toLowerCase().trim() === zName &&
           (!building || String(z.building_id || z.build_id || "") === String(building))
         );
         if (!foundZone && rName) {
-          const foundRoomObj = roomsList.find(r => 
+          const foundRoomObj = roomsList.find(r =>
             (r.room_name || r.name || "").toLowerCase().trim() === rName &&
             (!building || String(r.building_id) === String(building))
           );
           if (foundRoomObj && foundRoomObj.zone_id) {
-            foundZone = zonesList.find(z => 
+            foundZone = zonesList.find(z =>
               String(z.id || z.zone_id) === String(foundRoomObj.zone_id) &&
               (!building || String(z.building_id || z.build_id || "") === String(building))
             );
@@ -2077,7 +2077,7 @@ function NewRequest() {
       const rName = (parsed.roomName || "").toLowerCase().trim();
       const zName = (parsed.zone || "").toLowerCase().trim();
 
-      const foundRoom = roomsList.find(r => 
+      const foundRoom = roomsList.find(r =>
         ((r.room_name || r.name || "").toLowerCase().trim() === rName || String(r.room_id ?? r.id) === rName) &&
         (!building || String(r.building_id) === String(building)) &&
         (uniqueFloorIds.length === 0 || uniqueFloorIds.includes(String(r.fl_id || r.floor_id || "")))
@@ -2092,7 +2092,7 @@ function NewRequest() {
       }
 
       if (zName) {
-        const foundZone = zonesList.find(z => 
+        const foundZone = zonesList.find(z =>
           (z.zone || z.zone_name || z.name || "").toLowerCase().trim() === zName &&
           (!building || String(z.building_id || z.build_id || "") === String(building)) &&
           (uniqueFloorIds.length === 0 || uniqueFloorIds.includes(String(z.floor_id || z.fl_id || "")))
@@ -2349,8 +2349,8 @@ function NewRequest() {
       Foreman_Phone_Number: formData.Foreman_Phone_Number || "",
       rams_number: formData.rams_number || "",
       description_of_activity: formData.description_of_activity || "",
-      Site_Id: 5, // M3 South
-      Company_Name: formData.Company_Name || "M3 South",
+      Site_Id: 5, // M3 North
+      Company_Name: formData.Company_Name || "M3 North",
       Hot_work: formData.Hot_work === "1" ? 1 : 0,
       working_on_electrical_system: formData.working_on_electrical_system === "1" ? 1 : 0,
       working_hazardious_substen: formData.working_hazardious_substen === "1" ? 1 : 0,
@@ -3026,7 +3026,7 @@ function NewRequest() {
                 <input
                   type="text"
                   className="df-input df-readonly"
-                  value="M3 South"
+                  value="M3 North"
                   readOnly
                 />
               </div>
