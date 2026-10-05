@@ -11,23 +11,11 @@ import { BUILDINGS } from "../../../data/buildings";
 import { AnalogTimePicker } from "../../incident-management/pages/IMCreate";
 import "../../../styles/module-shared.css";
 
-const defaultProjectName = (
-  (import.meta.env.VITE_API_BASE_URL || '') +
-  ' ' +
-  (import.meta.env.VITE_API_URL || '') +
-  ' ' +
-  (typeof window !== 'undefined' ? window.location.pathname + ' ' + window.location.href : '')
-).toLowerCase().includes('north')
-  ? 'M3NORTH'
-  : (
-    (import.meta.env.VITE_API_BASE_URL || '') +
-    ' ' +
-    (import.meta.env.VITE_API_URL || '') +
-    ' ' +
-    (typeof window !== 'undefined' ? window.location.pathname + ' ' + window.location.href : '')
-  ).toLowerCase().includes('infra')
+const defaultProjectName = (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '').toLowerCase().includes('south')
+  ? 'M3SOUTH'
+  : (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '').toLowerCase().includes('infra')
     ? 'M3INFRASTRUCTURE'
-    : 'M3SOUTH';
+    : 'M3NORTH';
 
 const initialForm = {
   observationNumber: "",
@@ -74,6 +62,7 @@ function SOCreate() {
   const [level, setLevel] = useState("");
   const [selectedRooms, setSelectedRooms] = useState([]);
   const [selectedZone, setSelectedZone] = useState(null);
+  const [locationMapImage, setLocationMapImage] = useState(null);
 
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
@@ -143,7 +132,7 @@ function SOCreate() {
           subcategory: obs.subcategory || "",
           customSubcategory: "",
           riskLevel: obs.riskLevel || "MEDIUM",
-          projectName: obs.projectName || defaultProjectName,
+          projectName: obs.projectName || "M3NORTH",
           assignedContractorId: obs.assignedContractorId ? String(obs.assignedContractorId) : "",
           assignedContractorName: obs.assignedContractorName || "",
           description: obs.description || "",
@@ -342,20 +331,20 @@ function SOCreate() {
     }
   }, [building, level, buildingsList]);
 
-const dataURLtoBlob = (dataurl) => {
-  if (!dataurl || typeof dataurl !== 'string') return null;
-  const arr = dataurl.split(',');
-  if (arr.length < 2) return null;
-  const mimeMatch = arr[0].match(/:(.*?);/);
-  const mime = mimeMatch ? mimeMatch[1] : 'image/png';
-  const bstr = atob(arr[1]);
-  let n = bstr.length;
-  const u8arr = new Uint8Array(n);
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n);
-  }
-  return new Blob([u8arr], { type: mime });
-};
+  const dataURLtoBlob = (dataurl) => {
+    if (!dataurl || typeof dataurl !== 'string') return null;
+    const arr = dataurl.split(',');
+    if (arr.length < 2) return null;
+    const mimeMatch = arr[0].match(/:(.*?);/);
+    const mime = mimeMatch ? mimeMatch[1] : 'image/png';
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
+  };
 
   const startCamera = async () => {
     setIsCameraActive(true);
@@ -489,11 +478,12 @@ const dataURLtoBlob = (dataurl) => {
       }
       formData.append("riskLevel", form.riskLevel);
       formData.append("description", form.description);
-      formData.append("projectName", form.projectName || defaultProjectName);
+      formData.append("projectName", defaultProjectName);
       if (building) formData.append("buildingId", building);
       if (bName) formData.append("buildingName", bName);
       if (level) formData.append("floorLevel", level);
       formData.append("specificLocation", form.specificLocation);
+      if (locationMapImage) formData.append("locationMapImage", locationMapImage);
       if (form.assignedContractorId && !isNaN(Number(form.assignedContractorId))) {
         formData.append("assignedContractorId", form.assignedContractorId);
       }
@@ -620,9 +610,9 @@ const dataURLtoBlob = (dataurl) => {
           { label: "Safety Observations", link: "/safety-observations/list" },
           ...(isEditMode
             ? [
-                { label: form.observationNumber || `SO-${id}`, link: `/safety-observations/details/${id}` },
-                { label: "Edit Details" },
-              ]
+              { label: form.observationNumber || `SO-${id}`, link: `/safety-observations/details/${id}` },
+              { label: "Edit Details" },
+            ]
             : [{ label: "New Observation" }]),
         ]}
       />
@@ -962,6 +952,7 @@ const dataURLtoBlob = (dataurl) => {
                   selectedRooms={selectedRooms}
                   onRoomsSelected={handleRoomsSelected}
                   roomStatusMap={{}}
+                  onMapSnapshot={setLocationMapImage}
                 />
               </div>
             )}
@@ -1072,7 +1063,7 @@ const dataURLtoBlob = (dataurl) => {
                     const filename = String(photo).split("/").pop().split("\\").pop();
                     const src = photo.startsWith("http") || photo.startsWith("data:")
                       ? photo
-                      : `https://api.beam.safesiteworks.com/development/m3south/observations/${filename}`;
+                      : `https://api.beam.safesiteworks.com/m3north/observations/${filename}`;
                     return (
                       <div key={idx} style={{ position: "relative", width: 72, height: 72, borderRadius: 7, overflow: "hidden", border: "1px solid var(--border-color)" }}>
                         <img src={src} alt="Existing Observation" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -1168,8 +1159,8 @@ const dataURLtoBlob = (dataurl) => {
                   ? "Saving Changes..."
                   : "Submitting..."
                 : isEditMode
-                ? "Save Changes"
-                : "Submit Observation"}
+                  ? "Save Changes"
+                  : "Submit Observation"}
             </button>
           </div>
         </form>

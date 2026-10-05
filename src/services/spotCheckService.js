@@ -65,10 +65,10 @@ export const spotCheckService = {
    * @param {boolean} includeAttachments
    */
   getPdfUrl(id, includeAttachments = true) {
-    const base = import.meta.env.VITE_API_URL || 'http://localhost:5200';
-    const baseUrlClean = base.replace(/\/development\/m3south\/?$/, '');
+    const base = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'http://localhost:5200';
+    const baseUrlClean = base.replace(/m3north\/?$/, '');
     const query = includeAttachments !== undefined ? `?includeAttachments=${includeAttachments}` : '';
-    return `${baseUrlClean}/spot-checks/${id}/export-pdf${query}`;
+    return `${base}/spot-checks/${id}/export-pdf${query}`;
   },
 
   /**

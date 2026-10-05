@@ -176,12 +176,13 @@ export default function SCCreate() {
   const [contractorsList, setContractorsList] = useState([]);
   const [employeesList, setEmployeesList] = useState([]);
   const [roomStatusMap, setRoomStatusMap] = useState({});
+  const [locationMapImage, setLocationMapImage] = useState(null);
 
-  const defaultProj = (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '').toLowerCase().includes('north')
-    ? 'M3NORTH'
+  const defaultProj = (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '').toLowerCase().includes('south')
+    ? 'M3SOUTH'
     : (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '').toLowerCase().includes('infra')
       ? 'M3INFRASTRUCTURE'
-      : 'M3SOUTH';
+      : 'M3NORTH';
 
   const [form, setForm] = useState({
     projectName: defaultProj,
@@ -519,6 +520,7 @@ export default function SCCreate() {
         createdByUserId: currentUser?.id,
         createdByUserName: currentUser?.name || currentUser?.username || 'Superadmin',
         createdByRole: currentUser?.role || 'Admin',
+        locationMapImage: locationMapImage || undefined,
       };
 
       await spotCheckService.createSpotCheck(payload);
@@ -724,6 +726,7 @@ export default function SCCreate() {
                   selectedRooms={selectedRooms}
                   onRoomsSelected={handleRoomsSelected}
                   roomStatusMap={roomStatusMap}
+                  onMapSnapshot={setLocationMapImage}
                 />
               </div>
             )}
@@ -797,7 +800,7 @@ export default function SCCreate() {
           <table className="sc-table">
             <thead>
               <tr style={{ backgroundColor: "var(--bg-dark)" }}>
-                
+
                 <th></th>
                 <th style={{ width: "150px", textAlign: "center", color: "var(--text-main)" }}>Yes / No / N/A</th>
               </tr>

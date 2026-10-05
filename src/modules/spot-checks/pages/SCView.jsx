@@ -232,7 +232,7 @@ export default function SCView() {
             <div className="sc-card-body">
               <div className="sc-meta-item">
                 <span className="sc-meta-label">Project Name:</span>
-                <span className="sc-meta-value">{spotCheck.projectName || spotCheck.workPackage || ((import.meta.env.VITE_API_BASE_URL || '').toLowerCase().includes('north') ? 'M3NORTH' : (import.meta.env.VITE_API_BASE_URL || '').toLowerCase().includes('infra') ? 'M3INFRASTRUCTURE' : 'M3SOUTH')}</span>
+                <span className="sc-meta-value">{spotCheck.projectName || spotCheck.workPackage || ((import.meta.env.VITE_API_BASE_URL || '').toLowerCase().includes('south') ? 'M3NORTH' : (import.meta.env.VITE_API_BASE_URL || '').toLowerCase().includes('infra') ? 'M3INFRASTRUCTURE' : 'M3NORTH')}</span>
               </div>
               <div className="sc-meta-item">
                 <span className="sc-meta-label">Building & Level:</span>
@@ -355,44 +355,44 @@ export default function SCView() {
               <table className="sc-table">
                 <thead>
                   <tr>
-                    
+
                     <th></th>
                     <th style={{ width: "100px", textAlign: "center" }}>Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    
+
                     <td><b>a.</b> Work stopped if RAMS / PTW requirements are not valid or not followed?</td>
                     <td style={{ textAlign: "center" }}>{renderBadge(spotCheck.chk1_2)}</td>
                   </tr>
                   <tr>
-                    
+
                     <td><b>b.</b> Controls specified on the Permit to Work implemented effectively?</td>
                     <td style={{ textAlign: "center" }}>{renderBadge(spotCheck.chk1_3)}</td>
                   </tr>
                   <tr>
-                    
+
                     <td><b>c.</b> Work area is clean and free of combustible materials?</td>
                     <td style={{ textAlign: "center" }}>{renderBadge(spotCheck.chk1_4)}</td>
                   </tr>
                   <tr>
-                    
+
                     <td><b>d.</b> Combustible materials properly shielded / fire blanket used?</td>
                     <td style={{ textAlign: "center" }}>{renderBadge(spotCheck.chk1_5)}</td>
                   </tr>
                   <tr>
-                    
+
                     <td><b>e.</b> Continuous fire watch required and present at all times?</td>
                     <td style={{ textAlign: "center" }}>{renderBadge(spotCheck.chk1_6)}</td>
                   </tr>
                   <tr>
-                    
+
                     <td><b>f.</b> Appropriate fire extinguisher available immediately at the work point?</td>
                     <td style={{ textAlign: "center" }}>{renderBadge(spotCheck.chk1_7)}</td>
                   </tr>
                   <tr>
-                    
+
                     <td><b>g.</b> 60-minute post-work fire check arranged and documented?</td>
                     <td style={{ textAlign: "center" }}>{renderBadge(spotCheck.chk1_8)}</td>
                   </tr>

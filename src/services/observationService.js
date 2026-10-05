@@ -2,7 +2,7 @@ import api from "./api";
 
 /**
  * Service for Safety Observations (SO) module API integrations.
- * Endpoints target: https://api.beam.safesiteworks.com/development/m3south/observations
+ * Endpoints target: https://api.beam.safesiteworks.com/m3north/observations
  */
 export const observationService = {
   /**

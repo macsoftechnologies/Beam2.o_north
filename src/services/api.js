@@ -15,7 +15,7 @@ const api = axios.create({
 // ─── REQUEST INTERCEPTOR — attach auth token & normalize subpaths ───────────
 api.interceptors.request.use(
     (config) => {
-        // Strip leading slash from relative URLs so Axios preserves baseURL subpath (/development/m3south)
+        // Strip leading slash from relative URLs so Axios preserves baseURL subpath (/m3north)
         if (config.url && config.url.startsWith("/") && !config.url.startsWith("//")) {
             config.url = config.url.slice(1);
         }

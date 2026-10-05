@@ -198,7 +198,7 @@ export default function SIView() {
     if (!inspection || isReadOnly) return;
     const isCl = effectiveClosed;
     const nextStatus = isCl ? 'IN_PROGRESS' : 'CLOSED';
-    
+
     const result = await Swal.fire({
       title: isCl ? 'Reopen Inspection?' : 'Close Inspection?',
       text: isCl
@@ -285,7 +285,7 @@ export default function SIView() {
     if (!raw) return '';
     if (raw.startsWith('data:') || raw.startsWith('blob:')) return raw;
 
-    const envBase = (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'https://api.beam.safesiteworks.com/development/m3south').replace(/\/+$/, '');
+    const envBase = (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'https://api.beam.safesiteworks.com/m3north').replace(/\/+$/, '');
     const cleanRaw = raw.replace(/\\/g, '/').trim();
     const filename = cleanRaw.split('/').pop()?.split('\\').pop()?.split('?')[0] || cleanRaw;
 
@@ -302,7 +302,7 @@ export default function SIView() {
   const handleImageError = (e, defaultFolder = 'safety-inspections') => {
     const current = e.currentTarget.src || '';
     const filename = current.split('/').pop()?.split('\\').pop()?.split('?')[0] || '';
-    const envBase = (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'https://api.beam.safesiteworks.com/development/m3south').replace(/\/+$/, '');
+    const envBase = (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'https://api.beam.safesiteworks.com/m3north').replace(/\/+$/, '');
 
     // Avoid infinite loop if placeholder fails
     if (current.includes('placeholder') || current.includes('placehold.co')) return;
@@ -352,14 +352,14 @@ export default function SIView() {
   const history = Array.isArray(inspection.history) ? inspection.history : [];
   const performedByList = Array.isArray(inspection.performedBy) ? inspection.performedBy : (inspection.performedBy ? [inspection.performedBy] : []);
   const participantsList = Array.isArray(inspection.participants) ? inspection.participants : (inspection.participants ? [inspection.participants] : []);
-  const itemsList = inspection.items && inspection.items.length > 0 
-    ? inspection.items 
+  const itemsList = inspection.items && inspection.items.length > 0
+    ? inspection.items
     : STANDARD_CATEGORIES.map((cat, i) => ({
-        id: i + 1,
-        itemIndex: i + 1,
-        categoryName: cat,
-        status: 'na'
-      }));
+      id: i + 1,
+      itemIndex: i + 1,
+      categoryName: cat,
+      status: 'na'
+    }));
 
   return (
     <div className="siview-page">
@@ -409,11 +409,11 @@ export default function SIView() {
           </button>
         </div>
       </div>
-      
+
       <div className="siview-content">
         {/* Modern Card-based Metadata Layout */}
         <div className="siview-metadata-grid">
-          
+
           <div className="siview-card meta-card">
             <div className="meta-card-header">
               <i className="ti ti-briefcase"></i> Project Details
@@ -421,7 +421,7 @@ export default function SIView() {
             <div className="meta-card-body">
               <div className="meta-item">
                 <span className="meta-label">Project</span>
-                <span className="meta-value">{inspection.projectName || ((import.meta.env.VITE_API_BASE_URL || '').toLowerCase().includes('north') ? 'M3NORTH' : (import.meta.env.VITE_API_BASE_URL || '').toLowerCase().includes('infra') ? 'M3INFRASTRUCTURE' : 'M3SOUTH')}</span>
+                <span className="meta-value">{inspection.projectName || ((import.meta.env.VITE_API_BASE_URL || '').toLowerCase().includes('south') ? 'M3SOUTH' : (import.meta.env.VITE_API_BASE_URL || '').toLowerCase().includes('infra') ? 'M3INFRASTRUCTURE' : 'M3NORTH')}</span>
               </div>
               <div className="meta-item">
                 <span className="meta-label">Project No.</span>
@@ -624,10 +624,10 @@ export default function SIView() {
                   </div>
                   <div className="siview-cl-status-wrap">
                     <span className={`siview-badge badge-${rawStatus}`}>
-                      {rawStatus === 'na' ? 'Not Applicable' : 
-                       rawStatus === 'green' ? (item.isGoodPractice || issuesList.some(iss => iss.type === 'green' || iss.isGoodPractice) ? 'Passed • Good Practice' : 'Passed') : 
-                       rawStatus === 'yellow' ? 'Warning / Issue' : 
-                       rawStatus === 'red' ? 'Critical Action Needed' : rawStatus}
+                      {rawStatus === 'na' ? 'Not Applicable' :
+                        rawStatus === 'green' ? (item.isGoodPractice || issuesList.some(iss => iss.type === 'green' || iss.isGoodPractice) ? 'Passed • Good Practice' : 'Passed') :
+                          rawStatus === 'yellow' ? 'Warning / Issue' :
+                            rawStatus === 'red' ? 'Critical Action Needed' : rawStatus}
                     </span>
                   </div>
                 </div>
@@ -987,9 +987,9 @@ export default function SIView() {
                   <i className="ti ti-external-link"></i> Go to Full Observation Page
                 </button>
               )}
-              <button 
+              <button
                 type="button"
-                className="siview-btn-download" 
+                className="siview-btn-download"
                 style={{ fontSize: "13px", padding: "8px 16px" }}
                 onClick={() => setShowObsModal(false)}
               >

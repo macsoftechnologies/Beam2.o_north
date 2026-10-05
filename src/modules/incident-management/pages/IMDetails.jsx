@@ -712,6 +712,7 @@ export default function IMDetails() {
   const [huEditorRole, setHuEditorRole] = useState("HSE Editor");
   const [huEditReason, setHuEditReason] = useState("");
   const [huEditorSignature, setHuEditorSignature] = useState(false);
+  const [huLocationMapImage, setHuLocationMapImage] = useState(null);
 
   const [showHuTimePicker, setShowHuTimePicker] = useState(false);
   const [tempHuTime, setTempHuTime] = useState("");
@@ -1063,7 +1064,8 @@ export default function IMDetails() {
         editedBy: huEditorName || getLoggedInUser(),
         editorRole: huEditorRole || "HSE Editor",
         editReason: huEditReason || "Updated Heads-Up Notification",
-        editorSignature: huEditorSignature
+        editorSignature: huEditorSignature,
+        locationMapImage: huLocationMapImage || undefined
       };
 
       await updateHeadsUp(id, payload);
@@ -2830,7 +2832,7 @@ export default function IMDetails() {
     }
     filename = filename.replace(/^\/+/, "");
 
-    const baseUrl = (import.meta.env?.VITE_API_BASE_URL || 'https://api.beam.safesiteworks.com/development/m3south').replace(/\/+$/, '');
+    const baseUrl = (import.meta.env?.VITE_API_BASE_URL || 'https://api.beam.safesiteworks.com/m3north').replace(/\/+$/, '');
     return `${baseUrl}/signatures/${filename}`;
   };
 
@@ -3779,6 +3781,7 @@ export default function IMDetails() {
                           selectedRooms={selectedRooms}
                           onRoomsSelected={handleRoomsSelected}
                           roomStatusMap={roomStatusMap}
+                          onMapSnapshot={setHuLocationMapImage}
                         />
                       </div>
                     )}

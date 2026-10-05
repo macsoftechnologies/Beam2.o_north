@@ -74,6 +74,7 @@ export default function SICreate() {
   const [isLoadingSelectors, setIsLoadingSelectors] = useState(true);
   const [roomStatusMap, setRoomStatusMap] = useState({});
   const [specificLocation, setSpecificLocation] = useState("");
+  const [locationMapImage, setLocationMapImage] = useState(null);
 
   const currentUser = React.useMemo(() => {
     try {
@@ -310,7 +311,7 @@ export default function SICreate() {
   const handleFileChange = async (e) => {
     const files = e.target.files;
     if (!files || files.length === 0 || activeUploadIdx === null) return;
-    
+
     const localFiles = Array.from(files).map(file => ({
       file,
       previewUrl: URL.createObjectURL(file),
@@ -372,7 +373,13 @@ export default function SICreate() {
       const effectiveSubject = isOther && otherCustomTexts[idx]?.trim()
         ? `20. Other - ${otherCustomTexts[idx].trim()}`
         : CHECKLIST_ITEMS[idx];
-      setSafetyIssueModalData({ subject: effectiveSubject, color, itemIndex: idx });
+      setSafetyIssueModalData({
+        subject: effectiveSubject,
+        color,
+        observationType: 'NEEDS_ATTENTION',
+        disablePositive: true,
+        itemIndex: idx,
+      });
     }
   };
 
@@ -386,6 +393,7 @@ export default function SICreate() {
       subject: effectiveSubject,
       color: 'green',
       observationType: 'POSITIVE',
+      disableNeedsAttention: true,
       itemIndex: idx
     });
     setOpenInfoIdx(null);
@@ -465,7 +473,7 @@ export default function SICreate() {
       const targetIsCompleted = !hasSO;
 
       const payload = {
-        projectName: (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '').toLowerCase().includes('north') ? 'M3NORTH' : (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '').toLowerCase().includes('infra') ? 'M3INFRASTRUCTURE' : 'M3SOUTH',
+        projectName: (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '').toLowerCase().includes('south') ? 'M3SOUTH' : (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '').toLowerCase().includes('infra') ? 'M3INFRASTRUCTURE' : 'M3NORTH',
         projectNo: '063205-010',
         buildingId: building ? Number(building) : undefined,
         buildingName: bName,
@@ -481,7 +489,8 @@ export default function SICreate() {
         createdByUserId: currentUser?.id,
         createdByUserName: currentUser?.name || currentUser?.username || 'Safety Inspector',
         createdByRole: currentUser?.role || 'DEPARTMENT',
-        checklistItems
+        checklistItems,
+        locationMapImage: locationMapImage || undefined
       };
 
       if (isEditMode) {
@@ -592,6 +601,7 @@ export default function SICreate() {
                   selectedRooms={selectedRooms}
                   onRoomsSelected={handleRoomsSelected}
                   roomStatusMap={roomStatusMap}
+                  onMapSnapshot={setLocationMapImage}
                 />
               </div>
             )}
@@ -844,7 +854,13 @@ export default function SICreate() {
                                 const effectiveSubject = isOther && otherCustomTexts[idx]?.trim()
                                   ? `20. Other - ${otherCustomTexts[idx].trim()}`
                                   : CHECKLIST_ITEMS[idx];
-                                setSafetyIssueModalData({ subject: effectiveSubject, color: 'red', itemIndex: idx });
+                                setSafetyIssueModalData({
+                                  subject: effectiveSubject,
+                                  color: 'red',
+                                  observationType: 'NEEDS_ATTENTION',
+                                  disablePositive: true,
+                                  itemIndex: idx,
+                                });
                                 setOpenWrenchIdx(null);
                                 setOpenInfoIdx(null);
                               }}>
@@ -1002,17 +1018,17 @@ export default function SICreate() {
                     {itemPhotos[idx].map((photoObj, pIdx) => {
                       const urlToRender = typeof photoObj === 'string' ? photoObj : (photoObj.previewUrl || photoObj.serverUrl);
                       const isPdf = urlToRender.toLowerCase().endsWith('.pdf') || (photoObj.file && photoObj.file.type === 'application/pdf');
-                      
+
                       const getFullImageUrl = (u) => {
                         if (!u) return '';
                         if (u.startsWith('http://') || u.startsWith('https://') || u.startsWith('blob:') || u.startsWith('data:')) return u;
-                        const base = (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'https://api.beam.safesiteworks.com/development/m3south').replace(/\/+$/, '');
+                        const base = (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'https://api.beam.safesiteworks.com/m3north').replace(/\/+$/, '');
                         const filename = u.split('/').pop()?.split('\\').pop()?.split('?')[0] || u;
                         return `${base}/safety-inspections/photo-preview?file=${encodeURIComponent(filename)}`;
                       };
-                      
+
                       const fullUrl = getFullImageUrl(urlToRender);
-                      
+
                       return (
                         <div key={pIdx} style={{ position: "relative", width: "64px", height: "64px", borderRadius: "6px", overflow: "hidden", border: "1px solid #e2e8f0", backgroundColor: "#fff" }}>
                           {isPdf ? (
@@ -1026,7 +1042,7 @@ export default function SICreate() {
                               style={{ width: "100%", height: "100%", objectFit: "cover" }}
                               onError={(e) => {
                                 const current = e.currentTarget.src || '';
-                                const base = (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'https://api.beam.safesiteworks.com/development/m3south').replace(/\/+$/, '');
+                                const base = (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'https://api.beam.safesiteworks.com/m3north').replace(/\/+$/, '');
                                 const fname = current.split('/').pop()?.split('\\').pop()?.split('?')[0] || '';
                                 if (current.includes('/photo-preview')) {
                                   e.currentTarget.src = `${base}/observations/${fname}`;
@@ -1079,7 +1095,9 @@ export default function SICreate() {
         subject={safetyIssueModalData?.subject}
         color={safetyIssueModalData?.color}
         itemIndex={safetyIssueModalData?.itemIndex}
-        initialObservationType={safetyIssueModalData?.observationType || (safetyIssueModalData?.color === 'green' ? 'POSITIVE' : '')}
+        initialObservationType={safetyIssueModalData?.observationType || (safetyIssueModalData?.color === 'green' ? 'POSITIVE' : 'NEEDS_ATTENTION')}
+        disablePositive={Boolean(safetyIssueModalData?.disablePositive || safetyIssueModalData?.color === 'red' || safetyIssueModalData?.color === 'yellow' || safetyIssueModalData?.color === 'orange')}
+        disableNeedsAttention={Boolean(safetyIssueModalData?.disableNeedsAttention || safetyIssueModalData?.color === 'green')}
         initialLocation={{ building, level, specificLocation, selectedRooms, selectedZone }}
         onObservationCreated={handleObservationCreated}
         onClose={() => setSafetyIssueModalData(null)}
