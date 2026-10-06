@@ -9,6 +9,20 @@ import {
 } from "../../utils/modulePermissions";
 import "../../forms/styles/forms.css";
 
+const EmailIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+    <polyline points="22,6 12,13 2,6" />
+  </svg>
+);
+
+const PhoneIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+    <line x1="12" y1="18" x2="12.01" y2="18" />
+  </svg>
+);
+
 const MODULE_OPTIONS = MODULE_DEFINITIONS;
 
 function Employeesform({ onClose, initialData, isEdit, onSubmit }) {
@@ -29,6 +43,8 @@ function Employeesform({ onClose, initialData, isEdit, onSubmit }) {
     "permit-to-work": "Department",
   });
   const [email, setEmail] = useState("");
+  const [enableEmailOtp, setEnableEmailOtp] = useState(false);
+  const [enableSmsOtp, setEnableSmsOtp] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -108,8 +124,22 @@ function Employeesform({ onClose, initialData, isEdit, onSubmit }) {
       }
 
       setEmail(initialData.email || "");
+      const rawOtpType = String(initialData.otpNotificationType || initialData.otp_notification_type || "SMS").toUpperCase();
+      if (rawOtpType === "BOTH" || rawOtpType === "ALL" || (rawOtpType.includes("EMAIL") && rawOtpType.includes("SMS"))) {
+        setEnableEmailOtp(true);
+        setEnableSmsOtp(true);
+      } else if (rawOtpType === "EMAIL") {
+        setEnableEmailOtp(true);
+        setEnableSmsOtp(false);
+      } else {
+        setEnableEmailOtp(false);
+        setEnableSmsOtp(true);
+      }
       setUsername(initialData.username || "");
       setPassword(""); // Leave blank in edit mode to avoid corrupting existing password
+    } else if (!isEdit) {
+      setEnableEmailOtp(false);
+      setEnableSmsOtp(true);
     }
   }, [initialData, isEdit]);
 
@@ -158,6 +188,22 @@ function Employeesform({ onClose, initialData, isEdit, onSubmit }) {
       setObserId("");
     }
   }, [shouldShowContractor, shouldShowDepartment, hasObserver, subContId, departId, obserId]);
+
+  const handleToggleChannel = (channel) => {
+    if (channel === "EMAIL") {
+      if (enableEmailOtp && !enableSmsOtp) {
+        showError("At least one OTP notification channel must be selected.");
+        return;
+      }
+      setEnableEmailOtp(prev => !prev);
+    } else if (channel === "SMS") {
+      if (enableSmsOtp && !enableEmailOtp) {
+        showError("At least one OTP notification channel must be selected.");
+        return;
+      }
+      setEnableSmsOtp(prev => !prev);
+    }
+  };
 
   const handleToggleModule = (modId) => {
     setSelectedModules((prev) => {
@@ -244,6 +290,30 @@ function Employeesform({ onClose, initialData, isEdit, onSubmit }) {
       }
     }
 
+    if (!enableEmailOtp && !enableSmsOtp) {
+      showError("Please select at least one Login OTP Notification channel (Email or SMS)");
+      return;
+    }
+
+    if (!email || !email.trim()) {
+      showError("Email Address is mandatory");
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      showError("Please enter a valid email address");
+      return;
+    }
+
+    if (enableSmsOtp) {
+      if (!phoneNumber || !phoneNumber.trim()) {
+        showError("Phone Number is required when SMS OTP notification is selected");
+        return;
+      }
+    }
+
+    const otpNotificationType = enableEmailOtp && enableSmsOtp ? "BOTH" : enableEmailOtp ? "EMAIL" : "SMS";
+
     const activeModuleRoles = selectedModules.map((m) => {
       let roleVal = moduleUserTypes[m] || "Department";
       if (m === "safety-inspection" && roleVal === "Subcontractor") {
@@ -260,6 +330,7 @@ function Employeesform({ onClose, initialData, isEdit, onSubmit }) {
       employeeName: employeeName,
       designation,
       phonenumber: phoneNumber,
+      otpNotificationType,
       roleId: roleId ? Number(roleId) : 4,
       userType: activeEmployeeTypes.join(","),
       companyName: companyName || (hasDepartment && !hasContractor ? "M3 North" : ""),
@@ -458,7 +529,7 @@ function Employeesform({ onClose, initialData, isEdit, onSubmit }) {
                 Select access and assign specific user type per module
               </span>
             </div>
-            
+
             <div className="df-modules-grid">
               {MODULE_OPTIONS.map((mod) => {
                 const isChecked = selectedModules.includes(mod.id);
@@ -500,21 +571,20 @@ function Employeesform({ onClose, initialData, isEdit, onSubmit }) {
                               currentRole === "Observer"
                                 ? "rgba(99, 102, 241, 0.15)"
                                 : currentRole === "Subcontractor"
-                                ? "rgba(245, 158, 11, 0.15)"
-                                : "rgba(16, 185, 129, 0.15)",
+                                  ? "rgba(245, 158, 11, 0.15)"
+                                  : "rgba(16, 185, 129, 0.15)",
                             color:
                               currentRole === "Observer"
                                 ? "#4f46e5"
                                 : currentRole === "Subcontractor"
-                                ? "#d97706"
-                                : "#059669",
-                            border: `1px solid ${
-                              currentRole === "Observer"
+                                  ? "#d97706"
+                                  : "#059669",
+                            border: `1px solid ${currentRole === "Observer"
                                 ? "rgba(99, 102, 241, 0.35)"
                                 : currentRole === "Subcontractor"
-                                ? "rgba(245, 158, 11, 0.35)"
-                                : "rgba(16, 185, 129, 0.35)"
-                            }`,
+                                  ? "rgba(245, 158, 11, 0.35)"
+                                  : "rgba(16, 185, 129, 0.35)"
+                              }`,
                           }}
                         >
                           {getUserTypeLabel(currentRole, mod.id)}
@@ -546,6 +616,51 @@ function Employeesform({ onClose, initialData, isEdit, onSubmit }) {
             </div>
           </div>
         )}
+
+        {/* Login OTP Notification Channels */}
+        <div className="df-field">
+          <label className="df-label">
+            Login OTP Notification Channels <span className="df-required">*</span>
+          </label>
+          <div className="otp-channel-toggles-wrapper">
+            {/* Email Toggle */}
+            <label
+              className={`im-notif-channel-toggle email ${enableEmailOtp ? "active" : ""}`}
+              onClick={(e) => {
+                e.preventDefault();
+                handleToggleChannel("EMAIL");
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={enableEmailOtp}
+                readOnly
+              />
+              <EmailIcon />
+              <span>Email</span>
+            </label>
+
+            {/* SMS Toggle */}
+            <label
+              className={`im-notif-channel-toggle sms ${enableSmsOtp ? "active" : ""}`}
+              onClick={(e) => {
+                e.preventDefault();
+                handleToggleChannel("SMS");
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={enableSmsOtp}
+                readOnly
+              />
+              <PhoneIcon />
+              <span>SMS</span>
+            </label>
+          </div>
+          <div style={{ fontSize: "11px", color: "var(--text-muted, #94a3b8)", marginTop: "4px" }}>
+            Select Email, SMS, or both channels for login verification.
+          </div>
+        </div>
 
         {/* Email */}
         <div className="df-field">
