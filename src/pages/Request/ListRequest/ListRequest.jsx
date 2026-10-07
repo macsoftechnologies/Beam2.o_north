@@ -2588,13 +2588,17 @@ const getInitialPage = () => {
     { header: "Time", accessor: "timeCell" },
     { header: "Working After Midnight", accessor: "nightShiftCell" },
     { header: "New End Time", accessor: "newEndTimeCell" },
-    { header: "Status", accessor: "statusCell", className: "sticky-col-status" },
+    {
+      header: "Status",
+      accessor: "statusCell",
+      className: visibleColumns.includes("operationsCell") ? "sticky-col-status" : "sticky-col-status sticky-col-status--at-edge"
+    },
     { header: "Operations", accessor: "operationsCell", className: "sticky-col-operations", style: { width: "180px", minWidth: "180px", maxWidth: "180px" } }
   ].filter(col => {
-    if (col.accessor === "checkboxCell" && (isObserver || isSubcontractor)) {
-      return false;
+    if (col.accessor === "checkboxCell") {
+      return !isObserver && !isSubcontractor;
     }
-    return true;
+    return visibleColumns.includes(col.accessor);
   });
 
   const tableData = useMemo(() => {
