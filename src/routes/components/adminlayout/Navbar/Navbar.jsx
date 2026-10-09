@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./Navbar.css";
 import { logout, sendChangePasswordOtp, verifyAndChangePassword } from "../../../services/authService";
+import { showError } from "../../../components/common/Toast/Toast";
 import { navigateTo } from "../../../config/basePath";
 import {
   getNotifications,
@@ -13,6 +14,13 @@ import {
 } from "../../../services/notificationService";
 import Swal from "sweetalert2";
 import { formatToDenmarkDateTime, getDenmarkTimeISOString } from "../../../utils/dateUtils";
+import {
+  hasUserModuleAccess,
+  getEffectiveRoleForModule,
+  detectModuleFromPath,
+  getNavbarDisplayRole,
+  USER_TYPE_LABELS,
+} from "../../../utils/modulePermissions";
 
 const STATUS_OPTIONS = [
   { value: 'Draft', label: 'Draft' },
@@ -82,8 +90,125 @@ const extractPermitNo = (n) => {
   return "";
 };
 
-const getNotificationStyleInfo = (title = "", message = "") => {
-  const t = (title + " " + message).toLowerCase();
+const extractObservationInfo = (n) => {
+  if (!n) return { isObservation: false, observationId: null, observationNumber: "" };
+
+  let isObservation = (n.notificationType && String(n.notificationType).toUpperCase().includes("OBSERVATION")) || false;
+  let observationId = null;
+  let observationNumber = "";
+
+  if (n.metadata) {
+    try {
+      const meta = typeof n.metadata === "string" ? JSON.parse(n.metadata) : n.metadata;
+      if (meta) {
+        if (meta.module === "OBSERVATIONS" || meta.observationId || meta.observationNumber) {
+          isObservation = true;
+        }
+        if (meta.observationId) observationId = meta.observationId;
+        if (meta.observationNumber) observationNumber = meta.observationNumber;
+      }
+    } catch (e) {}
+  }
+
+  const text = `${n.title || ""} ${n.message || ""}`;
+  if (!isObservation && text.toLowerCase().includes("observation")) {
+    isObservation = true;
+  }
+
+  if (!observationNumber) {
+    const match = text.match(/SO-\d{4}-\d+/i) || text.match(/#?(SO-[A-Za-z0-9\-]+)/i);
+    if (match && match[0]) {
+      observationNumber = match[0].replace("#", "");
+    }
+  }
+
+  return { isObservation, observationId, observationNumber };
+};
+
+const extractIncidentInfo = (n) => {
+  if (!n) return { isIncident: false, incidentId: null, caseNumber: "" };
+
+  let isIncident = (n.notificationType && String(n.notificationType).toUpperCase().includes("INCIDENT")) || false;
+  let incidentId = null;
+  let caseNumber = "";
+
+  if (n.metadata) {
+    try {
+      const meta = typeof n.metadata === "string" ? JSON.parse(n.metadata) : n.metadata;
+      if (meta) {
+        if (meta.module === "INCIDENTS" || meta.incidentId || meta.caseNumber) {
+          isIncident = true;
+        }
+        if (meta.incidentId) incidentId = meta.incidentId;
+        if (meta.caseNumber) caseNumber = meta.caseNumber;
+      }
+    } catch (e) {}
+  }
+
+  const text = `${n.title || ""} ${n.message || ""}`;
+  if (!isIncident && text.toLowerCase().includes("incident")) {
+    isIncident = true;
+  }
+
+  if (!caseNumber) {
+    const match = text.match(/INC-\d{4}-\d+/i) || text.match(/#?(INC-[A-Za-z0-9\-]+)/i);
+    if (match && match[0]) {
+      caseNumber = match[0].replace("#", "");
+    }
+  }
+
+  return { isIncident, incidentId, caseNumber };
+};
+
+const getNotificationStyleInfo = (title = "", message = "", notificationType = "") => {
+  const nType = (notificationType || "").toLowerCase();
+  const tTitle = (title || "").toLowerCase();
+  const t = (title + " " + message + " " + notificationType).toLowerCase();
+
+  // Return to Review / Revision (Orange-Red Alert Card)
+  if (
+    nType.includes("revision") ||
+    nType.includes("return") ||
+    tTitle.includes("return") ||
+    tTitle.includes("revision") ||
+    t.includes("returned for revision") ||
+    t.includes("return for revision") ||
+    t.includes("revision required")
+  ) {
+    return { typeClass: "notif-type-revision", badgeText: "RETURNED FOR REVISION" };
+  }
+
+  if (nType.includes("incident") || tTitle.includes("incident") || t.includes("incident")) {
+    if (nType.includes("approv") || tTitle.includes("approv") || t.includes("approved")) {
+      return { typeClass: "notif-type-approved", badgeText: "INCIDENT APPROVED" };
+    }
+    if (nType.includes("close") || tTitle.includes("closed") || t.includes("closed")) {
+      return { typeClass: "notif-type-closed", badgeText: "INCIDENT CLOSED" };
+    }
+    if (nType.includes("submit") || tTitle.includes("submi") || t.includes("submitted")) {
+      return { typeClass: "notif-type-observation", badgeText: "INCIDENT SUBMITTED" };
+    }
+    return { typeClass: "notif-type-observation", badgeText: "INCIDENT" };
+  }
+
+  if (nType.includes("observation") || tTitle.includes("observation") || t.includes("observation")) {
+    if (nType.includes("resolve") || tTitle.includes("resolution") || tTitle.includes("resolved") || t.includes("resolution submitted")) {
+      return { typeClass: "notif-type-resolved", badgeText: "OBS RESOLVED" };
+    }
+    if (nType.includes("close") || tTitle.includes("closed") || tTitle.includes("observation closed")) {
+      return { typeClass: "notif-type-closed", badgeText: "OBS CLOSED" };
+    }
+    if (nType.includes("reject") || tTitle.includes("rejected")) {
+      return { typeClass: "notif-type-rejected", badgeText: "OBS REJECTED" };
+    }
+    if (nType.includes("accept") || tTitle.includes("accepted")) {
+      return { typeClass: "notif-type-approved", badgeText: "OBS ACCEPTED" };
+    }
+    if (nType.includes("reassign") || tTitle.includes("reassigned")) {
+      return { typeClass: "notif-type-hold", badgeText: "OBS REASSIGNED" };
+    }
+    return { typeClass: "notif-type-observation", badgeText: "OBSERVATION" };
+  }
 
   if (t.includes("auto-cancelled") || t.includes("auto cancelled")) {
     return { typeClass: "notif-type-autocancelled", badgeText: "AUTO-CANCELLED" };
@@ -124,12 +249,12 @@ function LiveClock() {
 
   return (
     <span className="navbar-clock">
-      {time.toLocaleTimeString('en-US', {
+      {time.toLocaleTimeString('en-GB', {
         timeZone: 'Europe/Copenhagen',
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
-        hour12: true,
+        hour12: false,
       })}
     </span>
   )
@@ -165,6 +290,15 @@ function ThemeSwitcher({ theme, onThemeChange }) {
 
   const currentLabel = THEMES.find(t => t.value === theme)?.label ?? 'Dark'
 
+  const getThemeIcon = (tVal) => {
+    switch (tVal) {
+      case 'light': return 'ti-sun';
+      case 'midnight-blue': return 'ti-moon-stars';
+      case 'steel-gray': return 'ti-palette';
+      default: return 'ti-moon';
+    }
+  };
+
   useEffect(() => {
     const handler = (e) => {
       if (ref.current && !ref.current.contains(e.target)) setOpen(false)
@@ -175,9 +309,10 @@ function ThemeSwitcher({ theme, onThemeChange }) {
 
   return (
     <div className="theme-switcher" ref={ref}>
-      <button className="theme-btn" onClick={() => setOpen(v => !v)}>
-        {currentLabel}
-        <i className="ti ti-chevron-down" style={{ fontSize: 12, opacity: 0.6 }} />
+      <button className="theme-btn" onClick={() => setOpen(v => !v)} title={`Theme: ${currentLabel}`}>
+        <i className={`ti ${getThemeIcon(theme)} theme-btn-icon`} />
+        <span className="theme-btn-label">{currentLabel}</span>
+        <i className="ti ti-chevron-down theme-btn-chevron" />
       </button>
       {open && (
         <div className="theme-menu">
@@ -190,6 +325,7 @@ function ThemeSwitcher({ theme, onThemeChange }) {
                 setOpen(false)
               }}
             >
+              <i className={`ti ${getThemeIcon(t.value)}`} style={{ marginRight: 6, fontSize: 13 }} />
               {t.label}
             </button>
           ))}
@@ -199,9 +335,130 @@ function ThemeSwitcher({ theme, onThemeChange }) {
   )
 }
 
+/* ── Module Switcher ── */
+const MODULES = [
+  { id: 'ptw', label: 'Permit to Work', path: '/dashboard', icon: 'ti-file-certificate' },
+  { id: 'im', label: 'Incident Management', path: '/incident-management/dashboard', icon: 'ti-alert-triangle' },
+  { id: 'so', label: 'Safety Observations', path: '/safety-observations/dashboard', icon: 'ti-eye' },
+  { id: 'si', label: 'Safety Inspection', path: '/safety-inspection/dashboard', icon: 'ti-clipboard-check' },
+  { id: 'sc', label: 'Spot Checks', path: '/spot-checks/dashboard', icon: 'ti-target' }
+];
+
+function ModuleSwitcher() {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const user = React.useMemo(() => {
+    try {
+      return JSON.parse(localStorage.getItem("user") || "{}");
+    } catch {
+      return {};
+    }
+  }, []);
+
+  const rawRole = (localStorage.getItem("UserType") || user?.role || user?.userType || user?.user_type || "").toUpperCase();
+  const userRolesArr = Array.isArray(user?.userTypes) ? user.userTypes.map((t) => String(t).toUpperCase()) : [];
+  const allRoles = [rawRole, ...userRolesArr].join(" ");
+
+  const isContractor = allRoles.includes("CONTRACTOR") || allRoles.includes("SUBCONTRACTOR") || Boolean(user?.subcontractor_id) || Boolean(user?.contractorId) || Boolean(user?.typeId && allRoles.includes("SUBCONTRACTOR"));
+  const isObserver = allRoles.includes("OBSERVER");
+  const isAdmin = allRoles.includes("ADMIN") || allRoles.includes("SUPERADMIN") || Boolean(user?.isSuperAdmin);
+  const isDepartment = allRoles.includes("DEPARTMENT") || allRoles.includes("OPERATOR") || allRoles.includes("SITE_HSE") || allRoles.includes("SAFETY") || allRoles.includes("HSE");
+  const isDeptOrAdmin = (isAdmin || isDepartment) && !isContractor && !isObserver;
+
+  const allowedModules = MODULES;
+
+  const getActiveModule = () => {
+    if (location.pathname.includes('/spot-checks')) return MODULES[4];
+    if (location.pathname.includes('/safety-inspection')) return MODULES[3];
+    if (location.pathname.includes('/safety-observations')) return MODULES[2];
+    if (location.pathname.includes('/incident-management')) return MODULES[1];
+    return MODULES[0];
+  };
+  const currentModule = getActiveModule();
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  return (
+    <div ref={ref} className="module-switcher-wrap">
+      <button
+        type="button"
+        className={`module-switcher-btn ${open ? 'active' : ''}`}
+        onClick={() => setOpen(!open)}
+        title="Switch Module"
+        aria-expanded={open}
+        aria-haspopup="true"
+      >
+        {currentModule.icon && (
+          <i className={`ti ${currentModule.icon} module-switcher-icon`} />
+        )}
+        <span className="module-switcher-label">{currentModule.label}</span>
+        <i className={`ti ti-chevron-down module-switcher-chevron ${open ? 'rotated' : ''}`} />
+      </button>
+
+      {open && (
+        <div className="module-switcher-dropdown" role="menu">
+          <div className="module-switcher-menu-header">Select Module</div>
+          {allowedModules.map(m => (
+            <button
+              key={m.id}
+              type="button"
+              className={`module-switcher-item ${currentModule.id === m.id ? 'active' : ''}`}
+              onClick={() => {
+                const MOD_MAP = {
+                  im: 'incident-management',
+                  so: 'safety-observations',
+                  si: 'safety-inspection',
+                  sc: 'spot-checks',
+                  ptw: 'permit-to-work',
+                };
+                const requiredKey = MOD_MAP[m.id] || m.id;
+                if (m.id !== 'ptw' && !isAdmin) {
+                  if (!hasUserModuleAccess(requiredKey, user)) {
+                    showError(`You do not have access to the ${m.label} module`);
+                    setOpen(false);
+                    return;
+                  }
+                }
+                const effRole = getEffectiveRoleForModule(requiredKey, user);
+                if (effRole) {
+                  localStorage.setItem("UserType", effRole);
+                  localStorage.setItem("activeModuleRole", effRole);
+                  localStorage.setItem("activeModule", requiredKey);
+                }
+                navigate(m.path);
+                setOpen(false);
+              }}
+            >
+              <div className="module-switcher-item-left">
+                <i className={`ti ${m.icon} module-item-icon`} />
+                <span className="module-item-text">{m.label}</span>
+              </div>
+              {currentModule.id === m.id && (
+                <i className="ti ti-check module-check-icon" />
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ════════════════════════════════════════════ */
 function Navbar({ toggleSidebar, theme, onThemeChange }) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isPermitToWork = !location.pathname.includes('/incident-management') && !location.pathname.includes('/safety-observations');
+  
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const dropdownRef = useRef(null)
 
@@ -222,6 +479,13 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
   const [cpError, setCpError] = useState("");
   const [cpSuccess, setCpSuccess] = useState("");
 
+  const getActiveModuleKey = () => {
+    if (location.pathname.includes('/safety-observation') || location.pathname.includes('/observation')) return 'observations';
+    if (location.pathname.includes('/incident')) return 'incidents';
+    return 'permits';
+  };
+  const activeModuleKey = getActiveModuleKey();
+
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -241,7 +505,7 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
 
   const fetchUnreadCount = async () => {
     try {
-      const data = await getUnreadCount();
+      const data = await getUnreadCount(activeModuleKey);
       setUnreadCount(data.count);
     } catch (e) {
       console.error("Error fetching unread count:", e);
@@ -251,7 +515,7 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
   const fetchNotificationsList = async (pageNum = 1, append = false) => {
     try {
       setIsLoading(true);
-      const res = await getNotifications(pageNum, 10);
+      const res = await getNotifications(pageNum, 10, activeModuleKey);
       if (append) {
         setNotifications(prev => [...prev, ...res.data]);
       } else {
@@ -267,26 +531,48 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
   };
 
   useEffect(() => {
+    if (
+      location.pathname.includes('/spot-check') ||
+      location.pathname.includes('/safety-inspection') ||
+      location.pathname.includes('/inspection')
+    ) {
+      return;
+    }
     fetchUnreadCount();
     const interval = setInterval(fetchUnreadCount, 4000);
     return () => clearInterval(interval);
-  }, []);
+  }, [activeModuleKey, location.pathname]);
+
+  const activeModuleId = detectModuleFromPath(location.pathname);
+
+  // Compute active module role dynamically based on route and user
+  const activeRole = React.useMemo(() => {
+    try {
+      const uStr = localStorage.getItem("user");
+      const u = uStr ? JSON.parse(uStr) : null;
+      const eff = getEffectiveRoleForModule(activeModuleId, u);
+      return getNavbarDisplayRole(eff) || getNavbarDisplayRole(localStorage.getItem("activeModuleRole")) || getNavbarDisplayRole(currentUser.role) || "User";
+    } catch {
+      return getNavbarDisplayRole(currentUser.role) || "User";
+    }
+  }, [activeModuleId, location.pathname, currentUser.role]);
 
   useEffect(() => {
     try {
       const u = localStorage.getItem("user");
       if (u) {
         const parsed = JSON.parse(u);
+        const eff = getEffectiveRoleForModule(activeModuleId, parsed);
         setCurrentUser({
           username: parsed.username || "Alex Mercer",
-          role: parsed.role || parsed.userType || "Site Manager",
+          role: getNavbarDisplayRole(eff) || parsed.role || parsed.userType || "Site Manager",
           name: parsed.username || "Alex Mercer"
         });
       }
     } catch (e) {
       console.error(e);
     }
-  }, []);
+  }, [activeModuleId, location.pathname]);
 
   useEffect(() => {
     const handler = (e) => {
@@ -346,6 +632,29 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
 
     setNotificationsOpen(false);
 
+    // 1. Check if Incident Notification
+    const incInfo = extractIncidentInfo(n);
+    if (incInfo.isIncident) {
+      if (incInfo.incidentId) {
+        navigate(`/incident-management/details/${incInfo.incidentId}`);
+      } else {
+        navigate(`/incident-management/list`);
+      }
+      return;
+    }
+
+    // 2. Check if Observation Notification
+    const obsInfo = extractObservationInfo(n);
+    if (obsInfo.isObservation) {
+      if (obsInfo.observationId) {
+        navigate(`/safety-observations/details/${obsInfo.observationId}`);
+      } else {
+        navigate(`/safety-observations/list`);
+      }
+      return;
+    }
+
+    // 3. Permit Notification
     const permitNo = extractPermitNo(n);
     if (permitNo) {
       navigate(`/list-request?permitNo=${encodeURIComponent(permitNo)}`, {
@@ -433,11 +742,14 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
     try {
       const res = await sendChangePasswordOtp();
       if (res && (res.statusCode === 200 || res.status === true)) {
-        setCpMaskedPhone(res.maskedPhone || "");
-        setCpMaskedEmail(res.maskedEmail || "");
-        setCpOtpType(res.otpNotificationType || (res.maskedEmail && res.maskedPhone ? "BOTH" : res.maskedEmail ? "EMAIL" : "SMS"));
+        const maskedPhone = res.maskedPhone || "";
+        const maskedEmail = res.maskedEmail || "";
+        const otpType = res.otpNotificationType || (maskedEmail && maskedPhone ? "BOTH" : maskedEmail ? "EMAIL" : "SMS");
+        setCpMaskedPhone(maskedPhone);
+        setCpMaskedEmail(maskedEmail);
+        setCpOtpType(otpType);
         setCpStep(2);
-        setCpSuccess(res.message || "Verification code sent.");
+        setCpSuccess(res.message || "Verification code sent successfully.");
         setTimeout(() => setCpSuccess(""), 4000);
         setTimeout(() => cpInputRefs.current[0]?.focus(), 200);
       } else {
@@ -451,21 +763,24 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
   };
 
   const handleCpResendOtp = async () => {
-    setCpError("");
     setCpSending(true);
+    setCpError("");
     try {
       const res = await sendChangePasswordOtp();
       if (res && (res.statusCode === 200 || res.status === true)) {
-        setCpMaskedPhone(res.maskedPhone || "");
-        setCpMaskedEmail(res.maskedEmail || "");
-        setCpOtpType(res.otpNotificationType || (res.maskedEmail && res.maskedPhone ? "BOTH" : res.maskedEmail ? "EMAIL" : "SMS"));
+        const maskedPhone = res.maskedPhone || "";
+        const maskedEmail = res.maskedEmail || "";
+        const otpType = res.otpNotificationType || (maskedEmail && maskedPhone ? "BOTH" : maskedEmail ? "EMAIL" : "SMS");
+        setCpMaskedPhone(maskedPhone);
+        setCpMaskedEmail(maskedEmail);
+        setCpOtpType(otpType);
         setCpSuccess(res.message || "Verification code resent successfully.");
         setTimeout(() => setCpSuccess(""), 4000);
       } else {
-        setCpError(res?.message || "Failed to resend code.");
+        setCpError(res?.message || "Failed to resend OTP.");
       }
     } catch (err) {
-      setCpError(err?.response?.data?.message || err?.message || "Failed to resend code.");
+      setCpError(err?.response?.data?.message || err?.message || "Failed to resend OTP.");
     } finally {
       setCpSending(false);
     }
@@ -547,9 +862,9 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
         </button>
         <div className="navbar-title">
           <div className="beam20-title-row">
-<h4>M3 North Dashboard</h4>
-<span className="beam20-nav-badge">BEAM 2.0</span>
-</div>
+            <ModuleSwitcher />
+            <span className="beam20-nav-badge">BEAM 2.0</span>
+          </div>
           <p>Operational Overview &amp; System Analytics</p>
         </div>
       </div>
@@ -565,9 +880,10 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
         {/* Theme switcher — now controlled via Layout state */}
         <ThemeSwitcher theme={theme} onThemeChange={onThemeChange} />
 
-        {/* Bell with badge */}
-        <div className="bell-wrap" ref={bellRef}>
-          <button
+        {/* Bell with badge (Hidden for Spot Checks and Safety Inspection) */}
+        {!location.pathname.includes('/spot-check') && !location.pathname.includes('/safety-inspection') && !location.pathname.includes('/inspection') && (
+          <div className="bell-wrap" ref={bellRef}>
+            <button
             className="navbar-bell"
             title="Notifications"
             aria-label="Notifications"
@@ -580,22 +896,39 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
           {notificationsOpen && (
             <div className="notifications-dropdown">
               <div className="nd-header">
-                <h5 className="nd-title">Notifications</h5>
+                <h5 className="nd-title">
+                  {activeModuleKey === "observations"
+                    ? "Observation Notifications"
+                    : activeModuleKey === "incidents"
+                    ? "Incident Notifications"
+                    : "Permit Notifications"}
+                </h5>
                 {unreadCount > 0 && (
                   <button className="nd-mark-read" onClick={handleMarkAllRead}>
                     Mark all as read
                   </button>
                 )}
               </div>
+
               <div className="nd-list">
                 {notifications.length === 0 ? (
                   <div className="nd-empty">
-                    {isLoading ? "Loading..." : "No notifications"}
+                    {isLoading
+                      ? "Loading..."
+                      : `No ${
+                          activeModuleKey === "observations"
+                            ? "observation"
+                            : activeModuleKey === "incidents"
+                            ? "incident"
+                            : "permit"
+                        } notifications`}
                   </div>
                 ) : (
                   notifications.map((n) => {
-                    const styleInfo = getNotificationStyleInfo(n.title, n.message);
-                    const permitNo = extractPermitNo(n);
+                    const styleInfo = getNotificationStyleInfo(n.title, n.message, n.notificationType);
+                    const incInfo = extractIncidentInfo(n);
+                    const obsInfo = !incInfo.isIncident ? extractObservationInfo(n) : { isObservation: false };
+                    const permitNo = !incInfo.isIncident && !obsInfo.isObservation ? extractPermitNo(n) : "";
                     return (
                       <button
                         key={n.id}
@@ -607,7 +940,19 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
                           <span className="nd-status-badge">{styleInfo.badgeText}</span>
                           <span className="nd-item-time">{formatCopenhagenTime(n.createdAt)}</span>
                         </div>
-                        {permitNo && (
+                        {incInfo.isIncident && incInfo.caseNumber && (
+                          <div className="nd-item-permit" style={{ color: "#F59E0B" }}>
+                            <span className="nd-permit-label">Incident No:</span>{" "}
+                            <span className="nd-permit-value" style={{ fontWeight: 700 }}>#{incInfo.caseNumber}</span>
+                          </div>
+                        )}
+                        {obsInfo.isObservation && obsInfo.observationNumber && (
+                          <div className="nd-item-permit" style={{ color: "#6366F1" }}>
+                            <span className="nd-permit-label">Observation Ref:</span>{" "}
+                            <span className="nd-permit-value" style={{ fontWeight: 700 }}>#{obsInfo.observationNumber}</span>
+                          </div>
+                        )}
+                        {!incInfo.isIncident && !obsInfo.isObservation && permitNo && (
                           <div className="nd-item-permit">
                             <span className="nd-permit-label">Permit No:</span> <span className="nd-permit-value">#{permitNo}</span>
                           </div>
@@ -619,6 +964,7 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
                   })
                 )}
               </div>
+
               {hasMore && (
                 <div className="nd-footer">
                   <button
@@ -633,6 +979,7 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
             </div>
           )}
         </div>
+        )}
 
         {/* Avatar + name + dropdown */}
         <div className="avatar-wrap" ref={dropdownRef}>
@@ -645,7 +992,7 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
             <div className="navbar-avatar-img">{getInitials(currentUser.name)}</div>
             <div className="navbar-user-info">
               <span className="navbar-user-name">{currentUser.name}</span>
-              <span className="navbar-user-role">{currentUser.role}</span>
+              <span className="navbar-user-role">{activeRole}</span>
             </div>
           </button>
 
@@ -657,7 +1004,7 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
                 <div className="pd-avatar">{getInitials(currentUser.name)}</div>
                 <div>
                   <div className="pd-name">{currentUser.name}</div>
-                  <div className="pd-role">{currentUser.role} · M3 North</div>
+                  <div className="pd-role">{activeRole}</div>
                 </div>
               </div>
 
@@ -671,13 +1018,15 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
                 >
                   <i className="ti ti-lock" /> Change Password
                 </button>
-                <button
-                  className="pd-item"
-                  onClick={handleOpenSettings}
-                  style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer' }}
-                >
-                  <i className="ti ti-settings" /> Notification Settings
-                </button>
+                {activeModuleKey !== 'incidents' && (
+                  <button
+                    className="pd-item"
+                    onClick={handleOpenSettings}
+                    style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer' }}
+                  >
+                    <i className="ti ti-settings" /> Notification Settings
+                  </button>
+                )}
               </div>
 
               <div className="pd-divider" />
@@ -760,7 +1109,7 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
               {/* Error */}
               {cpError && (
                 <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#fca5a5', marginBottom: 14, display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 15, height: 15, flexShrink: 0, marginTop: 1 }}><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 15, height: 15, flexShrink: 0, marginTop: 1 }}><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="16" /></svg>
                   {cpError}
                 </div>
               )}
@@ -818,7 +1167,7 @@ function Navbar({ toggleSidebar, theme, onThemeChange }) {
                       type="button"
                       onClick={handleCpResendOtp}
                       disabled={cpSending}
-                      style={{ background: 'none', border: 'none', color: '#6366f1', fontSize: 12, cursor: 'pointer', padding: 0 }}
+                      style={{ background: 'none', border: 'none', color: '#6366f1', fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
                     >
                       {cpSending ? 'Resending...' : "Didn't receive code? Resend Code"}
                     </button>

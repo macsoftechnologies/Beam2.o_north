@@ -60,6 +60,13 @@ export default function Login() {
           username: response.username,
           userType: response.userType,
           typeId: response.typeId,
+          departId: response.departId ?? null,
+          subContId: response.subContId ?? null,
+          subcontractor_id: response.subcontractor_id ?? response.subContId ?? null,
+          subContractorName: response.subContractorName || null,
+          companyName: response.companyName || null,
+          company_name: response.companyName || null,
+          obserId: response.obserId ?? null,
           phonenumber: response.phonenumber,
           email: response.email,
           otpNotificationType: response.otpNotificationType || (response.maskedEmail ? "EMAIL" : "SMS"),
@@ -121,7 +128,7 @@ export default function Login() {
           <div className="panel-left">
             <div className="panel-glow"></div>
             <div className="panel-glow-2"></div>
-            <div className="panel-compass">N</div>
+            <div className="panel-compass">S</div>
 
             <div className="panel-top">
               <div className="ssw-login-brand">
@@ -139,7 +146,7 @@ export default function Login() {
               <div className="beam20-login-badge">BEAM 2.0</div>
 
               <div className="panel-badge">
-                <span className="dot"></span>Division 01
+                <span className="dot"></span>Division 02
               </div>
               <h2 className="panel-title">
                 M3 <span>North</span>

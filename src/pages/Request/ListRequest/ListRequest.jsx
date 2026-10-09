@@ -212,6 +212,7 @@ import "../../styles/pages.css";
 import "../../../forms/styles/forms.css";
 import { ZONE_MAPPING } from "../../../data/zones";
 import { getDenmarkTimeISOString, formatToDenmarkDateTime } from "../../../utils/dateUtils";
+import { getModuleUserContext, parseModuleAccess, isUserAdmin, getEffectiveRoleForModule } from "../../../utils/modulePermissions";
 
 const getTodayDateString = () => {
   const d = new Date();
@@ -238,68 +239,9 @@ const trimLongValue = (value) => {
   return String(value);
 };
 
-const normalizeFloorName = (name) => {
-  if (!name) return "";
-  let s = String(name).toLowerCase().trim();
-  s = s.replace(/\bground\b|\bgf\b/g, "0");
-  s = s.replace(/\bfirst\b|\b1st\b/g, "1");
-  s = s.replace(/\bsecond\b|\b2nd\b/g, "2");
-  s = s.replace(/\bthird\b|\b3rd\b/g, "3");
-  s = s.replace(/\bfourth\b|\b4th\b/g, "4");
-  s = s.replace(/\bfifth\b|\b5th\b/g, "5");
-  s = s.replace(/\broof\b|\brf\b/g, "roof");
-  return s.replace(/[^0-9roof]/g, "");
-};
-
 // Helper to resolve zone name from building, floor/level, and rooms data
 const resolveZoneNameFromRooms = (row) => {
-  if (!row) return "—";
-
-  const bName = String(row.building_name || row.Building_Name || row.building || "").trim();
-  const lName = String(row.Room_Type || row.level || "").trim();
-  const lLower = lName.toLowerCase();
-  const bLower = bName.toLowerCase();
-
-  let zonesToSearch = [];
-
-  if (lName && ZONE_MAPPING[lName]) {
-    zonesToSearch = ZONE_MAPPING[lName];
-  } else if (bName && lName && ZONE_MAPPING[`${bName} ${lName}`]) {
-    zonesToSearch = ZONE_MAPPING[`${bName} ${lName}`];
-  } else if (bName) {
-    const bKeys = Object.keys(ZONE_MAPPING).filter(k => k.toLowerCase().includes(bLower));
-    if (bKeys.length > 0) {
-      const match = bKeys.find(k => {
-        const rest = k.toLowerCase().replace(bLower, "").trim();
-        return rest === lLower || rest.includes(lLower) || lLower.includes(rest);
-      });
-      if (match) {
-        zonesToSearch = ZONE_MAPPING[match] || [];
-      } else {
-        const targetNorm = normalizeFloorName(lLower);
-        if (targetNorm) {
-          const numMatch = bKeys.find(k => {
-            const rest = k.toLowerCase().replace(bLower, "").trim();
-            return normalizeFloorName(rest) === targetNorm;
-          });
-          if (numMatch) zonesToSearch = ZONE_MAPPING[numMatch] || [];
-        }
-      }
-    }
-  }
-
-  if (zonesToSearch.length === 0 && lName) {
-    const foundKey = Object.keys(ZONE_MAPPING).find(k => {
-      const kNorm = normalizeFloorName(k);
-      const lNorm = normalizeFloorName(lName);
-      return (kNorm && lNorm && kNorm === lNorm) || k.toLowerCase().trim().includes(lLower);
-    });
-    if (foundKey) {
-      zonesToSearch = ZONE_MAPPING[foundKey] || [];
-    }
-  }
-
-  // Extract raw db zone name
+  // 1. If the request already has a valid zone name from the database, use it
   let dbZoneName = "";
   if (typeof row.zone_name === "string" && row.zone_name.trim().length > 0 && row.zone_name !== "—") {
     dbZoneName = row.zone_name.trim();
@@ -308,44 +250,64 @@ const resolveZoneNameFromRooms = (row) => {
   } else if (row.zone && typeof row.zone === "object" && typeof row.zone.zone === "string") {
     dbZoneName = row.zone.zone;
   }
+  if (dbZoneName && dbZoneName !== "—") {
+    return dbZoneName;
+  }
 
-  // If dbZoneName matches any zone in zonesToSearch for this level, use it!
-  if (dbZoneName && dbZoneName !== "—" && zonesToSearch.length > 0) {
-    const dbZoneTokens = dbZoneName.split(",").map(s => s.trim().toLowerCase());
-    const isValidForLevel = zonesToSearch.some(zg => {
-      const zgName = (zg.name || "").toLowerCase().trim();
-      return dbZoneTokens.some(t => t === zgName || zgName.includes(t) || t.includes(zgName));
-    });
-    if (isValidForLevel) {
-      return dbZoneName;
+  // 2. Otherwise, look up from ZONE_MAPPING by matching room names or room IDs
+  const roomStr = row.room_names || row.Room_Nos;
+  if (!roomStr) return "—";
+
+  const roomsToMatch = String(roomStr).split(",").map(r => r.trim().toLowerCase());
+
+  const levelKey = row.Room_Type || "";
+  let zonesToSearch = [];
+
+  if (levelKey) {
+    const levelLower = levelKey.toLowerCase().trim();
+    const foundKey = Object.keys(ZONE_MAPPING).find(k =>
+      k.toLowerCase().trim().includes(levelLower) || levelLower.includes(k.toLowerCase().trim())
+    );
+    if (foundKey) {
+      zonesToSearch = ZONE_MAPPING[foundKey] || [];
     }
   }
 
-  // If dbZoneName was empty or corrupted (belonged to a different floor), try matching rooms
-  const roomStr = row.room_names || row.Room_Nos;
-  if (roomStr && zonesToSearch.length > 0) {
-    const roomsToMatch = String(roomStr).split(",").map(r => r.trim().toLowerCase());
-    for (const zoneGroup of zonesToSearch) {
-      if (zoneGroup.rooms) {
-        for (const room of zoneGroup.rooms) {
-          const roomName = (typeof room === "object" ? room.name : room) || "";
-          const roomId = (typeof room === "object" ? room.id : "") || "";
-          if (
-            roomsToMatch.includes(roomName.toLowerCase().trim()) ||
-            (roomId && roomsToMatch.includes(String(roomId).toLowerCase().trim()))
-          ) {
-            return zoneGroup.name || "—";
-          }
+  if (zonesToSearch.length === 0) {
+    zonesToSearch = Object.values(ZONE_MAPPING).flat();
+  }
+
+  // Find a zoneGroup that contains a room with matching name or ID
+  for (const zoneGroup of zonesToSearch) {
+    if (zoneGroup.rooms) {
+      for (const room of zoneGroup.rooms) {
+        const roomName = (typeof room === "object" ? room.name : room) || "";
+        const roomId = (typeof room === "object" ? room.id : "") || "";
+        if (
+          roomsToMatch.includes(roomName.toLowerCase().trim()) ||
+          (roomId && roomsToMatch.includes(String(roomId).toLowerCase().trim()))
+        ) {
+          return zoneGroup.name || "—";
         }
       }
     }
   }
 
-  // If dbZoneName exists and no level conflict detected, return dbZoneName as fallback
-  if (dbZoneName && dbZoneName !== "—") {
-    return dbZoneName;
-  }
+  return "—";
+};
 
+// Helper to resolve Type of Work (Electrical Works, Mechanical Works) from request
+const resolveTypeOfWork = (row) => {
+  if (!row) return "—";
+  if (row.work_type) return row.work_type;
+  if (row.Work_Type) return row.Work_Type;
+  const hasElec = (row.electrical_works && row.electrical_works.length > 0 && row.electrical_works !== "N/A" && row.electrical_works !== "0") ||
+                  row.power_on === 1 || row.power_on === "1";
+  const hasMech = (row.mechanical_works && row.mechanical_works.length > 0 && row.mechanical_works !== "N/A" && row.mechanical_works !== "0") ||
+                  row.pressurization === 1 || row.pressurization === "1";
+  if (hasElec && hasMech) return "Electrical Works, Mechanical Works";
+  if (hasElec) return "Electrical Works";
+  if (hasMech) return "Mechanical Works";
   return "—";
 };
 
@@ -465,43 +427,14 @@ const resolveZoneObjectsFromRequest = (row, zonesList = [], roomsList = []) => {
       .map(r => r.trim().toLowerCase())
       .filter(Boolean);
 
-    const bName = String(row.building_name || row.Building_Name || row.building || "").trim();
-    const lName = String(row.Room_Type || row.level || "").trim();
-    const lLower = lName.toLowerCase();
-    const bLower = bName.toLowerCase();
+    const levelKey = row.Room_Type || "";
     let zonesToSearch = [];
 
-    if (lName && ZONE_MAPPING[lName]) {
-      zonesToSearch = ZONE_MAPPING[lName];
-    } else if (bName && lName && ZONE_MAPPING[`${bName} ${lName}`]) {
-      zonesToSearch = ZONE_MAPPING[`${bName} ${lName}`];
-    } else if (bName) {
-      const bKeys = Object.keys(ZONE_MAPPING).filter(k => k.toLowerCase().includes(bLower));
-      if (bKeys.length > 0) {
-        const match = bKeys.find(k => {
-          const rest = k.toLowerCase().replace(bLower, "").trim();
-          return rest === lLower || rest.includes(lLower) || lLower.includes(rest);
-        });
-        if (match) {
-          zonesToSearch = ZONE_MAPPING[match] || [];
-        } else {
-          const targetNorm = normalizeFloorName(lLower);
-          if (targetNorm) {
-            const numMatch = bKeys.find(k => {
-              const rest = k.toLowerCase().replace(bLower, "").trim();
-              return normalizeFloorName(rest) === targetNorm;
-            });
-            if (numMatch) zonesToSearch = ZONE_MAPPING[numMatch] || [];
-          }
-        }
-      }
-    }
-
-    if (zonesToSearch.length === 0 && lName) {
+    if (levelKey) {
+      const levelLower = String(levelKey).toLowerCase().trim().replace(/\s+/g, '');
       const foundKey = Object.keys(ZONE_MAPPING).find(k => {
-        const kNorm = normalizeFloorName(k);
-        const lNorm = normalizeFloorName(lName);
-        return (kNorm && lNorm && kNorm === lNorm) || k.toLowerCase().trim().includes(lLower);
+        const kClean = k.toLowerCase().trim().replace(/\s+/g, '');
+        return kClean.includes(levelLower) || levelLower.includes(kClean);
       });
       if (foundKey) {
         zonesToSearch = ZONE_MAPPING[foundKey] || [];
@@ -614,20 +547,9 @@ const HRA_LIST = [
   { key: "pressurization", label: "Mechanical Works", icon: "mechanical1.png", image: LOGO_MAP["mechanical1.png"] }
 ];
 
-const MultiSelectDropdown = ({
-  options,
-  selectedValues,
-  onChange,
-  placeholder,
-  disabled,
-  hasNone = false,
-  searchPlaceholder = "",
-  hasCategoryFilter = false,
-  categories = []
-}) => {
+const MultiSelectDropdown = ({ options, selectedValues, onChange, placeholder, disabled, hasNone = false, searchPlaceholder = "Search contractor..." }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -661,42 +583,10 @@ const MultiSelectDropdown = ({
     onChange(newSelected);
   };
 
-  const resolvedCategories = useMemo(() => {
-    if (categories && categories.length > 0) return categories;
-    const set = new Set();
-    (options || []).forEach(opt => {
-      const mod = opt.module || opt.category;
-      if (mod && typeof mod === "string" && mod.trim()) {
-        set.add(mod.trim());
-      }
-    });
-    return Array.from(set);
-  }, [categories, options]);
-
-  const categoryCounts = useMemo(() => {
-    const counts = {};
-    (options || []).forEach(opt => {
-      const mod = opt.module || opt.category;
-      if (mod) {
-        counts[mod] = (counts[mod] || 0) + 1;
-      }
-    });
-    return counts;
-  }, [options]);
-
   const filteredOptions = useMemo(() => {
-    let result = options;
-
-    if (selectedCategory) {
-      result = result.filter(opt => {
-        const mod = opt.module || opt.category || "";
-        return String(mod).toLowerCase() === String(selectedCategory).toLowerCase();
-      });
-    }
-
-    if (!searchQuery.trim()) return result;
+    if (!searchQuery.trim()) return options;
     const q = searchQuery.toLowerCase();
-    return result.filter(opt => {
+    return options.filter(opt => {
       if (opt.zones) {
         return opt.zones.some(z => {
           const l = typeof z === "object" ? (z.name ?? z.label ?? z) : z;
@@ -706,7 +596,7 @@ const MultiSelectDropdown = ({
       const label = opt.subContractorName || opt.building_name || opt.floor_name || opt.zone || opt.label || opt.name || opt;
       return String(label).toLowerCase().includes(q);
     });
-  }, [options, searchQuery, selectedCategory]);
+  }, [options, searchQuery]);
 
   let displayText = placeholder;
   if (selectedValues.length > 0) {
@@ -798,14 +688,13 @@ const MultiSelectDropdown = ({
           height="16"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="currentColor"
+          stroke="#9CA3AF"
           strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
           style={{
             transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-            transition: "transform 0.2s ease",
-            opacity: 0.7
+            transition: "transform 0.2s ease"
           }}
         >
           <polyline points="6 9 12 15 18 9" />
@@ -813,160 +702,199 @@ const MultiSelectDropdown = ({
       </div>
 
       {isOpen && (
-        <div className="custom-multiselect-dropdown">
+        <div
+          className="custom-multiselect-dropdown"
+          style={{
+            position: "absolute",
+            top: "calc(100% + 6px)",
+            left: 0,
+            width: "100%",
+            maxHeight: "260px",
+            overflowY: "auto",
+            backgroundColor: "var(--bg-card, #111827)",
+            border: "1.5px solid var(--border-color, #374151)",
+            borderRadius: "12px",
+            zIndex: 9999,
+            boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5)",
+            padding: "6px 0"
+          }}
+        >
           {/* Search bar inside dropdown */}
-          <div className="custom-multiselect-header">
+          <div style={{ padding: "8px 12px", borderBottom: "1px solid var(--border-color, #374151)", position: "sticky", top: 0, backgroundColor: "var(--bg-card, #111827)", zIndex: 10, display: "flex", gap: "6px" }}>
             <input
               type="text"
-              className="custom-multiselect-search-input"
-              placeholder={searchPlaceholder || (placeholder ? `Search ${placeholder.replace(/^Select\s*/i, "").toLowerCase()}...` : "Search...")}
+              placeholder={searchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onClick={(e) => e.stopPropagation()}
+              style={{
+                flex: 1,
+                padding: "6px 10px",
+                fontSize: "13px",
+                borderRadius: "6px",
+                border: "1px solid var(--border-color, #374151)",
+                backgroundColor: "rgba(255, 255, 255, 0.05)",
+                color: "var(--text-main, #f9fafb)",
+                outline: "none"
+              }}
             />
-            {hasCategoryFilter && resolvedCategories.length > 0 && (
-              <select
-                className="custom-multiselect-cat-select"
-                value={selectedCategory}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  setSelectedCategory(e.target.value);
-                }}
-                onClick={(e) => e.stopPropagation()}
-                title="Filter by Category"
-              >
-                <option value="">
-                  All ({options.length})
-                </option>
-                {resolvedCategories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat} ({categoryCounts[cat] || 0})
-                  </option>
-                ))}
-              </select>
-            )}
             <button
               type="button"
-              className="custom-multiselect-search-btn"
               onClick={(e) => e.stopPropagation()}
-              title="Search"
+              style={{
+                padding: "6px 10px",
+                backgroundColor: "var(--primary-color, #3b82f6)",
+                border: "none",
+                borderRadius: "6px",
+                color: "#fff",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}
             >
               <FaSearch size={12} />
             </button>
           </div>
           {hasNone && (
             <label
-              className={`custom-multiselect-option ${selectedValues.includes("none") ? "is-checked" : ""}`}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                padding: "10px 16px",
+                cursor: "pointer",
+                transition: "background-color 0.2s",
+                color: "var(--text-main, #f9fafb)",
+                backgroundColor: selectedValues.includes("none") ? "rgba(255, 255, 255, 0.05)" : "transparent",
+                fontSize: "14px",
+                userSelect: "none"
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.08)"}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = selectedValues.includes("none") ? "rgba(255, 255, 255, 0.05)" : "transparent"}
             >
               <input
                 type="checkbox"
                 checked={selectedValues.includes("none")}
                 onChange={(e) => handleCheckboxChange("none", e.target.checked)}
-                style={{ width: "16px", height: "16px", cursor: "pointer", accentColor: "var(--accent-primary, #3b82f6)" }}
+                style={{ width: "16px", height: "16px", cursor: "pointer", accentColor: "var(--accent, #00e5a0)" }}
               />
               <span>None</span>
             </label>
           )}
 
-          {filteredOptions.length === 0 ? (
-            <div style={{ padding: "16px", textAlign: "center", color: "var(--text-muted, #9ca3af)", fontSize: "13px" }}>
-              No options found
-            </div>
-          ) : (
-            filteredOptions.map((opt, idx) => {
-              // Support grouped zones/rooms
-              if (opt.zones) {
-                return (
-                  <div key={idx}>
-                    <div
-                      className="custom-multiselect-group-header"
-                      style={{ borderTop: idx > 0 ? "1px solid var(--border-color, #374151)" : "none" }}
-                    >
-                      {opt.floorName}
-                    </div>
-                    {opt.zones.map((z, zIdx) => {
-                      const zVal = String(typeof z === "object" ? (z.id ?? z.value ?? z) : z);
-                      const zLabel = typeof z === "object" ? (z.name ?? z.label ?? z) : z;
-                      const isChecked = selectedValues.includes(zVal);
-
-                      return (
-                        <label
-                          key={zIdx}
-                          className={`custom-multiselect-option ${isChecked ? "is-checked" : ""}`}
-                          style={{ paddingLeft: "24px" }}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={isChecked}
-                            onChange={(e) => handleCheckboxChange(zVal, e.target.checked)}
-                            style={{
-                              width: "16px",
-                              height: "16px",
-                              cursor: "pointer",
-                              accentColor: "var(--accent-primary, #3b82f6)",
-                              borderRadius: "4px"
-                            }}
-                          />
-                          <span>{zLabel}</span>
-                        </label>
-                      );
-                    })}
-                  </div>
-                );
-              }
-
-              const val = String(opt.value ?? opt.key ?? opt.id ?? opt.build_id ?? opt);
-              const displayLabel = opt.label || opt.building_name || opt.floor_name || opt.subContractorName || opt;
-              const isChecked = selectedValues.includes(val);
-              const imgUrl = opt.image || (opt.icon ? LOGO_MAP[opt.icon] : null);
-              const itemModule = opt.module || opt.category;
-
+          {filteredOptions.map((opt, idx) => {
+            // Support grouped zones/rooms
+            if (opt.zones) {
               return (
-                <label
-                  key={idx}
-                  className={`custom-multiselect-option ${isChecked ? "is-checked" : ""}`}
-                >
-                  <input
-                    type="checkbox"
-                    checked={isChecked}
-                    onChange={(e) => handleCheckboxChange(val, e.target.checked)}
+                <div key={idx}>
+                  <div style={{
+                    padding: "8px 16px 4px 16px",
+                    color: "var(--text-muted, #9ca3af)",
+                    fontSize: "11px",
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                    backgroundColor: "rgba(255, 255, 255, 0.02)",
+                    borderTop: idx > 0 ? "1px solid var(--border-color, #374151)" : "none"
+                  }}>
+                    {opt.floorName}
+                  </div>
+                  {opt.zones.map((z, zIdx) => {
+                    const zVal = String(typeof z === "object" ? (z.id ?? z.value ?? z) : z);
+                    const zLabel = typeof z === "object" ? (z.name ?? z.label ?? z) : z;
+                    const isChecked = selectedValues.includes(zVal);
+
+                    return (
+                      <label
+                        key={zIdx}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "12px",
+                          padding: "10px 24px",
+                          cursor: "pointer",
+                          transition: "background-color 0.2s",
+                          color: "var(--text-main, #f9fafb)",
+                          backgroundColor: isChecked ? "rgba(255, 255, 255, 0.05)" : "transparent",
+                          fontSize: "14px",
+                          userSelect: "none"
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.08)"}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = isChecked ? "rgba(255, 255, 255, 0.05)" : "transparent"}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={(e) => handleCheckboxChange(zVal, e.target.checked)}
+                          style={{
+                            width: "16px",
+                            height: "16px",
+                            cursor: "pointer",
+                            accentColor: "var(--accent, #00e5a0)",
+                            borderRadius: "4px"
+                          }}
+                        />
+                        <span>{zLabel}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              );
+            }
+
+            const val = String(opt.value ?? opt.key ?? opt.id ?? opt.build_id ?? opt);
+            const displayLabel = opt.label || opt.building_name || opt.floor_name || opt.subContractorName || opt;
+            const isChecked = selectedValues.includes(val);
+            const imgUrl = opt.image || (opt.icon ? LOGO_MAP[opt.icon] : null);
+
+            return (
+              <label
+                key={idx}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  padding: "10px 16px",
+                  cursor: "pointer",
+                  transition: "background-color 0.2s",
+                  color: "var(--text-main, #f9fafb)",
+                  backgroundColor: isChecked ? "rgba(255, 255, 255, 0.05)" : "transparent",
+                  fontSize: "14px",
+                  userSelect: "none"
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.08)"}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = isChecked ? "rgba(255, 255, 255, 0.05)" : "transparent"}
+              >
+                <input
+                  type="checkbox"
+                  checked={isChecked}
+                  onChange={(e) => handleCheckboxChange(val, e.target.checked)}
+                  style={{
+                    width: "16px",
+                    height: "16px",
+                    cursor: "pointer",
+                    accentColor: "var(--accent, #00e5a0)",
+                    borderRadius: "4px"
+                  }}
+                />
+                {imgUrl && (
+                  <img
+                    src={imgUrl}
+                    alt={displayLabel}
                     style={{
-                      width: "16px",
-                      height: "16px",
-                      cursor: "pointer",
-                      accentColor: "var(--accent-primary, #3b82f6)",
-                      borderRadius: "4px"
+                      width: "22px",
+                      height: "22px",
+                      objectFit: "contain",
+                      borderRadius: "4px",
+                      flexShrink: 0
                     }}
                   />
-                  {imgUrl && (
-                    <img
-                      src={imgUrl}
-                      alt={displayLabel}
-                      style={{
-                        width: "22px",
-                        height: "22px",
-                        objectFit: "contain",
-                        borderRadius: "4px",
-                        flexShrink: 0
-                      }}
-                    />
-                  )}
-                  <span style={{ flex: 1 }}>{displayLabel}</span>
-                  {itemModule && (
-                    <span
-                      className={`multiselect-badge ${
-                        itemModule === "Panel Numbers"
-                          ? "multiselect-badge--panel"
-                          : "multiselect-badge--system"
-                      }`}
-                    >
-                      {itemModule}
-                    </span>
-                  )}
-                </label>
-              );
-            })
-          )}
+                )}
+                <span>{displayLabel}</span>
+              </label>
+            );
+          })}
         </div>
       )}
     </div>
@@ -1036,6 +964,7 @@ const ALL_COLUMNS_CONFIG = [
   { id: "permit_under", label: "Permit Under" },
   { id: "Request_Date", label: "Request Date" },
   { id: "permit_type", label: "Permit Type" },
+  { id: "work_type", label: "Type of Work" },
   { id: "Activity", label: "Activity" },
   { id: "contractorName", label: "Contractor" },
   { id: "buildingName", label: "Building" },
@@ -1055,7 +984,20 @@ const STORAGE_KEY_VISIBLE_COLUMNS = "beam_list_request_visible_columns";
 const ListRequest = () => {
   const navigate = useNavigate();
   const currentUser = useMemo(() => getUser(), []);
-  const userContractorId = currentUser?.typeId || currentUser?.subContId || currentUser?.subContractorId;
+  const ptwModuleCtx = useMemo(() => getModuleUserContext("permit-to-work", currentUser), [currentUser]);
+  const userContractorId = useMemo(() => {
+    if (ptwModuleCtx.contractorId) return String(ptwModuleCtx.contractorId);
+    const rawSubId =
+      currentUser?.subContId !== undefined && currentUser?.subContId !== null ? currentUser.subContId :
+      currentUser?.subcontractor_id !== undefined && currentUser?.subcontractor_id !== null ? currentUser.subcontractor_id :
+      currentUser?.subContractorId !== undefined && currentUser?.subContractorId !== null ? currentUser.subContractorId :
+      null;
+    if (rawSubId) return String(rawSubId);
+    if (ptwModuleCtx.isContractor && currentUser?.typeId && !currentUser?.departId) {
+      return String(currentUser.typeId);
+    }
+    return "";
+  }, [currentUser, ptwModuleCtx]);
   const location = useLocation();
 
   // Column Visibility States
@@ -1187,10 +1129,10 @@ const getInitialSearchFilters = () => {
           areas: [],
           zones: [],
           hras: [],
-          electrical_works: [],
-          mechanical_works: [],
           permitType: "",
           permitUnder: "",
+          electricalWorks: [],
+          mechanicalWorks: [],
           fromDate: "",
           toDate: "",
           startTime: "",
@@ -1200,6 +1142,8 @@ const getInitialSearchFilters = () => {
           newEndTime: "",
           typeOfActivityId: "",
           ...parsed,
+          electricalWorks: parsed.electricalWorks || [],
+          mechanicalWorks: parsed.mechanicalWorks || [],
         };
       }
     } catch (e) {
@@ -1216,10 +1160,10 @@ const getInitialSearchFilters = () => {
     areas: [],
     zones: [],
     hras: [],
-    electrical_works: [],
-    mechanical_works: [],
     permitType: "",
     permitUnder: "",
+    electricalWorks: [],
+    mechanicalWorks: [],
     fromDate: "",
     toDate: "",
     startTime: "",
@@ -1256,8 +1200,6 @@ const getInitialPage = () => {
   const [floorsList, setFloorsList] = useState([]);
   const [zonesList, setZonesList] = useState([]);
   const [roomsList, setRoomsList] = useState([]);
-  const [electricalWorksList, setElectricalWorksList] = useState([]);
-  const [mechanicalWorksList, setMechanicalWorksList] = useState([]);
 
   // Collapsible filters card
   const [filtersOpen, setFiltersOpen] = useState(true);
@@ -1313,51 +1255,142 @@ const getInitialPage = () => {
   const [showCopyNewEndPicker, setShowCopyNewEndPicker] = useState(false);
   const [logsData, setLogsData] = useState([]);
   const [copyDates, setCopyDates] = useState({ from: "", to: "", startTime: "", endTime: "", nightShift: false, newEndTime: "" });
+  const [electricalWorksList, setElectricalWorksList] = useState([]);
+  const [mechanicalWorksList, setMechanicalWorksList] = useState([]);
 
-  // Check operator credentials (with multi-role support)
+  // Check operator credentials (with multi-role support for permit-to-work)
   const userRoles = useMemo(() => {
-    const roleVal = currentUser?.role || currentUser?.userType || "";
-    if (typeof roleVal === "string") {
-      return roleVal.split(",").map(r => r.trim().toLowerCase());
+    if (isUserAdmin(currentUser)) {
+      return ["admin"];
     }
-    if (Array.isArray(roleVal)) {
-      return roleVal.map(r => String(r).trim().toLowerCase());
+    const parsedMap = parseModuleAccess(currentUser?.moduleAccess);
+    const ptwRole = parsedMap["permit-to-work"];
+    let effectiveRole = null;
+    try {
+      effectiveRole = getEffectiveRoleForModule("permit-to-work", currentUser);
+    } catch {
+      // fallback
     }
-    return [String(roleVal).trim().toLowerCase()];
+    const allRoleStrings = [
+      effectiveRole,
+      ptwRole,
+      currentUser?.role,
+      currentUser?.userType,
+      currentUser?.user_type,
+      localStorage.getItem("primaryUserType"),
+      localStorage.getItem("UserType")
+    ].filter(Boolean);
+
+    const rolesSet = new Set();
+    allRoleStrings.forEach(val => {
+      if (typeof val === "string") {
+        val.split(",").forEach(r => {
+          const trimmed = r.trim().toLowerCase();
+          if (trimmed) rolesSet.add(trimmed);
+        });
+      } else if (Array.isArray(val)) {
+        val.forEach(r => {
+          const trimmed = String(r).trim().toLowerCase();
+          if (trimmed) rolesSet.add(trimmed);
+        });
+      }
+    });
+    return Array.from(rolesSet);
   }, [currentUser]);
 
-  const isAdmin = userRoles.some(r => ["admin", "superadmin"].includes(r));
-  const isDept = userRoles.includes("department");
-  const isDept1 = userRoles.includes("department1");
-  const isSubcontractor = userRoles.includes("subcontractor") ||
-    userRoles.includes("contractor") ||
-    userRoles.includes("sub_contractor") ||
-    userRoles.includes("sub-contractor");;
-  const isObserver = userRoles.includes("observer");
-  const canBulkAction = isAdmin || isDept || isDept1;
-  const isMultiDept = isDept && isDept1;
+  const activeRole = (localStorage.getItem("UserType") || "").toLowerCase().trim();
+  const isObserver = activeRole ? activeRole.includes("observer") : (userRoles.includes("observer") && !userRoles.some(r => ["admin", "superadmin", "department", "department1"].includes(r)));
+  const isAdmin = !isObserver && (activeRole ? (activeRole.includes("admin") || activeRole.includes("superadmin")) : (userRoles.some(r => ["admin", "superadmin"].includes(r)) || isUserAdmin(currentUser)));
+  const isDept = !isObserver && !isAdmin && (activeRole ? (activeRole.includes("department") || activeRole.includes("conm") || activeRole.includes("hse")) && !activeRole.includes("department1") : userRoles.some(r => ["department", "operator", "conm", "hse"].includes(r)));
+  const isDept1 = !isObserver && !isAdmin && (activeRole ? (activeRole.includes("department1") || activeRole.includes("c&q") || activeRole.includes("comm")) : userRoles.some(r => ["department1", "operator1", "c&q", "comm"].includes(r)));
+  const isMultiDept = !isObserver && !isAdmin && ((isDept && isDept1) || activeRole.includes("multi_dept") || userRoles.includes("multi_dept"));
+  const isSubcontractor = !isObserver && !isAdmin && !isDept && !isDept1 && (activeRole ? (activeRole.includes("subcontractor") || activeRole.includes("contractor")) : (userRoles.includes("subcontractor") || userRoles.includes("contractor") || userRoles.includes("sub_contractor") || userRoles.includes("sub-contractor")));
+  const canBulkAction = !isObserver && (isAdmin || isDept || isDept1 || isMultiDept);
 
   const checkIfHideCheckbox = useCallback((row) => {
+    // Observers and Subcontractors have no bulk permit management / selection rights
     if (isObserver || isSubcontractor) return true;
+    if (!row) return true;
+
+    // Normalization of fields (safely defaulting to "Construction" if empty, matching backend & database)
+    const pUnder = (row.permit_under || row.permitUnder || "Construction").toString().trim().toLowerCase();
+    const pType = (row.permit_type || row.permitType || "Construction").toString().trim().toLowerCase();
+    const status = (row.Request_status || row.request_status || row.requestStatus || "").toString().trim().toLowerCase();
+
+    // Terminal statuses & draft cannot be approved, pre-approved, rejected, or bulk edited by departments
+    const isTerminalOrDraft = ["closed", "cancelled", "auto-cancelled", "auto cancelled", "rejected", "draft"].includes(status);
+    if (isTerminalOrDraft) {
+      // SuperAdmin / Admin can select terminal rows for bulk deletion
+      return !isAdmin;
+    }
+
+    // Admin and Multi-Department (holding both Department & Department1) have access to all active permits
     if (isAdmin || isMultiDept) return false;
+
+    // 1. Pure Construction permit (Construction under Construction)
+    if (pUnder === "construction" && pType === "construction") {
+      // Accessible ONLY by Department (ConM)
+      return !isDept;
+    }
+
+    // 2. Pure Commissioning permit (Commissioning under Commissioning)
+    if (pUnder === "commissioning" && pType === "commissioning") {
+      // Accessible ONLY by Department1 (C&Q / COMM)
+      return !isDept1;
+    }
+
+    // 3. Mixed: Construction permit under Commissioning
+    if (pUnder === "commissioning" && pType === "construction") {
+      // At Hold: ConM (Department) pre-approves/rejects
+      if (status === "hold") {
+        return !isDept;
+      }
+      // At Pre-Approved: COMM (Department1) performs final approval/rejection
+      if (status === "pre-approved") {
+        return !isDept1;
+      }
+      // At Approved or Opened: both departments have oversight / operational access
+      if (status === "approved" || status === "opened") {
+        return !(isDept || isDept1);
+      }
+      return !(isDept || isDept1);
+    }
+
+    // 4. Mixed: Commissioning permit under Construction
+    if (pUnder === "construction" && pType === "commissioning") {
+      // At Hold: COMM (Department1) pre-approves/rejects
+      if (status === "hold") {
+        return !isDept1;
+      }
+      // At Pre-Approved: ConM (Department) performs final approval/rejection
+      if (status === "pre-approved") {
+        return !isDept;
+      }
+      // At Approved or Opened: both departments have oversight / operational access
+      if (status === "approved" || status === "opened") {
+        return !(isDept || isDept1);
+      }
+      return !(isDept || isDept1);
+    }
+
+    // Fallback: Check if user's role matches either stream
     if (isDept) {
-      const eitherIsConstruction = String(row.permit_under).toLowerCase() === "construction" ||
-        String(row.permit_type).toLowerCase() === "construction";
-      return !eitherIsConstruction;
+      const involvesConstruction = pUnder === "construction" || pType === "construction";
+      return !involvesConstruction;
     }
     if (isDept1) {
-      const bothAreConstruction = String(row.permit_under).toLowerCase() === "construction" &&
-        String(row.permit_type).toLowerCase() === "construction";
-      return bothAreConstruction;
+      const involvesCommissioning = pUnder === "commissioning" || pType === "commissioning";
+      return !involvesCommissioning;
     }
-    return false;
+
+    return true;
   }, [isAdmin, isDept, isDept1, isMultiDept, isObserver, isSubcontractor]);
 
   // ─── Fetch Selector Lists ──────────────────────────────────────────────────
   useEffect(() => {
     const fetchSelectors = async () => {
       try {
-        const [subRes, actRes, buildRes, floorRes, zoneRes, roomRes, precautionsRes, elecRes, mechRes] = await Promise.all([
+        const [subRes, actRes, buildRes, floorRes, zoneRes, roomRes, precautionsRes, eleRes, mechRes] = await Promise.all([
           getContractors(1, 1000),
           getActivities(1, 1000),
           getBuildings(1, 1000),
@@ -1388,7 +1421,7 @@ const getInitialPage = () => {
         setZonesList(zoneRes?.data ?? []);
         setRoomsList(roomRes?.data?.rows ?? roomRes?.data ?? roomRes ?? []);
         setPrecautionsList(precautionsRes?.data?.rows ?? precautionsRes?.data ?? precautionsRes ?? []);
-        setElectricalWorksList(elecRes?.data?.rows ?? elecRes?.data ?? elecRes ?? []);
+        setElectricalWorksList(eleRes?.data?.rows ?? eleRes?.data ?? eleRes ?? []);
         setMechanicalWorksList(mechRes?.data?.rows ?? mechRes?.data ?? mechRes ?? []);
       } catch (err) {
         console.error("Failed to load selectors lists", err);
@@ -1559,32 +1592,17 @@ const getInitialPage = () => {
     }));
   }, [roomsList, zonesList, floorsList, searchFilters.buildings, searchFilters.levels, searchFilters.zones]);
 
-  const electricalCategories = useMemo(() => {
-    const set = new Set();
-    (electricalWorksList || []).forEach(item => {
-      const mod = item.module || item.category;
-      if (mod && typeof mod === "string" && mod.trim()) {
-        set.add(mod.trim());
-      }
-    });
-    if (set.size === 0) {
-      return ["Panel Numbers", "System Numbers"];
-    }
-    return Array.from(set);
-  }, [electricalWorksList]);
-
   const electricalWorksOptions = useMemo(() => {
-    return (electricalWorksList || []).map((item) => ({
-      value: String(item.id ?? item.electrical_works),
-      label: item.electrical_works || item.name || String(item.id),
-      module: item.module || item.category || ""
+    return electricalWorksList.map(item => ({
+      value: String(item.id),
+      label: item.electrical_works || item.electricalWork || item.name || `Electrical Work ${item.id}`
     }));
   }, [electricalWorksList]);
 
   const mechanicalWorksOptions = useMemo(() => {
-    return (mechanicalWorksList || []).map((item) => ({
-      value: String(item.id ?? item.mechanical_works),
-      label: item.mechanical_works || item.name || String(item.id)
+    return mechanicalWorksList.map(item => ({
+      value: String(item.id),
+      label: item.mechanical_works || item.mechanicalWork || item.name || `Mechanical Work ${item.id}`
     }));
   }, [mechanicalWorksList]);
 
@@ -1619,10 +1637,10 @@ const getInitialPage = () => {
           ? zonesList.filter(z => searchFilters.zones && searchFilters.zones.includes(z.zone)).map(z => z.id)
           : null,
         zone: searchFilters.zones && searchFilters.zones.length > 0 ? searchFilters.zones.join(",") : null,
-        electrical_works: searchFilters.electrical_works?.length > 0 ? searchFilters.electrical_works.join(",") : null,
-        mechanical_works: searchFilters.mechanical_works?.length > 0 ? searchFilters.mechanical_works.join(",") : null,
         permit_type: searchFilters.permitType || "",
         permit_under: searchFilters.permitUnder || "",
+        electrical_works: (isAdmin || isDept1 || isMultiDept) && searchFilters.electricalWorks && searchFilters.electricalWorks.length > 0 ? searchFilters.electricalWorks.join(",") : null,
+        mechanical_works: (isAdmin || isDept1 || isMultiDept) && searchFilters.mechanicalWorks && searchFilters.mechanicalWorks.length > 0 ? searchFilters.mechanicalWorks.join(",") : null,
         night_shift: searchFilters.nightShift || "",
         new_date: searchFilters.newDate || "",
         new_end_time: searchFilters.newEndTime ? (searchFilters.newEndTime.length === 5 ? `${searchFilters.newEndTime}:00` : searchFilters.newEndTime) : "",
@@ -1710,17 +1728,17 @@ const getInitialPage = () => {
     setSearchFilters({
       keyword: "",
       permitNo: "",
-      contractors: isSubcontractor && currentUser?.typeId ? [String(currentUser.typeId)] : [],
+      contractors: isSubcontractor && userContractorId ? [String(userContractorId)] : [],
       statuses: [],
       buildings: [],
       levels: [],
       areas: [],
       zones: [],
       hras: [],
-      electrical_works: [],
-      mechanical_works: [],
       permitType: "",
       permitUnder: "",
+      electricalWorks: [],
+      mechanicalWorks: [],
       fromDate: "",
       toDate: "",
       startTime: "",
@@ -1735,11 +1753,13 @@ const getInitialPage = () => {
 
   // ─── Select Handling ───────────────────────────────────────────────────────
   const handleSelectAll = (checked) => {
+    const selectableRequests = requests.filter(r => !checkIfHideCheckbox(r));
+    const selectableIds = selectableRequests.map(r => r.id);
     if (checked) {
-      const selectableRequests = requests.filter(r => !checkIfHideCheckbox(r));
-      setSelectedIds(selectableRequests.map(r => r.id));
+      setSelectedIds(prev => Array.from(new Set([...prev, ...selectableIds])));
     } else {
-      setSelectedIds([]);
+      const selectableSet = new Set(selectableIds);
+      setSelectedIds(prev => prev.filter(id => !selectableSet.has(id)));
     }
   };
 
@@ -1876,20 +1896,32 @@ const getInitialPage = () => {
     return false;
   };
 
-  const canUserReject = (row) => {
+  const canUserReject = (row, targetStatus = modalStatus) => {
     if (isAdmin || isMultiDept) return true;
     if (!row) return false;
     const permitType = row.permit_type || "";
     const permitUnder = row.permit_under || "";
-    const isBothConstruction = (permitUnder === "Construction" && permitType === "Construction");
-    const isBothCommissioning = (permitUnder === "Commissioning" && permitType === "Commissioning");
-    const isMixed = (permitUnder === "Construction" && permitType === "Commissioning") ||
-                    (permitUnder === "Commissioning" && permitType === "Construction");
+    const currentStatus = row.Request_status || row.request_status || "";
 
-    if (isBothConstruction) return isDept;
-    if (isBothCommissioning) return isDept1;
-    if (isMixed) return isDept || isDept1;
-    return false;
+    if (permitUnder === "Construction" && permitType === "Construction") {
+      return isDept;
+    }
+    if (permitUnder === "Commissioning" && permitType === "Commissioning") {
+      return isDept1;
+    }
+    if (permitType === "Construction" && permitUnder === "Commissioning") {
+      if (currentStatus === "Hold" || targetStatus === "Pre-Approved") {
+        return isDept;
+      }
+      return isDept1;
+    }
+    if (permitType === "Commissioning" && permitUnder === "Construction") {
+      if (currentStatus === "Hold" || targetStatus === "Pre-Approved") {
+        return isDept1;
+      }
+      return isDept;
+    }
+    return isDept || isDept1;
   };
 
   const proceedWithStatusChange = (row, status) => {
@@ -1932,10 +1964,10 @@ const getInitialPage = () => {
     const permitUnder = row.permit_under || "";
 
     // Role based validations for Pre-Approved and Approved transitions
-    if (!isAdmin) {
+    if (!isAdmin && !isMultiDept) {
       if (status === "Pre-Approved" || status === "Approved") {
         const canApproveThis = canUserApprove(row, status);
-        const canRejectThis = canUserReject(row);
+        const canRejectThis = canUserReject(row, status);
 
         if (!canApproveThis && !canRejectThis) {
           if (status === "Pre-Approved") {
@@ -2059,8 +2091,11 @@ const getInitialPage = () => {
         if (isBothCommissioning && !isDept1) {
           return showError("Only COMM role can reject Commissioning-only permits.");
         }
-        if ((isUnderConstTypeComm || isUnderCommTypeConst) && (!isDept && !isDept1)) {
-          return showError("Only CONM or COMM role can reject this permit.");
+        if (isUnderConstTypeComm && !isDept) {
+          return showError("Only CONM role can reject Construction permits under Commissioning.");
+        }
+        if (isUnderCommTypeConst && !isDept1) {
+          return showError("Only COMM role can reject Commissioning permits under Construction.");
         }
       }
       handleStatusTransition(row, "Rejected");
@@ -2072,7 +2107,7 @@ const getInitialPage = () => {
     if (!modalTarget) return;
 
     let nextStatus = submitStatusOverride || modalStatus;
-    if ((modalStatus === "Pre-Approved" || modalStatus === "Approved") && approveActionType === "Reject") {
+    if (modalStatus === "Pre-Approved" && approveActionType === "Reject") {
       nextStatus = "Rejected";
     }
     if (modalStatus === "Opened" && openActionType === "Cancel") {
@@ -2098,15 +2133,18 @@ const getInitialPage = () => {
         const isUnderCommTypeConst = (permitUnder === "Commissioning" && permitType === "Construction");
 
         const curStatus = modalTarget?.Request_status || modalTarget?.request_status || "";
-        if (curStatus === "Approved" || curStatus === "Pre-Approved" || curStatus === "Hold" || curStatus === "Draft") {
+        if (curStatus === "Approved" || curStatus === "Pre-Approved") {
           if (isBothConstruction && !isDept) {
             return showError("Only CONM role can reject Construction-only permits.");
           }
           if (isBothCommissioning && !isDept1) {
             return showError("Only COMM role can reject Commissioning-only permits.");
           }
-          if ((isUnderConstTypeComm || isUnderCommTypeConst) && (!isDept && !isDept1)) {
-            return showError("Only CONM or COMM role can reject this permit.");
+          if (isUnderConstTypeComm && !isDept) {
+            return showError("Only CONM role can reject Construction permits under Commissioning.");
+          }
+          if (isUnderCommTypeConst && !isDept1) {
+            return showError("Only COMM role can reject Commissioning permits under Construction.");
           }
         }
       }
@@ -2247,7 +2285,7 @@ const getInitialPage = () => {
     if (status === "Rejected" && !isAdmin) {
       for (const r of targetRequests) {
         const curStatus = (r.Request_status || r.request_status || "");
-        if (curStatus === "Approved" || curStatus === "Pre-Approved" || curStatus === "Hold" || curStatus === "Draft") {
+        if (curStatus === "Approved" || curStatus === "Pre-Approved") {
           const pType = r.permit_type || "";
           const pUnder = r.permit_under || "";
           const isBothConst = (pUnder === "Construction" && pType === "Construction");
@@ -2261,8 +2299,11 @@ const getInitialPage = () => {
           if (isBothComm && !isDept1) {
             return showError(`Permit #${r.PermitNo || r.id}: Only COMM role can reject Commissioning-only permits.`);
           }
-          if ((isConstUnderComm || isCommUnderConst) && (!isDept && !isDept1)) {
-            return showError(`Permit #${r.PermitNo || r.id}: Only CONM or COMM role can reject this permit.`);
+          if (isConstUnderComm && !isDept) {
+            return showError(`Permit #${r.PermitNo || r.id}: Only CONM role can reject Construction permits under Commissioning.`);
+          }
+          if (isCommUnderConst && !isDept1) {
+            return showError(`Permit #${r.PermitNo || r.id}: Only COMM role can reject Commissioning permits under Construction.`);
           }
         }
       }
@@ -2560,12 +2601,17 @@ const getInitialPage = () => {
   }, [requests, checkIfHideCheckbox]);
 
   // ─── Table Configuration ──────────────────────────────────────────────────
-  const columns = [
+  const isOpsVisible = visibleColumns.includes("operationsCell");
+
+  const rawColumns = [
     {
       header: !isObserver && !isSubcontractor && (
         <input
           type="checkbox"
-          checked={selectableRequestsCount > 0 && selectedIds.length === selectableRequestsCount}
+          checked={
+            selectableRequestsCount > 0 &&
+            requests.filter(r => !checkIfHideCheckbox(r)).every(r => selectedIds.includes(r.id))
+          }
           onChange={(e) => handleSelectAll(e.target.checked)}
         />
       ),
@@ -2578,6 +2624,7 @@ const getInitialPage = () => {
     { header: "Permit Under", accessor: "permit_under" },
     { header: "Request Date", accessor: "Request_Date" },
     { header: "Permit Type", accessor: "permit_type" },
+    { header: "Type of Work", accessor: "work_type" },
     { header: "Activity", accessor: "Activity" },
     { header: "Contractor", accessor: "contractorName" },
     { header: "Building", accessor: "buildingName" },
@@ -2591,15 +2638,26 @@ const getInitialPage = () => {
     {
       header: "Status",
       accessor: "statusCell",
-      className: visibleColumns.includes("operationsCell") ? "sticky-col-status" : "sticky-col-status sticky-col-status--at-edge"
+      className: isOpsVisible ? "sticky-col-status" : "sticky-col-status sticky-col-status--at-edge",
+      style: !isOpsVisible ? { right: 0 } : undefined
     },
-    { header: "Operations", accessor: "operationsCell", className: "sticky-col-operations", style: { width: "180px", minWidth: "180px", maxWidth: "180px" } }
-  ].filter(col => {
-    if (col.accessor === "checkboxCell") {
-      return !isObserver && !isSubcontractor;
+    {
+      header: "Operations",
+      accessor: "operationsCell",
+      className: "sticky-col-operations",
+      style: { width: "180px", minWidth: "180px", maxWidth: "180px" }
     }
-    return visibleColumns.includes(col.accessor);
-  });
+  ];
+
+  const columns = useMemo(() => {
+    return rawColumns.filter(col => {
+      if (col.accessor === "checkboxCell") {
+        if (isObserver || isSubcontractor) return false;
+        return true;
+      }
+      return visibleColumns.includes(col.accessor);
+    });
+  }, [rawColumns, isObserver, isSubcontractor, visibleColumns]);
 
   const tableData = useMemo(() => {
     return requests.map((row) => {
@@ -2647,14 +2705,15 @@ const getInitialPage = () => {
         </div>
       );
 
-      const isDept1Commissioning = isDept1 && (
-        String(row.permit_under).toLowerCase() === "commissioning" ||
-        String(row.permit_type).toLowerCase() === "commissioning"
-      );
+      const pUnder = (row.permit_under || row.permitUnder || "Construction").toString().trim().toLowerCase();
+      const pType = (row.permit_type || row.permitType || "Construction").toString().trim().toLowerCase();
+      const isDept1Commissioning = isDept1 && (pUnder === "commissioning" || pType === "commissioning");
+      const isDeptConstruction = isDept && (pUnder === "construction" || pType === "construction");
 
       const isMultiDept = isDept && isDept1;
 
       const isEditable = (() => {
+        if (isObserver) return false;
         const isStatusAllowed = row.Request_status !== "Cancelled" &&
           row.Request_status !== "Closed" &&
           row.Request_status !== "Rejected" &&
@@ -2672,9 +2731,7 @@ const getInitialPage = () => {
         if (isAdmin || isMultiDept) return true;
 
         if (isDept) {
-          const eitherIsConstruction = String(row.permit_under).toLowerCase() === "construction" ||
-            String(row.permit_type).toLowerCase() === "construction";
-          return eitherIsConstruction;
+          return isDeptConstruction;
         }
 
         if (isDept1) {
@@ -2685,6 +2742,7 @@ const getInitialPage = () => {
       })();
 
       const isDeletable = (() => {
+        if (isObserver) return false;
         if (isDept || isDept1 || isMultiDept) return false;
         if (isAdmin) return true;
 
@@ -2692,19 +2750,15 @@ const getInitialPage = () => {
       })();
 
       const isCopyable = (() => {
-        if (currentUser?.role === "Observer") return false;
+        if (isObserver || currentUser?.role === "Observer") return false;
         if (isAdmin || isSubcontractor || isMultiDept) return true;
 
         if (isDept) {
-          const eitherIsConstruction = String(row.permit_under).toLowerCase() === "construction" ||
-            String(row.permit_type).toLowerCase() === "construction";
-          return eitherIsConstruction;
+          return isDeptConstruction;
         }
 
         if (isDept1) {
-          const bothAreConstruction = String(row.permit_under).toLowerCase() === "construction" &&
-            String(row.permit_type).toLowerCase() === "construction";
-          return !bothAreConstruction;
+          return isDept1Commissioning;
         }
 
         return false;
@@ -2714,6 +2768,7 @@ const getInitialPage = () => {
       const statusClass = `status-badge status-badge--${row.Request_status?.toLowerCase().replace(" ", "-")}`;
 
       const handleStatusClick = () => {
+        if (isObserver) return;
         // If status is Draft, click opens edit form
         if (row.Request_status === "Draft") {
           if (isEditable) {
@@ -2758,8 +2813,8 @@ const getInitialPage = () => {
       const statusCell = (
         <span
           className={statusClass}
-          onClick={handleStatusClick}
-          style={{ cursor: "pointer" }}
+          onClick={isObserver ? undefined : handleStatusClick}
+          style={{ cursor: isObserver ? "default" : "pointer" }}
         >
           {row.Request_status}
         </span>
@@ -2839,6 +2894,7 @@ const getInitialPage = () => {
         Request_Date: formatDateToDDMMYYYY(row.Request_Date),
         Working_Date: formatDateToDDMMYYYY(row.Working_Date),
         Activity: trimLongValue(row.Activity, 30),
+        work_type: resolveTypeOfWork(row),
         timeCell,
         nightShiftCell,
         newEndTimeCell,
@@ -2847,7 +2903,7 @@ const getInitialPage = () => {
         operationsCell
       };
     });
-  }, [requests, selectedIds, contractors, buildingsList, isSubcontractor, canBulkAction, isAdmin, currentUser]);
+  }, [requests, selectedIds, contractors, buildingsList, isSubcontractor, canBulkAction, isAdmin, currentUser, isDept, isDept1, isMultiDept, checkIfHideCheckbox]);
 
   const totalPages = Math.ceil(totalCount / limit);
 
@@ -2961,7 +3017,7 @@ const getInitialPage = () => {
                   <input
                     type="text"
                     className="df-input df-readonly"
-                    value={contractors.length > 0 ? (contractors.find(c => String(c.id) === String(currentUser?.typeId))?.subContractorName || contractors[0]?.subContractorName) : "Loading..."}
+                    value={contractors.length > 0 ? (contractors.find(c => String(c.id) === String(userContractorId))?.subContractorName || contractors[0]?.subContractorName) : "Loading..."}
                     readOnly
                   />
                 ) : (
@@ -3263,18 +3319,17 @@ const getInitialPage = () => {
                 />
               </div>
 
-              {(isDept1 || isAdmin || isMultiDept) && (
+              {/* Row 9: Electrical Works | Mechanical Works (C&Q / Commissioning / Admin only) */}
+              {(isAdmin || isDept1 || isMultiDept) && (
                 <>
                   <div className="df-field">
                     <label className="df-label">Electrical Works</label>
                     <MultiSelectDropdown
                       placeholder="Select Electrical Works"
-                      searchPlaceholder="Search electrical works..."
+                      searchPlaceholder="Search electrical work..."
                       options={electricalWorksOptions}
-                      selectedValues={searchFilters.electrical_works || []}
-                      onChange={(vals) => setSearchFilters(prev => ({ ...prev, electrical_works: vals }))}
-                      hasCategoryFilter={true}
-                      categories={electricalCategories}
+                      selectedValues={searchFilters.electricalWorks || []}
+                      onChange={(vals) => setSearchFilters(prev => ({ ...prev, electricalWorks: vals }))}
                     />
                   </div>
 
@@ -3282,9 +3337,10 @@ const getInitialPage = () => {
                     <label className="df-label">Mechanical Works</label>
                     <MultiSelectDropdown
                       placeholder="Select Mechanical Works"
+                      searchPlaceholder="Search mechanical work..."
                       options={mechanicalWorksOptions}
-                      selectedValues={searchFilters.mechanical_works || []}
-                      onChange={(vals) => setSearchFilters(prev => ({ ...prev, mechanical_works: vals }))}
+                      selectedValues={searchFilters.mechanicalWorks || []}
+                      onChange={(vals) => setSearchFilters(prev => ({ ...prev, mechanicalWorks: vals }))}
                     />
                   </div>
                 </>
@@ -3414,7 +3470,7 @@ const getInitialPage = () => {
         </div>
       )}
 
-            {/* Data Table */}
+      {/* Data Table */}
       <div className="dept-table-card" style={{ marginTop: "16px" }}>
         <div className="table-toolbar-header">
           <div className="table-toolbar-header__left">

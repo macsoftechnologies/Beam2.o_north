@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { spotCheckService } from "../../../services/spotCheckService";
+import { getModuleUserContext } from "../../../utils/modulePermissions";
 import { showSuccess, showError } from "../../../components/common/Toast/Toast";
 import Swal from "sweetalert2";
 import "./SCView.css";
@@ -91,11 +92,9 @@ export default function SCView() {
     }
   }, []);
 
-  const rawRole = (localStorage.getItem("UserType") || currentUser?.role || currentUser?.userType || currentUser?.user_type || "").toUpperCase();
-  const userRolesArr = Array.isArray(currentUser?.userTypes) ? currentUser.userTypes.map((t) => String(t).toUpperCase()) : [];
-  const allRoles = [rawRole, ...userRolesArr].join(" ");
-  const isContractor = allRoles.includes("CONTRACTOR") || allRoles.includes("SUBCONTRACTOR") || Boolean(currentUser?.subcontractor_id) || Boolean(currentUser?.contractorId) || Boolean(currentUser?.typeId && allRoles.includes("SUBCONTRACTOR"));
-  const isObserver = allRoles.includes("OBSERVER");
+  const modCtx = React.useMemo(() => getModuleUserContext("spot-checks", currentUser), [currentUser]);
+  const isContractor = modCtx.isContractor;
+  const isObserver = modCtx.isObserver;
   const isReadOnly = isContractor || isObserver;
 
 
@@ -290,7 +289,7 @@ export default function SCView() {
                 </span>
               </div>
               <div className="sc-meta-item">
-                <span className="sc-meta-label">Safety Observation Created:</span>
+                <span className="sc-meta-label">Safety Issue Created:</span>
                 <span className="sc-meta-value">
                   {spotCheck.safetyIssueCreated === 'Yes' ? (
                     <span className="sc-badge sc-badge-danger">Yes ({spotCheck.safetyIssueRef || "Logged"})</span>
@@ -497,7 +496,7 @@ export default function SCView() {
                 </span>
                 <div className="grid-2-col">
                   <div className="sc-meta-item" style={{ gridColumn: "span 2" }}>
-                    <span className="sc-meta-label">Safety Observation / SPOT ref:</span>
+                    <span className="sc-meta-label">Safety issue / SPOT ref:</span>
                     <span className="sc-meta-value">
                       {spotCheck.safetyIssueRef ? (
                         <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
